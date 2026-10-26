@@ -43,6 +43,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D12 | 3 | Field names follow Figure 2: `product_id`, name, brand, category, price, sku, rating, review_count, availability, release_date, description; `article_id`, title, author, publish_date, tags, summary. | — | Claude | Figure 2 (Product and Article entities). | Follows |
 | D13 | 3 | All brands, products and authors are invented. | — | Claude | §1 ("All data is synthetic"). §4 Data ("no real sites, personal data"). | Follows |
 | D14 | 4 | Keep this log, with prompts captured by a hook, a stop check, and a push to GitHub each turn. Named "Claude chat-keeper". | — | Joseph | §7 "AI-agent plan and disclosure". | Adds (supports the disclosure) |
+| D15 | 5 | Milestone 1 runs as a 10-step checklist. Setup, generator and server first, in parallel with Joseph's data-list review and Test 2 fixture. Then the scoring script, then scraper (a) and the baseline check. The output format is agreed before the scoring script or (a) is written. | — | Claude proposed, from the midterm | §7 Milestone 1 row and completion check; Figure 3 bar order; §2 module table; §5 Tests 1 and 2. | Follows (the output-format step is not named in the midterm, but both §2 and Figure 2 depend on it) |
 
 ---
 
@@ -56,6 +57,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J2 | 3 | README uploaded and committed; GitHub reconnected. | Done in Turn 3 (branch synced, push working) |
 | J3 | 4 | Keep a detailed, continuously updated, traceable log of prompts, questions, chat history, directions chosen and how they fit the midterm, pulled from the chat. | Done in Turn 4 (this file and its hooks) |
 | J4 | 4 | Upload the log to GitHub and name it "Claude chat-keeper". | Done in Turn 4 (pushed to `claude/quirky-curie-8j4nye`) |
+| J5 | 5 | For Oct 21 – Nov 3: what comes first, and what needs to be completed? | Answered in Turn 5 (10-step checklist) |
 
 ### Questions from Claude
 
@@ -65,7 +67,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C2 | 1, 3 | Three design choices before building the generator. Asked in prose in Turn 1; no answer; asked again as multiple choice in Turn 3. (a) How do the 10 pages link together? (b) How are field rows marked up? (c) What formats do values use? | (a) Split by type. (b) Flex rows now. (c) Display formats. | Closed (Turn 3) → D6, D7, D8 |
 | C3 | 3 | Should tags be scored in order, or as a set? (Affects the scoring prompt.) | — | **Open** |
 | C4 | 3 | Keep p6's future release date (2026-12-01, "Pre-order"), or change it? | — | **Open** |
-| C5 | 3 | Start on the page generator and Express server? | Joseph asked for this log first. | **Open** |
+| C5 | 3, 5 | Start on the page generator and Express server? (Asked again in Turn 5 as steps 2–4.) | Joseph asked for this log first. | **Open** |
+| C6 | 5 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? Claude will propose one from §2 and Figure 2. | — | **Open** |
 
 ---
 
@@ -73,7 +76,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 - **C3:** order-sensitive or set comparison for tags. Decide before the scoring prompt is sent.
 - **C4:** keep or change p6's future date.
-- **C5:** go-ahead for the generator and server.
+- **C5:** go-ahead for steps 2–4 (setup files, generator, server).
+- **C6:** scraper output format. Must be agreed before the scoring script and scraper (a).
 - **Joseph's own tasks this milestone:** write the Test 2 fixture before any scoring code exists, and write scraper (a).
 - **Get Claude's branch onto `main`:** `README.md`, `data/` and this log live on `claude/quirky-curie-8j4nye`. Joseph uploaded the README to `main` by hand. The rest can be uploaded the same way or merged on GitHub.
 
@@ -173,8 +177,45 @@ Listed next steps: Joseph writes the Test 2 fixture; Claude drafts the generator
   - Both are Node scripts, so they also run on Windows.
 - Added `CLAUDE.md` so any future Claude session in this repo keeps the log updated and follows the midterm's AI-use boundaries.
 - Added a line to the README's AI assistance section that points to this log.
-- Committed and pushed everything to `claude/quirky-curie-8j4nye`.
+- Committed and pushed everything to `claude/quirky-curie-8j4nye` (`05b2ed8`).
 
 **Questions Claude asked:** none new. C3, C4 and C5 are still open.
 
 **Direction and fit:** D14.
+
+### Turn 5 — 2026-10-26 19:56 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets start from the period of oct-21 -nov 3, whats first on the list and what is all that needs to be completed
+
+**What Claude did**
+- Confirmed the prompt hook works in this session: it captured this prompt as Turn 5.
+- Built the full Milestone 1 checklist from §7 (milestone table and completion check), Figure 3 (bar order and dates), §2 (module responsibilities and the AI-assistance split) and §5 (Tests 1 and 2). Marked what is already done.
+
+**Claude's answer (summary): Milestone 1, Oct 21 – Nov 3**
+
+The milestone is done when both checks pass (§7): the scoring script passes the hand-calculated Test 2, and scraper (a) scores at least 90% on baseline in each of 3 runs.
+
+| # | Task | Who | Basis | Status |
+|---|---|---|---|---|
+| — | README | AI | §5 Reproducibility | Done (Turn 1) |
+| — | Data list draft | AI | §2 Test site, Figure 2 | Done (Turn 3), waiting on Joseph's review |
+| 1 | Review the data list; answer C3 (tags) and C4 (p6 date) | Joseph | Data list is the answer key | **First** |
+| 2 | Setup files: `package.json` and lock file, `requirements.txt`, `.gitignore`, `config.json` (port, page cap 15, seed, 3 runs) | AI | §5 Reproducibility | To do |
+| 3 | Page generator, baseline only: 10 pages in a `baseline` folder | AI drafts, Joseph reviews | §2 Test site | To do |
+| 4 | Express server, request logger and `robots.txt`. The log takes the run ID from the User-Agent and records path, time, status and response time; a missing User-Agent logs as `unknown`. | AI drafts, Joseph reviews | §2 Test site, Figure 2 RequestLog | To do |
+| 5 | Agree on the scraper output format | Claude proposes, Joseph approves | §2 scraper outputs, Figure 2 ExtractedRecord and Run | To do (C6) |
+| 6 | Test 2 fixture, worked out by hand *before* any scoring code exists | **Joseph** | §5 Test 2; §7 verification step 1 | To do |
+| 7 | Scoring script and its tests, using the midterm's prompt | AI | §7 AI-agent plan | To do (after 6) |
+| 8 | Verify the scoring script: run the tests, explain the diff line by line, break it on purpose, hand-count one real run | **Joseph** | §7 verification steps 2–5 | To do. **Check 1 passes here.** |
+| 9 | Scraper (a) | **Joseph** | §2 Baseline scrapers | To do |
+| 10 | Baseline check: run (a) 3 times with unique run IDs and score each run | **Joseph** | §7 completion check; §5 Test 1 (part) | To do. **Check 2 passes here.** |
+
+**Order and timing:** steps 1–4 and step 6 can run in parallel. Step 7 waits for step 6. Steps 9–10 need steps 4 and 5. Figure 3 gives scraper (a) and the baseline check Oct 28 – Nov 3, so steps 2–5 should be finished by about Oct 28. Nine days remain, counting today (Oct 26).
+
+**Questions Claude asked**
+- C5 (still open): start on steps 2–4 now?
+- **New, C6:** scraper output format. Claude will propose one based on §2 and Figure 2.
+
+**Direction and fit:** D15.
