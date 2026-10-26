@@ -1,0 +1,100 @@
+{
+  "products": [
+    {
+      "product_id": "p1",
+      "name": "Larkfield Studio Headphones",
+      "brand": "Larkfield",
+      "category": "Headphones",
+      "price": "$89.99",
+      "sku": "LF-HP-2041",
+      "rating": "4.5",
+      "review_count": "1,284",
+      "availability": "In stock",
+      "release_date": "2024-09-12",
+      "description": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable."
+    },
+    {
+      "product_id": "p2",
+      "name": "Corvane Desk Lamp",
+      "brand": "Corvane",
+      "category": "Lighting",
+      "price": "$34.50",
+      "sku": "CV-LT-0317",
+      "rating": "4.2",
+      "review_count": "356",
+      "availability": "Low stock",
+      "release_date": "2023-11-03",
+      "description": "Adjustable LED lamp with three color temperatures and a weighted base."
+    },
+    {
+      "product_id": "p3",
+      "name": "Brimvale Pour-Over Kettle",
+      "brand": "Brimvale",
+      "category": "Kitchen",
+      "price": "$47.00",
+      "sku": "BV-KT-1180",
+      "rating": "4.7",
+      "review_count": "2,031",
+      "availability": "In stock",
+      "release_date": "2025-02-20",
+      "description": "Gooseneck kettle with a built-in thermometer and a 1-liter capacity."
+    },
+    {
+      "product_id": "p4",
+      "name": "Tessaro Trail Backpack",
+      "brand": "Tessaro",
+      "category": "Outdoor",
+      "price": "$112.95",
+      "sku": "TS-BP-0552",
+      "rating": "4.4",
+      "review_count": "718",
+      "availability": "Out of stock",
+      "release_date": "2024-04-08",
+      "description": "28-liter daypack with a padded laptop sleeve and side water-bottle pockets."
+    },
+    {
+      "product_id": "p5",
+      "name": "Mirelle Wireless Mouse",
+      "brand": "Mirelle",
+      "category": "Computer Accessories",
+      "price": "$24.99",
+      "sku": "MR-MS-0903",
+      "rating": "3.9",
+      "review_count": "4,567",
+      "availability": "In stock",
+      "release_date": "2025-06-30",
+      "description": "Silent-click mouse with a USB-C receiver and up to 12 months of battery life."
+    },
+    {
+      "product_id": "p6",
+      "name": "Halden Cast Iron Skillet",
+      "brand": "Halden",
+      "category": "Cookware",
+      "price": "$58.75",
+      "sku": "HD-CI-1026",
+      "rating": "4.8",
+      "review_count": "9,412",
+      "availability": "Pre-order",
+      "release_date": "2026-12-01",
+      "description": "Pre-seasoned 10-inch skillet that works on induction, gas and in the oven."
+    }
+  ],
+  "articles": [
+    {
+      "article_id": "a1",
+      "title": "Caring for Cast Iron Cookware",
+      "author": "Maya Okafor",
+      "publish_date": "2025-05-14",
+      "tags": "cookware, cleaning, kitchen",
+      "summary": "How to clean, dry and re-season a cast iron pan so it lasts for decades."
+    },
+    {
+      "article_id": "a2",
+      "title": "Choosing a Daypack for Short Hikes",
+      "author": "Daniel Reyes",
+      "publish_date": "2025-08-02",
+      "tags": "outdoor, hiking, buying guide",
+      "summary": "What to look for in size, fit and pockets when picking a pack for day trips."
+    }
+  ]
+}
