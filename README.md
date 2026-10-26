@@ -197,6 +197,8 @@ Steps to generate the site, run the scrapers, score the results, and measure use
 
 This project uses AI assistance (Claude). The test site, the measurement tooling, and the setup of scraper (e) (model choice and request format) are drafted with AI assistance. The page defenses, the tarpit route, scrapers (a)–(d), and the prompt, parsing, and failure rules for (e) are written by the author. All AI-assisted code is reviewed, tested against the cases above, and explainable by the author.
 
+Every prompt, question, and design decision made with AI assistance is logged in [`Claude-chat-keeper.md`](Claude-chat-keeper.md), with each decision checked against the midterm plan.
+
 ---
 
 ## References
