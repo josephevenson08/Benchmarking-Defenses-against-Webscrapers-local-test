@@ -85,6 +85,18 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
+**Next session agenda (Joseph's request, Turn 7)**
+1. **Confirm step 1, the data list review.** Joseph decides:
+   - C3: score tags in order or as a set;
+   - C4: keep p6's future date or change it;
+   - any values to change in `data/items.json`.
+2. **Confirm where things stand** once step 1 is done: the Milestone 1 checklist from Turn 5, with status.
+3. **Day-by-day plan** for every remaining day, through the end of each period:
+   - Milestone 1 (to Nov 3)
+   - Milestone 2 (Nov 4–17, Nov 17 cut-line)
+   - Milestone 3 (Nov 18 – Dec 1, Dec 1 cut-line)
+   - Milestone 4 (Dec 2–10; submission tagged by Dec 8)
+
 - **C3:** order-sensitive or set comparison for tags. Decide before the scoring prompt is sent.
 - **C4:** keep or change p6's future date.
 - **C6:** scraper output format. Must be agreed before the scoring script and scraper (a).
@@ -273,3 +285,17 @@ The milestone is done when both checks pass (§7): the scoring script passes the
 - Still open: C3, C4 and C6. Claude will propose the output format (C6) next.
 
 **Direction and fit:** D16–D24.
+
+### Turn 7 — 2026-10-26 20:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i have to go, but when i get back, lets confirm step 1 and then confirm where we are at as of after that and what is left to complete each day leading up to each period of time we have allocated.
+
+**What Claude did:** saved the agenda for the next session under "Next session agenda" in Open items. Checked that all work so far is pushed (`aa68e22`), so nothing is lost if this session's container closes.
+
+**Claude's answer (summary):** confirmed the three-part agenda and listed what Joseph should bring for step 1.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. The day-by-day plan will follow the §7 milestone periods and the Figure 3 cut-lines (Nov 17, Dec 1).
