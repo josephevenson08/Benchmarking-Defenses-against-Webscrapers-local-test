@@ -48,7 +48,9 @@ One data list is the only source of site content and also the answer key for sco
 - **6 products × 10 fields:** name, brand, category, price, SKU, rating, review count, availability, release date, description
 - **2 articles × 5 fields:** title, author, publish date, tags, summary
 
-That gives **70 scored fields**. A page generator turns the data list into a 10-page static site for each condition: `baseline`, `shuffled`, `honeypot`, `poisoned` (plus `tarpit` if built). An Express server on `localhost:3000` serves one condition at a time, serves `robots.txt`, and logs every request. Each scraper puts its run ID in the `User-Agent` header, so every logged request maps back to a run.
+That gives **70 scored fields**. A page generator turns the data list into a 10-page static site for each condition: `baseline`, `shuffled`, `honeypot`, `poisoned` (plus `tarpit` if built). The home page links to a products page, which lists the 6 product pages, and directly to the 2 article pages. Each item page shows its fields as label-and-value rows. Link text and page titles never contain a scored value, so each value appears only in its own row.
+
+An Express server on `localhost:3000` serves one condition at a time, serves `robots.txt`, and logs every request. Each scraper puts its run ID in the `User-Agent` header as `run=<id>`, so every logged request maps back to a run.
 
 ## Architecture
 
@@ -116,6 +118,8 @@ prompts/       prompt files for (c) and (e)
 scoring/       scoring script and its tests
 measurement/   experiment runner and user-cost runner
 results/       one dated folder per experiment (outputs, logs, CSVs, manifest)
+conditions/    generated sites, one folder per condition (rebuilt by the generator, not committed)
+logs/          request logs from the server (not committed)
 config.json    port, page cap, delays, seeds, number of runs
 ```
 
@@ -123,20 +127,37 @@ config.json    port, page cap, delays, seeds, number of runs
 
 Requirements:
 
-- Node.js and npm
+- Node.js 20 or newer, and npm
 - Python 3 and pip
-- Playwright for Python with Chromium
+- Playwright for Python with Chromium (from Milestone 2, for scrapers (b)–(e))
 - Ollama, only for scrapers (c) and (e)
 
-Install steps, once `package.json` and `requirements.txt` are in the repository:
+Install:
 
 ```bash
 npm ci
 pip install -r requirements.txt
-python -m playwright install chromium
 ```
 
-Steps to generate the site, run the scrapers, score the results, and measure user cost will be added here as each part is built.
+## Usage
+
+```bash
+npm run generate -- baseline   # writes conditions/baseline/: 10 pages and robots.txt
+npm run serve -- baseline      # serves it at http://localhost:3000 and logs to logs/requests.jsonl
+npm test                       # checks for the generator and server
+```
+
+Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
+
+**Run IDs:** a scraper puts `run=<id>` anywhere in its `User-Agent`, for example `bench-scraper (run=a-baseline-1)`. Requests without one are logged as `unknown`.
+
+**Request log:** each request is one JSON line:
+
+```json
+{"timestamp":"2026-10-26T20:03:56.672Z","run_id":"a-baseline-1","path":"/products/p3","status":200,"response_ms":2.153,"honeypot_hit":false,"user_agent":"bench-scraper (run=a-baseline-1)"}
+```
+
+Steps to run the scrapers, score the results, and measure user cost will be added as each part is built.
 
 ---
 

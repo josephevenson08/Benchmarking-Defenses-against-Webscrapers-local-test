@@ -44,6 +44,15 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D13 | 3 | All brands, products and authors are invented. | — | Claude | §1 ("All data is synthetic"). §4 Data ("no real sites, personal data"). | Follows |
 | D14 | 4 | Keep this log, with prompts captured by a hook, a stop check, and a push to GitHub each turn. Named "Claude chat-keeper". | — | Joseph | §7 "AI-agent plan and disclosure". | Adds (supports the disclosure) |
 | D15 | 5 | Milestone 1 runs as a 10-step checklist. Setup, generator and server first, in parallel with Joseph's data-list review and Test 2 fixture. Then the scoring script, then scraper (a) and the baseline check. The output format is agreed before the scoring script or (a) is written. | — | Claude proposed, from the midterm | §7 Milestone 1 row and completion check; Figure 3 bar order; §2 module table; §5 Tests 1 and 2. | Follows (the output-format step is not named in the midterm, but both §2 and Figure 2 depend on it) |
+| D16 | 6 | `config.json` holds the shared settings: port 3000, page cap 15, 3 runs, obey `robots.txt`, 10 s request timeout, 2 s swap delay, 3 s quiet wait with 10 s timeout, temperature 0. Plus a seed and the trap path. | — | Claude | §5 Reproducibility ("One config file holds the port, page cap, 2-second swap delay, 3-second quiet wait with 10-second timeout, temperature 0, robots.txt setting and number of runs"). | Follows |
+| D17 | 6 | Express pinned exactly to 5.2.1 (Dec 2025) with `package-lock.json`. | 5.2.1; 5.3.0 (only 17 days old) | Claude | §3 Technology choices (Express [4], v5.x docs). §5 ("Node packages are locked with package-lock.json"). | Follows |
+| D18 | 6 | No scored value appears anywhere except its own row. Link text reads "Product 1", "Article 1"; headings and titles are generic. | Show names in link text; generic link text | Claude | §5 Test 5 ("No real value should appear in the HTML" of poisoned pages): with this rule Test 5 can check every page, including the products page. It also makes scoring unambiguous. | Adds (keeps Test 5 clean; no change to the plan) |
+| D19 | 6 | Generated sites and logs are not committed; the generator rebuilds them byte for byte. | Commit generated pages; regenerate | Claude | §5 Reproducibility (the data list is committed and the generator is deterministic). §5 Test 4 (same seed → byte-identical pages). | Follows |
+| D20 | 6 | A page manifest (paths, page types, item ids, 70 scored fields) is written beside the served folder, not inside it. | — | Claude | Figure 2 (ExtractedRecord links to item_id). §5 Test 1 (10 pages and 70 fields per condition). | Adds (lets scoring map pages to items) |
+| D21 | 6 | Run-ID convention: a scraper puts `run=<id>` anywhere in its User-Agent. Missing or absent → `unknown`. **Joseph's scraper (a) must follow it.** | — | Claude | §3 Architecture ("Every scraper sends its run ID in the User-Agent header"). §5 Test 6 (missing User-Agent logs as "unknown"). | Interprets (the midterm doesn't fix the format) |
+| D22 | 6 | The request log is JSON Lines with the Figure 2 RequestLog fields (timestamp, run_id, path, status, response_ms, honeypot_hit), plus the raw user_agent. | CSV; JSON Lines | Claude | Figure 2 RequestLog. §2 Test site ("logs run ID, path, time, status and response time"). | Follows (plus one debugging field) |
+| D23 | 6 | The trap route is in the server now and logs `honeypot_hit`. The hidden link that points to it is Joseph's honeypot defense in Milestone 2. Caching headers are off, and the server binds only to 127.0.0.1. | — | Claude | §2 Test site row ("logs a hit on the trap path") vs. Page defenses row (the hidden link). §1/§3: everything runs locally. | Follows (binding and caching: Adds) |
+| D24 | 6 | Site tests use Node's built-in test runner, so there are no extra dependencies. Bugs were planted to prove the tests can fail. | — | Claude | §5 Tests 1, 4 and 6 (the parts built so far). §7 verification step 4 ("breaking the code on purpose"). | Adds (early test coverage) |
 
 ---
 
@@ -58,6 +67,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J3 | 4 | Keep a detailed, continuously updated, traceable log of prompts, questions, chat history, directions chosen and how they fit the midterm, pulled from the chat. | Done in Turn 4 (this file and its hooks) |
 | J4 | 4 | Upload the log to GitHub and name it "Claude chat-keeper". | Done in Turn 4 (pushed to `claude/quirky-curie-8j4nye`) |
 | J5 | 5 | For Oct 21 – Nov 3: what comes first, and what needs to be completed? | Answered in Turn 5 (10-step checklist) |
+| J6 | 6 | Go ahead with steps 2–4 (setup files, generator, server). | Done in Turn 6, waiting on Joseph's review |
 
 ### Questions from Claude
 
@@ -67,8 +77,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C2 | 1, 3 | Three design choices before building the generator. Asked in prose in Turn 1; no answer; asked again as multiple choice in Turn 3. (a) How do the 10 pages link together? (b) How are field rows marked up? (c) What formats do values use? | (a) Split by type. (b) Flex rows now. (c) Display formats. | Closed (Turn 3) → D6, D7, D8 |
 | C3 | 3 | Should tags be scored in order, or as a set? (Affects the scoring prompt.) | — | **Open** |
 | C4 | 3 | Keep p6's future release date (2026-12-01, "Pre-order"), or change it? | — | **Open** |
-| C5 | 3, 5 | Start on the page generator and Express server? (Asked again in Turn 5 as steps 2–4.) | Joseph asked for this log first. | **Open** |
+| C5 | 3, 5 | Start on the page generator and Express server? (Asked again in Turn 5 as steps 2–4.) | Yes (Turn 6). | Closed (Turn 6) |
 | C6 | 5 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? Claude will propose one from §2 and Figure 2. | — | **Open** |
+| C7 | 6 | Which HTTP client and HTML parser for scraper (a)? They will be pinned in `requirements.txt`. | — | **Open** |
 
 ---
 
@@ -76,8 +87,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 - **C3:** order-sensitive or set comparison for tags. Decide before the scoring prompt is sent.
 - **C4:** keep or change p6's future date.
-- **C5:** go-ahead for steps 2–4 (setup files, generator, server).
 - **C6:** scraper output format. Must be agreed before the scoring script and scraper (a).
+- **C7:** HTTP client and HTML parser for scraper (a).
+- **Joseph's review of steps 2–4:** page structure, link graph, log fields and trap handling. The §2 Test site row says Joseph specifies and reviews these. Screenshots are in the Turn 6 chat.
 - **Joseph's own tasks this milestone:** write the Test 2 fixture before any scoring code exists, and write scraper (a).
 - **Get Claude's branch onto `main`:** `README.md`, `data/` and this log live on `claude/quirky-curie-8j4nye`. Joseph uploaded the README to `main` by hand. The rest can be uploaded the same way or merged on GitHub.
 
@@ -219,3 +231,45 @@ The milestone is done when both checks pass (§7): the scoring script passes the
 - **New, C6:** scraper output format. Claude will propose one based on §2 and Figure 2.
 
 **Direction and fit:** D15.
+
+### Turn 6 — 2026-10-26 19:59 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> Yes, lets do that
+
+**What Claude did**
+- **Step 2, setup files**
+  - `config.json` holds the settings named in §5.
+  - `package.json` pins Express 5.2.1 exactly; `package-lock.json` locks it.
+  - `.gitignore` excludes dependencies, generated sites and logs.
+  - `requirements.txt` is a placeholder until Joseph picks scraper (a)'s libraries.
+- **Step 3, page generator (`site/generate.js`)**
+  - `npm run generate -- baseline` writes the 10 pages and `robots.txt` (allow all) to `conditions/baseline/`.
+  - It also writes a page manifest to `conditions/baseline.manifest.json`, outside the served folder.
+  - Field rows keep the markup Joseph approved in D7: a flex row with a label element and a value element.
+  - Conditions that aren't built yet are refused with a clear message.
+- **Step 4, server (`site/server.js`)**
+  - `npm run serve -- baseline` serves the site on `127.0.0.1:3000` and logs every request to `logs/requests.jsonl`.
+  - A `/trap` route records honeypot hits; nothing links to it yet.
+  - Pages load without `.html` (for example `/products/p1`).
+- **Tests (`site/test/site.test.js`, run with `npm test`):** 7 checks, all passing.
+  - 10 pages of the right types.
+  - Every page reachable by links from the home page.
+  - 70 rows matching the data list in field order.
+  - No scored value outside its own row.
+  - Byte-identical rebuilds.
+  - Run-ID parsing.
+  - Server log lines, including trap hits, 404s and a missing User-Agent.
+- **Planted bugs, as in §7 verification step 4:** product names in link text, trap hits never flagged, and broken article links. Each made exactly one matching test fail.
+- **End-to-end run:** started the real server, requested pages with and without a run ID, and checked the log. Took screenshots of the home, products, product and article pages; Joseph has them for review.
+- **README updated:** link graph, run-ID convention, Usage section with real commands, request-log format, generated folders in the layout list.
+
+**Claude's answer (summary):** steps 2–4 are done and tested. Joseph still needs to review the page structure, link graph, log fields and trap handling (the §2 Test site row says Joseph specifies and reviews these).
+
+**Questions Claude asked**
+- C5 is now closed: Joseph said yes.
+- **New, C7:** which HTTP client and HTML parser for scraper (a), so they can be pinned in `requirements.txt`?
+- Still open: C3, C4 and C6. Claude will propose the output format (C6) next.
+
+**Direction and fit:** D16–D24.

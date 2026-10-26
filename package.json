@@ -1,0 +1,17 @@
+{
+  "name": "benchmarking-defenses-against-webscrapers",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local test site for benchmarking page-level defenses against web scrapers.",
+  "scripts": {
+    "generate": "node site/generate.js",
+    "serve": "node site/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "5.2.1"
+  }
+}

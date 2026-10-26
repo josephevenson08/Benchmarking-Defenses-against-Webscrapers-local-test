@@ -1,0 +1,2 @@
+# Python packages, pinned to exact versions (==) as each part is built.
+# Scraper (a): add the HTTP client and HTML parser chosen for it here.
