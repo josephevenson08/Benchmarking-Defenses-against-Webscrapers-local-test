@@ -1,0 +1,21 @@
+{
+  "product": [
+    { "key": "name", "label": "Name" },
+    { "key": "brand", "label": "Brand" },
+    { "key": "category", "label": "Category" },
+    { "key": "price", "label": "Price" },
+    { "key": "sku", "label": "SKU" },
+    { "key": "rating", "label": "Rating" },
+    { "key": "review_count", "label": "Reviews" },
+    { "key": "availability", "label": "Availability" },
+    { "key": "release_date", "label": "Release date" },
+    { "key": "description", "label": "Description" }
+  ],
+  "article": [
+    { "key": "title", "label": "Title" },
+    { "key": "author", "label": "Author" },
+    { "key": "publish_date", "label": "Published" },
+    { "key": "tags", "label": "Tags" },
+    { "key": "summary", "label": "Summary" }
+  ]
+}

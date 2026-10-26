@@ -1,0 +1,13 @@
+{
+  "port": 3000,
+  "page_cap": 15,
+  "runs_per_cell": 3,
+  "obey_robots_txt": true,
+  "request_timeout_seconds": 10,
+  "poison_swap_delay_seconds": 2,
+  "adaptive_quiet_seconds": 3,
+  "adaptive_timeout_seconds": 10,
+  "llm_temperature": 0,
+  "seed": 20261021,
+  "trap_path": "/trap"
+}
