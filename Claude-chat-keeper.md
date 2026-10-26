@@ -53,6 +53,12 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D22 | 6 | The request log is JSON Lines with the Figure 2 RequestLog fields (timestamp, run_id, path, status, response_ms, honeypot_hit), plus the raw user_agent. | CSV; JSON Lines | Claude | Figure 2 RequestLog. §2 Test site ("logs run ID, path, time, status and response time"). | Follows (plus one debugging field) |
 | D23 | 6 | The trap route is in the server now and logs `honeypot_hit`. The hidden link that points to it is Joseph's honeypot defense in Milestone 2. Caching headers are off, and the server binds only to 127.0.0.1. | — | Claude | §2 Test site row ("logs a hit on the trap path") vs. Page defenses row (the hidden link). §1/§3: everything runs locally. | Follows (binding and caching: Adds) |
 | D24 | 6 | Site tests use Node's built-in test runner, so there are no extra dependencies. Bugs were planted to prove the tests can fail. | — | Claude | §5 Tests 1, 4 and 6 (the parts built so far). §7 verification step 4 ("breaking the code on purpose"). | Adds (early test coverage) |
+| D25 | 8 | Data list approved as is and locked as the answer key. Changing it later means re-running the checks and recording the change here. | Approve; change values | Joseph | §4 Data ("The data list is the answer key"). §5 Reproducibility ("The data list is the only source of content and is committed"). | Follows |
+| D26 | 8 | Tags are scored as a set: split on commas, ignore order and the spaces around commas. | As a set; exact string | Joseph (Claude recommended) | §4 Assumptions ("A value is correct if it matches the data list after normalizing"). The midterm doesn't define normalization for list-valued fields. | Interprets (normalization rule for tags) |
+| D27 | 8 | p6 keeps its future release date (2026-12-01) with "Pre-order". | Keep; change to a past date | Joseph (Claude recommended) | §1 (synthetic data). Dates are compared as text, so there's no effect on scoring. | Follows |
+| D28 | 8 | Scraper (a) uses `requests` and BeautifulSoup. | requests + BeautifulSoup; httpx + selectolax; standard library | Joseph | §2 Baseline scrapers ("An HTTP client and HTML parser for (a)"). §3 Technology choices (Python for (a)). | Follows |
+| D29 | 8 | `requirements.txt` pins the whole installed set (direct and indirect packages). Each pin is at least two weeks old: `soupsieve` 3.0.3 and `certifi` 2026.7.22 instead of releases from the past week. A clean install was checked to match the pins exactly. | Pin direct packages only; pin everything | Claude | §5 Reproducibility ("Python packages pinned in requirements.txt"). | Follows |
+| D30 | 8 | Day-by-day schedule in `SCHEDULE.md`. It keeps the §7 periods, Figure 3 bar order, both cut-lines and the stretch plan. Placed by Claude where Figure 3 has no bar: the experiment runner (Nov 18), per-page seed plumbing (Nov 7), and the Test 3 and Test 7 harnesses. Thanksgiving (Nov 26) and Nov 27 are off. | — | Claude proposed, from the midterm | §7 milestone table, decision points and stretch plan. Figure 3. §7 risks ("Thanksgiving week is light"). | Follows (daily placement Interprets Figure 3's bars) |
 
 ---
 
@@ -68,6 +74,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J4 | 4 | Upload the log to GitHub and name it "Claude chat-keeper". | Done in Turn 4 (pushed to `claude/quirky-curie-8j4nye`) |
 | J5 | 5 | For Oct 21 – Nov 3: what comes first, and what needs to be completed? | Answered in Turn 5 (10-step checklist) |
 | J6 | 6 | Go ahead with steps 2–4 (setup files, generator, server). | Done in Turn 6, waiting on Joseph's review |
+| J7 | 7 | When back: confirm step 1, confirm status, then a day-by-day plan through each period. | Done in Turn 8 (`SCHEDULE.md`) |
+| J8 | 8 | "ok im back lets continue" | Step 1 confirmed; status and schedule given in Turn 8 |
 
 ### Questions from Claude
 
@@ -75,33 +83,21 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 |---|---|---|---|---|
 | C1 | 1 | Should Claude push the README once GitHub access is fixed? (Push had failed with a 403.) | Joseph uploaded the README to `main` and reconnected GitHub. | Closed (Turn 3) |
 | C2 | 1, 3 | Three design choices before building the generator. Asked in prose in Turn 1; no answer; asked again as multiple choice in Turn 3. (a) How do the 10 pages link together? (b) How are field rows marked up? (c) What formats do values use? | (a) Split by type. (b) Flex rows now. (c) Display formats. | Closed (Turn 3) → D6, D7, D8 |
-| C3 | 3 | Should tags be scored in order, or as a set? (Affects the scoring prompt.) | — | **Open** |
-| C4 | 3 | Keep p6's future release date (2026-12-01, "Pre-order"), or change it? | — | **Open** |
+| C3 | 3, 8 | Should tags be scored in order, or as a set? (Affects the scoring prompt.) Asked as multiple choice in Turn 8: "As a set (Recommended)" or "Exact string". | As a set. | Closed (Turn 8) → D26 |
+| C4 | 3, 8 | Keep p6's future release date (2026-12-01, "Pre-order"), or change it? Asked in Turn 8: "Keep it (Recommended)" or "Change to a past date". | Keep it. | Closed (Turn 8) → D27 |
 | C5 | 3, 5 | Start on the page generator and Express server? (Asked again in Turn 5 as steps 2–4.) | Yes (Turn 6). | Closed (Turn 6) |
 | C6 | 5 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? Claude will propose one from §2 and Figure 2. | — | **Open** |
-| C7 | 6 | Which HTTP client and HTML parser for scraper (a)? They will be pinned in `requirements.txt`. | — | **Open** |
+| C7 | 6, 8 | Which HTTP client and HTML parser for scraper (a)? They will be pinned in `requirements.txt`. Asked in Turn 8: "requests + BeautifulSoup", "httpx + selectolax" or "Standard library only". | requests + BeautifulSoup. | Closed (Turn 8) → D28 |
+| C8 | 8 | Are the data list values right? Shown in full; options "Approve as is" or "I have changes". | Approve as is. | Closed (Turn 8) → D25 |
 
 ---
 
 ## Open items
 
-**Next session agenda (Joseph's request, Turn 7)**
-1. **Confirm step 1, the data list review.** Joseph decides:
-   - C3: score tags in order or as a set;
-   - C4: keep p6's future date or change it;
-   - any values to change in `data/items.json`.
-2. **Confirm where things stand** once step 1 is done: the Milestone 1 checklist from Turn 5, with status.
-3. **Day-by-day plan** for every remaining day, through the end of each period:
-   - Milestone 1 (to Nov 3)
-   - Milestone 2 (Nov 4–17, Nov 17 cut-line)
-   - Milestone 3 (Nov 18 – Dec 1, Dec 1 cut-line)
-   - Milestone 4 (Dec 2–10; submission tagged by Dec 8)
+The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **C3:** order-sensitive or set comparison for tags. Decide before the scoring prompt is sent.
-- **C4:** keep or change p6's future date.
-- **C6:** scraper output format. Must be agreed before the scoring script and scraper (a).
-- **C7:** HTTP client and HTML parser for scraper (a).
-- **Joseph's review of steps 2–4:** page structure, link graph, log fields and trap handling. The §2 Test site row says Joseph specifies and reviews these. Screenshots are in the Turn 6 chat.
+- **C6:** scraper output format. Must be agreed before the scoring script and scraper (a). Claude proposes it next (SCHEDULE: Mon Oct 26).
+- **Joseph's review of steps 2–4:** page structure, log fields and trap handling. The §2 Test site row says Joseph specifies and reviews these; the link graph and markup were already approved (D6, D7). Screenshots are in the Turn 6 chat.
 - **Joseph's own tasks this milestone:** write the Test 2 fixture before any scoring code exists, and write scraper (a).
 - **Get Claude's branch onto `main`:** `README.md`, `data/` and this log live on `claude/quirky-curie-8j4nye`. Joseph uploaded the README to `main` by hand. The rest can be uploaded the same way or merged on GitHub.
 
@@ -299,3 +295,44 @@ The milestone is done when both checks pass (§7): the scoring script passes the
 **Questions Claude asked:** none new.
 
 **Direction and fit:** no new decision. The day-by-day plan will follow the §7 milestone periods and the Figure 3 cut-lines (Nov 17, Dec 1).
+
+### Turn 8 — 2026-10-26 21:19 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok im back lets continue
+
+**What Claude did**
+- Checked the environment: still Mon Oct 26, everything pushed, `node_modules` and the generated baseline present.
+- **Step 1, data list confirmed.** Asked four multiple-choice questions. The data question showed all 70 values in a preview. Joseph answered:
+  - data list approved as is (C8 → D25);
+  - tags scored as a set (C3 → D26);
+  - p6's future date kept (C4 → D27);
+  - `requests` + BeautifulSoup for scraper (a) (C7 → D28).
+- **Pinned scraper (a)'s libraries** in `requirements.txt`:
+  - Installed them in a scratch venv to get the full set of packages.
+  - Two indirect packages (`soupsieve`, `certifi`) had releases under a week old, so each was pinned to its newest release at least two weeks old.
+  - A clean install from the file passed `pip check`, matched the pins exactly, and both libraries import (D29).
+- **Wrote `SCHEDULE.md`:** a day-by-day plan from Oct 26 to Dec 10, with who does each task, completion checks, cut-lines and Ambitious items marked. Weekdays and Thanksgiving were computed, not worked out by hand (D30).
+- **Updated the README:** ticked "Data list" in the roadmap and linked the schedule.
+
+**Claude's answer (summary): where Milestone 1 stands**
+
+| Step | Status |
+|---|---|
+| 1 Data list review | ✅ Done (Turn 8) |
+| 2 Setup files | ✅ Done (libraries for (a) pinned in Turn 8) |
+| 3 Page generator | ✅ Built and tested; Joseph's review of page structure pending |
+| 4 Server and logger | ✅ Built and tested; Joseph's review of log fields and trap handling pending |
+| 5 Output format | Next: Claude proposes |
+| 6 Test 2 fixture | Joseph: Tue Oct 27 |
+| 7 Scoring script | Claude: Wed Oct 28, after the fixture |
+| 8 Verify scoring | Joseph: Thu Oct 29 ⭐ Check 1 |
+| 9 Scraper (a) | Joseph: Oct 27 – Oct 31 |
+| 10 Baseline check | Joseph: Sun Nov 1 ⭐ Check 2 |
+
+Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.md`.
+
+**Questions Claude asked:** C3, C4, C7 and C8, all answered. C6 (output format) is still open; Claude will propose it next.
+
+**Direction and fit:** D25–D30.

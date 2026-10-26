@@ -178,7 +178,7 @@ Steps to run the scrapers, score the results, and measure user cost will be adde
 ## Roadmap
 
 ### Milestone 1: Oct 21 – Nov 3 (test site and baseline scoring)
-- [ ] Data list (6 products × 10 fields, 2 articles × 5 fields)
+- [x] Data list (6 products × 10 fields, 2 articles × 5 fields)
 - [ ] Page generator (baseline condition)
 - [ ] Express server with request logger and `robots.txt`
 - [ ] Scoring script passes the hand-calculated Test 2
@@ -205,6 +205,8 @@ Steps to run the scrapers, score the results, and measure user cost will be adde
 - [ ] Tag the submission commit by Dec 8
 
 **Cut-lines:** if (a), (b), shuffling, and the honeypot aren't working on Nov 17, no Ambitious work starts. Any Ambitious item that isn't running on Dec 1 is dropped and reported as not done.
+
+The day-by-day plan is in [`SCHEDULE.md`](SCHEDULE.md).
 
 ---
 
