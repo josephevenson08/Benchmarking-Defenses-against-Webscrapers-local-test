@@ -86,6 +86,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J10 | 10 | What else is left to do today? | Answered in Turn 10: nothing required; optional laptop setup |
 | J11 | 11 | Stop for tonight; resume tomorrow. Make sure GitHub has everything needed to continue and a record of what was done. | Done in Turn 11 (all pushed; resume point added) |
 | J12 | 12 | Is GitHub up to date? | Branch yes; `main` no. Pull request #2 opened at Joseph's request (Turn 12) |
+| J13 | 13 | Pull request #2 merged; stopping until tomorrow. | Confirmed in Turn 13 |
 
 ### Questions from Claude
 
@@ -115,7 +116,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Bring `main` up to date:** pull request #2 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2) is open. Joseph merges it on GitHub, like #1. After that, `main` has everything through Turn 12.
+- **`main` is up to date** through Turn 12: Joseph merged pull request #2 (`eac0dbe`). New work goes on `claude/quirky-curie-8j4nye`, which restarts from that `main`, and reaches `main` through a new pull request. The Turn 13 entry below is the first such change.
 
 ---
 
@@ -448,3 +449,20 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** C13 (open pull request #2?). Answer: yes.
 
 **Direction and fit:** no new decision. Keeping `main` current supports §7 Version control ("keep the project in a Git repository with descriptive commits for each milestone").
+
+### Turn 13 — 2026-10-26 21:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i merged it, see you tomorrow
+
+**What Claude did**
+- Confirmed on GitHub that pull request #2 is merged: `main` is at `eac0dbe`, with the same files as the branch.
+- Since #2 is finished, fast-forwarded the branch to the new `main` (nothing discarded). Follow-up work starts from there and goes to `main` in a new pull request.
+- Logged this turn and pushed it to the branch.
+
+**Claude's answer (summary):** `main` is up to date through Turn 12. Tomorrow starts from the "Resume here" note: laptop setup, Test 2 fixture, then scraper (a).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
