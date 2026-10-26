@@ -85,6 +85,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J9 | 9 | Continue with tonight's work: Claude proposes the output format; Joseph reviews the site. | Done in Turn 9 (all approved) |
 | J10 | 10 | What else is left to do today? | Answered in Turn 10: nothing required; optional laptop setup |
 | J11 | 11 | Stop for tonight; resume tomorrow. Make sure GitHub has everything needed to continue and a record of what was done. | Done in Turn 11 (all pushed; resume point added) |
+| J12 | 12 | Is GitHub up to date? | Branch yes; `main` no. Pull request #2 opened at Joseph's request (Turn 12) |
 
 ### Questions from Claude
 
@@ -102,6 +103,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C10 | 9 | Should text matching ignore case? Options: "Ignore case (Recommended)" or "Match case exactly". | Ignore case. | Closed (Turn 9) → D33 |
 | C11 | 9 | Same page and field reported twice with different values? Options: "Count as wrong (Recommended)" or "First one wins". | Count as wrong. | Closed (Turn 9) → D34 |
 | C12 | 9 | Approve the site as built (page structure, log fields, trap handling)? Options: "Approve as built" or "I have changes". | Approve as built. | Closed (Turn 9) → D36 |
+| C13 | 12 | Open pull request #2 so `main` gets Turns 9–12? Options: "Yes, open PR #2" or "No, leave main for now". | Yes. | Closed (Turn 12): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2 |
 
 ---
 
@@ -113,7 +115,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Bring `main` up to date:** Joseph merged pull request #1 (work up to Turn 8). Turns 9–11 are on `claude/quirky-curie-8j4nye`, which already contains `main`. They include `docs/scraper-output.md`, which the Test 2 fixture needs. They need a second pull request, opened and merged like #1.
+- **Bring `main` up to date:** pull request #2 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2) is open. Joseph merges it on GitHub, like #1. After that, `main` has everything through Turn 12.
 
 ---
 
@@ -426,3 +428,23 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** none new. Offered to open that second pull request if Joseph asks.
 
 **Direction and fit:** no new decision. The laptop setup moved one day; it doesn't affect any milestone date.
+
+### Turn 12 — 2026-10-26 21:40 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> is the github up to date?
+
+**What Claude did**
+- Fetched GitHub and compared:
+  - the branch on GitHub matched the local copy (`12bae88`), apart from this turn's log entry;
+  - `main` was still at pull request #1 (`5a6c3e7`), 5 files behind.
+- Asked whether to open a second pull request (C13). Joseph said yes.
+- Checked for a pull request template (none), then opened **pull request #2** from `claude/quirky-curie-8j4nye` into `main`: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2. Its description lists the 5 changed files and says no code changed (7 tests passing).
+- Logged this turn and pushed. The pull request includes this entry automatically.
+
+**Claude's answer (summary):** the branch on GitHub is up to date. `main` will be up to date once Joseph clicks Merge on pull request #2.
+
+**Questions Claude asked:** C13 (open pull request #2?). Answer: yes.
+
+**Direction and fit:** no new decision. Keeping `main` current supports §7 Version control ("keep the project in a Git repository with descriptive commits for each milestone").
