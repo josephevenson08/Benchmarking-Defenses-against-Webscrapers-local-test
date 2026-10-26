@@ -84,6 +84,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J8 | 8 | "ok im back lets continue" | Step 1 confirmed; status and schedule given in Turn 8 |
 | J9 | 9 | Continue with tonight's work: Claude proposes the output format; Joseph reviews the site. | Done in Turn 9 (all approved) |
 | J10 | 10 | What else is left to do today? | Answered in Turn 10: nothing required; optional laptop setup |
+| J11 | 11 | Stop for tonight; resume tomorrow. Make sure GitHub has everything needed to continue and a record of what was done. | Done in Turn 11 (all pushed; resume point added) |
 
 ### Questions from Claude
 
@@ -105,6 +106,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 ---
 
 ## Open items
+
+**▶ Resume here (Tue Oct 27):** Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
@@ -392,3 +395,28 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The optional setup supports §3 Architecture ("Everything runs on one laptop") and §5 Reproducibility.
+
+### Turn 11 — 2026-10-26 21:36 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok ill do nothing else tonight and we can pick back up here tomorrow for the next step, make sure the github is uptodate with what is needed to continue and what we have done
+
+**What Claude did**
+- Checked the working tree. The only uncommitted change was this turn's log entry. The ignored folders (`conditions/`, `logs/`, `node_modules/`) are rebuilt by `npm ci` and `npm run generate`, so they are not needed on GitHub.
+- Added a **▶ Resume here** note at the top of `SCHEDULE.md` and of Open items in this file.
+- Moved the laptop setup from tonight (optional, skipped) to the first task on Tue Oct 27. Scraper (a) needs it.
+- Committed and pushed, then confirmed the GitHub branch matches the local copy file for file.
+
+**Claude's answer (summary):** GitHub is up to date on branch `claude/quirky-curie-8j4nye`. To continue, you need:
+- `SCHEDULE.md` (resume note and daily plan);
+- `docs/scraper-output.md` (fixture and scraper format);
+- `data/` (answer key and labels);
+- `site/` (generator and server);
+- this log (decisions and open items).
+
+`main` still has only the README Joseph uploaded. Merging the branch, by pull request or upload, would bring `main` up to date. That is planned for Nov 3, or sooner if Joseph asks.
+
+**Questions Claude asked:** none new. Offered to open a pull request so `main` matches the branch (needs Joseph's go-ahead).
+
+**Direction and fit:** no new decision. The laptop setup moved one day; it doesn't affect any milestone date.
