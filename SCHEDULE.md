@@ -32,6 +32,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Mon Oct 26** | ✅ Step 1: data list approved; tags scored as a set; p6 date kept. ✅ Steps 2–4: setup files, generator, server, 7 tests. ✅ `requests` and `beautifulsoup4` pinned. | J, C |
 | | ✅ Site reviewed and approved (page structure, log fields, trap handling). | J |
 | | ✅ Step 5: scraper output format and matching rules proposed and approved ([`docs/scraper-output.md`](docs/scraper-output.md)). | C, J |
+| | *Optional:* set up the project on your laptop and confirm the site and tests run there (README: Setup and Usage). | J |
 | **Tue Oct 27** | Step 6: write the Test 2 fixture by hand, in the approved format (63 correct, 4 wrong, 3 missing → 0.90 and 2/70). | J |
 | | Start scraper (a): Python environment, fetch one page with `requests`, find the label rows with BeautifulSoup. | J |
 | **Wed Oct 28** | Step 7: scoring script and tests, from the midterm's prompt. Starts only after the fixture exists. | C |

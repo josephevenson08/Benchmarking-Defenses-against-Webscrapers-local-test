@@ -83,6 +83,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J7 | 7 | When back: confirm step 1, confirm status, then a day-by-day plan through each period. | Done in Turn 8 (`SCHEDULE.md`) |
 | J8 | 8 | "ok im back lets continue" | Step 1 confirmed; status and schedule given in Turn 8 |
 | J9 | 9 | Continue with tonight's work: Claude proposes the output format; Joseph reviews the site. | Done in Turn 9 (all approved) |
+| J10 | 10 | What else is left to do today? | Answered in Turn 10: nothing required; optional laptop setup |
 
 ### Questions from Claude
 
@@ -377,3 +378,17 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** C9, C10, C11 and C12, all answered (see the Questions register). C6 is closed.
 
 **Direction and fit:** D31–D36.
+
+### Turn 10 — 2026-10-26 21:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what else do i have to do today?
+
+**What Claude did:** checked `SCHEDULE.md` for Mon Oct 26. Both of Joseph's items (the site review and the output-format approval) were done in Turn 9. Added an optional row for today: set up the project on Joseph's laptop.
+
+**Claude's answer (summary):** nothing else is required today. Optional for tonight: clone the branch on the laptop, then run `npm ci`, `npm run generate -- baseline`, `npm test` and `npm run serve -- baseline`, and set up the Python environment from `requirements.txt`. Everything runs on the laptop (§3 Architecture), and scraper (a) needs this environment tomorrow, so it is worth confirming early, especially on Windows. Tomorrow is unchanged: the Test 2 fixture, then scraper (a).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The optional setup supports §3 Architecture ("Everything runs on one laptop") and §5 Reproducibility.
