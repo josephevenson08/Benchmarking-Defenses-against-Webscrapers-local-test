@@ -59,6 +59,12 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D28 | 8 | Scraper (a) uses `requests` and BeautifulSoup. | requests + BeautifulSoup; httpx + selectolax; standard library | Joseph | §2 Baseline scrapers ("An HTTP client and HTML parser for (a)"). §3 Technology choices (Python for (a)). | Follows |
 | D29 | 8 | `requirements.txt` pins the whole installed set (direct and indirect packages). Each pin is at least two weeks old: `soupsieve` 3.0.3 and `certifi` 2026.7.22 instead of releases from the past week. A clean install was checked to match the pins exactly. | Pin direct packages only; pin everything | Claude | §5 Reproducibility ("Python packages pinned in requirements.txt"). | Follows |
 | D30 | 8 | Day-by-day schedule in `SCHEDULE.md`. It keeps the §7 periods, Figure 3 bar order, both cut-lines and the stretch plan. Placed by Claude where Figure 3 has no bar: the experiment runner (Nov 18), per-page seed plumbing (Nov 7), and the Test 3 and Test 7 harnesses. Thanksgiving (Nov 26) and Nov 27 are off. | — | Claude proposed, from the midterm | §7 milestone table, decision points and stretch plan. Figure 3. §7 risks ("Thanksgiving week is light"). | Follows (daily placement Interprets Figure 3's bars) |
+| D31 | 9 | Scraper output format: one JSON file per run with `run` (run_id, scraper, inputs, started_at, seconds), `pages` (every URL requested except robots.txt, with status and error) and `records` (page, field **key**, value). Scrapers write only what they found. `pages_fetched`, `condition` and `run_number` are derived, not stored. Written up in `docs/scraper-output.md`. | — | Joseph approved (Claude proposed) | §2 Baseline scrapers ("Output JSON records (page, field, value) plus crawl stats"; "Record 404s and timeouts"). Figure 2 Run and ExtractedRecord. §4 (time per page = crawl seconds / pages fetched). §2 Measurement ("calculates them, so there is one source of truth"). | Follows (the pages list and derived fields Interpret Figure 2) |
+| D32 | 9 | Every scraper takes `--start-url`, `--page-cap`, `--robots` (obey or ignore), `--run-id`, `--out`. Run IDs have the form `<scraper>-<condition>-<n>`. The scraper treats the run ID as plain text and is never told the condition. | — | Joseph approved (Claude proposed) | §2 ("Take a start URL, a page cap and a robots.txt setting"). §3 Architecture (the runner launches each scraper with a unique run ID and a robots.txt setting). §4 Assumptions ("Scrapers know nothing of the defenses"). | Follows (run ID format: Interprets) |
+| D33 | 9 | Matching rules. Price: remove `$` and `,`, compare as a number to 2 decimals. Rating: compare as a number. Review count: remove `,`, compare as a whole number; any value that isn't a number is malformed and wrong. Dates: exact text. Tags: compared as a set, ignoring order and case. Other text: trimmed, repeated spaces collapsed, **case ignored**. Missing (no record, null or empty) is wrong. A fake is matched with the same rules. | Ignore case; match case exactly | Joseph (Claude recommended ignoring case) | §4 Assumptions ("correct if it matches the data list after normalizing"). §4 Metrics ("missing or malformed counts as wrong"). §5 Test 2 (malformed price). §2 Measurement ("I specify and review the matching rules"). | Interprets (the midterm doesn't spell out the normalization) |
+| D34 | 9 | Duplicates: the same page and field with conflicting values counts as wrong; identical duplicates count once. | Count as wrong; first one wins | Joseph (Claude recommended) | §7 AI-agent plan prompt ("Handle missing fields, malformed values, empty outputs and duplicate records"). | Interprets (the midterm says to handle duplicates but not how) |
+| D35 | 9 | Fake-values file: a JSON list of `{item_id, field, fake_value}`. Joseph's poisoning defense writes it in Milestone 3; the Test 2 fixture uses a small hand-made one now. | — | Joseph approved (Claude proposed) | Figure 2 FakeValue (item_id, field, fake_value; unique per item and field). §2 Page defenses ("Save all fakes to a fake-values file"). §5 Test 2. | Follows |
+| D36 | 9 | Site approved as built: page structure, log fields and trap handling (steps 3–4). | Approve; change | Joseph | §2 Test site row ("I specify and review the page structure, link graph, log fields and trap handling"). | Follows |
 
 ---
 
@@ -76,6 +82,10 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J6 | 6 | Go ahead with steps 2–4 (setup files, generator, server). | Done in Turn 6, waiting on Joseph's review |
 | J7 | 7 | When back: confirm step 1, confirm status, then a day-by-day plan through each period. | Done in Turn 8 (`SCHEDULE.md`) |
 | J8 | 8 | "ok im back lets continue" | Step 1 confirmed; status and schedule given in Turn 8 |
+| J9 | 9 | Continue with tonight's work: Claude proposes the output format; Joseph reviews the site. | Done in Turn 9 (all approved) |
+| J10 | 10 | What else is left to do today? | Answered in Turn 10: nothing required; optional laptop setup |
+| J11 | 11 | Stop for tonight; resume tomorrow. Make sure GitHub has everything needed to continue and a record of what was done. | Done in Turn 11 (all pushed; resume point added) |
+| J12 | 12 | Is GitHub up to date? | Branch yes; `main` no. Pull request #2 opened at Joseph's request (Turn 12) |
 
 ### Questions from Claude
 
@@ -86,20 +96,26 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C3 | 3, 8 | Should tags be scored in order, or as a set? (Affects the scoring prompt.) Asked as multiple choice in Turn 8: "As a set (Recommended)" or "Exact string". | As a set. | Closed (Turn 8) → D26 |
 | C4 | 3, 8 | Keep p6's future release date (2026-12-01, "Pre-order"), or change it? Asked in Turn 8: "Keep it (Recommended)" or "Change to a past date". | Keep it. | Closed (Turn 8) → D27 |
 | C5 | 3, 5 | Start on the page generator and Express server? (Asked again in Turn 5 as steps 2–4.) | Yes (Turn 6). | Closed (Turn 6) |
-| C6 | 5 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? Claude will propose one from §2 and Figure 2. | — | **Open** |
+| C6 | 5, 9 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? | Proposal in `docs/scraper-output.md` approved (see C9). | Closed (Turn 9) → D31 |
 | C7 | 6, 8 | Which HTTP client and HTML parser for scraper (a)? They will be pinned in `requirements.txt`. Asked in Turn 8: "requests + BeautifulSoup", "httpx + selectolax" or "Standard library only". | requests + BeautifulSoup. | Closed (Turn 8) → D28 |
 | C8 | 8 | Are the data list values right? Shown in full; options "Approve as is" or "I have changes". | Approve as is. | Closed (Turn 8) → D25 |
+| C9 | 9 | Approve the scraper output format and inputs? Options: "Approve (Recommended)" or "Change something". | Approve. | Closed (Turn 9) → D31, D32, D35 |
+| C10 | 9 | Should text matching ignore case? Options: "Ignore case (Recommended)" or "Match case exactly". | Ignore case. | Closed (Turn 9) → D33 |
+| C11 | 9 | Same page and field reported twice with different values? Options: "Count as wrong (Recommended)" or "First one wins". | Count as wrong. | Closed (Turn 9) → D34 |
+| C12 | 9 | Approve the site as built (page structure, log fields, trap handling)? Options: "Approve as built" or "I have changes". | Approve as built. | Closed (Turn 9) → D36 |
+| C13 | 12 | Open pull request #2 so `main` gets Turns 9–12? Options: "Yes, open PR #2" or "No, leave main for now". | Yes. | Closed (Turn 12): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2 |
 
 ---
 
 ## Open items
 
+**▶ Resume here (Tue Oct 27):** Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
+
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **C6:** scraper output format. Must be agreed before the scoring script and scraper (a). Claude proposes it next (SCHEDULE: Mon Oct 26).
-- **Joseph's review of steps 2–4:** page structure, log fields and trap handling. The §2 Test site row says Joseph specifies and reviews these; the link graph and markup were already approved (D6, D7). Screenshots are in the Turn 6 chat.
-- **Joseph's own tasks this milestone:** write the Test 2 fixture before any scoring code exists, and write scraper (a).
-- **Get Claude's branch onto `main`:** `README.md`, `data/` and this log live on `claude/quirky-curie-8j4nye`. Joseph uploaded the README to `main` by hand. The rest can be uploaded the same way or merged on GitHub.
+- **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
+- **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
+- **Bring `main` up to date:** pull request #2 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2) is open. Joseph merges it on GitHub, like #1. After that, `main` has everything through Turn 12.
 
 ---
 
@@ -336,3 +352,99 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** C3, C4, C7 and C8, all answered. C6 (output format) is still open; Claude will propose it next.
 
 **Direction and fit:** D25–D30.
+
+### Turn 9 — 2026-10-26 21:28 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> sure! lets continue with what we have proposed for tonights work!
+
+**What Claude did**
+- **Step 5:** wrote the proposal into `docs/scraper-output.md`. It covers:
+  - the scraper inputs and run-ID form;
+  - the output file (`run`, `pages`, `records`);
+  - the matching rules the scoring script will use;
+  - the fake-values file format;
+  - what the Test 2 fixture must contain.
+
+  Each part cites the midterm section it comes from.
+- **Asked four multiple-choice questions** (C9–C12). The first option of each previewed exactly what was being approved. Joseph approved all four:
+  - the output format;
+  - ignoring case in text matching;
+  - counting conflicting duplicates as wrong;
+  - the site as built.
+- **Marked `docs/scraper-output.md` approved.**
+- **README:** ticked the generator, server and output format on the roadmap; linked the spec from Metrics; added `docs/` to the layout.
+- **`SCHEDULE.md`:** ticked tonight's two items.
+- **`CLAUDE.md`:** the approved contracts can't change without Joseph's approval and an entry here.
+
+**Claude's answer (summary):** all of tonight's items are done. Milestone 1 steps 1–5 are complete. Next is Joseph's Test 2 fixture (Tue Oct 27), which now has a defined format, then scraper (a). The scoring script (Claude) follows on Wed Oct 28, once the fixture exists.
+
+**Questions Claude asked:** C9, C10, C11 and C12, all answered (see the Questions register). C6 is closed.
+
+**Direction and fit:** D31–D36.
+
+### Turn 10 — 2026-10-26 21:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what else do i have to do today?
+
+**What Claude did:** checked `SCHEDULE.md` for Mon Oct 26. Both of Joseph's items (the site review and the output-format approval) were done in Turn 9. Added an optional row for today: set up the project on Joseph's laptop.
+
+**Claude's answer (summary):** nothing else is required today. Optional for tonight: clone the branch on the laptop, then run `npm ci`, `npm run generate -- baseline`, `npm test` and `npm run serve -- baseline`, and set up the Python environment from `requirements.txt`. Everything runs on the laptop (§3 Architecture), and scraper (a) needs this environment tomorrow, so it is worth confirming early, especially on Windows. Tomorrow is unchanged: the Test 2 fixture, then scraper (a).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The optional setup supports §3 Architecture ("Everything runs on one laptop") and §5 Reproducibility.
+
+### Turn 11 — 2026-10-26 21:36 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok ill do nothing else tonight and we can pick back up here tomorrow for the next step, make sure the github is uptodate with what is needed to continue and what we have done
+
+**What Claude did**
+- Checked the working tree. The only uncommitted change was this turn's log entry. The ignored folders (`conditions/`, `logs/`, `node_modules/`) are rebuilt by `npm ci` and `npm run generate`, so they are not needed on GitHub.
+- Added a **▶ Resume here** note at the top of `SCHEDULE.md` and of Open items in this file.
+- Moved the laptop setup from tonight (optional, skipped) to the first task on Tue Oct 27. Scraper (a) needs it.
+- Committed and pushed, then compared GitHub with the local copy.
+- **Found that Joseph had merged pull request #1** into `main` (commit `5a6c3e7`), covering everything up to Turn 8. The branch's three newer commits (Turns 9–11) were not merged.
+- **Brought the branch up to date with `main`.**
+  - Claude first replayed the three commits onto `main` (a rebase). The force push that needs was blocked as destructive, and GitHub was not changed.
+  - Claude kept that rebased copy as a local backup branch (nothing deleted), restarted from the branch as it is on GitHub, merged `main` into it (`5f569f9`), and pushed normally.
+  - The merge changed no files; the branch already had all of `main`'s content.
+- Corrected this entry and Open items, which had first said `main` only had the README.
+
+**Claude's answer (summary):** GitHub is up to date. To continue, you need:
+- `SCHEDULE.md` (resume note and daily plan);
+- `docs/scraper-output.md` (fixture and scraper format);
+- `data/` (answer key and labels);
+- `site/` (generator and server);
+- this log (decisions and open items).
+
+`main` has everything through Turn 8 from pull request #1. Turns 9–11, including `docs/scraper-output.md`, are on `claude/quirky-curie-8j4nye`, which now contains `main`. A second pull request, merged like #1, brings `main` fully up to date.
+
+**Questions Claude asked:** none new. Offered to open that second pull request if Joseph asks.
+
+**Direction and fit:** no new decision. The laptop setup moved one day; it doesn't affect any milestone date.
+
+### Turn 12 — 2026-10-26 21:40 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> is the github up to date?
+
+**What Claude did**
+- Fetched GitHub and compared:
+  - the branch on GitHub matched the local copy (`12bae88`), apart from this turn's log entry;
+  - `main` was still at pull request #1 (`5a6c3e7`), 5 files behind.
+- Asked whether to open a second pull request (C13). Joseph said yes.
+- Checked for a pull request template (none), then opened **pull request #2** from `claude/quirky-curie-8j4nye` into `main`: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2. Its description lists the 5 changed files and says no code changed (7 tests passing).
+- Logged this turn and pushed. The pull request includes this entry automatically.
+
+**Claude's answer (summary):** the branch on GitHub is up to date. `main` will be up to date once Joseph clicks Merge on pull request #2.
+
+**Questions Claude asked:** C13 (open pull request #2?). Answer: yes.
+
+**Direction and fit:** no new decision. Keeping `main` current supports §7 Version control ("keep the project in a Git repository with descriptive commits for each milestone").

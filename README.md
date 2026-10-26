@@ -97,6 +97,8 @@ All storage is plain files (JSON, CSV, and logs). There is no database.
 
 A defense **stops** a scraper when accuracy falls below 10%. Raw accuracy is always reported as well.
 
+What scrapers write, and how the scoring script decides a value is correct, is defined in [`docs/scraper-output.md`](docs/scraper-output.md).
+
 ## Experiment design
 
 - **Grid:** scrapers (a)–(d) on `baseline`, `shuffled`, `honeypot`, and `poisoned`; scraper (e) on `baseline`, `shuffled`, and `poisoned`. That is 19 cells × 3 runs = 57 scraper runs, plus tarpit runs for (a), (b), and (d) if the tarpit is built.
@@ -112,6 +114,7 @@ This layout is a plan and may change during development.
 
 ```
 data/          data list (ground truth for the site and for scoring)
+docs/          specifications, such as the scraper output format
 site/          Node.js page generator, defenses, Express server, request logger
 scrapers/      Python scrapers (a)–(e)
 prompts/       prompt files for (c) and (e)
@@ -179,8 +182,9 @@ Steps to run the scrapers, score the results, and measure user cost will be adde
 
 ### Milestone 1: Oct 21 – Nov 3 (test site and baseline scoring)
 - [x] Data list (6 products × 10 fields, 2 articles × 5 fields)
-- [ ] Page generator (baseline condition)
-- [ ] Express server with request logger and `robots.txt`
+- [x] Page generator (baseline condition)
+- [x] Express server with request logger and `robots.txt`
+- [x] Scraper output format and matching rules ([`docs/scraper-output.md`](docs/scraper-output.md))
 - [ ] Scoring script passes the hand-calculated Test 2
 - [ ] Scraper (a) scores at least 90% on baseline in each of 3 runs
 
