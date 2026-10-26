@@ -113,7 +113,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Get Claude's branch onto `main`:** everything since the README (data list, site, docs, schedule and this log) is on `claude/quirky-curie-8j4nye`. `main` only has the README Joseph uploaded. Planned for Tue Nov 3: upload by hand or merge on GitHub.
+- **Bring `main` up to date:** Joseph merged pull request #1 (work up to Turn 8). Turns 9–11 are on `claude/quirky-curie-8j4nye`, which already contains `main`. They include `docs/scraper-output.md`, which the Test 2 fixture needs. They need a second pull request, opened and merged like #1.
 
 ---
 
@@ -406,17 +406,23 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 - Checked the working tree. The only uncommitted change was this turn's log entry. The ignored folders (`conditions/`, `logs/`, `node_modules/`) are rebuilt by `npm ci` and `npm run generate`, so they are not needed on GitHub.
 - Added a **▶ Resume here** note at the top of `SCHEDULE.md` and of Open items in this file.
 - Moved the laptop setup from tonight (optional, skipped) to the first task on Tue Oct 27. Scraper (a) needs it.
-- Committed and pushed, then confirmed the GitHub branch matches the local copy file for file.
+- Committed and pushed, then compared GitHub with the local copy.
+- **Found that Joseph had merged pull request #1** into `main` (commit `5a6c3e7`), covering everything up to Turn 8. The branch's three newer commits (Turns 9–11) were not merged.
+- **Brought the branch up to date with `main`.**
+  - Claude first replayed the three commits onto `main` (a rebase). The force push that needs was blocked as destructive, and GitHub was not changed.
+  - Claude kept that rebased copy as a local backup branch (nothing deleted), restarted from the branch as it is on GitHub, merged `main` into it (`5f569f9`), and pushed normally.
+  - The merge changed no files; the branch already had all of `main`'s content.
+- Corrected this entry and Open items, which had first said `main` only had the README.
 
-**Claude's answer (summary):** GitHub is up to date on branch `claude/quirky-curie-8j4nye`. To continue, you need:
+**Claude's answer (summary):** GitHub is up to date. To continue, you need:
 - `SCHEDULE.md` (resume note and daily plan);
 - `docs/scraper-output.md` (fixture and scraper format);
 - `data/` (answer key and labels);
 - `site/` (generator and server);
 - this log (decisions and open items).
 
-`main` still has only the README Joseph uploaded. Merging the branch, by pull request or upload, would bring `main` up to date. That is planned for Nov 3, or sooner if Joseph asks.
+`main` has everything through Turn 8 from pull request #1. Turns 9–11, including `docs/scraper-output.md`, are on `claude/quirky-curie-8j4nye`, which now contains `main`. A second pull request, merged like #1, brings `main` fully up to date.
 
-**Questions Claude asked:** none new. Offered to open a pull request so `main` matches the branch (needs Joseph's go-ahead).
+**Questions Claude asked:** none new. Offered to open that second pull request if Joseph asks.
 
 **Direction and fit:** no new decision. The laptop setup moved one day; it doesn't affect any milestone date.
