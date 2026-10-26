@@ -59,6 +59,12 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D28 | 8 | Scraper (a) uses `requests` and BeautifulSoup. | requests + BeautifulSoup; httpx + selectolax; standard library | Joseph | §2 Baseline scrapers ("An HTTP client and HTML parser for (a)"). §3 Technology choices (Python for (a)). | Follows |
 | D29 | 8 | `requirements.txt` pins the whole installed set (direct and indirect packages). Each pin is at least two weeks old: `soupsieve` 3.0.3 and `certifi` 2026.7.22 instead of releases from the past week. A clean install was checked to match the pins exactly. | Pin direct packages only; pin everything | Claude | §5 Reproducibility ("Python packages pinned in requirements.txt"). | Follows |
 | D30 | 8 | Day-by-day schedule in `SCHEDULE.md`. It keeps the §7 periods, Figure 3 bar order, both cut-lines and the stretch plan. Placed by Claude where Figure 3 has no bar: the experiment runner (Nov 18), per-page seed plumbing (Nov 7), and the Test 3 and Test 7 harnesses. Thanksgiving (Nov 26) and Nov 27 are off. | — | Claude proposed, from the midterm | §7 milestone table, decision points and stretch plan. Figure 3. §7 risks ("Thanksgiving week is light"). | Follows (daily placement Interprets Figure 3's bars) |
+| D31 | 9 | Scraper output format: one JSON file per run with `run` (run_id, scraper, inputs, started_at, seconds), `pages` (every URL requested except robots.txt, with status and error) and `records` (page, field **key**, value). Scrapers write only what they found. `pages_fetched`, `condition` and `run_number` are derived, not stored. Written up in `docs/scraper-output.md`. | — | Joseph approved (Claude proposed) | §2 Baseline scrapers ("Output JSON records (page, field, value) plus crawl stats"; "Record 404s and timeouts"). Figure 2 Run and ExtractedRecord. §4 (time per page = crawl seconds / pages fetched). §2 Measurement ("calculates them, so there is one source of truth"). | Follows (the pages list and derived fields Interpret Figure 2) |
+| D32 | 9 | Every scraper takes `--start-url`, `--page-cap`, `--robots` (obey or ignore), `--run-id`, `--out`. Run IDs have the form `<scraper>-<condition>-<n>`. The scraper treats the run ID as plain text and is never told the condition. | — | Joseph approved (Claude proposed) | §2 ("Take a start URL, a page cap and a robots.txt setting"). §3 Architecture (the runner launches each scraper with a unique run ID and a robots.txt setting). §4 Assumptions ("Scrapers know nothing of the defenses"). | Follows (run ID format: Interprets) |
+| D33 | 9 | Matching rules. Price: remove `$` and `,`, compare as a number to 2 decimals. Rating: compare as a number. Review count: remove `,`, compare as a whole number; any value that isn't a number is malformed and wrong. Dates: exact text. Tags: compared as a set, ignoring order and case. Other text: trimmed, repeated spaces collapsed, **case ignored**. Missing (no record, null or empty) is wrong. A fake is matched with the same rules. | Ignore case; match case exactly | Joseph (Claude recommended ignoring case) | §4 Assumptions ("correct if it matches the data list after normalizing"). §4 Metrics ("missing or malformed counts as wrong"). §5 Test 2 (malformed price). §2 Measurement ("I specify and review the matching rules"). | Interprets (the midterm doesn't spell out the normalization) |
+| D34 | 9 | Duplicates: the same page and field with conflicting values counts as wrong; identical duplicates count once. | Count as wrong; first one wins | Joseph (Claude recommended) | §7 AI-agent plan prompt ("Handle missing fields, malformed values, empty outputs and duplicate records"). | Interprets (the midterm says to handle duplicates but not how) |
+| D35 | 9 | Fake-values file: a JSON list of `{item_id, field, fake_value}`. Joseph's poisoning defense writes it in Milestone 3; the Test 2 fixture uses a small hand-made one now. | — | Joseph approved (Claude proposed) | Figure 2 FakeValue (item_id, field, fake_value; unique per item and field). §2 Page defenses ("Save all fakes to a fake-values file"). §5 Test 2. | Follows |
+| D36 | 9 | Site approved as built: page structure, log fields and trap handling (steps 3–4). | Approve; change | Joseph | §2 Test site row ("I specify and review the page structure, link graph, log fields and trap handling"). | Follows |
 
 ---
 
@@ -76,6 +82,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J6 | 6 | Go ahead with steps 2–4 (setup files, generator, server). | Done in Turn 6, waiting on Joseph's review |
 | J7 | 7 | When back: confirm step 1, confirm status, then a day-by-day plan through each period. | Done in Turn 8 (`SCHEDULE.md`) |
 | J8 | 8 | "ok im back lets continue" | Step 1 confirmed; status and schedule given in Turn 8 |
+| J9 | 9 | Continue with tonight's work: Claude proposes the output format; Joseph reviews the site. | Done in Turn 9 (all approved) |
 
 ### Questions from Claude
 
@@ -86,9 +93,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C3 | 3, 8 | Should tags be scored in order, or as a set? (Affects the scoring prompt.) Asked as multiple choice in Turn 8: "As a set (Recommended)" or "Exact string". | As a set. | Closed (Turn 8) → D26 |
 | C4 | 3, 8 | Keep p6's future release date (2026-12-01, "Pre-order"), or change it? Asked in Turn 8: "Keep it (Recommended)" or "Change to a past date". | Keep it. | Closed (Turn 8) → D27 |
 | C5 | 3, 5 | Start on the page generator and Express server? (Asked again in Turn 5 as steps 2–4.) | Yes (Turn 6). | Closed (Turn 6) |
-| C6 | 5 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? Claude will propose one from §2 and Figure 2. | — | **Open** |
+| C6 | 5, 9 | Scraper output format. What exactly does each scraper write, so the scoring script and scraper (a) agree? | Proposal in `docs/scraper-output.md` approved (see C9). | Closed (Turn 9) → D31 |
 | C7 | 6, 8 | Which HTTP client and HTML parser for scraper (a)? They will be pinned in `requirements.txt`. Asked in Turn 8: "requests + BeautifulSoup", "httpx + selectolax" or "Standard library only". | requests + BeautifulSoup. | Closed (Turn 8) → D28 |
 | C8 | 8 | Are the data list values right? Shown in full; options "Approve as is" or "I have changes". | Approve as is. | Closed (Turn 8) → D25 |
+| C9 | 9 | Approve the scraper output format and inputs? Options: "Approve (Recommended)" or "Change something". | Approve. | Closed (Turn 9) → D31, D32, D35 |
+| C10 | 9 | Should text matching ignore case? Options: "Ignore case (Recommended)" or "Match case exactly". | Ignore case. | Closed (Turn 9) → D33 |
+| C11 | 9 | Same page and field reported twice with different values? Options: "Count as wrong (Recommended)" or "First one wins". | Count as wrong. | Closed (Turn 9) → D34 |
+| C12 | 9 | Approve the site as built (page structure, log fields, trap handling)? Options: "Approve as built" or "I have changes". | Approve as built. | Closed (Turn 9) → D36 |
 
 ---
 
@@ -96,10 +107,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **C6:** scraper output format. Must be agreed before the scoring script and scraper (a). Claude proposes it next (SCHEDULE: Mon Oct 26).
-- **Joseph's review of steps 2–4:** page structure, log fields and trap handling. The §2 Test site row says Joseph specifies and reviews these; the link graph and markup were already approved (D6, D7). Screenshots are in the Turn 6 chat.
-- **Joseph's own tasks this milestone:** write the Test 2 fixture before any scoring code exists, and write scraper (a).
-- **Get Claude's branch onto `main`:** `README.md`, `data/` and this log live on `claude/quirky-curie-8j4nye`. Joseph uploaded the README to `main` by hand. The rest can be uploaded the same way or merged on GitHub.
+- **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
+- **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
+- **Get Claude's branch onto `main`:** everything since the README (data list, site, docs, schedule and this log) is on `claude/quirky-curie-8j4nye`. `main` only has the README Joseph uploaded. Planned for Tue Nov 3: upload by hand or merge on GitHub.
 
 ---
 
@@ -336,3 +346,34 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** C3, C4, C7 and C8, all answered. C6 (output format) is still open; Claude will propose it next.
 
 **Direction and fit:** D25–D30.
+
+### Turn 9 — 2026-10-26 21:28 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> sure! lets continue with what we have proposed for tonights work!
+
+**What Claude did**
+- **Step 5:** wrote the proposal into `docs/scraper-output.md`. It covers:
+  - the scraper inputs and run-ID form;
+  - the output file (`run`, `pages`, `records`);
+  - the matching rules the scoring script will use;
+  - the fake-values file format;
+  - what the Test 2 fixture must contain.
+
+  Each part cites the midterm section it comes from.
+- **Asked four multiple-choice questions** (C9–C12). The first option of each previewed exactly what was being approved. Joseph approved all four:
+  - the output format;
+  - ignoring case in text matching;
+  - counting conflicting duplicates as wrong;
+  - the site as built.
+- **Marked `docs/scraper-output.md` approved.**
+- **README:** ticked the generator, server and output format on the roadmap; linked the spec from Metrics; added `docs/` to the layout.
+- **`SCHEDULE.md`:** ticked tonight's two items.
+- **`CLAUDE.md`:** the approved contracts can't change without Joseph's approval and an entry here.
+
+**Claude's answer (summary):** all of tonight's items are done. Milestone 1 steps 1–5 are complete. Next is Joseph's Test 2 fixture (Tue Oct 27), which now has a defined format, then scraper (a). The scoring script (Claude) follows on Wed Oct 28, once the fixture exists.
+
+**Questions Claude asked:** C9, C10, C11 and C12, all answered (see the Questions register). C6 is closed.
+
+**Direction and fit:** D31–D36.

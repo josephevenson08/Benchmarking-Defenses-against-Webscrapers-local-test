@@ -32,3 +32,4 @@ This repository is Joseph Evenson's Blue Track research project. The plan it fol
   Claude may explain concepts and show small standalone examples that are not project code.
 - **Scoring script:** Joseph writes the Test 2 fixture (63 correct, 4 wrong, 3 missing → accuracy 0.90, fake-value rate 2/70) *before* Claude writes any scoring code. Use the prompt from the midterm's AI-agent plan.
 - **Scrapers must never read `data/items.json`.** It is the answer key. They may read `data/fields.json`.
+- **Approved contracts:** the scraper output format, the scraper inputs and the scoring matching rules are in `docs/scraper-output.md`. Joseph approved them in Turn 9. Don't change them without Joseph's approval and a chat-keeper entry.
