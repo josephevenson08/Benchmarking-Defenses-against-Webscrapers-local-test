@@ -87,6 +87,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J11 | 11 | Stop for tonight; resume tomorrow. Make sure GitHub has everything needed to continue and a record of what was done. | Done in Turn 11 (all pushed; resume point added) |
 | J12 | 12 | Is GitHub up to date? | Branch yes; `main` no. Pull request #2 opened at Joseph's request (Turn 12) |
 | J13 | 13 | Pull request #2 merged; stopping until tomorrow. | Confirmed in Turn 13 |
+| J14 | 14 | Back on Tue Oct 27: list all of today's tasks first. | Answered in Turn 14 |
 
 ### Questions from Claude
 
@@ -466,3 +467,27 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 14 — 2026-10-27 16:26 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok im back, lets start on todays work, what needs to be done today first list out all tasks
+
+**What Claude did:** checked GitHub. Nothing new since Turn 13: no fixture yet. The branch is one log commit ahead of `main`, and all 7 tests pass. Listed today's tasks from `SCHEDULE.md` (Tue Oct 27).
+
+**Claude's answer (summary): today's tasks, in order**
+1. **Laptop setup** (Joseph, ~20 min): clone the repo, `npm ci`, `npm test` (7 passing), Python venv, `pip install -r requirements.txt`.
+2. **Test 2 fixture by hand** (Joseph, ~1 hour; step 6). It goes in `scoring/fixtures/test2/` as three files:
+   - `output.json`: a scraper output file in the approved format;
+   - `fakes.json`: the fake-values file;
+   - `expected.md`: the hand calculation (63/70 = 0.90 and 2/70 ≈ 0.029).
+
+   It has to be in the repo before any scoring code exists (§7 verification step 1).
+3. **Start scraper (a)** (Joseph): fetch one page with `requests`; find the label rows with BeautifulSoup. Claude can show small standalone examples, not project code (§2 AI assistance).
+4. **Scoring script** (Claude; scheduled Wed Oct 28): starts as soon as the fixture is in the repo, which could be today.
+5. **Keep the log and GitHub current** (Claude, every turn).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The fixture location `scoring/fixtures/test2/` is a suggestion that follows the README's planned layout (`scoring/`: scoring script and its tests).
