@@ -94,6 +94,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J16 | 16 | For the fixture: am I writing a script or changing the pages? Joseph's plan: one field gone, one null, one empty; 2 wrong values; 1 malformed; 1 "just wrong" such as a price of ``"ZzzA-1`?"``. | Answered in Turn 16 |
 | J17 | 17 | Does this fixture draft fit the criteria? (items.json copied and edited by hand) | Reviewed in Turn 17: two fixes needed, then a format conversion (C14) |
 | J18 | 18 | Revised fixture draft: p4 restored, p1 review_count changed to 1,289. | Checked in Turn 18: now meets Test 2 exactly; fakes and conversion settled (C14, C15) |
+| J19 | 19 | Now that I have the 7 false values, what do I do next? | Answered in Turn 19 (7 steps to build and upload the fixture files) |
 
 ### Questions from Claude
 
@@ -796,3 +797,26 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** C14 (answer: A) and C15 (answer: p3 price + a1 date).
 
 **Direction and fit:** D37, D38.
+
+### Turn 19 — 2026-10-27 19:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what do i need to do nowthat i have these 7 false values?
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary): seven steps to turn the draft into the fixture, by hand**
+1. Make the folder `scoring/fixtures/test2/`.
+2. Create `output.json` from a skeleton: the `run` block (run_id `a-poisoned-1`) and the 10-page `pages` list are the agreed format, copied from `docs/scraper-output.md`.
+3. Fill in `records` from the draft, one line per field, using `name` and `brand` for p1 as the example of the pattern. Skip the ids. Counts: p1 9 lines, p2–p6 10 each, a1 and a2 5 each, so 69. Copy values exactly, including `""` and `null`.
+4. Create `fakes.json` with the 2 fakes Joseph chose (D37).
+5. Write `expected.md` in Joseph's own words: the 7 special fields; 63/70 = 0.90; 2/70 ≈ 0.029.
+6. Check: PowerShell commands to confirm both JSON files are valid and that there are 69 records.
+7. Upload to `main` on GitHub (Add file → Upload files) or paste the files here. Claude then checks only the format and counts, and starts the scoring script. Then Task 3 (scraper (a)).
+
+Claude wrote no records from Joseph's 7 special fields. The only record examples were p1 name and brand, two correct values that just show the pattern. The fixture stays Joseph's (D38).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Follows D37 and D38, and `docs/scraper-output.md` (D31, D35).
