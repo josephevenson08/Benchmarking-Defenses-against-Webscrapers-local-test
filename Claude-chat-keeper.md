@@ -68,6 +68,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D37 | 18 | Test 2 fixture content, designed by Joseph. **Missing:** p1 category (no record), p2 sku (`""`), a2 publish_date (`null`). **Wrong:** p1 price `$89O.99` (malformed), p1 review_count `1,289` (plain wrong, correctly formatted), p3 price `$41.00` (fake), a1 publish_date `2025-05-19` (fake). The other 63 fields are correct. Expected: accuracy 63/70 = 0.90, fake-value rate 2/70 ≈ 0.029. | Fakes: p3 price + a1 date, or another pair | Joseph | §5 Test 2 ("63 correct, 4 wrong and 3 missing … Two of the wrong values equal the page's fake and one is a malformed price"). §7 verification step 1. | Follows |
 | D38 | 18 | Joseph reshapes his draft into the scraper output format himself (option A), by hand or with his own script. Claude doesn't touch the fixture files. | A: Joseph converts; B: Claude converts and Joseph checks | Joseph | §7 AI-agent plan, verification step 1 ("writing the hand-calculated fixture … before reading the agent's code"). CLAUDE.md ("Joseph writes the Test 2 fixture"). | Follows |
 | D39 | 22 | **Changes D38.** At Joseph's request, Claude assembled `scoring/fixtures/test2/output.json` and `fakes.json` from Joseph's own records. Joseph designed all values and special cases (D37). The corrections only restore Joseph's draft: the duplicated p1 block under p6 removed, `p7` renamed to `p6`, a1 tags `cooking` → `cookware`, a2 `"null"` → `null`, and two capitalizations matched to the draft. Formatting fixed: the `page` key, `/articles/` paths, commas, closing brace. Claude verified that the file equals Joseph's draft field for field and that the only differences from the data list are Joseph's 7 cases. **`expected.md` (the hand calculation) is left to Joseph.** No scoring code exists yet. | Joseph fixes it himself; Claude fixes format only; Claude fixes everything | Joseph | §7 verification step 1 ("writing the hand-calculated fixture … before reading the agent's code"). CLAUDE.md ("Joseph writes the Test 2 fixture"). | **Deviates (partly):** the file was assembled by Claude rather than typed by Joseph. The content, the special cases and the expected result stay Joseph's, and the fixture still comes before any scoring code. Joseph must check the file against his notes. |
+| D40 | 30 | **Merge notices.** When the working branch has something Joseph needs on `main` (finished work for the laptop, a passed milestone check, or the end of a session), Claude opens a pull request into `main` and tells Joseph "⚠️ Merge needed" with the link and contents. Joseph reviews it and clicks Merge. Written into `CLAUDE.md`. | Claude opens pull requests; Claude only tells Joseph | Joseph (Claude recommended) | §7 Version control ("keep the project in a Git repository with descriptive commits for each milestone"). | Follows |
+| D41 | 30 | **Branch sync.** Before building on Joseph's files, Claude fetches and merges `origin/main` into the working branch. Merge only; never rebase, force-push or reset. Applied now for pull request #3 (`33a588e`). | Merge `main` in; ask each time | Joseph (Claude recommended) | §7 Version control. Lets Joseph work on `main` from VS Code (Turns 24–27). | Follows |
+| D42 | 38 | **Scoring script:** `scoring/score.py` and 24 tests in `scoring/tests/` (standard library only), written from the midterm's prompt and the approved rules (D31–D35). The Test 2 test reads Joseph's `expected.md` and checks the script against it. Extras: time per page, and an ExtractedRecord CSV export for hand-counting. Honeypot hits are left for Nov 19 (they need the request log). Only scoring files were changed. | — | Claude (delegated task) | §7 AI-agent plan ("Implement the scoring script using the Figure 2 data model. Modify only the scoring files. Handle missing fields, malformed values, empty outputs and duplicate records. Add tests for the hand-calculated example in Test 2"). Figure 2. §4 Metrics. §5 Test 2. | Follows (page-to-item mapping Interprets; see C20) |
 
 ---
 
@@ -102,6 +105,19 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J23 | 23 | "ok so now what do i do" | Answered in Turn 23 |
 | J24 | 24 | Where are `output.json` and `fakes.json` going? | Answered in Turn 24 |
 | J25 | 25 | Can I pull it from GitHub into VS Code? | Answered in Turn 25 (VS Code steps) |
+| J26 | 26 | How do I update my VS Code to have this? | Answered in Turn 26 (terminal steps for both cases) |
+| J27 | 27 | Git error on the laptop: an untracked `scoring/fixtures/test2` would be overwritten by checkout and by pull. | Diagnosed in Turn 27 (move it aside, stay on `main`, pull). Joseph then said "nevermind" (Turn 28). |
+| J28 | 28 | "nevermind" (sent after stopping Claude's next command) | Claude stopped; nothing else was changed |
+| J29 | 29 | What is the `fakes.json` file? | Answered in Turn 29 |
+| J30 | 30 | Let me know when I need to merge on GitHub. | Done in Turn 30: merge-notice rule (D40) and branch-sync rule (D41) in `CLAUDE.md` |
+| J31 | 31 | Pulled `fakes.json` and `output.json`; what now? | Answered in Turn 31: check them, write `expected.md`, push, tell Claude |
+| J32 | 32 | What should be in `expected.md`? | Answered in Turn 32 |
+| J33 | 33 | How exactly do I write `expected.md`? I'm not familiar. | Answered in Turn 33 (step-by-step, with a fill-in template) |
+| J34 | 34 | Walk me through exactly how to do this. | Answered in Turn 34 (Part A: creating the file, step by step; Part B to follow interactively) |
+| J35 | 35 | "i see the template with the blanks now" (Part A done) | Part B started in Turn 35 |
+| J36 | 36 | Joseph's 7 classifications for `expected.md` | Checked in Turn 36: 5 right; rows 3 and 5 swapped |
+| J37 | 37 | Joseph's Calculation section for `expected.md` | Checked in Turn 37: all right except the fake-value rate (0.1 → 2/70 = 0.029) |
+| J38 | 38 | "pushed" (Joseph's `expected.md` on `main`) | Done in Turn 38: scoring script written and tested; pull request #4 opened |
 
 ### Questions from Claude
 
@@ -124,6 +140,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C15 | 18 | Which 2 wrong values are the fakes? Options: "p3 price + a1 date" or "A different pair". | p3 price + a1 date. | Closed (Turn 18) → D37 |
 | C16 | 21, 22 | Should Claude apply only the mechanical format fixes, or does Joseph do everything? | Joseph asked Claude to fix all of it. | Closed (Turn 22) → D39 |
 | C17 | 23 | Has Joseph done Task 1 (laptop setup) yet? Scraper (a) runs on the laptop. | — | **Open** |
+| C18 | 30 | Should Claude open the pull request when a merge is needed? Options: "Yes, open them (Recommended)" or "No, just tell me". | Yes. | Closed (Turn 30) → D40 |
+| C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
+| C20 | 38 | Joseph to review the scoring script's unresolved assumptions (listed in Turn 38), especially #1 (pages mapped from the data list rather than read from the manifest) and #6 (tags given as a JSON list). | — | **Open** |
 
 ---
 
@@ -133,14 +152,15 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **Fixture status (D39):** `output.json` (69 records) and `fakes.json` are in `scoring/fixtures/test2/`. **Joseph still needs to:**
+- **Fixture:** done. `output.json`, `fakes.json` and Joseph's `expected.md` are all on `main` (Turn 38).
+- **Scoring script (D42):** waiting on Joseph's verification, §7 steps 2–5: run the tests, read the code line by line, break it on purpose, and hand-count one real run once scraper (a) exists. Also C20.
   1. check `output.json` against his paper notes;
   2. write `expected.md` (his 7 cases, 63/70 = 0.90, 2/70 ≈ 0.029).
 
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **`main` is up to date** through Turn 12: Joseph merged pull request #2 (`eac0dbe`). New work goes on `claude/quirky-curie-8j4nye`, which restarts from that `main`, and reaches `main` through a new pull request. The Turn 13 entry below is the first such change.
+- **⚠️ Merge needed:** pull request #4 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/4) brings the scoring script to `main` for Joseph's verification (D40).
 
 ---
 
@@ -1121,3 +1141,306 @@ Claude pulls Joseph's push before writing the scoring script.
 **Questions Claude asked:** none new. C17 (laptop setup) is still open.
 
 **Direction and fit:** no new decision. Joseph pushing to the working branch is fine. Claude fetches before every push, so the two sets of changes don't collide.
+
+### Turn 26 — 2026-10-27 19:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how do i update my vs code to have this
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** use the VS Code terminal.
+- **How to tell:** check the Explorer for the project folder (`README.md`, `data`, `site`, `docs`).
+- **Already have it:** `git fetch origin`, `git checkout claude/quirky-curie-8j4nye`, `git pull`. The `scoring` folder then appears, and the bottom-left corner shows the branch.
+- **Don't have it:** `git clone -b claude/quirky-curie-8j4nye <repo URL>`, then File → Open Folder.
+- **Problems covered:** git not installed; local changes would be overwritten; sign-in prompt.
+- **Future updates:** Sync Changes, or `git pull`.
+
+**Questions Claude asked:** which case applies (existing project or nothing yet). Folded into C17 (laptop setup), which is still open.
+
+**Direction and fit:** no new decision.
+
+### Turn 27 — 2026-10-27 19:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> error: The following untracked working tree files would be overwritten by checkout:
+>         scoring/fixtures/test2
+>         scoring/fixtures/test2
+> Please move or remove them before you switch branches.
+> Aborting
+> Updating eac0dbe..dc88eab
+> error: The following untracked working tree files would be overwritten by merge:
+>         scoring/fixtures/test2
+>         scoring/fixtures/test2
+> Please move or remove them before you merge.
+> Aborting
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did**
+- Fetched GitHub. The commit in the error (`dc88eab`) is **Joseph's merge of pull request #3** into `main`, which already contains both fixture files.
+- **Diagnosed the error:** an untracked `scoring/fixtures/test2` on the laptop blocks the incoming files. It is listed twice, which suggests a *file* named `test2` (made with New File instead of New Folder) blocking both `output.json` and `fakes.json`.
+
+**Claude's answer (summary)**
+- No branch switch is needed: stay on `main`.
+- **Steps:**
+  1. `Get-Item` to see whether it's a file or a folder.
+  2. `Move-Item` it to `..\test2-backup`, outside the project (nothing deleted).
+  3. `git checkout main`, then `git pull`.
+  4. `dir` to confirm both files.
+- **Then:** create `expected.md` in VS Code, commit and Sync to `main`.
+- **Heads-up:** the project is inside OneDrive, which can lock files and cause git errors. Suggested moving it to a plain folder later.
+
+**Then:** Claude tried one command to merge `main` into its branch and log this turn. **Joseph stopped it** before it ran (see Turn 28).
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision.
+
+### Turn 28 — 2026-10-27 19:44 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> nevermind
+
+**What Claude did:** stopped as asked. The stopped command (merge `main` into the branch, log Turn 27, push) **did not run**. Claude made no further changes and told Joseph so. When the stop check then flagged the unfilled log entries, Claude filled in only Turns 27 and 28 of this log and committed and pushed this file alone. No merge; the branch was not otherwise touched.
+
+**Claude's answer (summary):** confirmed that nothing had changed on the laptop or GitHub, and asked what Joseph wants to do next.
+
+**Questions Claude asked:** what to do next (open).
+
+**Direction and fit:** no new decision. Merging pull request #3 into the working branch is on hold until Joseph says to go ahead.
+
+### Turn 29 — 2026-10-27 19:45 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> wait so what is the fakes.json file
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **What it is:** `fakes.json` lists the decoy values for live DOM poisoning (§2). A poisoned page first shows a fake value, and a script swaps in the real one after about 2 seconds. A scraper that reads early (such as (a)) is fooled; one that waits (such as (d)) gets the real value.
+- **Why scoring needs it:** to tell "fooled" (the value equals the fake) from "just wrong". That is the fake-value rate and §4's "Blocked vs fooled" check.
+- **In Test 2:** Joseph's 2 fakes are p3 price (`$41.00` vs the real `$47.00`) and a1 publish_date (`2025-05-19` vs the real `2025-05-14`). Both appear in `output.json` and `fakes.json`, so they count as wrong *and* fake, giving 2/70. The other two wrong values (`$89O.99`, `1,289`) are just wrong.
+- **Later:** Joseph's poisoning defense (Milestone 3) produces a full `fakes.json` with a fake for every field.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Explains D35 and D37 with §2 (Page defenses: poisoning), §4 (Metrics: fake-value rate) and §5 (Test 2).
+
+### Turn 30 — 2026-10-27 19:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> you also need to let me know when i need to go merge the github as well
+
+**What Claude did**
+- Asked two questions (C18, C19). Joseph chose that Claude opens the pull requests, and that Claude merges `main` into its branch.
+- **Merged pull request #3** (`main`, `dc88eab`) into the working branch (`33a588e`). This was the step Joseph had stopped in Turn 28, now approved. Nothing was lost; the branch now contains all of `main`.
+- **Added a "Keep GitHub in sync" section to `CLAUDE.md`** with both rules, so future sessions follow them.
+- Checked the merge status: `main` already has everything Joseph needs; the branch differs only by the log and `CLAUDE.md`.
+
+**Claude's answer (summary)**
+- From now on Claude says **"⚠️ Merge needed"** with a pull request link whenever `main` needs something: finished work Joseph will use, a passed milestone check, or the end of a session.
+- Claude merges Joseph's `main` changes into its branch before building on them.
+- **Right now no merge is needed.** The next one is expected when the scoring script is done, or at the end of today.
+
+**Questions Claude asked:** C18 (yes), C19 (yes).
+
+**Direction and fit:** D40, D41.
+
+### Turn 31 — 2026-10-27 19:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what do i do now that i pulled the fakes and output
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary): the one remaining fixture step is `expected.md`**
+1. Use Ctrl+F in `output.json` to confirm the 7 special values.
+2. Create `expected.md` from a template. Claude filled in only the first row (p1 category, missing) as an example; the other 6 rows and all the calculation blanks are Joseph's.
+3. Commit and Sync to `main` from VS Code.
+4. Tell Claude "pushed". Claude merges `main` into the branch (D41), writes the scoring script, and gives a "⚠️ Merge needed" notice when it's done (D40).
+
+Meanwhile, Joseph can start Task 3 (scraper (a)).
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Keeps the hand calculation with Joseph (§7 verification step 1, D39) and applies D40/D41.
+
+### Turn 32 — 2026-10-27 19:49 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what should be in the expected.md?
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary)**
+- **Purpose:** `expected.md` is Joseph's answer key, written before any scoring code; the scoring script's test must reproduce it (§7 verification step 1).
+- **Part 1:** a table of the 7 special fields with columns Page, Field, Value in output.json, Real value and Counts as. Claude listed which 7 page/field pairs go in it (as verified in Turn 22). Joseph fills in the values and classifications from his notes.
+- **Part 2:** the calculation as blanks: missing, wrong (with fakes), correct = 70 − missing − wrong, accuracy and fake-value rate. Claude noted that a fake also counts as wrong, and that §5 Test 2 says the results should be 0.90 and 0.029, so Joseph can check his own counts.
+- **Then:** commit and Sync to `main`, and tell Claude "pushed".
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Claude gave structure and guidance but didn't fill in the classifications or numbers, so the hand calculation stays Joseph's (§7 verification step 1, D39).
+
+### Turn 33 — 2026-10-27 19:50 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how exactly do i write it? im not familar
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary): six steps in VS Code**
+1. New File `expected.md` in `scoring/fixtures/test2`.
+2. Paste a Markdown template. Claude filled in only facts already checked in Turn 22: the 7 page/field pairs, the value in `output.json` and the real value from `data/items.json`.
+3. Joseph fills in the **Counts as** column using four rules in order: no value → missing; matches `fakes.json` → fake; a number field that isn't a number → malformed; otherwise → plain wrong.
+4. Joseph fills in the **calculation** blanks. Fakes, malformed and plain wrong all count as wrong; the check is 0.90 and 0.029, as stated in §5 Test 2.
+5. Save and preview (Ctrl+Shift+V), with a one-line explanation of Markdown.
+6. Commit and Sync to `main`, then tell Claude "pushed".
+
+The template doesn't state the correct count ("All other fields … match"), so Joseph's arithmetic isn't pre-filled.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. The facts were filled in to remove formatting friction; the classification and the calculation stay Joseph's (§7 verification step 1, D39).
+
+### Turn 34 — 2026-10-27 19:52 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> walk me through exactly how to do this
+
+**What Claude did:** answered in chat. No files changed besides this log. Switched to a one-step-at-a-time walkthrough.
+
+**Claude's answer (summary)**
+- **Part A, click by click in VS Code:**
+  1. Open the project folder (with the full laptop path).
+  2. Expand `scoring` → `fixtures` → `test2`.
+  3. Right-click → New File → `expected.md`.
+  4. Copy the template from Turn 33 into it and save.
+
+  Joseph reports "done".
+- **Part B, next:** fill in the blanks together, row by row. Claude shows a row and the four rules; Joseph names the category, and Claude confirms. Then the counting together, then commit and Sync.
+
+**Questions Claude asked:** waiting for Joseph's "done" on Part A.
+
+**Direction and fit:** no new decision. In Part B Joseph makes each classification and Claude only confirms, so the hand calculation stays Joseph's (§7 verification step 1, D39).
+
+### Turn 35 — 2026-10-27 19:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i see the template with the blanks now
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** Part B, step 1.
+- Showed the four classification rules in order (missing → fake → malformed → plain wrong).
+- Listed the 7 rows with their output and real values, and asked Joseph to reply with a category for each.
+- Gave one hint (row 2: is the character after `89` a zero or the letter O?) without stating any answer.
+
+Claude will confirm Joseph's answers before he types them in.
+
+**Questions Claude asked:** Joseph's 7 classifications (waiting).
+
+**Direction and fit:** no new decision. Joseph makes the classifications (§7 verification step 1, D39).
+
+### Turn 36 — 2026-10-27 19:58 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ## The 7 special fields
+>
+> | Page | Field | Value in output.json | Real value | Counts as |
+> |---|---|---|---|---|
+> | /products/p1 | category | (no record) | Headphones | missing |
+> | /products/p1 | price | $89O.99 | $89.99 | malformed |
+> | /products/p1 | review_count | 1,289 | 1,284 |  fake |
+> | /products/p2 | sku | "" (empty) | CV-LT-0317 | missing |
+> | /products/p3 | price | $41.00 | $47.00 | plain wrong |
+> | /articles/a1 | publish_date | 2025-05-19 | 2025-05-14 | fake |
+> | /articles/a2 | publish_date | null | 2025-08-02 | missing |
+
+**What Claude did:** checked Joseph's classifications against the four rules and `fakes.json`. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **Correct (5 of 7):** rows 1, 4 and 7 missing; row 2 malformed; row 6 fake.
+- **Rows 3 and 5 swapped.** p1 review_count `1,289` isn't in `fakes.json`, so it is plain wrong. p3 price `$41.00` is in `fakes.json`, so it is fake. Claude explained each through rules 2–4.
+- Joseph corrects the two rows himself.
+- **Next:** Joseph fills in the Calculation section (missing, wrong with fakes/malformed/plain wrong, correct, accuracy, fake-value rate) and replies with it for checking. The expected result is 0.90 and 0.029.
+
+**Questions Claude asked:** Joseph's filled-in calculation (waiting).
+
+**Direction and fit:** no new decision. Classifications follow the approved rules (D33) and Joseph's fakes (D37). The arithmetic stays Joseph's (§7 verification step 1).
+
+### Turn 37 — 2026-10-27 20:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ## Calculation
+>
+> - Total scored fields: 70
+> - Missing: 3
+> - Wrong: 4 (fakes: 2, malformed: 1, plain wrong: 1)
+> - Correct = 70 − missing − wrong = 63
+> - **Accuracy** = Correct / 70 = 0.9
+> - **Fake-value rate** = fakes / 70 = 0.1
+
+**What Claude did:** checked Joseph's calculation. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **Correct:** missing 3; wrong 4 (2 fakes, 1 malformed, 1 plain wrong); correct 63; accuracy 0.9.
+- **Fake-value rate:** Joseph wrote 0.1. It is fakes ÷ 70 = 2/70 = 0.0286 ≈ 0.029. The 0.1 likely came from 7/70, counting all 7 special rows.
+- **Suggestion:** show the numbers in each formula line, so the arithmetic can be followed.
+- **Last steps:** fix the line, save, commit and Sync, then tell Claude "pushed".
+
+**Questions Claude asked:** none new; waiting for "pushed".
+
+**Direction and fit:** no new decision. Joseph's hand calculation now matches §5 Test 2 (0.90 and 0.029) once the one line is corrected.
+
+### Turn 38 — 2026-10-27 20:04 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> pushed
+
+**What Claude did**
+- Fetched `main` (Joseph's commit `f0d93eb`, "Add test 2 expected result") and merged it into the branch (D41). Read `expected.md`: the 7 classifications are correct; 63/70 = 0.90; 2/70 = 0.029. **The fixture and the hand calculation existed before any scoring code** (§7 verification step 1).
+- **Wrote `scoring/score.py`** from the midterm's prompt and D31–D35:
+  - **Normalization:** prices are rounded to cents; ratings are compared as numbers; review counts must be whole numbers; dates are exact text; tags are compared as a case-insensitive set; other text has spaces collapsed and case ignored.
+  - **Statuses:** correct, fake, malformed, conflict, plain wrong and missing.
+  - **Other features:** fake-values validation, time per page, a summary or JSON output, and an ExtractedRecord CSV export.
+- **Wrote `scoring/tests/test_score.py`**, 24 tests:
+  - Test 2 checked against Joseph's `expected.md` numbers, the counts, all 7 special fields, and run details;
+  - the matching rules;
+  - missing in three forms, empty outputs (including an empty file), identical and conflicting duplicates, unknown pages and fields, page spellings, no fakes file, time per page;
+  - fakes-file validation, run IDs, and the command line.
+- **First run:** 23 passed and 1 had an error in the test itself (a missing `unittest.mock` import), fixed with `redirect_stderr`. Then 24/24 passed, including with ResourceWarnings treated as errors.
+- **Ran the command line on the fixture:** 63/70 = 0.900 and 2/70 = 0.029. Without the fakes file: 0 fakes, 3 plain wrong. `npm test` still passes 7.
+- Committed (`1e7be2a`), pushed, and **opened pull request #4**: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/4
+- Did **not** change README or SCHEDULE, because the prompt says "Modify only the scoring files". Usage notes go in after Joseph's verification.
+
+**Unresolved assumptions (as the midterm's prompt asks):**
+1. **Pages are mapped to items from the data list** (`/products/<id>`, `/articles/<id>`), the same scheme the generator uses for every condition. The approved doc says "through the condition's manifest", but manifests are generated and not committed, and the poisoned one doesn't exist yet. The result is the same; Joseph to confirm, and the doc wording updated if so.
+2. "Compare to 2 decimals" for prices is implemented as rounding to cents, so `$89.991` counts as correct. The alternative is exact equality.
+3. Numbers can't be negative, use only `$` as a currency sign, and can't have spaces inside them (`1 284` is malformed). A decimal comma (`4,5`) is malformed.
+4. A review count of `1284.0` counts as a whole number.
+5. A duplicate that is missing (`null` or empty) doesn't cause a conflict; the real value is used.
+6. Tags given as a **JSON list** (which an LLM scraper might produce) are turned into text and won't match. Should the scorer accept lists for tags?
+7. Conflicting duplicates count as wrong but never as fake, even if one value equals the fake.
+8. An empty file scores 0 (the scraper found nothing); invalid JSON is an error (exit code 1) rather than a 0 score.
+9. A run ID that doesn't follow `<scraper>-<condition>-<n>` leaves the condition and run number blank, without an error.
+10. Honeypot hits (from the request log) are not implemented yet; scheduled for Nov 19.
+
+**Claude's answer (summary):** the scoring script reproduces Joseph's hand calculation exactly. ⚠️ Merge needed: pull request #4. Joseph's verification (§7 steps 2–5) comes next, and the assumptions need his review (C20).
+
+**Questions Claude asked:** C20 (review the assumptions).
+
+**Direction and fit:** D42.
