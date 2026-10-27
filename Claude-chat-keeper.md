@@ -115,6 +115,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J34 | 34 | Walk me through exactly how to do this. | Answered in Turn 34 (Part A: creating the file, step by step; Part B to follow interactively) |
 | J35 | 35 | "i see the template with the blanks now" (Part A done) | Part B started in Turn 35 |
 | J36 | 36 | Joseph's 7 classifications for `expected.md` | Checked in Turn 36: 5 right; rows 3 and 5 swapped |
+| J37 | 37 | Joseph's Calculation section for `expected.md` | Checked in Turn 37: all right except the fake-value rate (0.1 → 2/70 = 0.029) |
 
 ### Questions from Claude
 
@@ -1374,3 +1375,28 @@ Claude will confirm Joseph's answers before he types them in.
 **Questions Claude asked:** Joseph's filled-in calculation (waiting).
 
 **Direction and fit:** no new decision. Classifications follow the approved rules (D33) and Joseph's fakes (D37). The arithmetic stays Joseph's (§7 verification step 1).
+
+### Turn 37 — 2026-10-27 20:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ## Calculation
+>
+> - Total scored fields: 70
+> - Missing: 3
+> - Wrong: 4 (fakes: 2, malformed: 1, plain wrong: 1)
+> - Correct = 70 − missing − wrong = 63
+> - **Accuracy** = Correct / 70 = 0.9
+> - **Fake-value rate** = fakes / 70 = 0.1
+
+**What Claude did:** checked Joseph's calculation. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **Correct:** missing 3; wrong 4 (2 fakes, 1 malformed, 1 plain wrong); correct 63; accuracy 0.9.
+- **Fake-value rate:** Joseph wrote 0.1. It is fakes ÷ 70 = 2/70 = 0.0286 ≈ 0.029. The 0.1 likely came from 7/70, counting all 7 special rows.
+- **Suggestion:** show the numbers in each formula line, so the arithmetic can be followed.
+- **Last steps:** fix the line, save, commit and Sync, then tell Claude "pushed".
+
+**Questions Claude asked:** none new; waiting for "pushed".
+
+**Direction and fit:** no new decision. Joseph's hand calculation now matches §5 Test 2 (0.90 and 0.029) once the one line is corrected.
