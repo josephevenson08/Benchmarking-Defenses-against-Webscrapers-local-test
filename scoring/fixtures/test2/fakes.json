@@ -1,0 +1,4 @@
+[
+  {"item_id": "p3", "field": "price", "fake_value": "$41.00"},
+  {"item_id": "a1", "field": "publish_date", "fake_value": "2025-05-19"}
+]
