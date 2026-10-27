@@ -88,6 +88,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J12 | 12 | Is GitHub up to date? | Branch yes; `main` no. Pull request #2 opened at Joseph's request (Turn 12) |
 | J13 | 13 | Pull request #2 merged; stopping until tomorrow. | Confirmed in Turn 13 |
 | J14 | 14 | Back on Tue Oct 27: list all of today's tasks first. | Answered in Turn 14 |
+| J15 | 15 | Walk me through what I need to do today, task by task. | Answered in Turn 15 (step-by-step walkthrough) |
 
 ### Questions from Claude
 
@@ -491,3 +492,25 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The fixture location `scoring/fixtures/test2/` is a suggestion that follows the README's planned layout (`scoring/`: scoring script and its tests).
+
+### Turn 15 — 2026-10-27 16:29 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> walk me through what i need to do, what are the tasks
+
+**What Claude did:** wrote a step-by-step walkthrough of today's three tasks, for Joseph to follow on the laptop. No files changed besides this log.
+
+**Claude's answer (summary)**
+1. **Laptop setup:** check that Node 20+, Python 3 and git are installed; clone the repo; `npm ci`; generate; `npm test` (7 passing); serve and open the site in a browser; create a Python venv; `pip install -r requirements.txt`; check the imports. Includes the PowerShell fix if venv activation is blocked.
+2. **Test 2 fixture (Joseph's design):** plan on paper which fields are wrong, fake, malformed and missing, then write the three files in `scoring/fixtures/test2/`.
+   - Suggested: run ID `a-poisoned-1`, since fakes exist only on the poisoned site.
+   - Suggested: spread the cases across pages and field types.
+   - Suggested: show the 3 missing fields in the three forms the rules allow (no record, `null`, empty text).
+   - `fakes.json` only needs the 2 fakes.
+   - Check the JSON with `python -m json.tool`, then upload or paste it.
+3. **Start scraper (a) (Joseph's code):** run the site in one terminal; in a second terminal with the venv active, fetch `/products/p1` with a `run=` User-Agent, parse it with BeautifulSoup, print the 10 label/value pairs, and confirm the run ID in `logs/requests.jsonl`. Reminders: labels come from `data/fields.json`, never `items.json`. Claude offered a small standalone example on request.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The fixture suggestions (run ID, three forms of missing, only 2 fakes needed) are Joseph's to accept. They follow `docs/scraper-output.md` and §5 Test 2. The scraper (a) walkthrough stays within §2's split (Joseph writes (a); Claude only explains).
