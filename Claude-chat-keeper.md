@@ -102,6 +102,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J23 | 23 | "ok so now what do i do" | Answered in Turn 23 |
 | J24 | 24 | Where are `output.json` and `fakes.json` going? | Answered in Turn 24 |
 | J25 | 25 | Can I pull it from GitHub into VS Code? | Answered in Turn 25 (VS Code steps) |
+| J26 | 26 | How do I update my VS Code to have this? | Answered in Turn 26 (terminal steps for both cases) |
 
 ### Questions from Claude
 
@@ -1121,3 +1122,22 @@ Claude pulls Joseph's push before writing the scoring script.
 **Questions Claude asked:** none new. C17 (laptop setup) is still open.
 
 **Direction and fit:** no new decision. Joseph pushing to the working branch is fine. Claude fetches before every push, so the two sets of changes don't collide.
+
+### Turn 26 — 2026-10-27 19:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how do i update my vs code to have this
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** use the VS Code terminal.
+- **How to tell:** check the Explorer for the project folder (`README.md`, `data`, `site`, `docs`).
+- **Already have it:** `git fetch origin`, `git checkout claude/quirky-curie-8j4nye`, `git pull`. The `scoring` folder then appears, and the bottom-left corner shows the branch.
+- **Don't have it:** `git clone -b claude/quirky-curie-8j4nye <repo URL>`, then File → Open Folder.
+- **Problems covered:** git not installed; local changes would be overwritten; sign-in prompt.
+- **Future updates:** Sync Changes, or `git pull`.
+
+**Questions Claude asked:** which case applies (existing project or nothing yet). Folded into C17 (laptop setup), which is still open.
+
+**Direction and fit:** no new decision.
