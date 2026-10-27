@@ -99,6 +99,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J20 | 20 | Is my partial `output.json` correct so far? (run, pages, and records for p1–p2) | Reviewed in Turn 20: 3 fixes |
 | J21 | 21 | Full `output.json` draft for review. | Reviewed in Turn 21: 3 content mistakes, 4 format problems |
 | J22 | 22 | "give me the fix for all of it, in the test2 file" | Done in Turn 22: `output.json` and `fakes.json` written and verified; `expected.md` left to Joseph |
+| J23 | 23 | "ok so now what do i do" | Answered in Turn 23 |
 
 ### Questions from Claude
 
@@ -120,6 +121,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C14 | 17, 18 | Who converts the fixture draft into the approved scraper output format? Options: "A: I'll do it" or "B: Claude converts it". | A: Joseph converts it. | Closed (Turn 18) → D38 |
 | C15 | 18 | Which 2 wrong values are the fakes? Options: "p3 price + a1 date" or "A different pair". | p3 price + a1 date. | Closed (Turn 18) → D37 |
 | C16 | 21, 22 | Should Claude apply only the mechanical format fixes, or does Joseph do everything? | Joseph asked Claude to fix all of it. | Closed (Turn 22) → D39 |
+| C17 | 23 | Has Joseph done Task 1 (laptop setup) yet? Scraper (a) runs on the laptop. | — | **Open** |
 
 ---
 
@@ -1060,3 +1062,20 @@ Claude wrote no records from Joseph's 7 special fields. The only record examples
 **Questions Claude asked:** none new. C16 is closed by Joseph's request.
 
 **Direction and fit:** D39 (Deviates partly from D38; see the register).
+
+### Turn 23 — 2026-10-27 19:38 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so now what do i do
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary): next steps**
+1. **Joseph checks** `output.json` against his paper notes (the 7 special fields listed).
+2. **Joseph writes `expected.md` in his own words**, from a fill-in template with blanks: a 7-row table of the special fields, and the calculation lines. Claude left every value blank, so the hand calculation stays Joseph's (§7 verification step 1).
+3. **Then the work splits:** Claude writes the scoring script from the midterm's prompt; Joseph starts scraper (a), after Task 1 (laptop setup) if it isn't done.
+
+**Questions Claude asked:** C17 (has the laptop setup been done?).
+
+**Direction and fit:** no new decision. Follows D37 and D39, and the §7 verification plan.
