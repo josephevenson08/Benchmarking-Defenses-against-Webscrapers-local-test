@@ -96,6 +96,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J18 | 18 | Revised fixture draft: p4 restored, p1 review_count changed to 1,289. | Checked in Turn 18: now meets Test 2 exactly; fakes and conversion settled (C14, C15) |
 | J19 | 19 | Now that I have the 7 false values, what do I do next? | Answered in Turn 19 (7 steps to build and upload the fixture files) |
 | J20 | 20 | Is my partial `output.json` correct so far? (run, pages, and records for p1–p2) | Reviewed in Turn 20: 3 fixes |
+| J21 | 21 | Full `output.json` draft for review. | Reviewed in Turn 21: 3 content mistakes, 4 format problems |
 
 ### Questions from Claude
 
@@ -116,6 +117,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C13 | 12 | Open pull request #2 so `main` gets Turns 9–12? Options: "Yes, open PR #2" or "No, leave main for now". | Yes. | Closed (Turn 12): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2 |
 | C14 | 17, 18 | Who converts the fixture draft into the approved scraper output format? Options: "A: I'll do it" or "B: Claude converts it". | A: Joseph converts it. | Closed (Turn 18) → D38 |
 | C15 | 18 | Which 2 wrong values are the fakes? Options: "p3 price + a1 date" or "A different pair". | p3 price + a1 date. | Closed (Turn 18) → D37 |
+| C16 | 21 | Should Claude apply only the mechanical format fixes to the fixture (record key `page`, `/articles/` paths, commas, closing bracket) while Joseph makes the content fixes? Or does Joseph do everything? | — | **Open** |
 
 ---
 
@@ -126,6 +128,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
 - **Fixture (Joseph, D37/D38):** the draft content is final. Joseph reshapes it into `scoring/fixtures/test2/output.json` (69 records) and writes `fakes.json` (2 entries) and `expected.md`, then uploads them. Claude then checks only the format and counts, and starts the scoring script.
+- **C16:** format fixes to the fixture: Claude (mechanical only, disclosed here) or Joseph.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
 - **`main` is up to date** through Turn 12: Joseph merged pull request #2 (`eac0dbe`). New work goes on `claude/quirky-curie-8j4nye`, which restarts from that `main`, and reaches `main` through a new pull request. The Turn 13 entry below is the first such change.
@@ -883,3 +886,140 @@ Claude wrote no records from Joseph's 7 special fields. The only record examples
 **Questions Claude asked:** whether to fix `"Low Stock"` or keep it as a deliberate case check (Joseph to decide while finishing the file).
 
 **Direction and fit:** no new decision. Applies `docs/scraper-output.md` (D31) and D33. The fixture remains Joseph's (D38).
+
+### Turn 21 — 2026-10-27 19:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "run": {
+>     "run_id": "a-poisoned-1",
+>     "scraper": "a",
+>     "start_url": "http://localhost:3000/",
+>     "page_cap": 15,
+>     "obey_robots_txt": true,
+>     "started_at": "2026-10-27T12:00:00Z",
+>     "seconds": 1.0
+>   },
+>   "pages": [
+>     { "path": "/", "status": 200, "error": null },
+>     { "path": "/products/", "status": 200, "error": null },
+>     { "path": "/products/p1", "status": 200, "error": null },
+>     { "path": "/products/p2", "status": 200, "error": null },
+>     { "path": "/products/p3", "status": 200, "error": null },
+>     { "path": "/products/p4", "status": 200, "error": null },
+>     { "path": "/products/p5", "status": 200, "error": null },
+>     { "path": "/products/p6", "status": 200, "error": null },
+>     { "path": "/articles/a1", "status": 200, "error": null },
+>     { "path": "/articles/a2", "status": 200, "error": null }
+>   ],
+>   "records": [
+>     { "pages": "/products/p1","field": "name", "value": "Larkfield Studio Headphones" }
+>     { "pages": "/products/p1","field": "brand", "value": "Larkfield" },
+>     { "pages": "/products/p1","field": "price", "value": "$89O.99" },
+>     { "pages": "/products/p1","field": "sku", "value": "LF-HP-2041" },
+>     { "pages": "/products/p1","field": "rating", "value": "4.5" },
+>     { "pages": "/products/p1","field": "review_count", "value": "1,289" },
+>     { "pages": "/products/p1","field": "availability", "value": "In stock" },
+>     { "pages": "/products/p1","field": "release_date", "value": "2024-09-12" },
+>     { "pages": "/products/p1","field": "description", "value": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable." }
+>
+>     { "pages": "/products/p2","field": "name", "value": "Corvane Desk Lamp" }
+>     { "pages": "/products/p2","field": "brand", "value": "Corvane" },
+>     { "pages": "/products/p2","field": "category", "value": "Lighting" },
+>     { "pages": "/products/p2","field": "price", "value": "$34.50" },
+>     { "pages": "/products/p2","field": "sku", "value": "" },
+>     { "pages": "/products/p2","field": "rating", "value": "4.2" },
+>     { "pages": "/products/p2","field": "review_count", "value": "356" },
+>     { "pages": "/products/p2","field": "availability", "value": "Low Stock" },
+>     { "pages": "/products/p2","field": "release_date", "value": "2023-11-03" },
+>     { "pages": "/products/p2","field": "description", "value": "Adjustable LED lamp with three color temperatures and a weighted base." }
+>
+>     { "pages": "/products/p3","field": "name", "value": "Brimvale Pour-Over Kettle" }
+>     { "pages": "/products/p3","field": "brand", "value": "Brimvale" },
+>     { "pages": "/products/p3","field": "category", "value": "Kitchen" },
+>     { "pages": "/products/p3","field": "price", "value": "$41.00" },
+>     { "pages": "/products/p3","field": "sku", "value": "BV-KT-1180" },
+>     { "pages": "/products/p3","field": "rating", "value": "4.7" },
+>     { "pages": "/products/p3","field": "review_count", "value": "2,031" },
+>     { "pages": "/products/p3","field": "availability", "value": "In stock" },
+>     { "pages": "/products/p3","field": "release_date", "value": "2025-02-20" },
+>     { "pages": "/products/p3","field": "description", "value": "Gooseneck kettle with a built-in thermometer and a 1-liter capacity." }
+>
+>         { "pages": "/products/p4","field": "name", "value": "Tessaro Trail Backpack" }
+>     { "pages": "/products/p4","field": "brand", "value": "Tessaro" },
+>     { "pages": "/products/p4","field": "category", "value": "Outdoor" },
+>     { "pages": "/products/p4","field": "price", "value": "$112.95" },
+>     { "pages": "/products/p4","field": "sku", "value": "TS-BP-0552" },
+>     { "pages": "/products/p4","field": "rating", "value": "4.4" },
+>     { "pages": "/products/p4","field": "review_count", "value": "718" },
+>     { "pages": "/products/p4","field": "availability", "value": "Out of stock" },
+>     { "pages": "/products/p4","field": "release_date", "value": "2024-04-08" },
+>     { "pages": "/products/p4","field": "description", "value": "28-liter daypack with a padded laptop sleeve and side water-bottle pockets." }
+>
+>         { "pages": "/products/p5","field": "name", "value": "Mirelle Wireless Mouse" }
+>     { "pages": "/products/p5","field": "brand", "value": "Mirelle" },
+>     { "pages": "/products/p5","field": "category", "value": "Computer Accessories" },
+>     { "pages": "/products/p5","field": "price", "value": "$24.99" },
+>     { "pages": "/products/p5","field": "sku", "value": "MR-MS-0903" },
+>     { "pages": "/products/p5","field": "rating", "value": "3.9" },
+>     { "pages": "/products/p5","field": "review_count", "value": "4,567" },
+>     { "pages": "/products/p5","field": "availability", "value": "In stock" },
+>     { "pages": "/products/p5","field": "release_date", "value": "2025-06-30" },
+>     { "pages": "/products/p5","field": "description", "value": "Silent-click mouse with a USB-C receiver and up to 12 months of battery life." }
+>
+>         { "pages": "/products/p6","field": "name", "value": "Larkfield Studio Headphones" }
+>     { "pages": "/products/p6","field": "brand", "value": "Larkfield" },
+>     { "pages": "/products/p6","field": "category", "value": "Headphones" },
+>     { "pages": "/products/p6","field": "price", "value": "$89.99" },
+>     { "pages": "/products/p6","field": "sku", "value": "LF-HP-2041" },
+>     { "pages": "/products/p6","field": "rating", "value": "4.5" },
+>     { "pages": "/products/p6","field": "review_count", "value": "1,284" },
+>     { "pages": "/products/p6","field": "availability", "value": "In stock" },
+>     { "pages": "/products/p6","field": "release_date", "value": "2024-09-12" },
+>     { "pages": "/products/p6","field": "description", "value": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable." }
+>
+>         { "pages": "/products/p7","field": "name", "value": "Halden Cast Iron Skillet" }
+>     { "pages": "/products/p7","field": "brand", "value": "Halden" },
+>     { "pages": "/products/p7","field": "category", "value": "Cookware" },
+>     { "pages": "/products/p7","field": "price", "value": "$58.75" },
+>     { "pages": "/products/p7","field": "sku", "value": "HD-CI-1026" },
+>     { "pages": "/products/p7","field": "rating", "value": "4.8" },
+>     { "pages": "/products/p7","field": "review_count", "value": "9,412" },
+>     { "pages": "/products/p7","field": "availability", "value": "Pre-Order" },
+>     { "pages": "/products/p7","field": "release_date", "value": "2026-12-01" },
+>     { "pages": "/products/p7","field": "description", "value": "Pre-seasoned 10-inch skillet that works on induction, gas and in the oven." }
+>
+>     { "articles": "/article/a1","field": "title", "value": "Caring for Cast Iron Cookware" },
+>     { "articles": "/article/a1","field": "author", "value": "Maya Okafor" },
+>     { "articles": "/article/a1","field": "publish_date", "value": "2025-05-19" },
+>     { "articles": "/article/a1","field": "tags", "value": "cooking, cleaning, kitchen" },
+>     { "articles": "/article/a1","field": "summary", "value": "How to clean, dry and re-season a cast iron pan so it lasts for decades." }
+>
+>     { "articles": "/article/a2","field": "title", "value": "Choosing a Daypack for Short Hikes" },
+>     { "articles": "/article/a2","field": "author", "value": "Daniel Reyes" },
+>     { "articles": "/article/a2","field": "publish_date", "value": "null" },
+>     { "articles": "/article/a2","field": "tags", "value": "outdoor, hiking, buying guide" },
+>     { "articles": "/article/a2","field": "summary", "value": "What to look for in size, fit and pockets when picking a pack for day trips." }
+>
+>   ]
+> )
+
+**What Claude did:** saved the records to the scratchpad and checked all of them against Joseph's draft. No repo files changed besides this log. Found 79 records instead of 69.
+
+**Claude's answer (summary)**
+- **Content mistakes (these would change the score):**
+  1. The p6 block is a copy of p1 (Larkfield), and the real p6 (Halden) is labelled `p7`, which doesn't exist. Fix: delete the copy and rename `p7` to `p6`, giving 69 records.
+  2. a1 `tags` is `"cooking, ..."` instead of `"cookware, ..."`: an accidental 5th wrong value, which would make the score 62/70.
+  3. a2 `publish_date` is the quoted text `"null"`, which scores as a wrong value rather than missing. Fix: `null` without quotes.
+  - Also: two capitalization differences (`Low Stock`, `Pre-Order`). They score as correct under D33, but matching the draft is recommended.
+- **Format problems (the file won't load):**
+  4. The record key is `"pages"` or `"articles"`; it should be `"page"`.
+  5. `/article/` should be `/articles/`.
+  6. 15 commas are missing (after the first and last record of each block).
+  7. The file ends with `)` instead of `}`.
+- **Offer (C16):** Claude could apply only fixes 4–7, as typing corrections, disclosed here. Joseph makes fixes 1–3, since they are fixture choices.
+
+**Questions Claude asked:** C16 (open).
+
+**Direction and fit:** no new decision. Applies `docs/scraper-output.md` (D31), D33 and D37. The content fixes stay with Joseph (D38).
