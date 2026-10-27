@@ -90,6 +90,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J14 | 14 | Back on Tue Oct 27: list all of today's tasks first. | Answered in Turn 14 |
 | J15 | 15 | Walk me through what I need to do today, task by task. | Answered in Turn 15 (step-by-step walkthrough) |
 | J16 | 16 | For the fixture: am I writing a script or changing the pages? Joseph's plan: one field gone, one null, one empty; 2 wrong values; 1 malformed; 1 "just wrong" such as a price of ``"ZzzA-1`?"``. | Answered in Turn 16 |
+| J17 | 17 | Does this fixture draft fit the criteria? (items.json copied and edited by hand) | Reviewed in Turn 17: two fixes needed, then a format conversion (C14) |
 
 ### Questions from Claude
 
@@ -108,6 +109,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C11 | 9 | Same page and field reported twice with different values? Options: "Count as wrong (Recommended)" or "First one wins". | Count as wrong. | Closed (Turn 9) → D34 |
 | C12 | 9 | Approve the site as built (page structure, log fields, trap handling)? Options: "Approve as built" or "I have changes". | Approve as built. | Closed (Turn 9) → D36 |
 | C13 | 12 | Open pull request #2 so `main` gets Turns 9–12? Options: "Yes, open PR #2" or "No, leave main for now". | Yes. | Closed (Turn 12): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2 |
+| C14 | 17 | Who converts Joseph's fixture draft from the items.json shape into the approved scraper output format? Options: "A: Joseph converts it (by hand or with his own script), recommended" or "B: Claude converts it mechanically and Joseph checks every record, disclosed here". | — | **Open** |
 
 ---
 
@@ -117,6 +119,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
+- **C14:** who converts the fixture draft into the scraper output format (A: Joseph; B: Claude, with Joseph checking).
+- **Fixture draft fixes (Joseph):** put back `p4` (changed to `p9`); add a 4th wrong value (correctly formatted); list p3 price and a1 publish_date in `fakes.json` if those are the 2 fakes.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
 - **`main` is up to date** through Turn 12: Joseph merged pull request #2 (`eac0dbe`). New work goes on `claude/quirky-curie-8j4nye`, which restarts from that `main`, and reaches `main` through a new pull request. The Turn 13 entry below is the first such change.
@@ -537,3 +541,131 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The correction applies the approved rules (D33) and §5 Test 2's split of the 4 wrong values (2 fakes, 1 malformed price, 1 other).
+
+### Turn 17 — 2026-10-27 19:04 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> does thsi fit the criteria? i copy and pasted items.json, and then manually changed and noted the changes as below:
+> {
+>   "products": [
+>     {
+>       "product_id": "p1",
+>       "name": "Larkfield Studio Headphones",
+>       "brand": "Larkfield",
+>       "price": "$89O.99",
+>       "sku": "LF-HP-2041",
+>       "rating": "4.5",
+>       "review_count": "1,284",
+>       "availability": "In stock",
+>       "release_date": "2024-09-12",
+>       "description": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable."
+>     },
+>     {
+>       "product_id": "p2",
+>       "name": "Corvane Desk Lamp",
+>       "brand": "Corvane",
+>       "category": "Lighting",
+>       "price": "$34.50",
+>       "sku": "",
+>       "rating": "4.2",
+>       "review_count": "356",
+>       "availability": "Low stock",
+>       "release_date": "2023-11-03",
+>       "description": "Adjustable LED lamp with three color temperatures and a weighted base."
+>     },
+>     {
+>       "product_id": "p3",
+>       "name": "Brimvale Pour-Over Kettle",
+>       "brand": "Brimvale",
+>       "category": "Kitchen",
+>       "price": "$41.00",
+>       "sku": "BV-KT-1180",
+>       "rating": "4.7",
+>       "review_count": "2,031",
+>       "availability": "In stock",
+>       "release_date": "2025-02-20",
+>       "description": "Gooseneck kettle with a built-in thermometer and a 1-liter capacity."
+>     },
+>     {
+>       "product_id": "p9",
+>       "name": "Tessaro Trail Backpack",
+>       "brand": "Tessaro",
+>       "category": "Outdoor",
+>       "price": "$112.95",
+>       "sku": "TS-BP-0552",
+>       "rating": "4.4",
+>       "review_count": "718",
+>       "availability": "Out of stock",
+>       "release_date": "2024-04-08",
+>       "description": "28-liter daypack with a padded laptop sleeve and side water-bottle pockets."
+>     },
+>     {
+>       "product_id": "p5",
+>       "name": "Mirelle Wireless Mouse",
+>       "brand": "Mirelle",
+>       "category": "Computer Accessories",
+>       "price": "$24.99",
+>       "sku": "MR-MS-0903",
+>       "rating": "3.9",
+>       "review_count": "4,567",
+>       "availability": "In stock",
+>       "release_date": "2025-06-30",
+>       "description": "Silent-click mouse with a USB-C receiver and up to 12 months of battery life."
+>     },
+>     {
+>       "product_id": "p6",
+>       "name": "Halden Cast Iron Skillet",
+>       "brand": "Halden",
+>       "category": "Cookware",
+>       "price": "$58.75",
+>       "sku": "HD-CI-1026",
+>       "rating": "4.8",
+>       "review_count": "9,412",
+>       "availability": "Pre-order",
+>       "release_date": "2026-12-01",
+>       "description": "Pre-seasoned 10-inch skillet that works on induction, gas and in the oven."
+>     }
+>   ],
+>   "articles": [
+>     {
+>       "article_id": "a1",
+>       "title": "Caring for Cast Iron Cookware",
+>       "author": "Maya Okafor",
+>       "publish_date": "2025-05-19",
+>       "tags": "cookware, cleaning, kitchen",
+>       "summary": "How to clean, dry and re-season a cast iron pan so it lasts for decades."
+>     },
+>     {
+>       "article_id": "a2",
+>       "title": "Choosing a Daypack for Short Hikes",
+>       "author": "Daniel Reyes",
+>       "publish_date": null,
+>       "tags": "outdoor, hiking, buying guide",
+>       "summary": "What to look for in size, fit and pockets when picking a pack for day trips."
+>     }
+>   ]
+> }
+
+**What Claude did:** saved Joseph's draft to the scratchpad (not the repo) and compared it with `data/items.json` field by field. It found exactly 7 changes:
+- `p1.category` removed;
+- `p1.price` → `$89O.99`;
+- `p2.sku` → `""`;
+- `p3.price` → `$41.00`;
+- position 4's `product_id` changed from `p4` to `p9`;
+- `a1.publish_date` → `2025-05-19`;
+- `a2.publish_date` → `null`.
+
+**Claude's answer (summary)**
+- **Correct as planned:**
+  - 3 missing (removed, empty, null);
+  - 1 malformed price (`$89O.99` isn't a number);
+  - 2 well-formed wrong values (p3 price, a1 date).
+- **Fix 1:** `product_id` isn't a scored field. Changing it to `p9` would make the scoring script count all 10 of p4's fields as missing (13 missing in total). Put back `p4`.
+- **Fix 2:** only 3 wrong values; Test 2 needs 4 (2 fakes, 1 malformed, 1 plain wrong). Simplest fix: make p3 price (`$41.00`) and a1 publish_date (`2025-05-19`) the 2 fakes in `fakes.json`, and add one more correctly formatted wrong value of Joseph's choosing.
+- **Format:** the draft has the shape of `items.json`, but the scoring script reads the approved scraper output format (`docs/scraper-output.md`, D31): 69 records, where the removed field has no record, `""` stays `""` and `null` stays `null`.
+- **Asked C14:** A (Joseph converts, recommended; it keeps the fixture fully his, per §7 verification step 1) or B (Claude converts mechanically, Joseph checks every record, disclosed here).
+
+**Questions Claude asked:** C14 (open).
+
+**Direction and fit:** no new decision yet. The review applies §5 Test 2 (63 correct, 4 wrong: 2 fakes and 1 malformed; 3 missing) and the approved format and rules (D31, D33). Waiting on C14.
