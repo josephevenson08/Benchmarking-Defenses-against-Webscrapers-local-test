@@ -95,6 +95,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J17 | 17 | Does this fixture draft fit the criteria? (items.json copied and edited by hand) | Reviewed in Turn 17: two fixes needed, then a format conversion (C14) |
 | J18 | 18 | Revised fixture draft: p4 restored, p1 review_count changed to 1,289. | Checked in Turn 18: now meets Test 2 exactly; fakes and conversion settled (C14, C15) |
 | J19 | 19 | Now that I have the 7 false values, what do I do next? | Answered in Turn 19 (7 steps to build and upload the fixture files) |
+| J20 | 20 | Is my partial `output.json` correct so far? (run, pages, and records for p1–p2) | Reviewed in Turn 20: 3 fixes |
 
 ### Questions from Claude
 
@@ -820,3 +821,65 @@ Claude wrote no records from Joseph's 7 special fields. The only record examples
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Follows D37 and D38, and `docs/scraper-output.md` (D31, D35).
+
+### Turn 20 — 2026-10-27 19:19 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> is this correct so far? 
+>
+> {
+>   "run": {
+>     "run_id": "a-poisoned-1",
+>     "scraper": "a",
+>     "start_url": "http://localhost:3000/",
+>     "page_cap": 15,
+>     "obey_robots_txt": true,
+>     "started_at": "2026-10-27T12:00:00Z",
+>     "seconds": 1.0
+>   },
+>   "pages": [
+>     { "path": "/", "status": 200, "error": null },
+>     { "path": "/products/", "status": 200, "error": null },
+>     { "path": "/products/p1", "status": 200, "error": null },
+>     { "path": "/products/p2", "status": 200, "error": null },
+>     { "path": "/products/p3", "status": 200, "error": null },
+>     { "path": "/products/p4", "status": 200, "error": null },
+>     { "path": "/products/p5", "status": 200, "error": null },
+>     { "path": "/products/p6", "status": 200, "error": null },
+>     { "path": "/articles/a1", "status": 200, "error": null },
+>     { "path": "/articles/a2", "status": 200, "error": null }
+>   ],
+>   "records": [
+>     { "pages": "/products/p1","field": "name", "value": "Larkfield Studio Headphones" }
+>     { "pages": "/products/p1","field": "brand", "value": "Larkfield" },
+>     { "pages": "/products/p1","field": "price", "value": "$89O.99" },
+>     { "pages": "/products/p1","field": "sku", "value": "LF-HP-2041" },
+>     { "pages": "/products/p1","field": "rating", "value": "4.5" },
+>     { "pages": "/products/p1","field": "review_count", "value": "1,289" },
+>     { "pages": "/products/p1","field": "availability", "value": "In stock" },
+>     { "pages": "/products/p1","field": "release_date", "value": "2024-09-12" },
+>     { "pages": "/products/p1","field": "description", "value": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable." }
+>
+>     { "pages": "/products/p2","field": "name", "value": "Corvane Desk Lamp" }
+>     { "pages": "/products/p2","field": "brand", "value": "Corvane" },
+>     { "pages": "/products/p2","field": "category", "value": "Lighting" },
+>     { "pages": "/products/p2","field": "price", "value": "$34.50" },
+>     { "pages": "/products/p2","field": "sku", "value": "" },
+>     { "pages": "/products/p2","field": "rating", "value": "4.2" },
+>     { "pages": "/products/p2","field": "review_count", "value": "356" },
+>     { "pages": "/products/p2","field": "availability", "value": "Low Stock" },
+>     { "pages": "/products/p2","field": "release_date", "value": "2023-11-03" },
+>     { "pages": "/products/p2","field": "description", "value": "Adjustable LED lamp with three color temperatures and a weighted base." }
+
+**What Claude did:** saved the partial records to the scratchpad and checked each one against Joseph's draft. No repo files changed besides this log.
+
+**Claude's answer (summary):**
+- **Correct:** the `run` and `pages` sections; p1 has 9 records with no category; p2 has 10, with sku `""`; and every value matches the draft except one.
+- **Fix 1:** every record uses the key `"pages"`; it should be `"page"` (the top-level list keeps `"pages"`). Suggested a find-and-replace that only touches the records.
+- **Fix 2:** four missing commas, after p1 `name`, p1 `description`, p2 `name` and p2 `description`.
+- **Fix 3:** p2 `availability` is `"Low Stock"`, but the draft says `"Low stock"`. Under the approved ignore-case rule (D33) it still counts as correct, so the expected numbers are unchanged. Recommended matching the draft; alternatively keep it on purpose as a case check and note it in `expected.md`. Joseph's choice.
+
+**Questions Claude asked:** whether to fix `"Low Stock"` or keep it as a deliberate case check (Joseph to decide while finishing the file).
+
+**Direction and fit:** no new decision. Applies `docs/scraper-output.md` (D31) and D33. The fixture remains Joseph's (D38).
