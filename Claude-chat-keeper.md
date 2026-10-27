@@ -110,6 +110,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J29 | 29 | What is the `fakes.json` file? | Answered in Turn 29 |
 | J30 | 30 | Let me know when I need to merge on GitHub. | Done in Turn 30: merge-notice rule (D40) and branch-sync rule (D41) in `CLAUDE.md` |
 | J31 | 31 | Pulled `fakes.json` and `output.json`; what now? | Answered in Turn 31: check them, write `expected.md`, push, tell Claude |
+| J32 | 32 | What should be in `expected.md`? | Answered in Turn 32 |
 
 ### Questions from Claude
 
@@ -1260,3 +1261,21 @@ Meanwhile, Joseph can start Task 3 (scraper (a)).
 **Questions Claude asked:** none new.
 
 **Direction and fit:** no new decision. Keeps the hand calculation with Joseph (§7 verification step 1, D39) and applies D40/D41.
+
+### Turn 32 — 2026-10-27 19:49 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what should be in the expected.md?
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary)**
+- **Purpose:** `expected.md` is Joseph's answer key, written before any scoring code; the scoring script's test must reproduce it (§7 verification step 1).
+- **Part 1:** a table of the 7 special fields with columns Page, Field, Value in output.json, Real value and Counts as. Claude listed which 7 page/field pairs go in it (as verified in Turn 22). Joseph fills in the values and classifications from his notes.
+- **Part 2:** the calculation as blanks: missing, wrong (with fakes), correct = 70 − missing − wrong, accuracy and fake-value rate. Claude noted that a fake also counts as wrong, and that §5 Test 2 says the results should be 0.90 and 0.029, so Joseph can check his own counts.
+- **Then:** commit and Sync to `main`, and tell Claude "pushed".
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Claude gave structure and guidance but didn't fill in the classifications or numbers, so the hand calculation stays Joseph's (§7 verification step 1, D39).
