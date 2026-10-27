@@ -112,6 +112,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J31 | 31 | Pulled `fakes.json` and `output.json`; what now? | Answered in Turn 31: check them, write `expected.md`, push, tell Claude |
 | J32 | 32 | What should be in `expected.md`? | Answered in Turn 32 |
 | J33 | 33 | How exactly do I write `expected.md`? I'm not familiar. | Answered in Turn 33 (step-by-step, with a fill-in template) |
+| J34 | 34 | Walk me through exactly how to do this. | Answered in Turn 34 (Part A: creating the file, step by step; Part B to follow interactively) |
 
 ### Questions from Claude
 
@@ -1302,3 +1303,25 @@ The template doesn't state the correct count ("All other fields … match"), so 
 **Questions Claude asked:** none new.
 
 **Direction and fit:** no new decision. The facts were filled in to remove formatting friction; the classification and the calculation stay Joseph's (§7 verification step 1, D39).
+
+### Turn 34 — 2026-10-27 19:52 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> walk me through exactly how to do this
+
+**What Claude did:** answered in chat. No files changed besides this log. Switched to a one-step-at-a-time walkthrough.
+
+**Claude's answer (summary)**
+- **Part A, click by click in VS Code:**
+  1. Open the project folder (with the full laptop path).
+  2. Expand `scoring` → `fixtures` → `test2`.
+  3. Right-click → New File → `expected.md`.
+  4. Copy the template from Turn 33 into it and save.
+
+  Joseph reports "done".
+- **Part B, next:** fill in the blanks together, row by row. Claude shows a row and the four rules; Joseph names the category, and Claude confirms. Then the counting together, then commit and Sync.
+
+**Questions Claude asked:** waiting for Joseph's "done" on Part A.
+
+**Direction and fit:** no new decision. In Part B Joseph makes each classification and Claude only confirms, so the hand calculation stays Joseph's (§7 verification step 1, D39).
