@@ -129,6 +129,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J46 | 46 | Joseph's step 8b explain-back answers | Checked in Turn 46: #2 and #3 right; #1 half right, corrected |
 | J47 | 47 | Step 8c output: break 1 → FAILED (errors=1); break 2 → FAILED (failures=11) | Checked in Turn 47: both caught; final clean run still needed |
 | J48 | 48 | Final rerun: 24 tests OK; `git status` clean on `main` | ⭐ Check 1 passed (Turn 48) |
+| J49 | 49 | Merged pull request #6; leaving now; resume tonight where we left off. | Done in Turn 49 |
 
 ### Questions from Claude
 
@@ -160,7 +161,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Tue Oct 27, evening):** Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
+**▶ Resume here (Tue Oct 27, tonight):** ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
@@ -172,7 +173,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed:** pull request #6 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/6): Check 1 recorded, README scoring usage, schedule.
+- **⚠️ Merge needed (no rush):** pull request #7 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/7), the log only. Merge tonight before syncing.
 
 ---
 
@@ -1887,3 +1888,20 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** C20 is still open.
 
 **Direction and fit:** D43.
+
+### Turn 49 — 2026-10-27 20:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> merge done but i have to go now, we can pick up tn where we left off
+
+**What Claude did**
+- Confirmed pull request #6 is merged (`592eb48`) and fast-forwarded the branch. `main`'s `SCHEDULE.md` already has the right resume note (C20, then scraper (a), then Check 2), so no schedule change was needed.
+- Added a matching resume note at the top of Open items.
+- Logged this turn and opened **pull request #7** (D40), the end-of-session pull request: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/7. It holds this log entry only and can be merged tonight.
+
+**Claude's answer (summary):** everything is saved. Tonight starts with the two C20 decisions, then scraper (a).
+
+**Questions Claude asked:** none new. C20 is still open.
+
+**Direction and fit:** no new decision. Applies D40.
