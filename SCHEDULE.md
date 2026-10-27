@@ -19,14 +19,12 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Mon Oct 26 (Turn 11 of the chat-keeper).*
+*Last updated: Tue Oct 27 (Turn 40 of the chat-keeper).*
 
-> **▶ Resume here: Tue Oct 27.** Milestone 1 steps 1–5 are done. Next:
-> 1. Set up the project on the laptop.
-> 2. Step 6: Joseph writes the Test 2 fixture by hand.
-> 3. Start scraper (a).
->
-> The scoring script (Claude) starts once the fixture is in the repo.
+> **▶ Resume here (Tue Oct 27, evening).** Milestone 1 steps 1–7 are done; the scoring script is one day early (pull request #4 merged). Joseph hasn't started step 8 yet and picks up here tonight after class. Next:
+> 1. Step 8: Joseph verifies the scoring script (run the tests, read the code, break it on purpose). ⭐ Check 1
+> 2. Joseph decides the two open scoring assumptions (chat-keeper C20: #1 page mapping, #6 tags as a list).
+> 3. Step 9: Joseph writes scraper (a).
 
 ---
 
@@ -39,10 +37,12 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Mon Oct 26** | ✅ Step 1: data list approved; tags scored as a set; p6 date kept. ✅ Steps 2–4: setup files, generator, server, 7 tests. ✅ `requests` and `beautifulsoup4` pinned. | J, C |
 | | ✅ Site reviewed and approved (page structure, log fields, trap handling). | J |
 | | ✅ Step 5: scraper output format and matching rules proposed and approved ([`docs/scraper-output.md`](docs/scraper-output.md)). | C, J |
-| **Tue Oct 27** | Set up the project on the laptop (README: Setup and Usage). Clone the branch, run `npm ci` and `npm test` (expect 7 passing), then create a Python venv and run `pip install -r requirements.txt`. Moved from Mon Oct 26. | J |
-| | Step 6: write the Test 2 fixture by hand, in the approved format (63 correct, 4 wrong, 3 missing → 0.90 and 2/70). | J |
+| **Tue Oct 27** | ✅ Set up the project on the laptop (README: Setup and Usage). Clone the branch, run `npm ci` and `npm test` (expect 7 passing), then create a Python venv and run `pip install -r requirements.txt`. Moved from Mon Oct 26. | J |
+| | ✅ Step 6: Test 2 fixture (Joseph's design; files assembled by Claude at his request, D39) and Joseph's hand-calculated `expected.md`. | J |
+| | ✅ Step 7 (a day early): scoring script and 24 tests reproduce 0.90 and 2/70 (pull request #4, D42). | C |
+| | Step 8 can start now: verify the scoring script. | J |
 | | Start scraper (a): Python environment, fetch one page with `requests`, find the label rows with BeautifulSoup. | J |
-| **Wed Oct 28** | Step 7: scoring script and tests, from the midterm's prompt. Starts only after the fixture exists. | C |
+| **Wed Oct 28** | Step 8 if not done Tue: verify the scoring script (⭐ Check 1). | J |
 | | Scraper (a): crawl loop (queue and visited set), page cap, `robots.txt` setting, `run=<id>` in the User-Agent. | J |
 | **Thu Oct 29** | Step 8: verify the scoring script: run the tests, explain the diff line by line, break it on purpose. ⭐ **Check 1** | J |
 | | Scraper (a): label-plus-next-text extraction; write output in the agreed format. | J |
