@@ -123,6 +123,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J41 | 41 | Is this up to date with what I need to do just today? | Answered in Turn 41: yes, with tonight's list |
 | J42 | 42 | Merged and synced in VS Code; what now? | Answered in Turn 42: step 8a (run the tests) |
 | J43 | 43 | Step 8a error on the laptop: `ImportError: Start directory is not importable: 'scoring/tests'` | Diagnosed in Turn 43: the terminal was in the parent folder |
+| J44 | 44 | Step 8a output on the laptop: 24 tests OK; 63/70 = 0.900; 2/70 = 0.029 | Step 8a passed; step 8b started in Turn 44 |
 
 ### Questions from Claude
 
@@ -148,6 +149,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C18 | 30 | Should Claude open the pull request when a merge is needed? Options: "Yes, open them (Recommended)" or "No, just tell me". | Yes. | Closed (Turn 30) → D40 |
 | C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
 | C20 | 38 | Joseph to review the scoring script's unresolved assumptions (listed in Turn 38), especially #1 (pages mapped from the data list rather than read from the manifest) and #6 (tags given as a JSON list). | — | **Open** |
+| C21 | 44 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | — | **Open** |
 
 ---
 
@@ -1568,3 +1570,32 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** Joseph to paste the rerun output.
 
 **Direction and fit:** no new decision.
+
+### Turn 44 — 2026-10-27 20:27 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python -m unittest discover -s scoring/tests -t .
+> >> python scoring/score.py scoring/fixtures/test2/output.json --fakes scoring/fixtures/test2/fakes.json
+> ........................
+> ----------------------------------------------------------------------
+> Ran 24 tests in 0.075s
+>
+> OK
+> run a-poisoned-1 (scraper a, condition poisoned, run 1)
+> accuracy         63/70 = 0.900
+> fake-value rate  2/70 = 0.029
+> correct 63 | wrong 4 (fakes 2, malformed 1, conflicting 0, plain wrong 1) | missing 3
+> pages fetched 10 | seconds 1.0 | time per page 0.100 s | ignored records 0
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** confirmed step 8a passed **on Joseph's laptop** (Windows, Python 3.11): 24 tests OK, and the command line gives 63/70 = 0.900 and 2/70 = 0.029, matching `expected.md`. Looked up line numbers in `scoring/score.py` for a guided reading. No files changed besides this log.
+
+**Claude's answer (summary): step 8b, guided reading**
+- `normalize()` (lines 46–67): one row per rule (price, rating, review count, dates, tags, other text), with examples. Line 38 (`_text`) trims spaces for every field.
+- `score_run()` (lines 229–278) in three chunks: collect the records (an unknown page or field is ignored, line 241); decide each of the 70 fields (empty values dropped at line 248, then missing at 249, conflict at 252, and malformed, correct, fake or wrong at 257–264); the metrics (lines 193–199).
+- Three explain-back questions (C21) to confirm Joseph can explain the rules, as §7 verification step 3 requires.
+
+**Questions Claude asked:** C21 (open).
+
+**Direction and fit:** no new decision. This is §7 verification steps 2 (done: tests run on Joseph's laptop) and 3 ("reading the diff line by line and explaining each rule") for D42.
