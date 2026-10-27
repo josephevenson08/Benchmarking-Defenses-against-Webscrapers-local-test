@@ -114,6 +114,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J33 | 33 | How exactly do I write `expected.md`? I'm not familiar. | Answered in Turn 33 (step-by-step, with a fill-in template) |
 | J34 | 34 | Walk me through exactly how to do this. | Answered in Turn 34 (Part A: creating the file, step by step; Part B to follow interactively) |
 | J35 | 35 | "i see the template with the blanks now" (Part A done) | Part B started in Turn 35 |
+| J36 | 36 | Joseph's 7 classifications for `expected.md` | Checked in Turn 36: 5 right; rows 3 and 5 swapped |
 
 ### Questions from Claude
 
@@ -1345,3 +1346,31 @@ Claude will confirm Joseph's answers before he types them in.
 **Questions Claude asked:** Joseph's 7 classifications (waiting).
 
 **Direction and fit:** no new decision. Joseph makes the classifications (§7 verification step 1, D39).
+
+### Turn 36 — 2026-10-27 19:58 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ## The 7 special fields
+>
+> | Page | Field | Value in output.json | Real value | Counts as |
+> |---|---|---|---|---|
+> | /products/p1 | category | (no record) | Headphones | missing |
+> | /products/p1 | price | $89O.99 | $89.99 | malformed |
+> | /products/p1 | review_count | 1,289 | 1,284 |  fake |
+> | /products/p2 | sku | "" (empty) | CV-LT-0317 | missing |
+> | /products/p3 | price | $41.00 | $47.00 | plain wrong |
+> | /articles/a1 | publish_date | 2025-05-19 | 2025-05-14 | fake |
+> | /articles/a2 | publish_date | null | 2025-08-02 | missing |
+
+**What Claude did:** checked Joseph's classifications against the four rules and `fakes.json`. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **Correct (5 of 7):** rows 1, 4 and 7 missing; row 2 malformed; row 6 fake.
+- **Rows 3 and 5 swapped.** p1 review_count `1,289` isn't in `fakes.json`, so it is plain wrong. p3 price `$41.00` is in `fakes.json`, so it is fake. Claude explained each through rules 2–4.
+- Joseph corrects the two rows himself.
+- **Next:** Joseph fills in the Calculation section (missing, wrong with fakes/malformed/plain wrong, correct, accuracy, fake-value rate) and replies with it for checking. The expected result is 0.90 and 0.029.
+
+**Questions Claude asked:** Joseph's filled-in calculation (waiting).
+
+**Direction and fit:** no new decision. Classifications follow the approved rules (D33) and Joseph's fakes (D37). The arithmetic stays Joseph's (§7 verification step 1).
