@@ -65,6 +65,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D34 | 9 | Duplicates: the same page and field with conflicting values counts as wrong; identical duplicates count once. | Count as wrong; first one wins | Joseph (Claude recommended) | §7 AI-agent plan prompt ("Handle missing fields, malformed values, empty outputs and duplicate records"). | Interprets (the midterm says to handle duplicates but not how) |
 | D35 | 9 | Fake-values file: a JSON list of `{item_id, field, fake_value}`. Joseph's poisoning defense writes it in Milestone 3; the Test 2 fixture uses a small hand-made one now. | — | Joseph approved (Claude proposed) | Figure 2 FakeValue (item_id, field, fake_value; unique per item and field). §2 Page defenses ("Save all fakes to a fake-values file"). §5 Test 2. | Follows |
 | D36 | 9 | Site approved as built: page structure, log fields and trap handling (steps 3–4). | Approve; change | Joseph | §2 Test site row ("I specify and review the page structure, link graph, log fields and trap handling"). | Follows |
+| D37 | 18 | Test 2 fixture content, designed by Joseph. **Missing:** p1 category (no record), p2 sku (`""`), a2 publish_date (`null`). **Wrong:** p1 price `$89O.99` (malformed), p1 review_count `1,289` (plain wrong, correctly formatted), p3 price `$41.00` (fake), a1 publish_date `2025-05-19` (fake). The other 63 fields are correct. Expected: accuracy 63/70 = 0.90, fake-value rate 2/70 ≈ 0.029. | Fakes: p3 price + a1 date, or another pair | Joseph | §5 Test 2 ("63 correct, 4 wrong and 3 missing … Two of the wrong values equal the page's fake and one is a malformed price"). §7 verification step 1. | Follows |
+| D38 | 18 | Joseph reshapes his draft into the scraper output format himself (option A), by hand or with his own script. Claude doesn't touch the fixture files. | A: Joseph converts; B: Claude converts and Joseph checks | Joseph | §7 AI-agent plan, verification step 1 ("writing the hand-calculated fixture … before reading the agent's code"). CLAUDE.md ("Joseph writes the Test 2 fixture"). | Follows |
 
 ---
 
@@ -91,6 +93,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J15 | 15 | Walk me through what I need to do today, task by task. | Answered in Turn 15 (step-by-step walkthrough) |
 | J16 | 16 | For the fixture: am I writing a script or changing the pages? Joseph's plan: one field gone, one null, one empty; 2 wrong values; 1 malformed; 1 "just wrong" such as a price of ``"ZzzA-1`?"``. | Answered in Turn 16 |
 | J17 | 17 | Does this fixture draft fit the criteria? (items.json copied and edited by hand) | Reviewed in Turn 17: two fixes needed, then a format conversion (C14) |
+| J18 | 18 | Revised fixture draft: p4 restored, p1 review_count changed to 1,289. | Checked in Turn 18: now meets Test 2 exactly; fakes and conversion settled (C14, C15) |
 
 ### Questions from Claude
 
@@ -109,7 +112,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C11 | 9 | Same page and field reported twice with different values? Options: "Count as wrong (Recommended)" or "First one wins". | Count as wrong. | Closed (Turn 9) → D34 |
 | C12 | 9 | Approve the site as built (page structure, log fields, trap handling)? Options: "Approve as built" or "I have changes". | Approve as built. | Closed (Turn 9) → D36 |
 | C13 | 12 | Open pull request #2 so `main` gets Turns 9–12? Options: "Yes, open PR #2" or "No, leave main for now". | Yes. | Closed (Turn 12): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/2 |
-| C14 | 17 | Who converts Joseph's fixture draft from the items.json shape into the approved scraper output format? Options: "A: Joseph converts it (by hand or with his own script), recommended" or "B: Claude converts it mechanically and Joseph checks every record, disclosed here". | — | **Open** |
+| C14 | 17, 18 | Who converts the fixture draft into the approved scraper output format? Options: "A: I'll do it" or "B: Claude converts it". | A: Joseph converts it. | Closed (Turn 18) → D38 |
+| C15 | 18 | Which 2 wrong values are the fakes? Options: "p3 price + a1 date" or "A different pair". | p3 price + a1 date. | Closed (Turn 18) → D37 |
 
 ---
 
@@ -119,8 +123,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **C14:** who converts the fixture draft into the scraper output format (A: Joseph; B: Claude, with Joseph checking).
-- **Fixture draft fixes (Joseph):** put back `p4` (changed to `p9`); add a 4th wrong value (correctly formatted); list p3 price and a1 publish_date in `fakes.json` if those are the 2 fakes.
+- **Fixture (Joseph, D37/D38):** the draft content is final. Joseph reshapes it into `scoring/fixtures/test2/output.json` (69 records) and writes `fakes.json` (2 entries) and `expected.md`, then uploads them. Claude then checks only the format and counts, and starts the scoring script.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
 - **`main` is up to date** through Turn 12: Joseph merged pull request #2 (`eac0dbe`). New work goes on `claude/quirky-curie-8j4nye`, which restarts from that `main`, and reaches `main` through a new pull request. The Turn 13 entry below is the first such change.
@@ -669,3 +672,127 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** C14 (open).
 
 **Direction and fit:** no new decision yet. The review applies §5 Test 2 (63 correct, 4 wrong: 2 fakes and 1 malformed; 3 missing) and the approved format and rules (D31, D33). Waiting on C14.
+
+### Turn 18 — 2026-10-27 19:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "products": [
+>     {
+>       "product_id": "p1",
+>       "name": "Larkfield Studio Headphones",
+>       "brand": "Larkfield",
+>       "price": "$89O.99",
+>       "sku": "LF-HP-2041",
+>       "rating": "4.5",
+>       "review_count": "1,289",
+>       "availability": "In stock",
+>       "release_date": "2024-09-12",
+>       "description": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable."
+>     },
+>     {
+>       "product_id": "p2",
+>       "name": "Corvane Desk Lamp",
+>       "brand": "Corvane",
+>       "category": "Lighting",
+>       "price": "$34.50",
+>       "sku": "",
+>       "rating": "4.2",
+>       "review_count": "356",
+>       "availability": "Low stock",
+>       "release_date": "2023-11-03",
+>       "description": "Adjustable LED lamp with three color temperatures and a weighted base."
+>     },
+>     {
+>       "product_id": "p3",
+>       "name": "Brimvale Pour-Over Kettle",
+>       "brand": "Brimvale",
+>       "category": "Kitchen",
+>       "price": "$41.00",
+>       "sku": "BV-KT-1180",
+>       "rating": "4.7",
+>       "review_count": "2,031",
+>       "availability": "In stock",
+>       "release_date": "2025-02-20",
+>       "description": "Gooseneck kettle with a built-in thermometer and a 1-liter capacity."
+>     },
+>     {
+>       "product_id": "p4",
+>       "name": "Tessaro Trail Backpack",
+>       "brand": "Tessaro",
+>       "category": "Outdoor",
+>       "price": "$112.95",
+>       "sku": "TS-BP-0552",
+>       "rating": "4.4",
+>       "review_count": "718",
+>       "availability": "Out of stock",
+>       "release_date": "2024-04-08",
+>       "description": "28-liter daypack with a padded laptop sleeve and side water-bottle pockets."
+>     },
+>     {
+>       "product_id": "p5",
+>       "name": "Mirelle Wireless Mouse",
+>       "brand": "Mirelle",
+>       "category": "Computer Accessories",
+>       "price": "$24.99",
+>       "sku": "MR-MS-0903",
+>       "rating": "3.9",
+>       "review_count": "4,567",
+>       "availability": "In stock",
+>       "release_date": "2025-06-30",
+>       "description": "Silent-click mouse with a USB-C receiver and up to 12 months of battery life."
+>     },
+>     {
+>       "product_id": "p6",
+>       "name": "Halden Cast Iron Skillet",
+>       "brand": "Halden",
+>       "category": "Cookware",
+>       "price": "$58.75",
+>       "sku": "HD-CI-1026",
+>       "rating": "4.8",
+>       "review_count": "9,412",
+>       "availability": "Pre-order",
+>       "release_date": "2026-12-01",
+>       "description": "Pre-seasoned 10-inch skillet that works on induction, gas and in the oven."
+>     }
+>   ],
+>   "articles": [
+>     {
+>       "article_id": "a1",
+>       "title": "Caring for Cast Iron Cookware",
+>       "author": "Maya Okafor",
+>       "publish_date": "2025-05-19",
+>       "tags": "cookware, cleaning, kitchen",
+>       "summary": "How to clean, dry and re-season a cast iron pan so it lasts for decades."
+>     },
+>     {
+>       "article_id": "a2",
+>       "title": "Choosing a Daypack for Short Hikes",
+>       "author": "Daniel Reyes",
+>       "publish_date": null,
+>       "tags": "outdoor, hiking, buying guide",
+>       "summary": "What to look for in size, fit and pockets when picking a pack for day trips."
+>     }
+>   ]
+> }
+
+**What Claude did:** saved the revised draft to the scratchpad (not the repo) and compared it with `data/items.json`. Exactly 7 changes: the same 6 as before (the 3 missing, the malformed price, p3 price, a1 date), plus `p1.review_count` → `1,289`. `p4` is restored, and 69 fields are present. Asked two questions:
+- C15: which pair are the fakes?
+- C14: who does the conversion?
+
+**Claude's answer (summary):**
+- **The draft now meets Test 2 exactly:**
+  - 63 correct;
+  - 4 wrong: 2 fakes, 1 malformed (`$89O.99`) and 1 plain wrong (`1,289` is correctly formatted but not `1,284`);
+  - 3 missing.
+- **Joseph chose:** the fakes are p3 price and a1 date; Joseph converts it himself.
+- **Claude explained the target shape:**
+  - `output.json` has a `run` block (run_id `a-poisoned-1`, scraper `a`), a `pages` list (the 10 paths with status 200) and 69 `records` of `{page, field, value}`. Pages are `/products/<id>` or `/articles/<id>`; there is no record for p1 category; p2 sku is `""` and a2 publish_date is `null`.
+  - `fakes.json` has the 2 entries.
+  - `expected.md` holds the hand calculation.
+- **Script option:** if Joseph writes a converter script, Claude described the steps in words only: load the JSON; loop over products and articles; for each field except the id, add a record; wrap the result in `run` and `pages`; write it out; check that there are 69 records.
+
+**Questions Claude asked:** C14 (answer: A) and C15 (answer: p3 price + a1 date).
+
+**Direction and fit:** D37, D38.
