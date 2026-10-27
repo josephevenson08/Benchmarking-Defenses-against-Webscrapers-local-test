@@ -111,6 +111,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J30 | 30 | Let me know when I need to merge on GitHub. | Done in Turn 30: merge-notice rule (D40) and branch-sync rule (D41) in `CLAUDE.md` |
 | J31 | 31 | Pulled `fakes.json` and `output.json`; what now? | Answered in Turn 31: check them, write `expected.md`, push, tell Claude |
 | J32 | 32 | What should be in `expected.md`? | Answered in Turn 32 |
+| J33 | 33 | How exactly do I write `expected.md`? I'm not familiar. | Answered in Turn 33 (step-by-step, with a fill-in template) |
 
 ### Questions from Claude
 
@@ -1279,3 +1280,25 @@ Meanwhile, Joseph can start Task 3 (scraper (a)).
 **Questions Claude asked:** none new.
 
 **Direction and fit:** no new decision. Claude gave structure and guidance but didn't fill in the classifications or numbers, so the hand calculation stays Joseph's (§7 verification step 1, D39).
+
+### Turn 33 — 2026-10-27 19:50 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how exactly do i write it? im not familar
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary): six steps in VS Code**
+1. New File `expected.md` in `scoring/fixtures/test2`.
+2. Paste a Markdown template. Claude filled in only facts already checked in Turn 22: the 7 page/field pairs, the value in `output.json` and the real value from `data/items.json`.
+3. Joseph fills in the **Counts as** column using four rules in order: no value → missing; matches `fakes.json` → fake; a number field that isn't a number → malformed; otherwise → plain wrong.
+4. Joseph fills in the **calculation** blanks. Fakes, malformed and plain wrong all count as wrong; the check is 0.90 and 0.029, as stated in §5 Test 2.
+5. Save and preview (Ctrl+Shift+V), with a one-line explanation of Markdown.
+6. Commit and Sync to `main`, then tell Claude "pushed".
+
+The template doesn't state the correct count ("All other fields … match"), so Joseph's arithmetic isn't pre-filled.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. The facts were filled in to remove formatting friction; the classification and the calculation stay Joseph's (§7 verification step 1, D39).
