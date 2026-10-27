@@ -71,6 +71,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D40 | 30 | **Merge notices.** When the working branch has something Joseph needs on `main` (finished work for the laptop, a passed milestone check, or the end of a session), Claude opens a pull request into `main` and tells Joseph "⚠️ Merge needed" with the link and contents. Joseph reviews it and clicks Merge. Written into `CLAUDE.md`. | Claude opens pull requests; Claude only tells Joseph | Joseph (Claude recommended) | §7 Version control ("keep the project in a Git repository with descriptive commits for each milestone"). | Follows |
 | D41 | 30 | **Branch sync.** Before building on Joseph's files, Claude fetches and merges `origin/main` into the working branch. Merge only; never rebase, force-push or reset. Applied now for pull request #3 (`33a588e`). | Merge `main` in; ask each time | Joseph (Claude recommended) | §7 Version control. Lets Joseph work on `main` from VS Code (Turns 24–27). | Follows |
 | D42 | 38 | **Scoring script:** `scoring/score.py` and 24 tests in `scoring/tests/` (standard library only), written from the midterm's prompt and the approved rules (D31–D35). The Test 2 test reads Joseph's `expected.md` and checks the script against it. Extras: time per page, and an ExtractedRecord CSV export for hand-counting. Honeypot hits are left for Nov 19 (they need the request log). Only scoring files were changed. | — | Claude (delegated task) | §7 AI-agent plan ("Implement the scoring script using the Figure 2 data model. Modify only the scoring files. Handle missing fields, malformed values, empty outputs and duplicate records. Add tests for the hand-calculated example in Test 2"). Figure 2. §4 Metrics. §5 Test 2. | Follows (page-to-item mapping Interprets; see C20) |
+| D43 | 48 | **⭐ Check 1 passed (Milestone 1).** Joseph verified the scoring script on his laptop: ran the 24 tests and the command line (0.900, 0.029); read and explained the rules (C21, one correction); made two deliberate breaks, both caught (a comma rule failure and 11 failures); clean rerun (`OK`, working tree clean). The remaining verification step 5 (hand-count one real run) follows once scraper (a) exists. Marked in README and SCHEDULE; scoring usage added to the README. | — | Joseph | §7 milestone table ("Scoring script passes the hand-calculated Test 2"). §7 AI-agent plan, verification steps 2–4. | Follows |
 
 ---
 
@@ -127,6 +128,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J45 | 45 | Which folder is this in? | Answered in Turn 45: `scoring/score.py` |
 | J46 | 46 | Joseph's step 8b explain-back answers | Checked in Turn 46: #2 and #3 right; #1 half right, corrected |
 | J47 | 47 | Step 8c output: break 1 → FAILED (errors=1); break 2 → FAILED (failures=11) | Checked in Turn 47: both caught; final clean run still needed |
+| J48 | 48 | Final rerun: 24 tests OK; `git status` clean on `main` | ⭐ Check 1 passed (Turn 48) |
 
 ### Questions from Claude
 
@@ -163,7 +165,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
 - **Fixture:** done. `output.json`, `fakes.json` and Joseph's `expected.md` are all on `main` (Turn 38).
-- **Scoring script (D42):** waiting on Joseph's verification, §7 steps 2–5: run the tests, read the code line by line, break it on purpose, and hand-count one real run once scraper (a) exists. Also C20.
+- **Scoring script:** ⭐ Check 1 passed (D43). Remaining: §7 verification step 5 (hand-count one real run) after scraper (a), and C20.
   1. check `output.json` against his paper notes;
   2. write `expected.md` (his 7 cases, 63/70 = 0.90, 2/70 ≈ 0.029).
 
@@ -1850,3 +1852,38 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** the final test run and `git status` output (waiting).
 
 **Direction and fit:** no new decision. §7 verification step 4 ("breaking the code on purpose") done for D42, pending the clean rerun.
+
+### Turn 48 — 2026-10-27 20:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python -m unittest discover -s scoring/tests -t .
+> >> git status
+> ........................
+> ----------------------------------------------------------------------
+> Ran 24 tests in 0.046s
+>
+> OK
+> On branch main
+> Your branch is up to date with 'origin/main'.
+>
+> nothing to commit, working tree clean
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did**
+- Confirmed the clean rerun: 24 tests OK; `git status` on Joseph's `main` shows a clean working tree, so no break was left behind. **⭐ Check 1 passed** (D43), two days before Thursday's plan.
+- **README:**
+  - ticked "Scoring script passes the hand-calculated Test 2" on the roadmap;
+  - added the scoring commands (`score.py` options and the test command) under Usage, held back until Joseph's verification;
+  - updated the remaining-steps sentence.
+- **`SCHEDULE.md`:**
+  - ticked step 8 on Tue;
+  - removed the now-done step 8 rows from Wed and Thu (and restored the Wed/Thu day labels, which the first edit had dropped);
+  - rewrote the resume note: C20, scraper (a), then Check 2.
+- Committed, pushed, and opened a pull request for the milestone check (D40).
+
+**Claude's answer (summary):** Check 1 is done. ⚠️ Merge needed for the README and schedule updates. Next: C20 (two quick decisions), then scraper (a).
+
+**Questions Claude asked:** C20 is still open.
+
+**Direction and fit:** D43.

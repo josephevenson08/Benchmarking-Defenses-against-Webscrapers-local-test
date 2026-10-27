@@ -150,6 +150,15 @@ npm run serve -- baseline      # serves it at http://localhost:3000 and logs to 
 npm test                       # checks for the generator and server
 ```
 
+**Scoring a run** (Python, from the project folder, with the venv active):
+
+```bash
+python scoring/score.py <scraper output.json> [--fakes fakes.json] [--records records.csv] [--json]
+python -m unittest discover -s scoring/tests -t .   # 24 checks, including the hand-calculated Test 2
+```
+
+The scoring rules and the output format scrapers must write are in [`docs/scraper-output.md`](docs/scraper-output.md).
+
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
 
 **Run IDs:** a scraper puts `run=<id>` anywhere in its `User-Agent`, for example `bench-scraper (run=a-baseline-1)`. Requests without one are logged as `unknown`.
@@ -160,7 +169,7 @@ Settings shared by every part (port, page cap, delays, seed, number of runs, tra
 {"timestamp":"2026-10-26T20:03:56.672Z","run_id":"a-baseline-1","path":"/products/p3","status":200,"response_ms":2.153,"honeypot_hit":false,"user_agent":"bench-scraper (run=a-baseline-1)"}
 ```
 
-Steps to run the scrapers, score the results, and measure user cost will be added as each part is built.
+Steps to run the scrapers and measure user cost will be added as each part is built.
 
 ---
 
@@ -185,7 +194,7 @@ Steps to run the scrapers, score the results, and measure user cost will be adde
 - [x] Page generator (baseline condition)
 - [x] Express server with request logger and `robots.txt`
 - [x] Scraper output format and matching rules ([`docs/scraper-output.md`](docs/scraper-output.md))
-- [ ] Scoring script passes the hand-calculated Test 2
+- [x] Scoring script passes the hand-calculated Test 2
 - [ ] Scraper (a) scores at least 90% on baseline in each of 3 runs
 
 ### Milestone 2: Nov 4 – Nov 17
