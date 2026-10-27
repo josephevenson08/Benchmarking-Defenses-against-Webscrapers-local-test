@@ -89,6 +89,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J13 | 13 | Pull request #2 merged; stopping until tomorrow. | Confirmed in Turn 13 |
 | J14 | 14 | Back on Tue Oct 27: list all of today's tasks first. | Answered in Turn 14 |
 | J15 | 15 | Walk me through what I need to do today, task by task. | Answered in Turn 15 (step-by-step walkthrough) |
+| J16 | 16 | For the fixture: am I writing a script or changing the pages? Joseph's plan: one field gone, one null, one empty; 2 wrong values; 1 malformed; 1 "just wrong" such as a price of ``"ZzzA-1`?"``. | Answered in Turn 16 |
 
 ### Questions from Claude
 
@@ -514,3 +515,25 @@ Milestones 2–4 were summarized by week, with the full daily plan in `SCHEDULE.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The fixture suggestions (run ID, three forms of missing, only 2 fakes needed) are Joseph's to accept. They follow `docs/scraper-output.md` and §5 Test 2. The scraper (a) walkthrough stays within §2's split (Joseph writes (a); Claude only explains).
+
+### Turn 16 — 2026-10-27 17:38 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so for task two am i writing a script or am i changing the pages? ill write it down on paper first but, practically, im chanign a value on one page to be gone, another value on another page to be null and then another value on another page to be empty. and then do the same but replace the value with a wrong value, 2 of those, and then 1 to ahve a malformation, and then one that is just wrong like price of item is "ZzzA-1`?"
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary)**
+- **Neither a script nor page changes.** The fixture is a hand-written data file that pretends to be a scraper's output; the site and `data/items.json` stay untouched.
+- **Joseph's plan is right, applied in `output.json`:**
+  - missing: one record left out, one `"value": null`, one `"value": ""`;
+  - 2 wrong values that also appear in `fakes.json` with the same text, in the same format as the real value;
+  - 1 malformed price.
+- **Correction:** the "just wrong" example (a price of ``"ZzzA-1`?"``) isn't a number, so the matching rules (D33) would treat it as malformed, a second malformed case. The 4th wrong value should be correctly formatted but incorrect, such as `"$79.99"` for `"$89.99"`. That tests that a believable wrong answer is caught.
+- **Counts:** 69 records (70 minus the one left out), 2 entries in `fakes.json`; 63/70 = 0.90 and 2/70 ≈ 0.029.
+- **Copying the correct values:** Joseph may copy and paste them from `data/items.json`, or write his own small script to dump them and then hand-edit the 7 special cases. Claude doesn't write that part, so the fixture stays independent of Claude's scoring code (§7 verification step 1).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The correction applies the approved rules (D33) and §5 Test 2's split of the 4 wrong values (2 fakes, 1 malformed price, 1 other).
