@@ -173,7 +173,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #6 merged by Joseph (`592eb48`); branch fast-forwarded. Only the Turn 49 log entry is not on `main`; it goes with the end-of-session pull request.
+- **⚠️ Merge needed (no rush):** pull request #7 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/7), the log only. Merge tonight before syncing.
 
 ---
 
@@ -1898,7 +1898,7 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **What Claude did**
 - Confirmed pull request #6 is merged (`592eb48`) and fast-forwarded the branch. `main`'s `SCHEDULE.md` already has the right resume note (C20, then scraper (a), then Check 2), so no schedule change was needed.
 - Added a matching resume note at the top of Open items.
-- Logged this turn and opened the end-of-session pull request (D40). It holds this log entry only and can be merged tonight.
+- Logged this turn and opened **pull request #7** (D40), the end-of-session pull request: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/7. It holds this log entry only and can be merged tonight.
 
 **Claude's answer (summary):** everything is saved. Tonight starts with the two C20 decisions, then scraper (a).
 
