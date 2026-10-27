@@ -109,6 +109,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J28 | 28 | "nevermind" (sent after stopping Claude's next command) | Claude stopped; nothing else was changed |
 | J29 | 29 | What is the `fakes.json` file? | Answered in Turn 29 |
 | J30 | 30 | Let me know when I need to merge on GitHub. | Done in Turn 30: merge-notice rule (D40) and branch-sync rule (D41) in `CLAUDE.md` |
+| J31 | 31 | Pulled `fakes.json` and `output.json`; what now? | Answered in Turn 31: check them, write `expected.md`, push, tell Claude |
 
 ### Questions from Claude
 
@@ -142,7 +143,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **Fixture status (D39):** `output.json` (69 records) and `fakes.json` are in `scoring/fixtures/test2/`. **Joseph still needs to:**
+- **Fixture status (D39):** Joseph has pulled both files onto the laptop (Turn 31). `output.json` (69 records) and `fakes.json` are in `scoring/fixtures/test2/`. **Joseph still needs to:**
   1. check `output.json` against his paper notes;
   2. write `expected.md` (his 7 cases, 63/70 = 0.90, 2/70 ≈ 0.029).
 
@@ -1239,3 +1240,23 @@ Claude pulls Joseph's push before writing the scoring script.
 **Questions Claude asked:** C18 (yes), C19 (yes).
 
 **Direction and fit:** D40, D41.
+
+### Turn 31 — 2026-10-27 19:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok so what do i do now that i pulled the fakes and output
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary): the one remaining fixture step is `expected.md`**
+1. Use Ctrl+F in `output.json` to confirm the 7 special values.
+2. Create `expected.md` from a template. Claude filled in only the first row (p1 category, missing) as an example; the other 6 rows and all the calculation blanks are Joseph's.
+3. Commit and Sync to `main` from VS Code.
+4. Tell Claude "pushed". Claude merges `main` into the branch (D41), writes the scoring script, and gives a "⚠️ Merge needed" notice when it's done (D40).
+
+Meanwhile, Joseph can start Task 3 (scraper (a)).
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Keeps the hand calculation with Joseph (§7 verification step 1, D39) and applies D40/D41.
