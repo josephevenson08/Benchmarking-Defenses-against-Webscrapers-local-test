@@ -124,6 +124,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J42 | 42 | Merged and synced in VS Code; what now? | Answered in Turn 42: step 8a (run the tests) |
 | J43 | 43 | Step 8a error on the laptop: `ImportError: Start directory is not importable: 'scoring/tests'` | Diagnosed in Turn 43: the terminal was in the parent folder |
 | J44 | 44 | Step 8a output on the laptop: 24 tests OK; 63/70 = 0.900; 2/70 = 0.029 | Step 8a passed; step 8b started in Turn 44 |
+| J45 | 45 | Which folder is this in? | Answered in Turn 45: `scoring/score.py` |
 
 ### Questions from Claude
 
@@ -1599,3 +1600,17 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** C21 (open).
 
 **Direction and fit:** no new decision. This is §7 verification steps 2 (done: tests run on Joseph's laptop) and 3 ("reading the diff line by line and explaining each rule") for D42.
+
+### Turn 45 — 2026-10-27 20:29 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> which folder is this in?
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** the scoring script is `scoring/score.py` in the project folder, shown with a small tree (`fixtures/test2/` and `tests/test_score.py` beside it) and the full laptop path. To open it: Ctrl+P → `score.py`, or Explorer → `scoring` → `score.py`. Ctrl+G jumps to a line (46 for `normalize()`, 229 for `score_run()`).
+
+**Questions Claude asked:** none new. C21 (explain-back) is still open.
+
+**Direction and fit:** no new decision.
