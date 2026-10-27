@@ -100,6 +100,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J21 | 21 | Full `output.json` draft for review. | Reviewed in Turn 21: 3 content mistakes, 4 format problems |
 | J22 | 22 | "give me the fix for all of it, in the test2 file" | Done in Turn 22: `output.json` and `fakes.json` written and verified; `expected.md` left to Joseph |
 | J23 | 23 | "ok so now what do i do" | Answered in Turn 23 |
+| J24 | 24 | Where are `output.json` and `fakes.json` going? | Answered in Turn 24 |
 
 ### Questions from Claude
 
@@ -1079,3 +1080,21 @@ Claude wrote no records from Joseph's 7 special fields. The only record examples
 **Questions Claude asked:** C17 (has the laptop setup been done?).
 
 **Direction and fit:** no new decision. Follows D37 and D39, and the §7 verification plan.
+
+### Turn 24 — 2026-10-27 19:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> where is output.json and fakes.json going?
+
+**What Claude did:** confirmed on GitHub that both files are on the branch at `scoring/fixtures/test2/`, and not on `main` yet. No files changed besides this log.
+
+**Claude's answer (summary):**
+- The files stay in `scoring/fixtures/test2/`, and `expected.md` goes beside them. Gave a GitHub link to the folder on the branch.
+- They reach `main` with the next pull request. A laptop copy cloned from `main` needs `git fetch` and `git checkout claude/quirky-curie-8j4nye` to get them.
+- They are used by the scoring script's test: `output.json` as the scraper output, `fakes.json` as the fakes. The script must reproduce `expected.md`.
+- Joseph's only remaining jobs with them: check them, and add `expected.md`.
+
+**Questions Claude asked:** none new. C17 (laptop setup) is still open.
+
+**Direction and fit:** no new decision.
