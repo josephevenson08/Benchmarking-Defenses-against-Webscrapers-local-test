@@ -125,6 +125,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J43 | 43 | Step 8a error on the laptop: `ImportError: Start directory is not importable: 'scoring/tests'` | Diagnosed in Turn 43: the terminal was in the parent folder |
 | J44 | 44 | Step 8a output on the laptop: 24 tests OK; 63/70 = 0.900; 2/70 = 0.029 | Step 8a passed; step 8b started in Turn 44 |
 | J45 | 45 | Which folder is this in? | Answered in Turn 45: `scoring/score.py` |
+| J46 | 46 | Joseph's step 8b explain-back answers | Checked in Turn 46: #2 and #3 right; #1 half right, corrected |
 
 ### Questions from Claude
 
@@ -150,7 +151,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C18 | 30 | Should Claude open the pull request when a merge is needed? Options: "Yes, open them (Recommended)" or "No, just tell me". | Yes. | Closed (Turn 30) → D40 |
 | C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
 | C20 | 38 | Joseph to review the scoring script's unresolved assumptions (listed in Turn 38), especially #1 (pages mapped from the data list rather than read from the manifest) and #6 (tags given as a JSON list). | — | **Open** |
-| C21 | 44 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | — | **Open** |
+| C21 | 44, 46 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | (1) Joseph: a valid number that was changed. Half right: what decides it is that the value matches the `fakes.json` entry (line 261); `$42.00` would be plain wrong. (2) `if not values:` (line 249), correct. (3) Not a conflict because of `casefold()`, correct. | Closed (Turn 46) |
 
 ---
 
@@ -1614,3 +1615,30 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** none new. C21 (explain-back) is still open.
 
 **Direction and fit:** no new decision.
+
+### Turn 46 — 2026-10-27 20:36 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 1. because a value is found for the field with the same amount of value in terms of numbers and the number just got changed, its not that its not wrong, its just that the number placeholder isnt correct,
+> 2. if not values:
+>             results.append(FieldResult(item_id, field, "", MISSING))
+>
+>
+> 3. it would not be a conflict due to it being a insenstive comparison for text.casefold()
+
+**What Claude did:** checked Joseph's answers against the code (lines 248–264, 67). No files changed besides this log.
+
+**Claude's answer (summary):**
+- **#2 correct:** line 249 makes it missing; line 248 had already dropped the `""`.
+- **#3 correct:** `casefold()` makes the two identical, so it isn't a conflict and counts as correct.
+- **#1 half right.** It's a valid number (so not malformed at line 257) and not the real value (line 259), but what makes it fake is that it matches the `fakes.json` entry (line 261). A non-listed `$42.00` would be plain wrong. A fake still counts in "wrong"; it marks that the scraper was fooled.
+- **Step 8c:**
+  - **Break 1:** remove `.replace("$", "")` on line 50.
+  - **Break 2:** change `==` to `!=` on line 259.
+
+  Run the tests after each (expect FAILED) and undo, then a final run (expect OK). Joseph to paste the three last lines. Claude confirmed the two lines' contents before giving the line numbers.
+
+**Questions Claude asked:** step 8c results (waiting). C21 closed.
+
+**Direction and fit:** no new decision. §7 verification step 3 (explain each rule) done with one correction; step 4 ("breaking the code on purpose") in progress for D42.
