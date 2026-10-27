@@ -19,9 +19,9 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Tue Oct 27 (Turn 39 of the chat-keeper).*
+*Last updated: Tue Oct 27 (Turn 40 of the chat-keeper).*
 
-> **▶ Resume here.** Milestone 1 steps 1–7 are done; the scoring script is one day early (pull request #4 merged). Next:
+> **▶ Resume here (Tue Oct 27, evening).** Milestone 1 steps 1–7 are done; the scoring script is one day early (pull request #4 merged). Joseph hasn't started step 8 yet and picks up here tonight after class. Next:
 > 1. Step 8: Joseph verifies the scoring script (run the tests, read the code, break it on purpose). ⭐ Check 1
 > 2. Joseph decides the two open scoring assumptions (chat-keeper C20: #1 page mapping, #6 tags as a list).
 > 3. Step 9: Joseph writes scraper (a).
