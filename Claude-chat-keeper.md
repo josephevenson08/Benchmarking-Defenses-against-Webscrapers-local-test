@@ -68,6 +68,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D37 | 18 | Test 2 fixture content, designed by Joseph. **Missing:** p1 category (no record), p2 sku (`""`), a2 publish_date (`null`). **Wrong:** p1 price `$89O.99` (malformed), p1 review_count `1,289` (plain wrong, correctly formatted), p3 price `$41.00` (fake), a1 publish_date `2025-05-19` (fake). The other 63 fields are correct. Expected: accuracy 63/70 = 0.90, fake-value rate 2/70 ≈ 0.029. | Fakes: p3 price + a1 date, or another pair | Joseph | §5 Test 2 ("63 correct, 4 wrong and 3 missing … Two of the wrong values equal the page's fake and one is a malformed price"). §7 verification step 1. | Follows |
 | D38 | 18 | Joseph reshapes his draft into the scraper output format himself (option A), by hand or with his own script. Claude doesn't touch the fixture files. | A: Joseph converts; B: Claude converts and Joseph checks | Joseph | §7 AI-agent plan, verification step 1 ("writing the hand-calculated fixture … before reading the agent's code"). CLAUDE.md ("Joseph writes the Test 2 fixture"). | Follows |
 | D39 | 22 | **Changes D38.** At Joseph's request, Claude assembled `scoring/fixtures/test2/output.json` and `fakes.json` from Joseph's own records. Joseph designed all values and special cases (D37). The corrections only restore Joseph's draft: the duplicated p1 block under p6 removed, `p7` renamed to `p6`, a1 tags `cooking` → `cookware`, a2 `"null"` → `null`, and two capitalizations matched to the draft. Formatting fixed: the `page` key, `/articles/` paths, commas, closing brace. Claude verified that the file equals Joseph's draft field for field and that the only differences from the data list are Joseph's 7 cases. **`expected.md` (the hand calculation) is left to Joseph.** No scoring code exists yet. | Joseph fixes it himself; Claude fixes format only; Claude fixes everything | Joseph | §7 verification step 1 ("writing the hand-calculated fixture … before reading the agent's code"). CLAUDE.md ("Joseph writes the Test 2 fixture"). | **Deviates (partly):** the file was assembled by Claude rather than typed by Joseph. The content, the special cases and the expected result stay Joseph's, and the fixture still comes before any scoring code. Joseph must check the file against his notes. |
+| D40 | 30 | **Merge notices.** When the working branch has something Joseph needs on `main` (finished work for the laptop, a passed milestone check, or the end of a session), Claude opens a pull request into `main` and tells Joseph "⚠️ Merge needed" with the link and contents. Joseph reviews it and clicks Merge. Written into `CLAUDE.md`. | Claude opens pull requests; Claude only tells Joseph | Joseph (Claude recommended) | §7 Version control ("keep the project in a Git repository with descriptive commits for each milestone"). | Follows |
+| D41 | 30 | **Branch sync.** Before building on Joseph's files, Claude fetches and merges `origin/main` into the working branch. Merge only; never rebase, force-push or reset. Applied now for pull request #3 (`33a588e`). | Merge `main` in; ask each time | Joseph (Claude recommended) | §7 Version control. Lets Joseph work on `main` from VS Code (Turns 24–27). | Follows |
 
 ---
 
@@ -106,6 +108,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J27 | 27 | Git error on the laptop: an untracked `scoring/fixtures/test2` would be overwritten by checkout and by pull. | Diagnosed in Turn 27 (move it aside, stay on `main`, pull). Joseph then said "nevermind" (Turn 28). |
 | J28 | 28 | "nevermind" (sent after stopping Claude's next command) | Claude stopped; nothing else was changed |
 | J29 | 29 | What is the `fakes.json` file? | Answered in Turn 29 |
+| J30 | 30 | Let me know when I need to merge on GitHub. | Done in Turn 30: merge-notice rule (D40) and branch-sync rule (D41) in `CLAUDE.md` |
 
 ### Questions from Claude
 
@@ -128,6 +131,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C15 | 18 | Which 2 wrong values are the fakes? Options: "p3 price + a1 date" or "A different pair". | p3 price + a1 date. | Closed (Turn 18) → D37 |
 | C16 | 21, 22 | Should Claude apply only the mechanical format fixes, or does Joseph do everything? | Joseph asked Claude to fix all of it. | Closed (Turn 22) → D39 |
 | C17 | 23 | Has Joseph done Task 1 (laptop setup) yet? Scraper (a) runs on the laptop. | — | **Open** |
+| C18 | 30 | Should Claude open the pull request when a merge is needed? Options: "Yes, open them (Recommended)" or "No, just tell me". | Yes. | Closed (Turn 30) → D40 |
+| C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
 
 ---
 
@@ -144,7 +149,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **`main`:** Joseph merged pull request #3 (`dc88eab`), so `main` has everything through Turn 25, including the fixture files. The working branch has not been merged with it yet: Claude's attempt was stopped by Joseph in Turn 28, so this waits for Joseph's go-ahead.
+- **Merge status:** **no merge needed right now.** `main` has everything Joseph needs (pull request #3), and the branch differs only by this log and the `CLAUDE.md` sync rules. The next "⚠️ Merge needed" comes when the scoring script is done, or at the end of today's session (D40).
 
 ---
 
@@ -1213,3 +1218,24 @@ Claude pulls Joseph's push before writing the scoring script.
 **Questions Claude asked:** none new.
 
 **Direction and fit:** no new decision. Explains D35 and D37 with §2 (Page defenses: poisoning), §4 (Metrics: fake-value rate) and §5 (Test 2).
+
+### Turn 30 — 2026-10-27 19:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> you also need to let me know when i need to go merge the github as well
+
+**What Claude did**
+- Asked two questions (C18, C19). Joseph chose that Claude opens the pull requests, and that Claude merges `main` into its branch.
+- **Merged pull request #3** (`main`, `dc88eab`) into the working branch (`33a588e`). This was the step Joseph had stopped in Turn 28, now approved. Nothing was lost; the branch now contains all of `main`.
+- **Added a "Keep GitHub in sync" section to `CLAUDE.md`** with both rules, so future sessions follow them.
+- Checked the merge status: `main` already has everything Joseph needs; the branch differs only by the log and `CLAUDE.md`.
+
+**Claude's answer (summary)**
+- From now on Claude says **"⚠️ Merge needed"** with a pull request link whenever `main` needs something: finished work Joseph will use, a passed milestone check, or the end of a session.
+- Claude merges Joseph's `main` changes into its branch before building on them.
+- **Right now no merge is needed.** The next one is expected when the scoring script is done, or at the end of today.
+
+**Questions Claude asked:** C18 (yes), C19 (yes).
+
+**Direction and fit:** D40, D41.

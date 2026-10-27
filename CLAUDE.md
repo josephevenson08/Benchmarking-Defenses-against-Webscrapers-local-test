@@ -17,6 +17,22 @@ This repository is Joseph Evenson's Blue Track research project. The plan it fol
 5. **Delete the pending marker line** the hook added.
 6. **Commit and push the log with the turn's other work.**
 
+## Keep GitHub in sync (Joseph's request, Turn 30; D40, D41)
+
+Joseph works on `main`, on his laptop in VS Code. Claude works on `claude/quirky-curie-8j4nye`.
+
+- **Before building on Joseph's files:** fetch, then merge `origin/main` into the branch. Merge only: never rebase, force-push or reset.
+- **When Joseph needs something on `main`:** open a pull request from the branch into `main` (Joseph approved this) and tell Joseph plainly:
+
+  > ⚠️ **Merge needed:** <link>, plus what is in it
+
+  This applies when:
+  - Claude finishes something Joseph will use on his laptop (for example the scoring script);
+  - a milestone check passes;
+  - a working session ends with changes not yet on `main`.
+- **When `main` has nothing new to receive,** say so if Joseph asks.
+- **After Joseph merges:** fetch, and merge `main` into the branch again.
+
 ## AI-use boundaries from the midterm (§2 "AI assistance", §7 "AI-agent plan")
 
 - **Claude may draft:**
