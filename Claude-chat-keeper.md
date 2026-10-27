@@ -172,7 +172,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #5 merged by Joseph (`7e540c4`) and synced on his laptop; branch fast-forwarded. No merge needed now.
+- **⚠️ Merge needed:** pull request #6 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/6): Check 1 recorded, README scoring usage, schedule.
 
 ---
 
@@ -1880,7 +1880,7 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
   - ticked step 8 on Tue;
   - removed the now-done step 8 rows from Wed and Thu (and restored the Wed/Thu day labels, which the first edit had dropped);
   - rewrote the resume note: C20, scraper (a), then Check 2.
-- Committed, pushed, and opened a pull request for the milestone check (D40).
+- Committed, pushed, and opened **pull request #6** for the milestone check (D40): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/6
 
 **Claude's answer (summary):** Check 1 is done. ⚠️ Merge needed for the README and schedule updates. Next: C20 (two quick decisions), then scraper (a).
 
