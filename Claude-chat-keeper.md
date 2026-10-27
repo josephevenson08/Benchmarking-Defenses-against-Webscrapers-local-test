@@ -126,6 +126,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J44 | 44 | Step 8a output on the laptop: 24 tests OK; 63/70 = 0.900; 2/70 = 0.029 | Step 8a passed; step 8b started in Turn 44 |
 | J45 | 45 | Which folder is this in? | Answered in Turn 45: `scoring/score.py` |
 | J46 | 46 | Joseph's step 8b explain-back answers | Checked in Turn 46: #2 and #3 right; #1 half right, corrected |
+| J47 | 47 | Step 8c output: break 1 → FAILED (errors=1); break 2 → FAILED (failures=11) | Checked in Turn 47: both caught; final clean run still needed |
 
 ### Questions from Claude
 
@@ -1642,3 +1643,210 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** step 8c results (waiting). C21 closed.
 
 **Direction and fit:** no new decision. §7 verification step 3 (explain each rule) done with one correction; step 4 ("breaking the code on purpose") in progress for D42.
+
+### Turn 47 — 2026-10-27 20:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> >> python scoring/score.py scoring/fixtures/test2/output.json --fakes scoring/fixtures/test2/fakes.json
+> ........................
+> ----------------------------------------------------------------------
+> Ran 24 tests in 0.075s
+>
+> OK
+> run a-poisoned-1 (scraper a, condition poisoned, run 1)
+> accuracy         63/70 = 0.900
+> fake-value rate  2/70 = 0.029
+> correct 63 | wrong 4 (fakes 2, malformed 1, conflicting 0, plain wrong 1) | missing 3
+> pages fetched 10 | seconds 1.0 | time per page 0.100 s | ignored records 0
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FApython -m unittest discover -s scoring/tests -t .nst-Webscrapers-local-test> 
+> ................E.......
+> ======================================================================
+> ERROR: test_price (scoring.tests.test_score.MatchingRules.test_price)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 99, in test_price
+>     self.assertSame("price", "$1,089.50", "1089.5")
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 94, in assertSame
+>     self.assertEqual(normalize(field, a), normalize(field, b), f"{field}: {a!r} vs {b!r}")
+>                      ^^^^^^^^^^^^^^^^^^^
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\score.py",line 52, in normalize
+>     raise Malformed(f"price {value!r} is not a number")
+> scoring.score.Malformed: price '$1,089.50' is not a number
+>
+> ----------------------------------------------------------------------
+> Ran 24 tests in 0.044s
+>
+> FAILED (errors=1)
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python -m unittest discover -s scoring/tests -t .
+> .FFFF.FF.F..F.......FFF.
+> ======================================================================
+> FAIL: test_json_output (scoring.tests.test_score.CommandLine.test_json_output)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 245, in test_json_output
+>     self.assertEqual((summary["correct"], summary["fakes"], summary["missing"]), (63, 2, 3))
+> AssertionError: Tuples differ: (3, 0, 3) != (63, 2, 3)
+>
+> First differing element 0:
+> 3
+> 63
+>
+> - (3, 0, 3)
+> ?     ^
+>
+> + (63, 2, 3)
+> ?  +   ^
+>
+>
+> ======================================================================
+> FAIL: test_prints_summary_and_writes_records (scoring.tests.test_score.CommandLine.test_prints_summary_and_writes_records)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 232, in test_prints_summary_and_writes_records
+>     self.assertIn("accuracy         63/70 = 0.900", out.getvalue())
+> AssertionError: 'accuracy         63/70 = 0.900' not found in 'run a-poisoned-1 (scraper a, condition poisoned, run 1)\naccuracy         3/70 = 0.043\nfake-value rate  0/70 = 0.000\ncorrect 3 | wrong 64 (fakes 0, malformed 1, conflicting 0, plain wrong 63) | missing 3\npages fetched 10 | seconds 1.0 | timeper page 0.100 s | ignored records 0\n'
+>
+> ======================================================================
+> FAIL: test_a_missing_duplicate_does_not_cause_a_conflict (scoring.tests.test_score.EdgeCases.test_a_missing_duplicate_does_not_cause_a_conflict)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 170, in test_a_missing_duplicate_does_not_cause_a_conflict
+>     self.assertEqual(status(score_run(run(records), DATA), "p1", "price"), CORRECT)
+> AssertionError: 'wrong' != 'correct'
+> - wrong
+> + correct
+>
+>
+> ======================================================================
+> FAIL: test_conflicting_duplicates_are_wrong (scoring.tests.test_score.EdgeCases.test_conflicting_duplicates_are_wrong)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 165, in test_conflicting_duplicates_are_wrong
+>     self.assertEqual((status(s, "p1", "price"), s.correct, s.wrong), (CONFLICT, 69, 1))
+> AssertionError: Tuples differ: ('conflict', 0, 70) != ('conflict', 69, 1)
+>
+> First differing element 1:
+> 0
+> 69
+>
+> - ('conflict', 0, 70)
+> ?              ^  ^^
+>
+> + ('conflict', 69, 1)
+> ?              ^^  ^
+>
+>
+> ======================================================================
+> FAIL: test_identical_duplicates_count_once (scoring.tests.test_score.EdgeCases.test_identical_duplicates_count_once)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 159, in test_identical_duplicates_count_once
+>     self.assertEqual((status(s, "p1", "price"), s.correct), (CORRECT, 70))
+> AssertionError: Tuples differ: ('wrong', 0) != ('correct', 70)
+>
+> First differing element 0:
+> 'wrong'
+> 'correct'
+>
+> - ('wrong', 0)
+> + ('correct', 70)
+>
+> ======================================================================
+> FAIL: test_no_fakes_file_means_no_fakes (scoring.tests.test_score.EdgeCases.test_no_fakes_file_means_no_fakes)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 192, in test_no_fakes_file_means_no_fakes
+>     self.assertEqual((status(s, "p3", "price"), s.fakes), (WRONG, 0))
+> AssertionError: Tuples differ: ('correct', 0) != ('wrong', 0)
+>
+> First differing element 0:
+> 'correct'
+> 'wrong'
+>
+> - ('correct', 0)
+> + ('wrong', 0)
+>
+> ======================================================================
+> FAIL: test_perfect_run_scores_one (scoring.tests.test_score.EdgeCases.test_perfect_run_scores_one)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 131, in test_perfect_run_scores_one
+>     self.assertEqual((s.correct, s.accuracy, s.fake_value_rate, s.missing), (70, 1.0, 0.0, 0))
+> AssertionError: Tuples differ: (0, 0.0, 0.0, 0) != (70, 1.0, 0.0, 0)
+>
+> First differing element 0:
+> 0
+> 70
+>
+> - (0, 0.0, 0.0, 0)
+> + (70, 1.0, 0.0, 0)
+>
+> ======================================================================
+> FAIL: test_unknown_pages_and_fields_are_ignored (scoring.tests.test_score.EdgeCases.test_unknown_pages_and_fields_are_ignored)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 179, in test_unknown_pages_and_fields_are_ignored
+>     self.assertEqual((s.correct, s.ignored_records), (70, 3))
+> AssertionError: Tuples differ: (0, 3) != (70, 3)
+>
+> First differing element 0:
+> 0
+> 70
+>
+> - (0, 3)
+> + (70, 3)
+> ?  +
+>
+>
+> ======================================================================
+> FAIL: test_counts (scoring.tests.test_score.Test2HandCalculated.test_counts)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 61, in test_counts
+>     self.assertEqual(
+> AssertionError: Tuples differ: (70, 3, 64, 0, 1, 63, 3) != (70, 63, 4, 2, 1,1, 3)
+>
+> First differing element 1:
+> 3
+> 63
+>
+> - (70, 3, 64, 0, 1, 63, 3)
+> + (70, 63, 4, 2, 1, 1, 3)
+>
+> ======================================================================
+> FAIL: test_each_special_field (scoring.tests.test_score.Test2HandCalculated.test_each_special_field)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 79, in test_each_special_field
+>     self.assertEqual(status(self.score, item_id, field), want, f"{item_id}.{field}")
+> AssertionError: 'correct' != 'wrong'
+> - correct
+> + wrong
+>  : p1.review_count
+>
+> ======================================================================
+> FAIL: test_matches_the_numbers_in_expected_md (scoring.tests.test_score.Test2HandCalculated.test_matches_the_numbers_in_expected_md)
+> ----------------------------------------------------------------------
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scoring\tests\test_score.py", line 56, in test_matches_the_numbers_in_expected_md
+>     self.assertAlmostEqual(self.score.accuracy, last_number("Accuracy"), places=3)
+> AssertionError: 0.04285714285714286 != 0.9 within 3 places (0.8571428571428572 difference)
+>
+> ----------------------------------------------------------------------
+> Ran 24 tests in 0.052s
+>
+> FAILED (failures=11)
+
+**What Claude did:** read both tracebacks and compared them with the test file. Joseph's line numbers match the committed file. No files changed besides this log.
+
+**Findings**
+- **Break 1 was caught**, but by `test_price` line 99 (`$1,089.50`), while the `$89.99` checks on lines 97–98 passed. So the `$` was still removed and the **comma** removal had been deleted (`.replace(",", "")` rather than `.replace("$", "")`). That is still a valid break: the comma rule is covered by a test.
+- **Break 2 was caught** (11 failures). With `!=`, Joseph's fixture scored 3/70, the 3 "correct" being exactly his wrong values (`1,289`, `$41.00`, `2025-05-19`).
+- **Missing:** the final run after undoing both breaks.
+
+**Claude's answer (summary):** both breaks were detected. Asked Joseph to run the tests once more (expect OK) and `git status`, which must not list `scoring/score.py` (so no break is left in the file). Then ⭐ Check 1 is done.
+
+**Questions Claude asked:** the final test run and `git status` output (waiting).
+
+**Direction and fit:** no new decision. §7 verification step 4 ("breaking the code on purpose") done for D42, pending the clean rerun.
