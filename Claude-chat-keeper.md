@@ -105,6 +105,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J26 | 26 | How do I update my VS Code to have this? | Answered in Turn 26 (terminal steps for both cases) |
 | J27 | 27 | Git error on the laptop: an untracked `scoring/fixtures/test2` would be overwritten by checkout and by pull. | Diagnosed in Turn 27 (move it aside, stay on `main`, pull). Joseph then said "nevermind" (Turn 28). |
 | J28 | 28 | "nevermind" (sent after stopping Claude's next command) | Claude stopped; nothing else was changed |
+| J29 | 29 | What is the `fakes.json` file? | Answered in Turn 29 |
 
 ### Questions from Claude
 
@@ -1194,3 +1195,21 @@ Claude pulls Joseph's push before writing the scoring script.
 **Questions Claude asked:** what to do next (open).
 
 **Direction and fit:** no new decision. Merging pull request #3 into the working branch is on hold until Joseph says to go ahead.
+
+### Turn 29 — 2026-10-27 19:45 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> wait so what is the fakes.json file
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **What it is:** `fakes.json` lists the decoy values for live DOM poisoning (§2). A poisoned page first shows a fake value, and a script swaps in the real one after about 2 seconds. A scraper that reads early (such as (a)) is fooled; one that waits (such as (d)) gets the real value.
+- **Why scoring needs it:** to tell "fooled" (the value equals the fake) from "just wrong". That is the fake-value rate and §4's "Blocked vs fooled" check.
+- **In Test 2:** Joseph's 2 fakes are p3 price (`$41.00` vs the real `$47.00`) and a1 publish_date (`2025-05-19` vs the real `2025-05-14`). Both appear in `output.json` and `fakes.json`, so they count as wrong *and* fake, giving 2/70. The other two wrong values (`$89O.99`, `1,289`) are just wrong.
+- **Later:** Joseph's poisoning defense (Milestone 3) produces a full `fakes.json` with a fake for every field.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Explains D35 and D37 with §2 (Page defenses: poisoning), §4 (Metrics: fake-value rate) and §5 (Test 2).
