@@ -232,7 +232,8 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #11 merged by Joseph (`652216a`); `main` merged into the branch. No merge needed now.
+- **⚠️ Merge needed:** pull request #12 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/12), which closes Milestone 1 (Check 2 recorded, hand count, README, schedule).
+- **Joseph:** change line 87 of `scrapers/a_raw_html.py` to the approved code `"connection_error"` (underscore), then commit.
 
 ---
 
@@ -4215,7 +4216,7 @@ Then three tests (normal; `/nope` → 404; port 3999 → connection error), all 
 - **Re-scored the committed files:** all three 70/70; the CSV has 70 rows, all correct.
 - **Found a small mismatch** in the committed scraper (line 87): the error code is `"connection error"` (space), but the approved code is `"connection_error"` (D31). Check 2 is unaffected (accuracy doesn't read error codes), but Test 7 (Milestone 3) will. Joseph to fix it.
 - **Wrote `results/2026-10-30-check2/hand-count.md`:** the Check 2 results table and the hand-count table. It notes that Joseph chose the rows and Claude compared them with the data list.
-- Committed and pushed, and opened the closing pull request.
+- Committed and pushed, and opened **pull request #12**, the Milestone 1 closing pull request: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/12
 
 **Claude's answer (summary):** the hand count is done; Milestone 1 is fully wrapped up. Joseph fixes line 87 (`"connection_error"`) and commits, then merges the closing pull request. Milestone 2 starts Wed Nov 4.
 
