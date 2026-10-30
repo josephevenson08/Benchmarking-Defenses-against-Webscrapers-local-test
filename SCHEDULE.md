@@ -19,13 +19,13 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Oct 30 (Turn 50 of the chat-keeper).*
+*Last updated: Fri Oct 30 (Turn 75 of the chat-keeper).*
 
-> **▶ Resume here (Fri Oct 30).** Milestone 1 steps 1–8 are done (⭐ Check 1 passed Oct 27). Scraper (a) hasn't started, so Fri–Tue were re-planned (D44). Left:
-> 1. C20 decisions (1 minute).
-> 2. Step 9: scraper (a), Fri–Sun (4 parts plus a first full run).
-> 3. Step 10: 3 baseline runs at ≥ 90%, Mon Nov 2. ⭐ Check 2
-> 4. Milestone 1 closes Tue Nov 3 (buffer and merge).
+> **▶ Resume here (Fri Oct 30, after a break).** ⭐ Check 1 passed Oct 27; **scraper (a) part 1 done** (reads `/products/p1`, prints 10 correct pairs). Next:
+> 1. ✅ Joseph committed `scrapers/a_raw_html.py` and pushed it to `main` (`913c23f`).
+> 2. ✅ Part 2a: crawl loop. All 10 pages found from the home page, run ID logged on every request.
+> 3. Part 2b: inputs `--start-url --page-cap --robots --run-id --out`.
+> 4. Then Sat: parts 3–4 · Sun: first full run · Mon: ⭐ Check 2 · Tue Nov 3: close.
 
 ---
 
@@ -46,8 +46,9 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Wed Oct 28** | ~~Scraper (a): crawl loop~~: moved to Fri Oct 30. | — |
 | **Thu Oct 29** | ~~Scraper (a): extraction and output~~: moved to Sat Oct 31. | — |
 | **Fri Oct 30** | Decide C20 (#1 page mapping, #6 tags as a list): 1 minute. | J |
-| | **Step 9, scraper (a), part 1:** fetch `/products/p1` with `requests` (with `run=<id>` in the User-Agent); find the label rows with BeautifulSoup; print the 10 label/value pairs. | J |
-| | **Part 2:** crawl loop from the home page (queue and visited set), following every link; page cap; `robots.txt` obey/ignore; the inputs `--start-url --page-cap --robots --run-id --out` (`docs/scraper-output.md`). | J |
+| | ✅ **Step 9, scraper (a), part 1:** fetches `/products/p1` with a `run=` User-Agent, finds each label by its text, and prints all 10 correct label/value pairs (Joseph's code, Fri Oct 30). | J |
+| | ✅ **Part 2a:** crawl loop from the home page (queue and visited set), following every link, same-site only, page cap 15. It visits all 10 pages (status 200), and every request is logged with the run ID (Joseph's code, Fri Oct 30). | J |
+| | **Part 2b:** the inputs `--start-url --page-cap --robots --run-id --out` (`docs/scraper-output.md`); `robots.txt` obey/ignore. | J |
 | **Sat Oct 31** | **Part 3:** the label-plus-next-text rule on every item page, using `data/fields.json` (never `items.json`); write the output JSON in the approved format. | J |
 | | **Part 4:** record 404s and timeouts and keep going; time the crawl (`seconds`). | J |
 | **Sun Nov 1** | **First full run** on baseline: `python scoring/score.py <output>`; fix problems until accuracy ≥ 90%. | J |
