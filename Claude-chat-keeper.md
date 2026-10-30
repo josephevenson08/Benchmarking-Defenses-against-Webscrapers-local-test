@@ -143,6 +143,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J59 | 59 | Output of `print(labels)` (the whole `fields.json` dictionary) | Explained in Turn 59; next: build `product_labels` |
 | J60 | 60 | Second version of scraper (a) part 1, with Joseph's own comments; the loop now uses `soup.select_one(labels[field])` | Reviewed in Turn 60: comments good; `url` still missing; the `select_one` loop crashes and is selector-based extraction, which the midterm excludes |
 | J61 | 61 | Third version of scraper (a) part 1: `url` set to the home page; the loop is back to the label-text rule but still iterates `labels` | Reviewed in Turn 61: runs and the run ID is logged; two fixes left |
+| J62 | 62 | How do I build the `product_labels` list? | Answered in Turn 62 (line by line, fill in the blanks) |
 
 ### Questions from Claude
 
@@ -2327,3 +2328,25 @@ Told Joseph the result of Claude's test run: as written it fails; with both fixe
 **Questions Claude asked:** Joseph to paste the next output.
 
 **Direction and fit:** no new decision. Claude explains with a standalone example; the scraper code stays Joseph's (§2 AI assistance).
+
+### Turn 62 — 2026-10-30 18:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how do i build the product_labels list?
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** after two rounds of standalone examples, Claude walked Joseph through the 3–4 lines **as a fill-in-the-blank**:
+- `product_labels = []`
+- `for entry in labels[ ____ ]:`
+- `    product_labels.append(entry[ ____ ])`
+- a check `print`
+
+Each line was explained (empty list, the loop over the product entries, `.append`, indentation), with hints pointing back to Joseph's own `print(labels)` output for the two blanks (`"product"`, `"label"`). Then: change the loop to `for label in product_labels:`, write his own comment, and fix `url`.
+
+**Disclosure:** this is the most direct help so far on scraper (a). Claude gave the line structure for this small data step; Joseph fills in the keys and runs it. The extraction logic (find by text → parent → next sibling) and the rest of the scraper are Joseph's own.
+
+**Questions Claude asked:** Joseph to paste the output.
+
+**Direction and fit:** no new decision. Teaching-level help on a 3-line list-building step, disclosed here. It stays within "explain concepts" (§2 AI assistance), but more directly than the earlier standalone examples.
