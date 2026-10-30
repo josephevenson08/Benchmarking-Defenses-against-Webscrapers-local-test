@@ -170,6 +170,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J84 | 84 | What should my commit of `a-baseline-1.json` and `a_raw_html.py` be? | Answered in Turn 84: commit only the scraper |
 | J85 | 85 | What should my commit say? | Answered in Turn 85 |
 | J86 | 86 | "its synced" (scraper parts 2b and 3 pushed) | Checked in Turn 86: on GitHub; laptop run 70/70; slow-localhost fix (D46); practice output was committed |
+| J87 | 87 | Keep going and finish Milestone 1; how long will it take? | Answered in Turn 87: about 1–1½ hours; part 4 started |
 
 ### Questions from Claude
 
@@ -213,7 +214,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed:** pull request #10 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/10): the server listens on IPv4 and IPv6 loopback (D46), `results/dev/` is ignored (D45), and the schedule is updated. After merging, Joseph reruns the scraper to confirm `seconds` drops.
+- **Merge status:** pull request #10 merged by Joseph (`27029d5`, plus his comment fix `ce3666f`); branch fast-forwarded. Still pending on Joseph's side: the speed check after restarting the server, and `git rm --cached results/dev/a-baseline-1.json`.
 
 ---
 
@@ -3563,3 +3564,33 @@ Updated `SCHEDULE.md`:
 **Questions Claude asked:** Joseph to report the new `seconds` value.
 
 **Direction and fit:** D46.
+
+### Turn 87 — 2026-10-30 21:26 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets continue and try and knock this milestone 1 out, how long do you think it will take?
+
+**What Claude did**
+- Confirmed pull request #10 is merged (`27029d5`) and fast-forwarded the branch. `results/dev/a-baseline-1.json` is still tracked on `main`.
+- Estimated the rest of Milestone 1 at about 1–1½ hours: sync and speed check, untracking, part 4, ⭐ Check 2, and Claude's wrap-up.
+- **Wrote and tested a standalone example** (`errors_example.py`, scratchpad): `try`/`except` with `requests` against the test site, covering 200, 404, a connection error (port 3999) and a timeout (0.0001 s), with no crash.
+- **Tested the part 4 plan** on a scratch copy of Joseph's scraper from `main`:
+  - normal run → 70/70;
+  - `--start-url …/nope` → `pages` holds status 404 with error None, and the file is written;
+  - `--start-url http://localhost:3999/` → `connection_error`, the file is written, and the score is 0/70 with 70 missing.
+- **Found a trap:** a `RobotFileParser` that was never given rules answers `can_fetch = False` for everything. So if `robots.txt` can't be downloaded, obey mode would skip the whole site. Fix: `rules.parse([])` in the `except` branch, which allows everything.
+
+**Claude's answer (summary):** the time estimate, then the part 4 walkthrough with blanks:
+1. Move `path = urlparse(url).path` above the fetch.
+2. Wrap the fetch in `try`/`except Timeout` → `"timeout"` / `except RequestException` → `"connection_error"`; record the page and `continue`.
+3. Wrap the `robots.txt` download, and call `rules.parse([])` on failure.
+4. Three test runs (normal, 404, nothing listening).
+
+Before that: sync, restart the server, rerun to check `seconds`, and untrack the practice file.
+
+**Disclosure:** fill-in walkthrough, as in Turns 77 and 80. Values and comments are Joseph's.
+
+**Questions Claude asked:** Joseph to report the new `seconds` value and paste his part 4 code and output.
+
+**Direction and fit:** no new decision. Part 4 meets §2 ("Record 404s and timeouts and keep going") and §5 Test 7 (failure handling), using the approved `error` codes (D31: `timeout`, `connection_error`).
