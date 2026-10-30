@@ -84,7 +84,7 @@ while queue and len(visited) < page_cap:
         continue
     except requests.exceptions.RequestException:
         print("connection error", url)
-        pages.append({"path": path, "status": None, "error": "connection error"})
+        pages.append({"path": path, "status": None, "error": "connection_error"})
         continue
     print(response.status_code, url)
     pages.append({"path": path, "status": response.status_code, "error": None})
