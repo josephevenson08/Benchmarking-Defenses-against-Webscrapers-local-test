@@ -160,6 +160,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J76 | 76 | "lets continue" (part 2b) | Part 2b started in Turn 76 (two standalone examples, then Joseph's task) |
 | J77 | 77 | Walk me through each step; I'll comment them myself | Answered in Turn 77 (7-step fill-in walkthrough for part 2b) |
 | J78 | 78 | First part 2b draft (options and robots blocks placed at the end of the file) | Reviewed in Turn 78: `NameError: args`; 4 fixes |
+| J79 | 79 | Fixed part 2b (blocks reordered, `page_cap` from args, `obey`/`ignore`) | Part 2b done (Turn 79) |
 
 ### Questions from Claude
 
@@ -3007,3 +3008,101 @@ Then comment the new lines and run the three tests.
 **Questions Claude asked:** Joseph to paste the next version and output.
 
 **Direction and fit:** no new decision. Keeps the scraper inputs consistent with D32. The code is Joseph's.
+
+### Turn 79 — 2026-10-30 20:54 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> import json #json import, reads files into python
+> from bs4 import BeautifulSoup #brings in html parser, for searching
+> import requests #downloads webpages
+> from urllib.parse import urljoin, urlparse
+> import argparse
+> from urllib.robotparser import RobotFileParser
+>
+> parser = argparse.ArgumentParser(description="Scraper (a): raw HTML")
+> parser.add_argument("--start-url", default="http://localhost:3000/")
+> parser.add_argument("--page-cap", type=int, default=15)
+> parser.add_argument("--robots", choices=["obey", "ignore"], default="obey")
+> parser.add_argument("--run-id", required=True)
+> parser.add_argument("--out", required=True)
+> args = parser.parse_args()
+>
+> labels = json.load(open("data/fields.json")) # opens file -> turns text into python data -> stores in variable
+>
+> product_labels = []
+> for entry in labels["product"]:
+>     product_labels.append(entry["label"]) #adds the label to the list of product labels
+>
+> #print(labels) #prints the data in the variable
+> # url = "http://localhost:3000/products/p1" #url of the page we want to scrape
+>
+> # response = requests.get(url, headers = {"User-Agent":
+> #                                         "run=a-test-1"}, timeout = 5)
+> # # fetch the page, timout is 5 seconds, User-Agent tells the server whos asking
+>
+> # soup = BeautifulSoup(response.content, "html.parser")
+> # #turns raw HTML into a tree of elements, then we are able to search through it
+>
+> # for label in product_labels:
+> #     # Find the element with the label text
+> #     label_element = soup.find(string=label)
+> #     if label_element:
+> #         # Step to its parent element
+> #         parent_element = label_element.parent
+> #         # Step to the next element (the value)
+> #         value_element = parent_element.find_next_sibling()
+> #         if value_element:
+> #             print(f"{label}: {value_element.get_text(strip=True)}")
+> #         else:
+> #             print(f"{label}: Value not found")
+> #     else:
+> #         print(f"{label}: Label not found")
+>
+> start_url = args.start_url
+> page_cap = args.page_cap
+> user_agent = f"run={args.run_id}" #user agent is the run id, tells the server whos asking
+>
+> robots_url = urljoin(start_url, "/robots.txt")
+> robots_response = requests.get(robots_url, headers={"User-Agent": user_agent}, timeout=5)
+> rules = RobotFileParser()
+> rules.parse(robots_response.text.splitlines())
+>
+> queue = [start_url] #list of urls to scrape
+> visited = set() #set of urls already scraped
+>
+> while queue and len(visited) < page_cap:
+>     url = queue.pop(0) #get the first url in the queue
+>     if url in visited:
+>         continue
+>     visited.add(url)
+>     if args.robots == "obey" and not rules.can_fetch(user_agent, url):
+>         print("skipped (robots.txt):", url)
+>         continue
+>     response = requests.get(url, headers={"User-Agent": user_agent}, timeout=5) #fetch the page, timeout is 5 seconds, User-Agent tells the server whos asking
+>     print(response.status_code, url)
+>
+>     soup = BeautifulSoup(response.content, "html.parser")
+>     for a in soup.find_all("a"):                 # every link, hidden ones too
+>         link = urljoin(url, a.get("href", ""))   
+>         same_site = urlparse(link).netloc == urlparse(start_url).netloc
+>         if same_site and link not in visited and link not in queue:
+>             queue.append(link)                   # wait in line to be visited
+>
+> print(len(visited), "pages visited")
+>
+> print("output will go to :", args.out)
+
+**What Claude did:** ran Joseph's code against the local site.
+- **The three planned tests:** obey → 10 pages; ignore → 10 pages; no options → the "required: --run-id, --out" error.
+- **Two extras:**
+  - `--page-cap 4` → 4 pages;
+  - a **temporary** `robots.txt` disallowing `/articles/` → obey fetched 8 pages, ignore fetched 10. The baseline `robots.txt` was restored afterwards.
+- **Log:** each run's requests carried its own run ID, plus one `/robots.txt` request per run.
+- Stopped the server, and ticked part 2b in `SCHEDULE.md`.
+
+**Claude's answer (summary):** part 2b is done; all of Friday's scraper work is complete. Reminders: comment the new lines (options, `robots.txt`, obey check), then commit and Sync. Remaining today: C20 (optional). Next: Saturday's parts 3–4. Asked whether to continue or stop.
+
+**Questions Claude asked:** continue to part 3, or stop for today?
+
+**Direction and fit:** no new decision. Meets D32 (inputs) and §2 (robots.txt setting); the page cap works (§5). The code is Joseph's.
