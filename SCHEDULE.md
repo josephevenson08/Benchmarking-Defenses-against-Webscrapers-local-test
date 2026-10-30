@@ -21,11 +21,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 
 *Last updated: Fri Oct 30 (Turn 63 of the chat-keeper).*
 
-> **▶ Resume here (Fri Oct 30).** Milestone 1 steps 1–8 are done (⭐ Check 1 passed Oct 27). Scraper (a) hasn't started, so Fri–Tue were re-planned (D44). Left:
-> 1. C20 decisions (1 minute).
-> 2. Step 9: scraper (a), Fri–Sun (4 parts plus a first full run).
-> 3. Step 10: 3 baseline runs at ≥ 90%, Mon Nov 2. ⭐ Check 2
-> 4. Milestone 1 closes Tue Nov 3 (buffer and merge).
+> **▶ Resume here (Fri Oct 30, after a break).** ⭐ Check 1 passed Oct 27; **scraper (a) part 1 done** (reads `/products/p1`, prints 10 correct pairs). Next:
+> 1. Joseph: move `a_raw_html.py` into `scrapers/`, commit and Sync.
+> 2. Part 2a: crawl loop (queue + visited, every `<a href>`, page cap 15). Print the 10 pages visited. Claude starts with a standalone queue + visited example.
+> 3. Part 2b: inputs `--start-url --page-cap --robots --run-id --out`.
+> 4. Then Sat: parts 3–4 · Sun: first full run · Mon: ⭐ Check 2 · Tue Nov 3: close.
 
 ---
 

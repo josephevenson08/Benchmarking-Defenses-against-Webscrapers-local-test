@@ -145,6 +145,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J61 | 61 | Third version of scraper (a) part 1: `url` set to the home page; the loop is back to the label-text rule but still iterates `labels` | Reviewed in Turn 61: runs and the run ID is logged; two fixes left |
 | J62 | 62 | How do I build the `product_labels` list? | Answered in Turn 62 (line by line, fill in the blanks) |
 | J63 | 63 | Part 1 output (all 10 pairs correct) and the commented code | Part 1 done (Turn 63) |
+| J64 | 64 | Taking a break to move locations; will type again when ready to continue | Resume note updated (Turn 64) |
 
 ### Questions from Claude
 
@@ -176,7 +177,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Fri Oct 30):** see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
+**▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
@@ -2420,3 +2421,20 @@ Ticked part 1 in `SCHEDULE.md`.
 **Questions Claude asked:** continue to part 2 tonight, or stop here?
 
 **Direction and fit:** no new decision. Step 9 part 1 of the re-plan (D44) done on schedule (Fri). The scraper follows §2's label-text rule and reads only `fields.json` (§4 assumption; CLAUDE.md).
+
+### Turn 64 — 2026-10-30 18:50 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok imma move locations so ill type again when im ready to continue after this tick
+
+**What Claude did:** updated the resume note in `SCHEDULE.md` and at the top of Open items. Committed and pushed.
+
+**Claude's answer (summary):**
+- Resume point: commit the part 1 file into `scrapers/`, then part 2a, starting with a standalone queue + visited example.
+- No merge is needed for a short break. The end-of-day pull request (D40) comes when today's session wraps up.
+- Suggested pushing the part 1 commit before leaving, so the work is safe on GitHub.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
