@@ -183,6 +183,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J95 | 95 | Part 4 code with the three blanks still `____` | Reviewed in Turn 95: tests 1–2 pass; test 3 crashes on the empty blanks |
 | J96 | 96 | Part 4 with blanks filled: `rules.parse([])` correct; the error blanks set to `pages.append` | Reviewed in Turn 96: crash at `json.dump` (function not JSON-serializable) |
 | J97 | 97 | Test 3 output on the laptop: all three part 4 tests pass | Part 4 done; scraper (a) complete (Turn 97) |
+| J98 | 98 | Check 2 runs: `a-baseline-1..3` each 10 pages and 70 records into `results/2026-10-30-check2/` | Runs done; scoring and hand count next (Turn 98) |
 
 ### Questions from Claude
 
@@ -4092,3 +4093,66 @@ Then three tests (normal; `/nope` → 404; port 3999 → connection error), all 
 **Questions Claude asked:** Joseph to paste the three score outputs and the hand-count result.
 
 **Direction and fit:** D48. Part 4 meets §2 ("Record 404s and timeouts and keep going") and the approved error codes (D31).
+
+### Turn 98 — 2026-10-30 21:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> >> python scrapers\a_raw_html.py --run-id a-baseline-3 --out results\2026-10-30-check2\a-baseline-3.json
+>
+>
+>     Directory: 
+>     C:\Users\josep\OneDrive - 
+>     Saint Louis University\FALL 
+>     26\Web tech\project\Benchmarkin
+>     g-Defenses-against-Webscrapers-
+>     local-test\results
+>
+>
+> Mode                 LastWriteTime
+> ----                 -------------
+> d-----        10/30/2026   4:46 PM
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 10 pages visited
+> 70 records written to results\2026-10-30-check2\a-baseline-1.json
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 10 pages visited
+> 70 records written to results\2026-10-30-check2\a-baseline-2.json
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 10 pages visited
+> 70 records written to results\2026-10-30-check2\a-baseline-3.json
+
+**What Claude did:** read Joseph's laptop output: three runs (`a-baseline-1`, `-2`, `-3`), each 10 pages with status 200 and 70 records written, saved in `results/2026-10-30-check2/` (D48). No files changed besides this log.
+
+**Claude's answer (summary):** next, score all three (run 3 with `--records` for the CSV) and paste the accuracy lines (each must be ≥ 0.900). Then hand-count 5 rows from the CSV against the pages in the browser.
+
+**Questions Claude asked:** the three accuracy lines and the 5 hand checks.
+
+**Direction and fit:** no new decision. Step 10 / ⭐ Check 2 in progress (§7 Milestone 1 completion check).
