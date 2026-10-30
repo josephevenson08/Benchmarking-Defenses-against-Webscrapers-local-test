@@ -133,6 +133,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J49 | 49 | Merged pull request #6; leaving now; resume tonight where we left off. | Done in Turn 49 |
 | J50 | 50 | What is left for Milestone 1? | Answered in Turn 50 (re-planned Fri–Tue, D44) |
 | J51 | 51 | "ok yep make sure we are where we are and then lets get started" | Re-plan confirmed; pull request #8 opened; scraper (a) part 1 started with a standalone example |
+| J52 | 52 | Running the example failed: `python3 book_example` → No such file or directory | Diagnosed in Turn 52 |
 
 ### Questions from Claude
 
@@ -1964,3 +1965,27 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** C20 is still open (not blocking).
 
 **Direction and fit:** no new decision. The example is a "small standalone example that is not project code" (§2 AI assistance, CLAUDE.md). Scraper (a) is Joseph's to write (§2).
+
+### Turn 52 — 2026-10-30 18:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> PS C:\Users\josep\OneDrive\Desktop> python3 book_example
+> C:\Users\josep\AppData\Local\Microsoft\WindowsApps\python3.exe: can't open file 'C:\\Users\\josep\\OneDrive\\Desktop\\book_example': [Errno 2] No such fileor directory
+> PS C:\Users\josep\OneDrive\Desktop>
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Diagnosis:** two issues, neither in the example code:
+1. The command left off `.py`.
+2. `python3` on Windows is the system (Microsoft Store) Python, outside the project's venv, so `requests` and `bs4` wouldn't be installed there.
+
+**Claude's answer (summary):**
+- Check the file name with `dir book_example*`; rename if Notepad added `.txt` or there's no extension.
+- `cd` to the project and activate `.venv`.
+- Run `python "C:\Users\josep\OneDrive\Desktop\book_example.py"`.
+- Use `python`, not `python3`. Tip: open the terminal from VS Code with the project open.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision.
