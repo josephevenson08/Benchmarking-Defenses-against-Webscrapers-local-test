@@ -146,7 +146,7 @@ pip install -r requirements.txt
 
 ```bash
 npm run generate -- baseline   # writes conditions/baseline/: 10 pages and robots.txt
-npm run serve -- baseline      # serves it at http://localhost:3000 and logs to logs/requests.jsonl
+npm run serve -- baseline      # serves it at http://127.0.0.1:3000 and logs to logs/requests.jsonl
 npm test                       # checks for the generator and server
 ```
 
@@ -160,6 +160,8 @@ python -m unittest discover -s scoring/tests -t .   # 24 checks, including the h
 The scoring rules and the output format scrapers must write are in [`docs/scraper-output.md`](docs/scraper-output.md).
 
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
+
+**Use `127.0.0.1`, not `localhost`, in scraper URLs.** On Windows, the name `localhost` adds about 2 s to every request, which would distort the time-per-page metric.
 
 **Run IDs:** a scraper puts `run=<id>` anywhere in its `User-Agent`, for example `bench-scraper (run=a-baseline-1)`. Requests without one are logged as `unknown`.
 

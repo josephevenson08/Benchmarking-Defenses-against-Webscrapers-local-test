@@ -75,6 +75,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D44 | 50 | **Re-plan of Milestone 1, Fri Oct 30 – Tue Nov 3.** Scraper (a) hadn't started (nothing on GitHub by Fri). It now runs Fri–Sun in 4 parts plus a first full run. The baseline check (⭐ Check 2) moves from Sun Nov 1 to Mon Nov 2. Tue Nov 3 stays the close, with Mon's buffer moved to Tue. Dates outside Milestone 1 are unchanged. | — | Claude proposed; Joseph confirmed (Turn 51) | §7 milestone table (Milestone 1 ends Nov 3; completion check: (a) ≥ 90% on baseline in each of 3 runs). Figure 3 (scraper (a) + baseline check bar ends Nov 3). | Follows (dates within the milestone shifted; the milestone end is unchanged) |
 | D45 | 80 | Practice scraper outputs go in `results/dev/`, which is git-ignored. Real experiment results will use dated folders (Milestone 3). Timing (`started_at`, `seconds`) moves from part 4 into part 3, because the output's `run` block needs it; part 4 is now error handling only. | — | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder"). README layout (`results/`). `docs/scraper-output.md` (`run` block fields, D31). | Follows (`results/dev/` Adds) |
 | D46 | 86 | **The server listens on both loopback addresses** (`127.0.0.1` and `::1`), skipping IPv6 where it isn't available. Prompted by Joseph's laptop run: 20.5 s for 10 pages (~2 s per page) vs 0.06 s in the cloud check, which matches Windows trying `localhost` over IPv6 first and timing out before falling back to IPv4. Still local-only (loopback). A new test covers it; a busy port gives a clear error. | Keep IPv4 only and have scrapers use `127.0.0.1`; listen on both loopbacks | Claude (test site) | §4 Metrics (time per page must reflect the scraper, not a connection delay). §1/§3 (everything runs locally). Revises D23's binding to `127.0.0.1` only. | Adds (protects a metric); diagnosis to be confirmed on Joseph's laptop |
+| D47 | 93 | **Scrapers use `http://127.0.0.1:3000/`, not `localhost`.** Joseph's laptop test: with `localhost`, 20.564 s for 10 pages (2.056 s per page); with `127.0.0.1`, 0.113 s (0.011 s per page). This confirms the slowdown is the `localhost` name lookup on Windows (D46's cause). The default start URL in `docs/scraper-output.md` is amended (approved contract D32 changed with Joseph's approval). README and the server's startup message updated; Joseph changes his scraper's `--start-url` default. Dual loopback listening (D46) is kept as harmless extra robustness. | Use 127.0.0.1; keep localhost | Joseph (Claude recommended) | §4 Metrics (time per page). §1/§3 (local only; `127.0.0.1` is the same machine). D32 (amended). | Adds (amends D32's default value; protects a metric) |
 
 ---
 
@@ -175,6 +176,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J89 | 89 | `git rm --cached` and commit succeeded (`3ca30e6`); push rejected (fetch first) | Answered in Turn 89: pull, then push |
 | J90 | 90 | Speed check result: `seconds` = 20.564 (still slow) | Diagnosed in Turn 90: two checks requested |
 | J91 | 91 | Pasted the full `a-speed-1` run (seconds 20.564, the same earlier run) | Answered in Turn 91: the two checks still need running |
+| J92 | 92 | ".0113 seconds" (message interrupted) | See Turn 93 |
+| J93 | 93 | "0.113 seconds": Check 2, `--start-url http://127.0.0.1:3000/` | Diagnosis confirmed; start URL changed to 127.0.0.1 (D47) |
 
 ### Questions from Claude
 
@@ -201,7 +204,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
 | C20 | 38 | Joseph to review the scoring script's unresolved assumptions (listed in Turn 38), especially #1 (pages mapped from the data list rather than read from the manifest) and #6 (tags given as a JSON list). | — | **Open** |
 | C21 | 44, 46 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | (1) Joseph: a valid number that was changed. Half right: what decides it is that the value matches the `fakes.json` entry (line 261); `$42.00` would be plain wrong. (2) `if not values:` (line 249), correct. (3) Not a conflict because of `casefold()`, correct. | Closed (Turn 46) |
-| C22 | 90 | Speed diagnosis: (1) after restarting, does the server print `Listening on ::1`? (2) Is `--start-url http://127.0.0.1:3000/` fast? | — | **Open** |
+| C22 | 90, 91 | Speed diagnosis: (1) after restarting, does the server print `Listening on ::1`? (2) Is `--start-url http://127.0.0.1:3000/` fast? | (2) Yes: 0.113 s vs 20.564 s. (1) Startup lines not pasted; not needed once (2) settled it. | Closed (Turn 93) → D47 |
+| C23 | 93 | Change the scrapers' default start URL to `http://127.0.0.1:3000/` (amending the approved contract)? Options: "Yes, use 127.0.0.1 (Recommended)" or "No, keep localhost". | Yes. | Closed (Turn 93) → D47 |
 
 ---
 
@@ -3707,3 +3711,40 @@ Noted that `condition speed` in the score is just the test run ID being parsed (
 **Questions Claude asked:** C22 (both checks), still open.
 
 **Direction and fit:** no new decision.
+
+### Turn 92 — 2026-10-30 21:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> .0113 seconds
+
+**What Claude did:** nothing separately. Joseph interrupted this message and resent it as Turn 93.
+
+**Claude's answer (summary):** see Turn 93.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 93 — 2026-10-30 21:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 0.113 seconds
+
+**What Claude did**
+- **Read the result:** 0.113 s with `127.0.0.1` against 20.564 s with `localhost`, so 0.011 s against 2.056 s per page. **This confirms the slowdown is the `localhost` name lookup on Windows.**
+- Asked C23 (amend the approved default start URL?). Joseph said yes.
+- **`docs/scraper-output.md`:**
+  - status line notes the amendment (D47);
+  - the `--start-url` default and the example `start_url` are now `http://127.0.0.1:3000/`;
+  - added a note explaining why.
+- **README:** the Usage line now uses `127.0.0.1`, with a note to use `127.0.0.1` in scraper URLs.
+- **`site/server.js`:** the startup message prints `http://127.0.0.1:<port>/`. `npm test` shows 8 passing.
+- Committed, pushed, and opened a pull request.
+
+**Claude's answer (summary):** the diagnosis is confirmed. **Joseph's change:** in the options block, set `--start-url`'s default to `"http://127.0.0.1:3000/"`. Then run part 4's tests and ⭐ Check 2 with that default. ⚠️ Merge needed for the docs and README update.
+
+**Questions Claude asked:** C23 (answered: yes).
+
+**Direction and fit:** D47 (amends D32's default value with Joseph's approval).

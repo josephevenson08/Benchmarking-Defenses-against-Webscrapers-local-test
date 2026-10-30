@@ -1,6 +1,6 @@
 # Scraper output format and matching rules
 
-**Status:** approved by Joseph on Oct 26 (chat-keeper Turn 9; decisions D31–D35). That covers the output format, the inputs, ignoring case in text fields, and conflicting duplicates counting as wrong. Changes after this point must be recorded in the chat-keeper.
+**Status:** approved by Joseph on Oct 26 (chat-keeper Turn 9; decisions D31–D35). Amended Oct 30 with Joseph's approval (D47): the default start URL is now `http://127.0.0.1:3000/`. That covers the output format, the inputs, ignoring case in text fields, and conflicting duplicates counting as wrong. Changes after this point must be recorded in the chat-keeper.
 
 This is the contract between the scrapers and the scoring script. Every scraper, (a) through (e), writes one JSON file per run in the format below. The scoring script reads that file and decides, for each of the 70 scored fields, whether the scraper got it right.
 
@@ -17,7 +17,7 @@ The experiment runner (Milestone 3) starts each scraper with these command-line 
 
 | Option | Meaning | Default (`config.json`) |
 |---|---|---|
-| `--start-url` | Where the crawl starts | `http://localhost:3000/` |
+| `--start-url` | Where the crawl starts | `http://127.0.0.1:3000/` (see the note below) |
 | `--page-cap` | Stop after requesting this many pages | `15` |
 | `--robots obey` or `--robots ignore` | Whether to follow `robots.txt` | `obey` |
 | `--run-id` | The run ID, for example `a-baseline-1` | — (required) |
@@ -27,6 +27,8 @@ The experiment runner (Milestone 3) starts each scraper with these command-line 
 - The scraper treats it as plain text. It only puts it in its User-Agent (`run=<id>`) and in its output.
 - The scoring script reads the condition and run number from it.
 - Scrapers are never told the condition directly. §4 assumes "scrapers know nothing of the defenses beyond their built capabilities."
+
+**Why `127.0.0.1`, not `localhost`:** on Joseph's Windows laptop, the name `localhost` added about 2 s to every request: 20.6 s for 10 pages, against 0.11 s with `127.0.0.1`. That would distort the time-per-page metric (§4). `127.0.0.1` is the same machine without the name lookup (D47).
 
 **Labels:** scrapers read field labels from `data/fields.json`. They must never read `data/items.json`, which is the answer key.
 
@@ -41,7 +43,7 @@ One UTF-8 JSON file per run. Trimmed example from scraper (a) on the baseline si
   "run": {
     "run_id": "a-baseline-1",
     "scraper": "a",
-    "start_url": "http://localhost:3000/",
+    "start_url": "http://127.0.0.1:3000/",
     "page_cap": 15,
     "obey_robots_txt": true,
     "started_at": "2026-10-28T19:02:11.481Z",
