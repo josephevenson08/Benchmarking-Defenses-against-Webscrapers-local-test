@@ -136,6 +136,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J52 | 52 | Running the example failed: `python3 book_example` → No such file or directory | Diagnosed in Turn 52 |
 | J53 | 53 | Example failed: `requests` → … → `import random` loaded `Desktop\random.py`, which crashed (`isUpper`) | Diagnosed in Turn 53: a Desktop file shadowing a standard-library module |
 | J54 | 54 | Example ran: status 200, 3 values, Publisher (not found) | Example done; scraper (a) part 1 walkthrough given in Turn 54 |
+| J55 | 55 | `python scrapers/a_raw_html.py` → No such file (run from `...\Web tech\project`) | Diagnosed in Turn 55: terminal in the parent folder again |
 
 ### Questions from Claude
 
@@ -2079,3 +2080,25 @@ Done when 10 pairs are printed and the run ID appears in the log. Claude will re
 **Questions Claude asked:** Joseph to paste his code and output.
 
 **Direction and fit:** no new decision. Claude only explains and outlines; scraper (a) is Joseph's code (§2 AI assistance; CLAUDE.md).
+
+### Turn 55 — 2026-10-30 18:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project> python scrapers/a_raw_html.py           
+> C:\Users\josep\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe: can't open file 'C:\\Users\\josep\\OneDrive - Saint Louis University\\FALL 26\\Web tech\\project\\scrapers\\a_raw_html.py': [Errno 2] No such file or directory
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project>
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Diagnosis:** the same as Turn 43. The terminal was in `...\Web tech\project`, the parent of the repository, so Python looked for `project\scrapers\a_raw_html.py`. The file may also have been created in the parent folder, if VS Code has the parent open.
+
+**Claude's answer (summary):**
+- `cd` into the repository, then `dir scrapers`.
+- If the file is there, run it.
+- If not, find it with `Get-ChildItem .. -Recurse -Filter a_raw_html.py`, then `Move-Item ..\scrapers .\scrapers`.
+- **Permanent fix:** File → Open Folder on the repository folder itself, so the Explorer and new terminals start there (activate the venv again).
+
+**Questions Claude asked:** Joseph to paste the code and output.
+
+**Direction and fit:** no new decision.
