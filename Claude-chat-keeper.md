@@ -75,6 +75,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D44 | 50 | **Re-plan of Milestone 1, Fri Oct 30 – Tue Nov 3.** Scraper (a) hadn't started (nothing on GitHub by Fri). It now runs Fri–Sun in 4 parts plus a first full run. The baseline check (⭐ Check 2) moves from Sun Nov 1 to Mon Nov 2. Tue Nov 3 stays the close, with Mon's buffer moved to Tue. Dates outside Milestone 1 are unchanged. | — | Claude proposed; Joseph confirmed (Turn 51) | §7 milestone table (Milestone 1 ends Nov 3; completion check: (a) ≥ 90% on baseline in each of 3 runs). Figure 3 (scraper (a) + baseline check bar ends Nov 3). | Follows (dates within the milestone shifted; the milestone end is unchanged) |
 | D45 | 80 | Practice scraper outputs go in `results/dev/`, which is git-ignored. Real experiment results will use dated folders (Milestone 3). Timing (`started_at`, `seconds`) moves from part 4 into part 3, because the output's `run` block needs it; part 4 is now error handling only. | — | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder"). README layout (`results/`). `docs/scraper-output.md` (`run` block fields, D31). | Follows (`results/dev/` Adds) |
 | D46 | 86 | **The server listens on both loopback addresses** (`127.0.0.1` and `::1`), skipping IPv6 where it isn't available. Prompted by Joseph's laptop run: 20.5 s for 10 pages (~2 s per page) vs 0.06 s in the cloud check, which matches Windows trying `localhost` over IPv6 first and timing out before falling back to IPv4. Still local-only (loopback). A new test covers it; a busy port gives a clear error. | Keep IPv4 only and have scrapers use `127.0.0.1`; listen on both loopbacks | Claude (test site) | §4 Metrics (time per page must reflect the scraper, not a connection delay). §1/§3 (everything runs locally). Revises D23's binding to `127.0.0.1` only. | Adds (protects a metric); diagnosis to be confirmed on Joseph's laptop |
+| D47 | 93 | **Scrapers use `http://127.0.0.1:3000/`, not `localhost`.** Joseph's laptop test: with `localhost`, 20.564 s for 10 pages (2.056 s per page); with `127.0.0.1`, 0.113 s (0.011 s per page). This confirms the slowdown is the `localhost` name lookup on Windows (D46's cause). The default start URL in `docs/scraper-output.md` is amended (approved contract D32 changed with Joseph's approval). README and the server's startup message updated; Joseph changes his scraper's `--start-url` default. Dual loopback listening (D46) is kept as harmless extra robustness. | Use 127.0.0.1; keep localhost | Joseph (Claude recommended) | §4 Metrics (time per page). §1/§3 (local only; `127.0.0.1` is the same machine). D32 (amended). | Adds (amends D32's default value; protects a metric) |
 
 ---
 
@@ -170,6 +171,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J84 | 84 | What should my commit of `a-baseline-1.json` and `a_raw_html.py` be? | Answered in Turn 84: commit only the scraper |
 | J85 | 85 | What should my commit say? | Answered in Turn 85 |
 | J86 | 86 | "its synced" (scraper parts 2b and 3 pushed) | Checked in Turn 86: on GitHub; laptop run 70/70; slow-localhost fix (D46); practice output was committed |
+| J87 | 87 | Keep going and finish Milestone 1; how long will it take? | Answered in Turn 87: about 1–1½ hours; part 4 started |
+| J88 | 88 | `npm run serve -- baseline` → Missing script "serve" (run from `...\Web tech\project`) | Diagnosed in Turn 88: parent folder again |
+| J89 | 89 | `git rm --cached` and commit succeeded (`3ca30e6`); push rejected (fetch first) | Answered in Turn 89: pull, then push |
+| J90 | 90 | Speed check result: `seconds` = 20.564 (still slow) | Diagnosed in Turn 90: two checks requested |
+| J91 | 91 | Pasted the full `a-speed-1` run (seconds 20.564, the same earlier run) | Answered in Turn 91: the two checks still need running |
+| J92 | 92 | ".0113 seconds" (message interrupted) | See Turn 93 |
+| J93 | 93 | "0.113 seconds": Check 2, `--start-url http://127.0.0.1:3000/` | Diagnosis confirmed; start URL changed to 127.0.0.1 (D47) |
 
 ### Questions from Claude
 
@@ -196,6 +204,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
 | C20 | 38 | Joseph to review the scoring script's unresolved assumptions (listed in Turn 38), especially #1 (pages mapped from the data list rather than read from the manifest) and #6 (tags given as a JSON list). | — | **Open** |
 | C21 | 44, 46 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | (1) Joseph: a valid number that was changed. Half right: what decides it is that the value matches the `fakes.json` entry (line 261); `$42.00` would be plain wrong. (2) `if not values:` (line 249), correct. (3) Not a conflict because of `casefold()`, correct. | Closed (Turn 46) |
+| C22 | 90, 91 | Speed diagnosis: (1) after restarting, does the server print `Listening on ::1`? (2) Is `--start-url http://127.0.0.1:3000/` fast? | (2) Yes: 0.113 s vs 20.564 s. (1) Startup lines not pasted; not needed once (2) settled it. | Closed (Turn 93) → D47 |
+| C23 | 93 | Change the scrapers' default start URL to `http://127.0.0.1:3000/` (amending the approved contract)? Options: "Yes, use 127.0.0.1 (Recommended)" or "No, keep localhost". | Yes. | Closed (Turn 93) → D47 |
 
 ---
 
@@ -213,7 +223,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed:** pull request #10 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/10): the server listens on IPv4 and IPv6 loopback (D46), `results/dev/` is ignored (D45), and the schedule is updated. After merging, Joseph reruns the scraper to confirm `seconds` drops.
+- **⚠️ Merge needed:** pull request #11 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/11): start URL `127.0.0.1` in the docs and README (D47).
 
 ---
 
@@ -3563,3 +3573,178 @@ Updated `SCHEDULE.md`:
 **Questions Claude asked:** Joseph to report the new `seconds` value.
 
 **Direction and fit:** D46.
+
+### Turn 87 — 2026-10-30 21:26 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets continue and try and knock this milestone 1 out, how long do you think it will take?
+
+**What Claude did**
+- Confirmed pull request #10 is merged (`27029d5`) and fast-forwarded the branch. `results/dev/a-baseline-1.json` is still tracked on `main`.
+- Estimated the rest of Milestone 1 at about 1–1½ hours: sync and speed check, untracking, part 4, ⭐ Check 2, and Claude's wrap-up.
+- **Wrote and tested a standalone example** (`errors_example.py`, scratchpad): `try`/`except` with `requests` against the test site, covering 200, 404, a connection error (port 3999) and a timeout (0.0001 s), with no crash.
+- **Tested the part 4 plan** on a scratch copy of Joseph's scraper from `main`:
+  - normal run → 70/70;
+  - `--start-url …/nope` → `pages` holds status 404 with error None, and the file is written;
+  - `--start-url http://localhost:3999/` → `connection_error`, the file is written, and the score is 0/70 with 70 missing.
+- **Found a trap:** a `RobotFileParser` that was never given rules answers `can_fetch = False` for everything. So if `robots.txt` can't be downloaded, obey mode would skip the whole site. Fix: `rules.parse([])` in the `except` branch, which allows everything.
+
+**Claude's answer (summary):** the time estimate, then the part 4 walkthrough with blanks:
+1. Move `path = urlparse(url).path` above the fetch.
+2. Wrap the fetch in `try`/`except Timeout` → `"timeout"` / `except RequestException` → `"connection_error"`; record the page and `continue`.
+3. Wrap the `robots.txt` download, and call `rules.parse([])` on failure.
+4. Three test runs (normal, 404, nothing listening).
+
+Before that: sync, restart the server, rerun to check `seconds`, and untrack the practice file.
+
+**Disclosure:** fill-in walkthrough, as in Turns 77 and 80. Values and comments are Joseph's.
+
+**Questions Claude asked:** Joseph to report the new `seconds` value and paste his part 4 code and output.
+
+**Direction and fit:** no new decision. Part 4 meets §2 ("Record 404s and timeouts and keep going") and §5 Test 7 (failure handling), using the approved `error` codes (D31: `timeout`, `connection_error`).
+
+### Turn 88 — 2026-10-30 21:30 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project> npm run serve -- baseline
+> npm error Missing script: "serve"
+> npm error
+> npm error To see a list of scripts, run:
+> npm error   npm run
+> npm error A complete log of this run can be found in: C:\Users\josep\AppData\Local\npm-cache\_logs\2026-10-30T21_30_08_595Z-debug-0.log
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project>
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Diagnosis:** the terminal is in the parent folder (third time; see Turns 43 and 55), so npm finds no project `package.json` and no `serve` script.
+
+**Claude's answer (summary):** `cd Benchmarking-Defenses-against-Webscrapers-local-test`, then `npm run serve -- baseline` (expect `Listening on 127.0.0.1` and `Listening on ::1`). Permanent fix: File → Open Folder on the repository folder itself, then re-activate the venv.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision.
+
+### Turn 89 — 2026-10-30 21:31 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git rm --cached results/dev/a-baseline-1.json
+> >> git commit -m "Stop tracking practice scraper output"
+> >> git push
+> rm 'results/dev/a-baseline-1.json'
+> [main 3ca30e6] Stop tracking practice scraper output
+>  1 file changed, 415 deletions(-)
+>  delete mode 100644 results/dev/a-baseline-1.json
+> To https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test.git
+>  ! [rejected]        main -> main (fetch first)
+> error: failed to push some refs to 'https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test.git'
+> hint: Updates were rejected because the remote contains work that you do not
+> hint: have locally. This is usually caused by another repository pushing to
+> hint: the same ref. If you want to integrate the remote changes, use
+> hint: 'git pull' before pushing again.
+> hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Diagnosis:** Joseph's local `main` lacks his own merge of pull request #10, so the untrack commit `3ca30e6` can't be pushed until it is pulled.
+
+**Claude's answer (summary):** `git pull --no-rebase --no-edit`, then `git push` (if the local chat-keeper blocks the pull: `git restore Claude-chat-keeper.md` first). The pull also brings the server fix (D46), so restart the server, look for `Listening on ::1`, then do the speed check and report `seconds`.
+
+**Questions Claude asked:** the `seconds` value from the speed check.
+
+**Direction and fit:** no new decision (merge, not rebase; D41).
+
+### Turn 90 — 2026-10-30 21:32 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 20.564
+
+**What Claude did:** checked GitHub. Joseph's pull and push worked: the untrack commit `3ca30e6` and the merge `36c4640` are on `main`, and the server fix is present. Merged `main` into the branch (D41).
+
+**Finding:** still 20.564 s. So either the server wasn't restarted after the pull (the old IPv4-only server was still running), or the cause isn't the IPv6 fallback. **D46's diagnosis is not yet confirmed.**
+
+**Claude's answer (summary):** two checks:
+1. Restart the server and paste its startup lines. The new version prints `Listening on 127.0.0.1` and `Listening on ::1`; if those lines are missing, the old version was running.
+2. Run with `--start-url http://127.0.0.1:3000/`. If that's fast, the `localhost` lookup is confirmed (fix: the restarted server, or a default start URL of `127.0.0.1`). If it's also about 20 s, the delay is elsewhere on the laptop. Accuracy is unaffected either way.
+
+**Questions Claude asked:** C22 (both checks).
+
+**Direction and fit:** no new decision yet. Protecting the §4 time-per-page metric (D46).
+
+### Turn 91 — 2026-10-30 21:33 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python scrapers\a_raw_html.py --run-id a-speed-1 --out results\dev\a-speed-1.json
+> >> python scoring\score.py results\dev\a-speed-1.json
+> 200 http://localhost:3000/
+> 200 http://localhost:3000/products/
+> 200 http://localhost:3000/articles/a1
+> 200 http://localhost:3000/articles/a2
+> 200 http://localhost:3000/products/p1
+> 200 http://localhost:3000/products/p2
+> 200 http://localhost:3000/products/p3
+> 200 http://localhost:3000/products/p4
+> 200 http://localhost:3000/products/p5
+> 200 http://localhost:3000/products/p6
+> 10 pages visited
+> 70 records written to results\dev\a-speed-1.json
+> run a-speed-1 (scraper a, condition speed, run 1)
+> accuracy         70/70 = 1.000
+> fake-value rate  0/70 = 0.000
+> correct 70 | wrong 0 (fakes 0, malformed 0, conflicting 0, plain wrong 0) | missing 0
+> pages fetched 10 | seconds 20.564 | time per page 2.056 s | ignored records 0
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** read the paste. It's the original `a-speed-1` run (identical 20.564 s; accuracy 70/70), not the two diagnostic checks from Turn 90. No files changed besides this log.
+
+**Claude's answer (summary):** restated the two checks as single actions:
+1. In the server terminal, Ctrl+C, then `npm run serve -- baseline`, and paste the startup lines.
+2. Run with `--start-url http://127.0.0.1:3000/` as `a-speed-2`, score it, and paste the `seconds` line.
+
+Noted that `condition speed` in the score is just the test run ID being parsed (D21/D32 run-ID form).
+
+**Questions Claude asked:** C22 (both checks), still open.
+
+**Direction and fit:** no new decision.
+
+### Turn 92 — 2026-10-30 21:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> .0113 seconds
+
+**What Claude did:** nothing separately. Joseph interrupted this message and resent it as Turn 93.
+
+**Claude's answer (summary):** see Turn 93.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 93 — 2026-10-30 21:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 0.113 seconds
+
+**What Claude did**
+- **Read the result:** 0.113 s with `127.0.0.1` against 20.564 s with `localhost`, so 0.011 s against 2.056 s per page. **This confirms the slowdown is the `localhost` name lookup on Windows.**
+- Asked C23 (amend the approved default start URL?). Joseph said yes.
+- **`docs/scraper-output.md`:**
+  - status line notes the amendment (D47);
+  - the `--start-url` default and the example `start_url` are now `http://127.0.0.1:3000/`;
+  - added a note explaining why.
+- **README:** the Usage line now uses `127.0.0.1`, with a note to use `127.0.0.1` in scraper URLs.
+- **`site/server.js`:** the startup message prints `http://127.0.0.1:<port>/`. `npm test` shows 8 passing.
+- Committed, pushed, and opened **pull request #11**: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/11
+
+**Claude's answer (summary):** the diagnosis is confirmed. **Joseph's change:** in the options block, set `--start-url`'s default to `"http://127.0.0.1:3000/"`. Then run part 4's tests and ⭐ Check 2 with that default. ⚠️ Merge needed for the docs and README update.
+
+**Questions Claude asked:** C23 (answered: yes).
+
+**Direction and fit:** D47 (amends D32's default value with Joseph's approval).
