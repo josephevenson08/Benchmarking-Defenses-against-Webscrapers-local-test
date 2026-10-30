@@ -173,6 +173,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J87 | 87 | Keep going and finish Milestone 1; how long will it take? | Answered in Turn 87: about 1–1½ hours; part 4 started |
 | J88 | 88 | `npm run serve -- baseline` → Missing script "serve" (run from `...\Web tech\project`) | Diagnosed in Turn 88: parent folder again |
 | J89 | 89 | `git rm --cached` and commit succeeded (`3ca30e6`); push rejected (fetch first) | Answered in Turn 89: pull, then push |
+| J90 | 90 | Speed check result: `seconds` = 20.564 (still slow) | Diagnosed in Turn 90: two checks requested |
 
 ### Questions from Claude
 
@@ -199,6 +200,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C19 | 30 | OK for Claude to merge `main` into its branch when Joseph pushes? Options: "Yes, merge main in (Recommended)" or "Ask me each time". | Yes. | Closed (Turn 30) → D41 |
 | C20 | 38 | Joseph to review the scoring script's unresolved assumptions (listed in Turn 38), especially #1 (pages mapped from the data list rather than read from the manifest) and #6 (tags given as a JSON list). | — | **Open** |
 | C21 | 44, 46 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | (1) Joseph: a valid number that was changed. Half right: what decides it is that the value matches the `fakes.json` entry (line 261); `$42.00` would be plain wrong. (2) `if not values:` (line 249), correct. (3) Not a conflict because of `casefold()`, correct. | Closed (Turn 46) |
+| C22 | 90 | Speed diagnosis: (1) after restarting, does the server print `Listening on ::1`? (2) Is `--start-url http://127.0.0.1:3000/` fast? | — | **Open** |
 
 ---
 
@@ -3649,3 +3651,21 @@ Before that: sync, restart the server, rerun to check `seconds`, and untrack the
 **Questions Claude asked:** the `seconds` value from the speed check.
 
 **Direction and fit:** no new decision (merge, not rebase; D41).
+
+### Turn 90 — 2026-10-30 21:32 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 20.564
+
+**What Claude did:** checked GitHub. Joseph's pull and push worked: the untrack commit `3ca30e6` and the merge `36c4640` are on `main`, and the server fix is present. Merged `main` into the branch (D41).
+
+**Finding:** still 20.564 s. So either the server wasn't restarted after the pull (the old IPv4-only server was still running), or the cause isn't the IPv6 fallback. **D46's diagnosis is not yet confirmed.**
+
+**Claude's answer (summary):** two checks:
+1. Restart the server and paste its startup lines. The new version prints `Listening on 127.0.0.1` and `Listening on ::1`; if those lines are missing, the old version was running.
+2. Run with `--start-url http://127.0.0.1:3000/`. If that's fast, the `localhost` lookup is confirmed (fix: the restarted server, or a default start URL of `127.0.0.1`). If it's also about 20 s, the delay is elsewhere on the laptop. Accuracy is unaffected either way.
+
+**Questions Claude asked:** C22 (both checks).
+
+**Direction and fit:** no new decision yet. Protecting the §4 time-per-page metric (D46).
