@@ -19,7 +19,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Oct 30 (Turn 50 of the chat-keeper).*
+*Last updated: Fri Oct 30 (Turn 63 of the chat-keeper).*
 
 > **▶ Resume here (Fri Oct 30).** Milestone 1 steps 1–8 are done (⭐ Check 1 passed Oct 27). Scraper (a) hasn't started, so Fri–Tue were re-planned (D44). Left:
 > 1. C20 decisions (1 minute).
@@ -46,7 +46,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Wed Oct 28** | ~~Scraper (a): crawl loop~~: moved to Fri Oct 30. | — |
 | **Thu Oct 29** | ~~Scraper (a): extraction and output~~: moved to Sat Oct 31. | — |
 | **Fri Oct 30** | Decide C20 (#1 page mapping, #6 tags as a list): 1 minute. | J |
-| | **Step 9, scraper (a), part 1:** fetch `/products/p1` with `requests` (with `run=<id>` in the User-Agent); find the label rows with BeautifulSoup; print the 10 label/value pairs. | J |
+| | ✅ **Step 9, scraper (a), part 1:** fetches `/products/p1` with a `run=` User-Agent, finds each label by its text, and prints all 10 correct label/value pairs (Joseph's code, Fri Oct 30). | J |
 | | **Part 2:** crawl loop from the home page (queue and visited set), following every link; page cap; `robots.txt` obey/ignore; the inputs `--start-url --page-cap --robots --run-id --out` (`docs/scraper-output.md`). | J |
 | **Sat Oct 31** | **Part 3:** the label-plus-next-text rule on every item page, using `data/fields.json` (never `items.json`); write the output JSON in the approved format. | J |
 | | **Part 4:** record 404s and timeouts and keep going; time the crawl (`seconds`). | J |

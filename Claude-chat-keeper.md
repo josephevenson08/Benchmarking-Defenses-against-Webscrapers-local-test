@@ -144,6 +144,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J60 | 60 | Second version of scraper (a) part 1, with Joseph's own comments; the loop now uses `soup.select_one(labels[field])` | Reviewed in Turn 60: comments good; `url` still missing; the `select_one` loop crashes and is selector-based extraction, which the midterm excludes |
 | J61 | 61 | Third version of scraper (a) part 1: `url` set to the home page; the loop is back to the label-text rule but still iterates `labels` | Reviewed in Turn 61: runs and the run ID is logged; two fixes left |
 | J62 | 62 | How do I build the `product_labels` list? | Answered in Turn 62 (line by line, fill in the blanks) |
+| J63 | 63 | Part 1 output (all 10 pairs correct) and the commented code | Part 1 done (Turn 63) |
 
 ### Questions from Claude
 
@@ -2350,3 +2351,72 @@ Each line was explained (empty list, the loop over the product entries, `.append
 **Questions Claude asked:** Joseph to paste the output.
 
 **Direction and fit:** no new decision. Teaching-level help on a 3-line list-building step, disclosed here. It stays within "explain concepts" (§2 AI assistance), but more directly than the earlier standalone examples.
+
+### Turn 63 — 2026-10-30 18:50 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python3 .\a_raw_html.py
+> Name: Larkfield Studio Headphones
+> Brand: Larkfield
+> Category: Headphones
+> Price: $89.99
+> SKU: LF-HP-2041
+> Rating: 4.5
+> Reviews: 1,284
+> Availability: In stock
+> Release date: 2024-09-12
+> Description: Closed-back over-ear headphones with 40 mm drivers and a detachable cable.
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> 
+>
+> import json #json import, reads files into python
+> from bs4 import BeautifulSoup #brings in html parser, for searching
+> import requests #downloads webpages
+>
+> labels = json.load(open("data/fields.json")) # opens file -> turns text into python data -> stores in variable
+>
+> product_labels = []
+> for entry in labels["product"]:
+>     product_labels.append(entry["label"]) #adds the label to the list of product labels
+>
+> #print(labels) #prints the data in the variable
+> url = "http://localhost:3000/products/p1" #url of the page we want to scrape
+>
+> response = requests.get(url, headers = {"User-Agent":
+>                                         "run=a-test-1"}, timeout = 5)
+> # fetch the page, timout is 5 seconds, User-Agent tells the server whos asking
+>
+> soup = BeautifulSoup(response.content, "html.parser")
+> #turns raw HTML into a tree of elements, then we are able to search through it
+>
+> for label in product_labels:
+>     # Find the element with the label text
+>     label_element = soup.find(string=label)
+>     if label_element:
+>         # Step to its parent element
+>         parent_element = label_element.parent
+>         # Step to the next element (the value)
+>         value_element = parent_element.find_next_sibling()
+>         if value_element:
+>             print(f"{label}: {value_element.get_text(strip=True)}")
+>         else:
+>             print(f"{label}: Value not found")
+>     else:
+>         print(f"{label}: Label not found")
+
+**What Claude did:** checked Joseph's output against `data/items.json` for p1: all 10 values match, in field order. Read the code:
+- `product_labels` built with the fill-in-the-blank from Turn 62;
+- `url` set to `/products/p1`;
+- the loop uses find-by-text → `.parent` → `.find_next_sibling()`;
+- Joseph's own comments on each part.
+
+Ticked part 1 in `SCHEDULE.md`.
+
+**Claude's answer (summary):** part 1 is done.
+- **Next:** move `a_raw_html.py` into `scrapers/` and commit and push it from VS Code (Joseph's code, Joseph's commit).
+- Then part 2 (the crawl loop), tonight or tomorrow.
+- Explained part 2 in outline only.
+
+**Questions Claude asked:** continue to part 2 tonight, or stop here?
+
+**Direction and fit:** no new decision. Step 9 part 1 of the re-plan (D44) done on schedule (Fri). The scraper follows §2's label-text rule and reads only `fields.json` (§4 assumption; CLAUDE.md).
