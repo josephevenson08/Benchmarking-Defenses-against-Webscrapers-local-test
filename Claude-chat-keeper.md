@@ -165,6 +165,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J80 | 80 | Keep going tonight (part 3), to finish early | Part 3 started in Turn 80 (fill-in walkthrough) |
 | J81 | 81 | First part 3 draft (extraction in the crawl loop and the output file) | Reviewed in Turn 81: `KeyError: 0`; 5 fixes |
 | J82 | 82 | Fixed part 3 (all five fixes) | Part 3 done; first full baseline run 70/70 (Turn 82) |
+| J83 | 83 | "like this?" (tidied part 3: old commented block removed) | Checked in Turns 83–84: code identical to the 70/70 version; one stale comment |
+| J84 | 84 | What should my commit of `a-baseline-1.json` and `a_raw_html.py` be? | Answered in Turn 84: commit only the scraper |
 
 ### Questions from Claude
 
@@ -3398,3 +3400,118 @@ Updated `SCHEDULE.md`:
 **Questions Claude asked:** continue to part 4 now?
 
 **Direction and fit:** no new decision. Progress on the re-plan (D44), ahead of it. The scraper meets §2 (label-text rule, crawl from the home page) and the approved format (D31).
+
+### Turn 83 — 2026-10-30 21:19 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> like this?
+> import json #json import, reads files into python
+> from bs4 import BeautifulSoup #brings in html parser, for searching
+> import requests #downloads webpages
+> from urllib.parse import urljoin, urlparse
+> import argparse
+> from urllib.robotparser import RobotFileParser
+> import time
+> from datetime import datetime, timezone
+>
+> parser = argparse.ArgumentParser(description="Scraper (a): raw HTML")
+> parser.add_argument("--start-url", default="http://localhost:3000/") #default url to scrape, can be changed with command line argument
+> parser.add_argument("--page-cap", type=int, default=15) #max pages to scrape
+> parser.add_argument("--robots", choices=["obey", "ignore"], default="obey") #two choices obey and ignore
+> parser.add_argument("--run-id", required=True) # run id is required, tells the server whos asking
+> parser.add_argument("--out", required=True)# output file is required, where the scraped data will be saved
+> args = parser.parse_args()
+>
+> labels = json.load(open("data/fields.json")) # opens file -> turns text into python data -> stores in variable
+>
+> all_fields = labels["product"] + labels["article"]
+>
+> start_url = args.start_url
+> page_cap = args.page_cap
+> user_agent = f"run={args.run_id}" #user agent is the run id, tells the server whos asking
+>
+> robots_url = urljoin(start_url, "/robots.txt")
+> robots_response = requests.get(robots_url, headers={"User-Agent": user_agent}, timeout=5)
+> rules = RobotFileParser()
+> rules.parse(robots_response.text.splitlines())
+>
+> pages = [] #pages scraped
+> records = [] #holds the field values found, not the pages
+> started_at = datetime.now(timezone.utc).isoformat() #where we started at 
+> start_time = time.time() #time start
+>
+> queue = [start_url] #list of urls to scrape
+> visited = set() #set of urls already scraped
+>
+> while queue and len(visited) < page_cap:
+>     url = queue.pop(0) #get the first url in the queue
+>     if url in visited:
+>         continue
+>     visited.add(url)
+>     if args.robots == "obey" and not rules.can_fetch(user_agent, url):
+>         print("skipped (robots.txt):", url)
+>         continue
+>     response = requests.get(url, headers={"User-Agent": user_agent}, timeout=5) #fetch the page, timeout is 5 seconds, User-Agent tells the server whos asking
+>     print(response.status_code, url)
+>
+>     path = urlparse(url).path #get the path of the url
+>     pages.append({"path": path, "status": response.status_code, "error": None}) #store the path, status code, and content of the page in the pages list
+>
+>     soup = BeautifulSoup(response.content, "html.parser")
+>     for field in all_fields:
+>         label_element = soup.find(string=field["label"])
+>         if label_element:
+>             value_element = label_element.parent.find_next_sibling()
+>             if value_element:
+>                 records.append({"page": path, "field": field["key"], "value": value_element.get_text(strip=True)})
+>     for a in soup.find_all("a"):                 # every link, hidden ones too
+>         link = urljoin(url, a.get("href", ""))   
+>         same_site = urlparse(link).netloc == urlparse(start_url).netloc
+>         if same_site and link not in visited and link not in queue:
+>             queue.append(link)                   # wait in line to be visited
+>
+> print(len(visited), "pages visited")
+>
+> output = {
+>     "run": {
+>         "run_id": args.run_id,
+>         "scraper": "a",
+>         "start_url": start_url,
+>         "page_cap": page_cap,
+>         "obey_robots_txt": args.robots == "obey",
+>         "started_at": started_at,
+>         "seconds": round(time.time() - start_time, 3),
+>     },
+>     "pages": pages,
+>     "records": records,
+> }
+> with open(args.out, "w", encoding="utf-8") as f:
+>     json.dump(output, f, indent=2)
+> print(len(records), "records written to", args.out)
+
+**What Claude did:** saved the tidied code to the scratchpad and compared it, ignoring comments and blank lines, with the version scored 70/70 in Turn 82: **identical code**. Joseph interrupted before the reply was sent (see Turn 84).
+
+**Claude's answer (summary):** delivered in Turn 84. Yes: the old commented-out block is removed; one comment (on `pages.append`) still mentions "content".
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 84 — 2026-10-30 21:20 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what should my commit of a-baseline-1.json and a_raw_html.py be
+
+**What Claude did:** answered in chat. No repo files changed besides this log.
+
+**Claude's answer (summary):**
+- **Commit only `scrapers/a_raw_html.py`**, with the message "Scraper (a) part 3: extract fields on every page and write results JSON".
+- **Don't commit `results/dev/a-baseline-1.json`.** It is a practice output that can be regenerated. Real results go in dated folders (§5). The `results/dev/` ignore rule (D45) reaches `main` only with tonight's pull request, so for now git lists the file as untracked: don't stage it.
+- Gave VS Code steps (stage only that file) and terminal steps (`git add` with the file named, commit, push; pull with `--no-rebase --no-edit` if rejected).
+- Also answered Turn 83: the code is identical to the 70/70 version; fix the "content" comment first.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Applies D45 and §5 Reproducibility (dated results folders).
