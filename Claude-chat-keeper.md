@@ -167,6 +167,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J82 | 82 | Fixed part 3 (all five fixes) | Part 3 done; first full baseline run 70/70 (Turn 82) |
 | J83 | 83 | "like this?" (tidied part 3: old commented block removed) | Checked in Turns 83–84: code identical to the 70/70 version; one stale comment |
 | J84 | 84 | What should my commit of `a-baseline-1.json` and `a_raw_html.py` be? | Answered in Turn 84: commit only the scraper |
+| J85 | 85 | What should my commit say? | Answered in Turn 85 |
 
 ### Questions from Claude
 
@@ -3515,3 +3516,17 @@ Updated `SCHEDULE.md`:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Applies D45 and §5 Reproducibility (dated results folders).
+
+### Turn 85 — 2026-10-30 21:21 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what should my commit say?
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** the commit message is "Scraper (a) part 3: extract fields on every page and write results JSON", consistent with the earlier commits, with an optional second line ("Scores 70/70 on baseline with scoring/score.py."). Stage only `scrapers/a_raw_html.py`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
