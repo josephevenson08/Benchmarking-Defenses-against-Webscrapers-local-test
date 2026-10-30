@@ -158,6 +158,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J74 | 74 | What does that fix look like? | Shown in Turn 74 (before/after of the fetch line) |
 | J75 | 75 | Final part 2a crawl loop (with the User-Agent and timeout) | Part 2a done (Turn 75) |
 | J76 | 76 | "lets continue" (part 2b) | Part 2b started in Turn 76 (two standalone examples, then Joseph's task) |
+| J77 | 77 | Walk me through each step; I'll comment them myself | Answered in Turn 77 (7-step fill-in walkthrough for part 2b) |
 
 ### Questions from Claude
 
@@ -2880,3 +2881,31 @@ This is Joseph's own part 1 line, moved into the loop. Explained what changed (t
 **Questions Claude asked:** Joseph to paste his code and output.
 
 **Direction and fit:** no new decision. Implements the approved inputs (D32, `docs/scraper-output.md`) and the §2 "robots.txt setting". Claude gives standalone examples; the scraper is Joseph's (§2 AI assistance).
+
+### Turn 77 — 2026-10-30 20:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you walk me through each step and ill comment them myself
+
+**What Claude did**
+- **Checked the walkthrough first:** assembled the walkthrough's steps on a scratch copy of Joseph's part 2a code (kept in the scratchpad, not shared) and ran it against the local site:
+  - obey and ignore both crawl 10 pages, plus one `/robots.txt` request each, logged as `a-test-2` and `a-test-3`;
+  - no options → argparse's "required: --run-id, --out" error;
+  - with a **temporary** `robots.txt` disallowing `/articles/`, obey skipped a1 and a2 (8 pages fetched).
+- Restored the baseline `robots.txt` (`User-agent: *` / `Disallow:`) and stopped the server. `conditions/` isn't tracked by git, so nothing in the repo changed.
+
+**Claude's answer (summary):** a 7-step walkthrough. Each step gives where it goes, the lines with `____` blanks for Joseph to fill, and what it does; Joseph writes the comments.
+1. Two imports (`argparse`, `RobotFileParser`), given in full.
+2. The `argparse` block, with blanks for the defaults, type, choices and required.
+3. `start_url`/`page_cap` from `args`; `user_agent = f"run={____}"`; use `user_agent` in `requests.get`.
+4. Download `robots.txt` with the User-Agent and parse it (blank for the header value).
+5. The obey check after `visited.add(url)` (blanks for `"obey"` and the User-Agent).
+6. A placeholder print for `--out`.
+7. Three test commands and the expected results.
+
+**Disclosure:** this is fill-in-the-blank guidance. Claude supplied the structure of each line, and Joseph fills in the values and writes all comments. It is more direct than the standalone examples, at Joseph's request.
+
+**Questions Claude asked:** Joseph to paste his code and output.
+
+**Direction and fit:** no new decision. Implements D32's inputs and the §2 robots.txt setting. Guidance level disclosed here (§2 AI assistance).
