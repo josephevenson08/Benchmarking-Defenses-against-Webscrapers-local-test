@@ -186,6 +186,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J97 | 97 | Test 3 output on the laptop: all three part 4 tests pass | Part 4 done; scraper (a) complete (Turn 97) |
 | J98 | 98 | Check 2 runs: `a-baseline-1..3` each 10 pages and 70 records into `results/2026-10-30-check2/` | Runs done; scoring and hand count next (Turn 98) |
 | J99 | 99 | Scores for the 3 Check 2 runs: each 70/70 = 1.000 | ⭐ Check 2 passed; Milestone 1 complete (Turn 99) |
+| J100 | 100 | Hand count: 5 rows from `a-baseline-3-records.csv` (p2 category, p3 sku, p4 price, p1 brand, p5 name) | All match the data list; saved in `results/2026-10-30-check2/hand-count.md` (Turn 100) |
 
 ### Questions from Claude
 
@@ -4193,3 +4194,31 @@ Then three tests (normal; `/nope` → 404; port 3999 → connection error), all 
 **Questions Claude asked:** the 5 hand checks.
 
 **Direction and fit:** D49.
+
+### Turn 100 — 2026-10-30 21:51 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> a-baseline-3,p2,category,Lighting,True,False,correct
+> a-baseline-3,p3,sku,BV-KT-1180,True,False,correct
+> a-baseline-3,p4,price,$112.95,True,False,correct
+> a-baseline-3,p1,brand,Larkfield,True,False,correct
+> a-baseline-3,p5,name,Mirelle Wireless Mouse,True,False,correct
+
+**What Claude did**
+- **Hand count:** compared Joseph's 5 rows with `data/items.json`. All 5 match, and the scoring script marked all 5 correct.
+- **Results on `main`:** Joseph's commits are there:
+  - `5492b31`, part 4;
+  - `cec0489`, "Scraper (a) part 4 and Check 2 baseline runs", with the 3 run files and the records CSV in `results/2026-10-30-check2/`.
+
+  Merged `main` into the branch (D41).
+- **Re-scored the committed files:** all three 70/70; the CSV has 70 rows, all correct.
+- **Found a small mismatch** in the committed scraper (line 87): the error code is `"connection error"` (space), but the approved code is `"connection_error"` (D31). Check 2 is unaffected (accuracy doesn't read error codes), but Test 7 (Milestone 3) will. Joseph to fix it.
+- **Wrote `results/2026-10-30-check2/hand-count.md`:** the Check 2 results table and the hand-count table. It notes that Joseph chose the rows and Claude compared them with the data list.
+- Committed and pushed, and opened the closing pull request.
+
+**Claude's answer (summary):** the hand count is done; Milestone 1 is fully wrapped up. Joseph fixes line 87 (`"connection_error"`) and commits, then merges the closing pull request. Milestone 2 starts Wed Nov 4.
+
+**Questions Claude asked:** none new.
+
+**Direction and fit:** no new decision. Completes §7 verification step 5 for the scoring script (D42). Applies D31 (error codes).
