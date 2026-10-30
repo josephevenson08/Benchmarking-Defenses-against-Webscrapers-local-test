@@ -8,7 +8,7 @@ import time
 from datetime import datetime, timezone
 
 parser = argparse.ArgumentParser(description="Scraper (a): raw HTML")
-parser.add_argument("--start-url", default="http://localhost:3000/") #default url to scrape, can be changed with command line argument
+parser.add_argument("--start-url", default="http://127.0.0.1:3000/") #default url to scrape, can be changed with command line argument
 parser.add_argument("--page-cap", type=int, default=15) #max pages to scrape
 parser.add_argument("--robots", choices=["obey", "ignore"], default="obey") #two choices obey and ignore
 parser.add_argument("--run-id", required=True) # run id is required, tells the server whos asking
@@ -20,7 +20,7 @@ labels = json.load(open("data/fields.json")) # opens file -> turns text into pyt
 all_fields = labels["product"] + labels["article"]
 
 #print(labels) #prints the data in the variable
-# url = "http://localhost:3000/products/p1" #url of the page we want to scrape
+# url = "http://127.0.0.1:3000/products/p1" #url of the page we want to scrape
 
 # response = requests.get(url, headers = {"User-Agent":
 #                                         "run=a-test-1"}, timeout = 5)
@@ -50,9 +50,13 @@ page_cap = args.page_cap
 user_agent = f"run={args.run_id}" #user agent is the run id, tells the server whos asking
 
 robots_url = urljoin(start_url, "/robots.txt")
-robots_response = requests.get(robots_url, headers={"User-Agent": user_agent}, timeout=5)
 rules = RobotFileParser()
-rules.parse(robots_response.text.splitlines())
+try:
+    robots_response = requests.get(robots_url, headers={"User-Agent": user_agent}, timeout=5)
+    rules.parse(robots_response.text.splitlines())
+except requests.exceptions.RequestException:
+    print("could not read robots.txt; treating every page as allowed")
+    rules.parse([])  # Treat every page as allowed if robots.txt cannot be read
 
 pages = [] #pages scraped
 records = [] #holds the field values found, not the pages
@@ -70,11 +74,20 @@ while queue and len(visited) < page_cap:
     if args.robots == "obey" and not rules.can_fetch(user_agent, url):
         print("skipped (robots.txt):", url)
         continue
-    response = requests.get(url, headers={"User-Agent": user_agent}, timeout=5) #fetch the page, timeout is 5 seconds, User-Agent tells the server whos asking
-    print(response.status_code, url)
 
-    path = urlparse(url).path #get the path of the url
-    pages.append({"path": path, "status": response.status_code, "error": None}) #store the path, status code, and errorof the page in the pages list
+    path = urlparse(url).path
+    try:
+        response = requests.get(url, headers={"User-Agent": user_agent}, timeout=5)
+    except requests.exceptions.Timeout:
+        print("timeout", url)
+        pages.append({"path": path, "status": None, "error": "timeout"})
+        continue
+    except requests.exceptions.RequestException:
+        print("connection error", url)
+        pages.append({"path": path, "status": None, "error": "connection error"})
+        continue
+    print(response.status_code, url)
+    pages.append({"path": path, "status": response.status_code, "error": None})
 
     soup = BeautifulSoup(response.content, "html.parser")
     for field in all_fields:
