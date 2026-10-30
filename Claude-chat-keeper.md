@@ -76,6 +76,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D45 | 80 | Practice scraper outputs go in `results/dev/`, which is git-ignored. Real experiment results will use dated folders (Milestone 3). Timing (`started_at`, `seconds`) moves from part 4 into part 3, because the output's `run` block needs it; part 4 is now error handling only. | — | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder"). README layout (`results/`). `docs/scraper-output.md` (`run` block fields, D31). | Follows (`results/dev/` Adds) |
 | D46 | 86 | **The server listens on both loopback addresses** (`127.0.0.1` and `::1`), skipping IPv6 where it isn't available. Prompted by Joseph's laptop run: 20.5 s for 10 pages (~2 s per page) vs 0.06 s in the cloud check, which matches Windows trying `localhost` over IPv6 first and timing out before falling back to IPv4. Still local-only (loopback). A new test covers it; a busy port gives a clear error. | Keep IPv4 only and have scrapers use `127.0.0.1`; listen on both loopbacks | Claude (test site) | §4 Metrics (time per page must reflect the scraper, not a connection delay). §1/§3 (everything runs locally). Revises D23's binding to `127.0.0.1` only. | Adds (protects a metric); diagnosis to be confirmed on Joseph's laptop |
 | D47 | 93 | **Scrapers use `http://127.0.0.1:3000/`, not `localhost`.** Joseph's laptop test: with `localhost`, 20.564 s for 10 pages (2.056 s per page); with `127.0.0.1`, 0.113 s (0.011 s per page). This confirms the slowdown is the `localhost` name lookup on Windows (D46's cause). The default start URL in `docs/scraper-output.md` is amended (approved contract D32 changed with Joseph's approval). README and the server's startup message updated; Joseph changes his scraper's `--start-url` default. Dual loopback listening (D46) is kept as harmless extra robustness. | Use 127.0.0.1; keep localhost | Joseph (Claude recommended) | §4 Metrics (time per page). §1/§3 (local only; `127.0.0.1` is the same machine). D32 (amended). | Adds (amends D32's default value; protects a metric) |
+| D48 | 97 | **⭐ Check 2's runs are kept as a real result**, not a practice output. Three runs (`a-baseline-1..3`) go into a dated folder, `results/2026-10-30-check2/`, which is committed, with each score's summary and one run's `--records` CSV for the hand count. `results/dev/` stays for throwaway runs (D45). | Commit them; keep them in `results/dev/` | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder with outputs, logs …"). §7 Milestone 1 completion check. §7 verification step 5 (hand-count one real run). | Follows |
 
 ---
 
@@ -181,6 +182,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J94 | 94 | Walk me through part 4 | Answered in Turn 94 (three edits, find → replace → why, with blanks) |
 | J95 | 95 | Part 4 code with the three blanks still `____` | Reviewed in Turn 95: tests 1–2 pass; test 3 crashes on the empty blanks |
 | J96 | 96 | Part 4 with blanks filled: `rules.parse([])` correct; the error blanks set to `pages.append` | Reviewed in Turn 96: crash at `json.dump` (function not JSON-serializable) |
+| J97 | 97 | Test 3 output on the laptop: all three part 4 tests pass | Part 4 done; scraper (a) complete (Turn 97) |
 
 ### Questions from Claude
 
@@ -226,7 +228,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed:** pull request #11 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/11): start URL `127.0.0.1` in the docs and README (D47).
+- **Merge status:** pull request #11 merged by Joseph (`652216a`); `main` merged into the branch. No merge needed now.
 
 ---
 
@@ -4047,3 +4049,46 @@ Then three tests (normal; `/nope` → 404; port 3999 → connection error), all 
 **Questions Claude asked:** Joseph to paste the test 3 output.
 
 **Direction and fit:** no new decision.
+
+### Turn 97 — 2026-10-30 21:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> >> python scrapers\a_raw_html.py --run-id a-test-11 --out results\dev\a-test-11.json --start-url http://127.0.0.1:3999/crapers-local-test> 
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 10 pages visited
+> 70 records written to results\dev\a-test-9.json
+> 404 http://127.0.0.1:3000/nope
+> 1 pages visited
+> 0 records written to results\dev\a-test-10.json
+> could not read robots.txt; treating every page as allowed
+> connection error http://127.0.0.1:3999/
+> 1 pages visited
+> 0 records written to results\dev\a-test-11.json
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** read Joseph's laptop output for all three part 4 tests:
+- normal: 10 pages, 70 records;
+- `/nope`: status 404, 0 records, file written;
+- port 3999: robots fallback message, `connection error`, 0 records, file written, no crash.
+
+**Part 4 done; scraper (a) complete.**
+- Confirmed pull request #11 merged (`652216a`) and merged `main` into the branch.
+- Ticked part 4 in `SCHEDULE.md` and rewrote the resume note.
+
+**Claude's answer (summary):** scraper (a) is complete. Next:
+- commit part 4;
+- **⭐ Check 2:** 3 runs into `results/2026-10-30-check2/` (D48), each scored with `score.py`; run 3 also writes a `--records` CSV; hand-count 5 fields from it against the product pages in the browser. Each run must be ≥ 90%. Then commit that folder.
+
+**Questions Claude asked:** Joseph to paste the three score outputs and the hand-count result.
+
+**Direction and fit:** D48. Part 4 meets §2 ("Record 404s and timeouts and keep going") and the approved error codes (D31).
