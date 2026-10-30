@@ -19,12 +19,10 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Oct 30 (Turn 99 of the chat-keeper).*
+*Last updated: Fri Oct 30 (Turn 101 of the chat-keeper).*
 
-> **▶ Resume here.** ✅ **Milestone 1 complete on Fri Oct 30, four days early.** ⭐ Check 1 (Oct 27) and ⭐ Check 2 (Oct 30: 70/70 in all 3 baseline runs) both passed. To wrap up:
-> 1. ✅ Hand count done; part 4 and the results committed.
-> 2. Joseph: change the error code on line 87 of the scraper to `"connection_error"` (underscore), commit; merge the closing pull request.
-> 3. Next: Milestone 2 starts Wed Nov 4 (scraper (b) with Playwright). Optional before then: read the Playwright for Python intro.
+> **▶ Resume here: Wed Nov 4, Milestone 2.** ✅ **Milestone 1 complete on Fri Oct 30, four days early** (pull request #12): ⭐ Check 1 (Oct 27) and ⭐ Check 2 (Oct 30: 70/70 in all 3 baseline runs) passed; hand count done; error codes match the contract. Mon Nov 2 and Tue Nov 3 are free.
+> Next (Wed Nov 4): pin Playwright and install Chromium (Claude); Joseph starts scraper (b) from a small Playwright example. Optional before then: read the Playwright for Python intro (playwright.dev/python).
 
 ---
 

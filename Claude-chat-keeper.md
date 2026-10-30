@@ -187,6 +187,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J98 | 98 | Check 2 runs: `a-baseline-1..3` each 10 pages and 70 records into `results/2026-10-30-check2/` | Runs done; scoring and hand count next (Turn 98) |
 | J99 | 99 | Scores for the 3 Check 2 runs: each 70/70 = 1.000 | ⭐ Check 2 passed; Milestone 1 complete (Turn 99) |
 | J100 | 100 | Hand count: 5 rows from `a-baseline-3-records.csv` (p2 category, p3 sku, p4 price, p1 brand, p5 name) | All match the data list; saved in `results/2026-10-30-check2/hand-count.md` (Turn 100) |
+| J101 | 101 | Pull request #12 merged | Milestone 1 fully closed (Turn 101) |
 
 ### Questions from Claude
 
@@ -220,6 +221,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
+**▶ Resume here (Wed Nov 4): Milestone 2.** Milestone 1 closed Oct 30 (D43, D49). First: Claude pins Playwright and installs Chromium; Joseph starts scraper (b) from a small Playwright example. Still open: C20 (#1 page mapping, #6 tags as a list).
+
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
@@ -232,8 +235,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed:** pull request #12 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/12), which closes Milestone 1 (Check 2 recorded, hand count, README, schedule).
-- **Joseph:** change line 87 of `scrapers/a_raw_html.py` to the approved code `"connection_error"` (underscore), then commit.
+- **Merge status:** pull request #12 merged by Joseph (`5af918f`); branch fast-forwarded. Only the Turn 101 log and schedule note are not on `main` (end-of-session pull request, no rush).
 
 ---
 
@@ -4223,3 +4225,22 @@ Then three tests (normal; `/nope` → 404; port 3999 → connection error), all 
 **Questions Claude asked:** none new.
 
 **Direction and fit:** no new decision. Completes §7 verification step 5 for the scoring script (D42). Applies D31 (error codes).
+
+### Turn 101 — 2026-10-30 21:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok the PR went through
+
+**What Claude did**
+- Confirmed pull request #12 is merged (`5af918f`).
+- Confirmed Joseph's fix `3811a64` ("Use the agreed connection_error code"): the scraper on `main` now records `"timeout"` and `"connection_error"` (D31).
+- Fast-forwarded the branch.
+- Updated the `SCHEDULE.md` resume note (Milestone 2 from Wed Nov 4; Mon and Tue free) and the top of Open items.
+- Committed, pushed, and opened the end-of-session pull request (D40), log and schedule only.
+
+**Claude's answer (summary):** Milestone 1 is fully closed: both checks, the hand count and contract-matching error codes, four days early. Next session: Milestone 2 on Wed Nov 4 (Playwright and scraper (b)). C20 is still open and not urgent.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Milestone 1 closed per §7 (D43, D49).
