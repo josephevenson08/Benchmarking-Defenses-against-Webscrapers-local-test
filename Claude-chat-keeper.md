@@ -72,6 +72,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D41 | 30 | **Branch sync.** Before building on Joseph's files, Claude fetches and merges `origin/main` into the working branch. Merge only; never rebase, force-push or reset. Applied now for pull request #3 (`33a588e`). | Merge `main` in; ask each time | Joseph (Claude recommended) | §7 Version control. Lets Joseph work on `main` from VS Code (Turns 24–27). | Follows |
 | D42 | 38 | **Scoring script:** `scoring/score.py` and 24 tests in `scoring/tests/` (standard library only), written from the midterm's prompt and the approved rules (D31–D35). The Test 2 test reads Joseph's `expected.md` and checks the script against it. Extras: time per page, and an ExtractedRecord CSV export for hand-counting. Honeypot hits are left for Nov 19 (they need the request log). Only scoring files were changed. | — | Claude (delegated task) | §7 AI-agent plan ("Implement the scoring script using the Figure 2 data model. Modify only the scoring files. Handle missing fields, malformed values, empty outputs and duplicate records. Add tests for the hand-calculated example in Test 2"). Figure 2. §4 Metrics. §5 Test 2. | Follows (page-to-item mapping Interprets; see C20) |
 | D43 | 48 | **⭐ Check 1 passed (Milestone 1).** Joseph verified the scoring script on his laptop: ran the 24 tests and the command line (0.900, 0.029); read and explained the rules (C21, one correction); made two deliberate breaks, both caught (a comma rule failure and 11 failures); clean rerun (`OK`, working tree clean). The remaining verification step 5 (hand-count one real run) follows once scraper (a) exists. Marked in README and SCHEDULE; scoring usage added to the README. | — | Joseph | §7 milestone table ("Scoring script passes the hand-calculated Test 2"). §7 AI-agent plan, verification steps 2–4. | Follows |
+| D44 | 50 | **Re-plan of Milestone 1, Fri Oct 30 – Tue Nov 3.** Scraper (a) hadn't started (nothing on GitHub by Fri). It now runs Fri–Sun in 4 parts plus a first full run. The baseline check (⭐ Check 2) moves from Sun Nov 1 to Mon Nov 2. Tue Nov 3 stays the close, with Mon's buffer moved to Tue. Dates outside Milestone 1 are unchanged. | — | Claude proposed; Joseph confirmed (Turn 51) | §7 milestone table (Milestone 1 ends Nov 3; completion check: (a) ≥ 90% on baseline in each of 3 runs). Figure 3 (scraper (a) + baseline check bar ends Nov 3). | Follows (dates within the milestone shifted; the milestone end is unchanged) |
 
 ---
 
@@ -130,6 +131,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J47 | 47 | Step 8c output: break 1 → FAILED (errors=1); break 2 → FAILED (failures=11) | Checked in Turn 47: both caught; final clean run still needed |
 | J48 | 48 | Final rerun: 24 tests OK; `git status` clean on `main` | ⭐ Check 1 passed (Turn 48) |
 | J49 | 49 | Merged pull request #6; leaving now; resume tonight where we left off. | Done in Turn 49 |
+| J50 | 50 | What is left for Milestone 1? | Answered in Turn 50 (re-planned Fri–Tue, D44) |
+| J51 | 51 | "ok yep make sure we are where we are and then lets get started" | Re-plan confirmed; pull request #8 opened; scraper (a) part 1 started with a standalone example |
 
 ### Questions from Claude
 
@@ -161,7 +164,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Tue Oct 27, tonight):** ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
+**▶ Resume here (Fri Oct 30):** see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
@@ -173,7 +176,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed (no rush):** pull request #7 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/7), the log only. Merge tonight before syncing.
+- **⚠️ Merge needed:** pull request #8 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/8): the Milestone 1 re-plan, so Joseph's laptop has the current schedule.
 
 ---
 
@@ -1905,3 +1908,59 @@ Everything else (the crawl loop, page cap, robots.txt) is Wednesday's.
 **Questions Claude asked:** none new. C20 is still open.
 
 **Direction and fit:** no new decision. Applies D40.
+
+### Turn 50 — 2026-10-30 18:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok what is left for the milestone 1
+
+**What Claude did**
+- Fetched GitHub on Fri Oct 30. Pull request #7 was merged (`a233f8b`), and the branch was fast-forwarded to it. **Nothing new from Joseph since Tue:** no `scrapers/` folder, and C20 is still open.
+- **Re-planned the rest of Milestone 1 in `SCHEDULE.md`** (D44):
+  - Tue–Thu scraper rows struck through and moved;
+  - Fri: C20, then (a) parts 1–2;
+  - Sat: parts 3–4;
+  - Sun: first full run;
+  - Mon: step 10, ⭐ Check 2;
+  - Tue: close, with buffer and merge.
+- Updated the resume note.
+
+**Claude's answer (summary): left for Milestone 1**
+- ✅ Steps 1–8 and ⭐ Check 1.
+- **Left:**
+  - C20;
+  - step 9, scraper (a), Joseph's code, in 4 parts: fetch and parse one page; crawl loop with the inputs; extraction and output; errors and timing;
+  - a first full run;
+  - step 10, 3 baseline runs at ≥ 90% plus a hand count (⭐ Check 2);
+  - the close on Tue Nov 3.
+- Claude asked whether Joseph had started (a) locally without pushing; if so, the plan shifts earlier.
+
+**Questions Claude asked:** has scraper (a) been started locally? Can Joseph confirm the re-plan (D44)? C20 is still open.
+
+**Direction and fit:** D44.
+
+### Turn 51 — 2026-10-30 18:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok yep make sure we are where we are and then lets get started
+
+**What Claude did**
+- Took "yep" as confirming the re-plan (D44 marked confirmed) and "lets get started" as scraper (a) not having started locally.
+- Opened **pull request #8** (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/8) so `main` and Joseph's laptop get the re-plan.
+- **Wrote and tested a standalone learning example** in the scratchpad, not the repo. It uses a made-up book page (`<p><b>Title</b> <span>…</span></p>`), not the project's markup, and shows:
+  - `requests.get` with a User-Agent and timeout, and `status_code`/`text`;
+  - BeautifulSoup `find(string=label)` → `.parent` → `.find_next_sibling()` → `get_text(strip=True)`, including a label that isn't found.
+
+  Ran it with the pinned `requests` 2.34.2 and `beautifulsoup4` 4.15.0 against a local test server; output correct.
+- Gave part 1 of scraper (a) as a task for Joseph to write himself.
+
+**Claude's answer (summary):**
+- ⚠️ Merge pull request #8, then Sync.
+- Run the example to learn the technique.
+- **Part 1, Joseph's code:** create `scrapers/a_raw_html.py`; start the server; fetch `/products/p1` with a `run=` User-Agent; read the product labels from `data/fields.json`; for each label, find it and print the text after it. Done when it prints 10 label/value pairs and `logs/requests.jsonl` shows the run ID.
+
+**Questions Claude asked:** C20 is still open (not blocking).
+
+**Direction and fit:** no new decision. The example is a "small standalone example that is not project code" (§2 AI assistance, CLAUDE.md). Scraper (a) is Joseph's to write (§2).

@@ -19,12 +19,13 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Tue Oct 27 (Turn 48 of the chat-keeper).*
+*Last updated: Fri Oct 30 (Turn 50 of the chat-keeper).*
 
-> **▶ Resume here.** Milestone 1 steps 1–8 are done. **⭐ Check 1 passed on Tue Oct 27**, two days early. Next:
-> 1. Joseph decides the two open scoring assumptions (chat-keeper C20: #1 page mapping, #6 tags as a list).
-> 2. Step 9: Joseph writes scraper (a).
-> 3. Step 10: baseline check (3 runs at ≥ 90%). ⭐ Check 2
+> **▶ Resume here (Fri Oct 30).** Milestone 1 steps 1–8 are done (⭐ Check 1 passed Oct 27). Scraper (a) hasn't started, so Fri–Tue were re-planned (D44). Left:
+> 1. C20 decisions (1 minute).
+> 2. Step 9: scraper (a), Fri–Sun (4 parts plus a first full run).
+> 3. Step 10: 3 baseline runs at ≥ 90%, Mon Nov 2. ⭐ Check 2
+> 4. Milestone 1 closes Tue Nov 3 (buffer and merge).
 
 ---
 
@@ -41,14 +42,18 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | | ✅ Step 6: Test 2 fixture (Joseph's design; files assembled by Claude at his request, D39) and Joseph's hand-calculated `expected.md`. | J |
 | | ✅ Step 7 (a day early): scoring script and 24 tests reproduce 0.90 and 2/70 (pull request #4, D42). | C |
 | | ✅ Step 8: Joseph verified the scoring script on his laptop: tests run, code read and explained, two deliberate breaks caught, clean rerun. **⭐ Check 1 passed** (two days early). | J |
-| | Start scraper (a): Python environment, fetch one page with `requests`, find the label rows with BeautifulSoup. | J |
-| **Wed Oct 28** | Scraper (a): crawl loop (queue and visited set), page cap, `robots.txt` setting, `run=<id>` in the User-Agent. | J |
-| **Thu Oct 29** | Scraper (a): label-plus-next-text extraction; write output in the agreed format. | J |
-| **Fri Oct 30** | Scraper (a): record 404s and timeouts and keep going. First full run on baseline; score it; fix problems. | J |
-| **Sat Oct 31** | Buffer: finish (a) if behind. | J |
-| **Sun Nov 1** | Step 10: baseline check. Run (a) 3 times with unique run IDs, score each run, and hand-count a few fields from one real run (§7 verification step 5). ⭐ **Check 2** | J |
-| **Mon Nov 2** | Buffer and fixes. Record both checks in the chat-keeper; tick the README roadmap. | J, C |
-| **Tue Nov 3** | **Milestone 1 closes.** Get the work onto `main` (pull request or upload). Read the Playwright for Python intro ahead of scraper (b). | J |
+| | ~~Start scraper (a)~~: not started; moved to Fri Oct 30 (re-planned in Turn 50, D44). | J |
+| **Wed Oct 28** | ~~Scraper (a): crawl loop~~: moved to Fri Oct 30. | — |
+| **Thu Oct 29** | ~~Scraper (a): extraction and output~~: moved to Sat Oct 31. | — |
+| **Fri Oct 30** | Decide C20 (#1 page mapping, #6 tags as a list): 1 minute. | J |
+| | **Step 9, scraper (a), part 1:** fetch `/products/p1` with `requests` (with `run=<id>` in the User-Agent); find the label rows with BeautifulSoup; print the 10 label/value pairs. | J |
+| | **Part 2:** crawl loop from the home page (queue and visited set), following every link; page cap; `robots.txt` obey/ignore; the inputs `--start-url --page-cap --robots --run-id --out` (`docs/scraper-output.md`). | J |
+| **Sat Oct 31** | **Part 3:** the label-plus-next-text rule on every item page, using `data/fields.json` (never `items.json`); write the output JSON in the approved format. | J |
+| | **Part 4:** record 404s and timeouts and keep going; time the crawl (`seconds`). | J |
+| **Sun Nov 1** | **First full run** on baseline: `python scoring/score.py <output>`; fix problems until accuracy ≥ 90%. | J |
+| **Mon Nov 2** | **Step 10, baseline check:** run (a) 3 times (`a-baseline-1`, `-2`, `-3`) and score each at ≥ 90%. Hand-count a few fields from one run using `--records` (§7 verification step 5). ⭐ **Check 2** | J |
+| | Record Check 2 in the chat-keeper, tick the README roadmap, open the milestone pull request. | C |
+| **Tue Nov 3** | **Milestone 1 closes.** Buffer for anything left from Mon. Merge to `main`. Read the Playwright for Python intro ahead of scraper (b). | J |
 
 ---
 
