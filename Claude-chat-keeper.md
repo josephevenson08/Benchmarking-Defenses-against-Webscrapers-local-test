@@ -223,7 +223,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #10 merged by Joseph (`27029d5`, plus his comment fix `ce3666f`); branch fast-forwarded. Still pending on Joseph's side: the speed check after restarting the server, and `git rm --cached results/dev/a-baseline-1.json`.
+- **⚠️ Merge needed:** pull request #11 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/11): start URL `127.0.0.1` in the docs and README (D47).
 
 ---
 
@@ -3741,7 +3741,7 @@ Noted that `condition speed` in the score is just the test run ID being parsed (
   - added a note explaining why.
 - **README:** the Usage line now uses `127.0.0.1`, with a note to use `127.0.0.1` in scraper URLs.
 - **`site/server.js`:** the startup message prints `http://127.0.0.1:<port>/`. `npm test` shows 8 passing.
-- Committed, pushed, and opened a pull request.
+- Committed, pushed, and opened **pull request #11**: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/11
 
 **Claude's answer (summary):** the diagnosis is confirmed. **Joseph's change:** in the options block, set `--start-url`'s default to `"http://127.0.0.1:3000/"`. Then run part 4's tests and ⭐ Check 2 with that default. ⚠️ Merge needed for the docs and README update.
 
