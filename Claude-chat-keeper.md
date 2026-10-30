@@ -73,6 +73,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D42 | 38 | **Scoring script:** `scoring/score.py` and 24 tests in `scoring/tests/` (standard library only), written from the midterm's prompt and the approved rules (D31–D35). The Test 2 test reads Joseph's `expected.md` and checks the script against it. Extras: time per page, and an ExtractedRecord CSV export for hand-counting. Honeypot hits are left for Nov 19 (they need the request log). Only scoring files were changed. | — | Claude (delegated task) | §7 AI-agent plan ("Implement the scoring script using the Figure 2 data model. Modify only the scoring files. Handle missing fields, malformed values, empty outputs and duplicate records. Add tests for the hand-calculated example in Test 2"). Figure 2. §4 Metrics. §5 Test 2. | Follows (page-to-item mapping Interprets; see C20) |
 | D43 | 48 | **⭐ Check 1 passed (Milestone 1).** Joseph verified the scoring script on his laptop: ran the 24 tests and the command line (0.900, 0.029); read and explained the rules (C21, one correction); made two deliberate breaks, both caught (a comma rule failure and 11 failures); clean rerun (`OK`, working tree clean). The remaining verification step 5 (hand-count one real run) follows once scraper (a) exists. Marked in README and SCHEDULE; scoring usage added to the README. | — | Joseph | §7 milestone table ("Scoring script passes the hand-calculated Test 2"). §7 AI-agent plan, verification steps 2–4. | Follows |
 | D44 | 50 | **Re-plan of Milestone 1, Fri Oct 30 – Tue Nov 3.** Scraper (a) hadn't started (nothing on GitHub by Fri). It now runs Fri–Sun in 4 parts plus a first full run. The baseline check (⭐ Check 2) moves from Sun Nov 1 to Mon Nov 2. Tue Nov 3 stays the close, with Mon's buffer moved to Tue. Dates outside Milestone 1 are unchanged. | — | Claude proposed; Joseph confirmed (Turn 51) | §7 milestone table (Milestone 1 ends Nov 3; completion check: (a) ≥ 90% on baseline in each of 3 runs). Figure 3 (scraper (a) + baseline check bar ends Nov 3). | Follows (dates within the milestone shifted; the milestone end is unchanged) |
+| D45 | 80 | Practice scraper outputs go in `results/dev/`, which is git-ignored. Real experiment results will use dated folders (Milestone 3). Timing (`started_at`, `seconds`) moves from part 4 into part 3, because the output's `run` block needs it; part 4 is now error handling only. | — | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder"). README layout (`results/`). `docs/scraper-output.md` (`run` block fields, D31). | Follows (`results/dev/` Adds) |
 
 ---
 
@@ -161,6 +162,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J77 | 77 | Walk me through each step; I'll comment them myself | Answered in Turn 77 (7-step fill-in walkthrough for part 2b) |
 | J78 | 78 | First part 2b draft (options and robots blocks placed at the end of the file) | Reviewed in Turn 78: `NameError: args`; 4 fixes |
 | J79 | 79 | Fixed part 2b (blocks reordered, `page_cap` from args, `obey`/`ignore`) | Part 2b done (Turn 79) |
+| J80 | 80 | Keep going tonight (part 3), to finish early | Part 3 started in Turn 80 (fill-in walkthrough) |
 
 ### Questions from Claude
 
@@ -3106,3 +3108,29 @@ Then comment the new lines and run the three tests.
 **Questions Claude asked:** continue to part 3, or stop for today?
 
 **Direction and fit:** no new decision. Meets D32 (inputs) and §2 (robots.txt setting); the page cap works (§5). The code is Joseph's.
+
+### Turn 80 — 2026-10-30 20:59 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> honestly lets keep going while we are at it, if we can finish a few days early then we can and have the extra days to not work on it
+
+**What Claude did**
+- **Checked the walkthrough plan first:** applied its steps to a scratch copy of Joseph's part 2b code (kept in the scratchpad, not shared) and ran it against the local site with `--run-id a-baseline-1`. Result: 10 pages and 70 records, in the approved format. **`score.py` gave 70/70 = 1.000**, fake-value rate 0, missing 0.
+- Stopped the server.
+- Added `results/dev/` to `.gitignore` for practice outputs (D45).
+
+**Claude's answer (summary):** a 7-step fill-in walkthrough for part 3. Joseph writes it and adds the comments.
+1. Imports: `time`, `datetime`/`timezone`.
+2. `all_fields = labels["product"] + labels["article"]`, replacing `product_labels` (records need the field *key*; trying every label on every page means the scraper doesn't need to know page types).
+3. Before the loop: the `pages` and `records` lists, `started_at` and `start_time`.
+4. In the loop: `path = urlparse(url).path`; append to `pages` (blanks).
+5. In the loop: Joseph's part 1 extraction adapted to append records using `field["label"]`/`field["key"]` (blanks).
+6. At the end: the output dictionary (`run`, `pages`, `records`) and `json.dump` (blanks).
+7. Run into `results\dev\a-baseline-1.json` and score it. Expected: 70/70.
+
+**Disclosure:** fill-in-the-blank guidance at the level of Turn 77, at Joseph's request to finish early. Values, comments and assembly are Joseph's.
+
+**Questions Claude asked:** Joseph to paste his code and the score output.
+
+**Direction and fit:** D45. Follows the approved output format (D31, `docs/scraper-output.md`) and the §2 extraction rule (find each label by its text, then the next text).

@@ -8,3 +8,6 @@ conditions/
 
 # Request logs from site/server.js
 logs/
+
+# Practice scraper outputs while developing (real experiment results go in dated folders)
+results/dev/
