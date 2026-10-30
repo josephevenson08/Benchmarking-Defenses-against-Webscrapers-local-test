@@ -155,6 +155,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J71 | 71 | First part 2a crawl loop, for review | Reviewed in Turn 71: crash on `BeautifulSoup(Response)`; 3 more fixes |
 | J72 | 72 | Walk me through each fix | Answered in Turn 72 (find → change → why, for each fix) |
 | J73 | 73 | Second part 2a crawl loop (start URL, cap, status print and `response.content` fixed) | Reviewed in Turn 73: crawls all 10 pages; still no User-Agent or timeout |
+| J74 | 74 | What does that fix look like? | Shown in Turn 74 (before/after of the fetch line) |
 
 ### Questions from Claude
 
@@ -2761,3 +2762,22 @@ Then rewrite the comments copied from the zoo example, and run it (10 lines with
 **Questions Claude asked:** Joseph to confirm the log shows `a-test-1`.
 
 **Direction and fit:** no new decision. Applies §3 Architecture ("Every scraper sends its run ID in the User-Agent header") and D21.
+
+### Turn 74 — 2026-10-30 20:28 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> whats that fix look like
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):** showed the fetch line before and after:
+- `requests.get(url, "")` → `requests.get(url, headers = {"User-Agent": "run=a-test-1"}, timeout = 5)`.
+
+This is Joseph's own part 1 line, moved into the loop. Explained what changed (the `""` removed, headers added, timeout added) and the indentation, then how to check the log.
+
+**Disclosure:** gave the exact replacement line. It is Joseph's earlier code reused in a new place.
+
+**Questions Claude asked:** Joseph to confirm the log shows `a-test-1`.
+
+**Direction and fit:** no new decision.
