@@ -213,7 +213,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #8 merged by Joseph; no merge needed now.
+- **⚠️ Merge needed:** pull request #10 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/10): the server listens on IPv4 and IPv6 loopback (D46), `results/dev/` is ignored (D45), and the schedule is updated. After merging, Joseph reruns the scraper to confirm `seconds` drops.
 
 ---
 
@@ -3552,7 +3552,7 @@ Updated `SCHEDULE.md`:
   - Started the real server here (no IPv6): it listens on `127.0.0.1` only, with no crash. A second server on the same port prints "Could not listen … EADDRINUSE" and exits with code 1.
   - Scoring tests: 24 OK.
 - Merged `main` into the branch (D41).
-- Committed, pushed and opened a pull request (link in Open items).
+- Committed, pushed and opened **pull request #10**: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/10
 
 **Claude's answer (summary):**
 - The laptop run is confirmed at 70/70.
