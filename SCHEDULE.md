@@ -19,13 +19,13 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Oct 30 (Turn 79 of the chat-keeper).*
+*Last updated: Fri Oct 30 (Turn 82 of the chat-keeper).*
 
-> **▶ Resume here (Fri Oct 30, after a break).** ⭐ Check 1 passed Oct 27; **scraper (a) part 1 done** (reads `/products/p1`, prints 10 correct pairs). Next:
-> 1. ✅ Joseph committed `scrapers/a_raw_html.py` and pushed it to `main` (`913c23f`).
-> 2. ✅ Part 2a: crawl loop. All 10 pages found from the home page, run ID logged on every request.
-> 3. ✅ Part 2b: inputs and `robots.txt` obey/ignore.
-> 4. Then Sat: parts 3–4 · Sun: first full run · Mon: ⭐ Check 2 · Tue Nov 3: close.
+> **▶ Resume here (Fri Oct 30, evening).** ⭐ Check 1 passed Oct 27. Scraper (a) parts 1, 2a, 2b and 3 are done (Fri), and the first full baseline run scores **70/70**. Left:
+> 1. Joseph: confirm 70/70 on the laptop; commit `scrapers/a_raw_html.py` (not `results/dev/`).
+> 2. Part 4: record 404s, timeouts and connection errors in `pages[].error` and keep going.
+> 3. Step 10: 3 baseline runs (`a-baseline-1..3`) at ≥ 90%, plus a hand count with `--records`. ⭐ Check 2
+> 4. Close Milestone 1, possibly days early.
 
 ---
 
@@ -49,9 +49,9 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | | ✅ **Step 9, scraper (a), part 1:** fetches `/products/p1` with a `run=` User-Agent, finds each label by its text, and prints all 10 correct label/value pairs (Joseph's code, Fri Oct 30). | J |
 | | ✅ **Part 2a:** crawl loop from the home page (queue and visited set), following every link, same-site only, page cap 15. It visits all 10 pages (status 200), and every request is logged with the run ID (Joseph's code, Fri Oct 30). | J |
 | | ✅ **Part 2b:** the inputs `--start-url --page-cap --robots --run-id --out` (`argparse`); `robots.txt` read with `RobotFileParser`. Obey skips disallowed pages and ignore doesn't (checked with a temporary `robots.txt`: 8 vs 10 pages); the page cap works; a missing `--run-id`/`--out` is an error (Joseph's code, Fri Oct 30). | J |
-| **Sat Oct 31** | **Part 3:** the label-plus-next-text rule on every item page, using `data/fields.json` (never `items.json`); write the output JSON in the approved format. | J |
+| **Sat Oct 31** | ✅ **Part 3 (done Fri, a day early):** the label-plus-next-text rule on every page using `data/fields.json`; output JSON in the approved format. Scored by `score.py`: **70/70 = 1.000** on baseline (Joseph's code, run in Claude's check). | J |
 | | **Part 4:** record 404s and timeouts and keep going; time the crawl (`seconds`). | J |
-| **Sun Nov 1** | **First full run** on baseline: `python scoring/score.py <output>`; fix problems until accuracy ≥ 90%. | J |
+| **Sun Nov 1** | **First full run** on baseline: already 70/70 in Claude's check on Fri. Joseph to confirm on the laptop (`results\dev\`). | J |
 | **Mon Nov 2** | **Step 10, baseline check:** run (a) 3 times (`a-baseline-1`, `-2`, `-3`) and score each at ≥ 90%. Hand-count a few fields from one run using `--records` (§7 verification step 5). ⭐ **Check 2** | J |
 | | Record Check 2 in the chat-keeper, tick the README roadmap, open the milestone pull request. | C |
 | **Tue Nov 3** | **Milestone 1 closes.** Buffer for anything left from Mon. Merge to `main`. Read the Playwright for Python intro ahead of scraper (b). | J |
