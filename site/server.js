@@ -6,6 +6,7 @@
 // Scrapers put their run ID in the User-Agent as "run=<id>", e.g.
 // "bench-scraper (run=a-baseline-1)". Requests without one log as "unknown".
 const fs = require("fs");
+const http = require("http");
 const path = require("path");
 const { parseArgs } = require("util");
 const express = require("express");
@@ -61,6 +62,26 @@ function createApp({ siteDir, logFile, trapPath }) {
   return app;
 }
 
+// Listens on both loopback addresses, so the site is reachable only from this
+// machine. On Windows, "localhost" tries IPv6 (::1) first; with no IPv6
+// listener each request waits about 2 s before falling back to IPv4, which
+// would inflate time per page. Where IPv6 isn't available, ::1 is skipped.
+const LOOPBACK = ["127.0.0.1", "::1"];
+const NO_IPV6 = ["EADDRNOTAVAIL", "EAFNOSUPPORT"];
+
+function listenLocal(app, port, onListening = () => {}) {
+  return LOOPBACK.map((host) => {
+    const server = http.createServer(app);
+    server.on("error", (err) => {
+      if (host === "::1" && NO_IPV6.includes(err.code)) return;
+      console.error(`Could not listen on ${host}:${port}: ${err.message}`);
+      process.exit(1);
+    });
+    server.listen(port, host, () => onListening(host));
+    return server;
+  });
+}
+
 if (require.main === module) {
   const config = JSON.parse(fs.readFileSync(path.join(ROOT, "config.json"), "utf8"));
   const { values, positionals } = parseArgs({
@@ -82,12 +103,9 @@ if (require.main === module) {
   }
   const logFile = path.resolve(ROOT, values.log);
   const app = createApp({ siteDir, logFile, trapPath: config.trap_path });
-  // Bound to 127.0.0.1 so the site is reachable only from this machine.
-  app.listen(Number(values.port), "127.0.0.1", (err) => {
-    if (err) throw err;
-    console.log(`Serving conditions/${condition}/ at http://localhost:${values.port}/`);
-    console.log(`Logging requests to ${path.relative(ROOT, logFile)}`);
-  });
+  console.log(`Serving conditions/${condition}/ at http://localhost:${values.port}/`);
+  console.log(`Logging requests to ${path.relative(ROOT, logFile)}`);
+  listenLocal(app, Number(values.port), (host) => console.log(`Listening on ${host}`));
 }
 
-module.exports = { createApp, runIdFrom };
+module.exports = { createApp, listenLocal, runIdFrom };
