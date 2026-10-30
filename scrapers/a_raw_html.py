@@ -74,7 +74,7 @@ while queue and len(visited) < page_cap:
     print(response.status_code, url)
 
     path = urlparse(url).path #get the path of the url
-    pages.append({"path": path, "status": response.status_code, "error": None}) #store the path, status code, and content of the page in the pages list
+    pages.append({"path": path, "status": response.status_code, "error": None}) #store the path, status code, and errorof the page in the pages list
 
     soup = BeautifulSoup(response.content, "html.parser")
     for field in all_fields:
