@@ -7,7 +7,7 @@ const os = require("os");
 const path = require("path");
 
 const { loadData, buildPages, writeCondition } = require("../generate");
-const { createApp, runIdFrom } = require("../server");
+const { createApp, listenLocal, runIdFrom } = require("../server");
 
 const data = loadData();
 const pages = buildPages(data);
@@ -148,4 +148,32 @@ test("server serves pages and logs every request", async (t) => {
     assert.ok(!Number.isNaN(Date.parse(e.timestamp)));
   }
   assert.equal(lines[5].user_agent, null);
+});
+
+test("server listens on the IPv4 loopback, and on IPv6 where available", async (t) => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "listen-"));
+  const { siteDir } = writeCondition("baseline", outDir);
+  const app = createApp({ siteDir, logFile: path.join(outDir, "requests.jsonl"), trapPath: "/trap" });
+
+  // Find a free port, then listen on it from both loopback addresses.
+  const probe = http.createServer().listen(0, "127.0.0.1");
+  await new Promise((resolve) => probe.once("listening", resolve));
+  const port = probe.address().port;
+  await new Promise((resolve) => probe.close(resolve));
+
+  const listening = [];
+  const servers = listenLocal(app, port, (host) => listening.push(host));
+  t.after(() => servers.filter((s) => s.listening).forEach((s) => s.close()));
+  for (let i = 0; i < 50 && !listening.includes("127.0.0.1"); i++) {
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  const status = (host) =>
+    new Promise((resolve, reject) => {
+      http.get({ host, port, path: "/" }, (res) => (res.resume(), resolve(res.statusCode))).on("error", reject);
+    });
+  assert.ok(listening.includes("127.0.0.1"));
+  assert.equal(await status("127.0.0.1"), 200);
+  if (listening.includes("::1")) assert.equal(await status("::1"), 200);
 });

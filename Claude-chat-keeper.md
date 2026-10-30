@@ -74,6 +74,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D43 | 48 | **⭐ Check 1 passed (Milestone 1).** Joseph verified the scoring script on his laptop: ran the 24 tests and the command line (0.900, 0.029); read and explained the rules (C21, one correction); made two deliberate breaks, both caught (a comma rule failure and 11 failures); clean rerun (`OK`, working tree clean). The remaining verification step 5 (hand-count one real run) follows once scraper (a) exists. Marked in README and SCHEDULE; scoring usage added to the README. | — | Joseph | §7 milestone table ("Scoring script passes the hand-calculated Test 2"). §7 AI-agent plan, verification steps 2–4. | Follows |
 | D44 | 50 | **Re-plan of Milestone 1, Fri Oct 30 – Tue Nov 3.** Scraper (a) hadn't started (nothing on GitHub by Fri). It now runs Fri–Sun in 4 parts plus a first full run. The baseline check (⭐ Check 2) moves from Sun Nov 1 to Mon Nov 2. Tue Nov 3 stays the close, with Mon's buffer moved to Tue. Dates outside Milestone 1 are unchanged. | — | Claude proposed; Joseph confirmed (Turn 51) | §7 milestone table (Milestone 1 ends Nov 3; completion check: (a) ≥ 90% on baseline in each of 3 runs). Figure 3 (scraper (a) + baseline check bar ends Nov 3). | Follows (dates within the milestone shifted; the milestone end is unchanged) |
 | D45 | 80 | Practice scraper outputs go in `results/dev/`, which is git-ignored. Real experiment results will use dated folders (Milestone 3). Timing (`started_at`, `seconds`) moves from part 4 into part 3, because the output's `run` block needs it; part 4 is now error handling only. | — | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder"). README layout (`results/`). `docs/scraper-output.md` (`run` block fields, D31). | Follows (`results/dev/` Adds) |
+| D46 | 86 | **The server listens on both loopback addresses** (`127.0.0.1` and `::1`), skipping IPv6 where it isn't available. Prompted by Joseph's laptop run: 20.5 s for 10 pages (~2 s per page) vs 0.06 s in the cloud check, which matches Windows trying `localhost` over IPv6 first and timing out before falling back to IPv4. Still local-only (loopback). A new test covers it; a busy port gives a clear error. | Keep IPv4 only and have scrapers use `127.0.0.1`; listen on both loopbacks | Claude (test site) | §4 Metrics (time per page must reflect the scraper, not a connection delay). §1/§3 (everything runs locally). Revises D23's binding to `127.0.0.1` only. | Adds (protects a metric); diagnosis to be confirmed on Joseph's laptop |
 
 ---
 
@@ -168,6 +169,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J83 | 83 | "like this?" (tidied part 3: old commented block removed) | Checked in Turns 83–84: code identical to the 70/70 version; one stale comment |
 | J84 | 84 | What should my commit of `a-baseline-1.json` and `a_raw_html.py` be? | Answered in Turn 84: commit only the scraper |
 | J85 | 85 | What should my commit say? | Answered in Turn 85 |
+| J86 | 86 | "its synced" (scraper parts 2b and 3 pushed) | Checked in Turn 86: on GitHub; laptop run 70/70; slow-localhost fix (D46); practice output was committed |
 
 ### Questions from Claude
 
@@ -3530,3 +3532,34 @@ Updated `SCHEDULE.md`:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 86 — 2026-10-30 21:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> its synced
+
+**What Claude did**
+- **Checked GitHub `main`:**
+  - Joseph's commits are there: `df87610` (part 2b), `e6fdc3a` (merge) and `7a26612` (part 3);
+  - Joseph also merged a **pull request #9** from the branch himself;
+  - the chat-keeper on `main` is untouched by the laptop.
+- **`results/dev/a-baseline-1.json` was committed.** Pull request #9 merged before the ignore rule (D45) was added, so git on the laptop didn't know to skip it.
+- **Scored Joseph's own laptop run** from that file: **70/70 = 1.000**, 10 pages, 0 errors. ✅ Confirmed on his machine.
+- **Spotted a timing problem:** `seconds` = 20.541 (2.05 s per page) on the laptop vs about 0.06 s in the cloud check. Diagnosis: Windows resolves `localhost` to IPv6 `::1` first, while the server listened only on `127.0.0.1`.
+- **Changed `site/server.js`** (D46): a `listenLocal` helper listens on `127.0.0.1` and `::1`; it skips IPv6 when unavailable and exits with a clear message on other errors (e.g. a busy port).
+  - Added a site test; `npm test` shows 8 passing.
+  - Started the real server here (no IPv6): it listens on `127.0.0.1` only, with no crash. A second server on the same port prints "Could not listen … EADDRINUSE" and exits with code 1.
+  - Scoring tests: 24 OK.
+- Merged `main` into the branch (D41).
+- Committed, pushed and opened a pull request (link in Open items).
+
+**Claude's answer (summary):**
+- The laptop run is confirmed at 70/70.
+- **⚠️ Merge the pull request**, then rerun the scraper: `seconds` should fall from about 20 to under 1 if the diagnosis is right. A quick check before merging: run with `--start-url http://127.0.0.1:3000/`.
+- Stop tracking the practice output with `git rm --cached results/dev/a-baseline-1.json` (the file stays on disk), then commit and push.
+- The comment on `pages.append` still says "content".
+
+**Questions Claude asked:** Joseph to report the new `seconds` value.
+
+**Direction and fit:** D46.
