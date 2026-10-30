@@ -174,6 +174,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J88 | 88 | `npm run serve -- baseline` → Missing script "serve" (run from `...\Web tech\project`) | Diagnosed in Turn 88: parent folder again |
 | J89 | 89 | `git rm --cached` and commit succeeded (`3ca30e6`); push rejected (fetch first) | Answered in Turn 89: pull, then push |
 | J90 | 90 | Speed check result: `seconds` = 20.564 (still slow) | Diagnosed in Turn 90: two checks requested |
+| J91 | 91 | Pasted the full `a-speed-1` run (seconds 20.564, the same earlier run) | Answered in Turn 91: the two checks still need running |
 
 ### Questions from Claude
 
@@ -3669,3 +3670,40 @@ Before that: sync, restart the server, rerun to check `seconds`, and untrack the
 **Questions Claude asked:** C22 (both checks).
 
 **Direction and fit:** no new decision yet. Protecting the §4 time-per-page metric (D46).
+
+### Turn 91 — 2026-10-30 21:33 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python scrapers\a_raw_html.py --run-id a-speed-1 --out results\dev\a-speed-1.json
+> >> python scoring\score.py results\dev\a-speed-1.json
+> 200 http://localhost:3000/
+> 200 http://localhost:3000/products/
+> 200 http://localhost:3000/articles/a1
+> 200 http://localhost:3000/articles/a2
+> 200 http://localhost:3000/products/p1
+> 200 http://localhost:3000/products/p2
+> 200 http://localhost:3000/products/p3
+> 200 http://localhost:3000/products/p4
+> 200 http://localhost:3000/products/p5
+> 200 http://localhost:3000/products/p6
+> 10 pages visited
+> 70 records written to results\dev\a-speed-1.json
+> run a-speed-1 (scraper a, condition speed, run 1)
+> accuracy         70/70 = 1.000
+> fake-value rate  0/70 = 0.000
+> correct 70 | wrong 0 (fakes 0, malformed 0, conflicting 0, plain wrong 0) | missing 0
+> pages fetched 10 | seconds 20.564 | time per page 2.056 s | ignored records 0
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** read the paste. It's the original `a-speed-1` run (identical 20.564 s; accuracy 70/70), not the two diagnostic checks from Turn 90. No files changed besides this log.
+
+**Claude's answer (summary):** restated the two checks as single actions:
+1. In the server terminal, Ctrl+C, then `npm run serve -- baseline`, and paste the startup lines.
+2. Run with `--start-url http://127.0.0.1:3000/` as `a-speed-2`, score it, and paste the `seconds` line.
+
+Noted that `condition speed` in the score is just the test run ID being parsed (D21/D32 run-ID form).
+
+**Questions Claude asked:** C22 (both checks), still open.
+
+**Direction and fit:** no new decision.
