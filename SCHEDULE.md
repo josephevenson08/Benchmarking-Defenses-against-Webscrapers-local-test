@@ -22,7 +22,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 *Last updated: Fri Oct 30 (Turn 63 of the chat-keeper).*
 
 > **▶ Resume here (Fri Oct 30, after a break).** ⭐ Check 1 passed Oct 27; **scraper (a) part 1 done** (reads `/products/p1`, prints 10 correct pairs). Next:
-> 1. Joseph: move `a_raw_html.py` into `scrapers/`, commit and Sync.
+> 1. ✅ Joseph committed `scrapers/a_raw_html.py` and pushed it to `main` (`913c23f`).
 > 2. Part 2a: crawl loop (queue + visited, every `<a href>`, page cap 15). Print the 10 pages visited. Claude starts with a standalone queue + visited example.
 > 3. Part 2b: inputs `--start-url --page-cap --robots --run-id --out`.
 > 4. Then Sat: parts 3–4 · Sun: first full run · Mon: ⭐ Check 2 · Tue Nov 3: close.

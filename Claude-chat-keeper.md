@@ -2543,9 +2543,15 @@ It worked if step 3 ends with `main -> main`; stop and paste any error. The diff
 
 > ok ill be right back
 
-**What Claude did:** checked GitHub: the scraper is not on `main` yet (the three git steps from Turn 68 are still to run). No files changed besides this log.
+**What Claude did:** checked GitHub.
+- **Correction:** this entry first said the scraper was not on `main` yet. That was wrong: the text was written before the check's result was read. The check showed Joseph had **already run the three steps**:
+  - `913c23f` "Scraper (a) part 1: read one product page";
+  - `e536e46`, the merge with pull request #8.
+- Since pull request #8, only `scrapers/a_raw_html.py` (34 lines) was added. `Claude-chat-keeper.md` on `main` is identical to the pull request #8 version, so the restore worked and no laptop copy was committed.
+- The committed scraper matches the code Joseph showed in Turn 63.
+- Merged `main` into the working branch (D41) and updated the resume note.
 
-**Claude's answer (summary):** acknowledged. When Joseph is back: the three git steps (restore, pull, push), then Claude confirms the scraper on GitHub, then part 2a (crawl loop).
+**Claude's answer (summary):** confirmed the scraper is on GitHub. Next, when Joseph is back: part 2a, the crawl loop, starting with a standalone queue + visited example.
 
 **Questions Claude asked:** none.
 
