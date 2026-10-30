@@ -235,7 +235,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #12 merged by Joseph (`5af918f`); branch fast-forwarded. Only the Turn 101 log and schedule note are not on `main` (end-of-session pull request, no rush).
+- **⚠️ Merge needed (no rush):** pull request #13 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/13), the log and the resume note for Milestone 2.
 
 ---
 
@@ -4237,7 +4237,7 @@ Then three tests (normal; `/nope` → 404; port 3999 → connection error), all 
 - Confirmed Joseph's fix `3811a64` ("Use the agreed connection_error code"): the scraper on `main` now records `"timeout"` and `"connection_error"` (D31).
 - Fast-forwarded the branch.
 - Updated the `SCHEDULE.md` resume note (Milestone 2 from Wed Nov 4; Mon and Tue free) and the top of Open items.
-- Committed, pushed, and opened the end-of-session pull request (D40), log and schedule only.
+- Committed, pushed, and opened **pull request #13**, the end-of-session pull request (D40), log and schedule only: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/13
 
 **Claude's answer (summary):** Milestone 1 is fully closed: both checks, the hand count and contract-matching error codes, four days early. Next session: Milestone 2 on Wed Nov 4 (Playwright and scraper (b)). C20 is still open and not urgent.
 
