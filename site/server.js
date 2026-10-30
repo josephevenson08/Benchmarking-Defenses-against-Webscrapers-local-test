@@ -103,7 +103,7 @@ if (require.main === module) {
   }
   const logFile = path.resolve(ROOT, values.log);
   const app = createApp({ siteDir, logFile, trapPath: config.trap_path });
-  console.log(`Serving conditions/${condition}/ at http://localhost:${values.port}/`);
+  console.log(`Serving conditions/${condition}/ at http://127.0.0.1:${values.port}/`);
   console.log(`Logging requests to ${path.relative(ROOT, logFile)}`);
   listenLocal(app, Number(values.port), (host) => console.log(`Listening on ${host}`));
 }
