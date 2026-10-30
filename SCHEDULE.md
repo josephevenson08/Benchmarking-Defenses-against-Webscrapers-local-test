@@ -19,12 +19,12 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Oct 30 (Turn 97 of the chat-keeper).*
+*Last updated: Fri Oct 30 (Turn 99 of the chat-keeper).*
 
-> **▶ Resume here (Fri Oct 30, evening).** ⭐ Check 1 passed Oct 27. **Scraper (a) is complete** (parts 1–4, Fri): 70/70 on baseline; `127.0.0.1` start URL (D47). Left:
-> 1. Joseph: commit `scrapers/a_raw_html.py` (part 4).
-> 2. Step 10: 3 baseline runs into `results/2026-10-30-check2/`, each scored ≥ 90%, plus a hand count of 5 fields from one run's `--records` CSV. ⭐ Check 2
-> 3. Close Milestone 1 (Claude: log, README roadmap, pull request).
+> **▶ Resume here.** ✅ **Milestone 1 complete on Fri Oct 30, four days early.** ⭐ Check 1 (Oct 27) and ⭐ Check 2 (Oct 30: 70/70 in all 3 baseline runs) both passed. To wrap up:
+> 1. Joseph: hand count of 5 fields from `results/2026-10-30-check2/a-baseline-3-records.csv`; commit part 4 and the results folder.
+> 2. Claude: save the hand count with the results; closing pull request.
+> 3. Next: Milestone 2 starts Wed Nov 4 (scraper (b) with Playwright). Optional before then: read the Playwright for Python intro.
 
 ---
 
@@ -51,9 +51,10 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Sat Oct 31** | ✅ **Part 3 (done Fri, a day early):** the label-plus-next-text rule on every page using `data/fields.json`; output JSON in the approved format. Scored by `score.py`: **70/70 = 1.000** on baseline (Joseph's code, run in Claude's check). | J |
 | | ✅ **Part 4 (done Fri, a day early):** `try`/`except` records `timeout` and `connection_error` and keeps going; a 404 is recorded by its status; a failed `robots.txt` download falls back to allowing every page. Tested on the laptop: normal, 404 and connection error (Joseph's code). Timing moved into part 3 (D45). | J |
 | **Sun Nov 1** | **First full run** on baseline: already 70/70 in Claude's check on Fri. Joseph to confirm on the laptop (`results\dev\`). | J |
-| **Mon Nov 2** | **Step 10, baseline check:** run (a) 3 times (`a-baseline-1`, `-2`, `-3`) and score each at ≥ 90%. Hand-count a few fields from one run using `--records` (§7 verification step 5). ⭐ **Check 2** | J |
-| | Record Check 2 in the chat-keeper, tick the README roadmap, open the milestone pull request. | C |
-| **Tue Nov 3** | **Milestone 1 closes.** Buffer for anything left from Mon. Merge to `main`. Read the Playwright for Python intro ahead of scraper (b). | J |
+| **Fri Oct 30** | ✅ **Step 10, baseline check (moved up from Mon Nov 2):** 3 runs on Joseph's laptop, `a-baseline-1..3`, each **70/70 = 1.000** (0.016–0.020 s per page), saved in `results/2026-10-30-check2/` (D48). ⭐ **Check 2 passed.** Hand count of 5 fields from `--records` pending (§7 verification step 5). | J |
+| | ✅ Check 2 recorded (D49), README roadmap ticked; closing pull request. | C |
+| **Mon Nov 2** | Free: Milestone 1 finished early. | — |
+| **Tue Nov 3** | **Milestone 1 deadline:** already met on Oct 30. | — |
 
 ---
 

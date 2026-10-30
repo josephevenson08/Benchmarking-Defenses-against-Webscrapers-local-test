@@ -197,7 +197,9 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 - [x] Express server with request logger and `robots.txt`
 - [x] Scraper output format and matching rules ([`docs/scraper-output.md`](docs/scraper-output.md))
 - [x] Scoring script passes the hand-calculated Test 2
-- [ ] Scraper (a) scores at least 90% on baseline in each of 3 runs
+- [x] Scraper (a) scores at least 90% on baseline in each of 3 runs (70/70 in all three, Oct 30: [`results/2026-10-30-check2/`](results/2026-10-30-check2/))
+
+**Milestone 1 completed Oct 30, four days early.**
 
 ### Milestone 2: Nov 4 – Nov 17
 - [ ] Scraper (b)
