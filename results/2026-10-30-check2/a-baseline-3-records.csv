@@ -1,0 +1,71 @@
+run_id,item_id,field,value,correct,is_fake,status
+a-baseline-3,p1,name,Larkfield Studio Headphones,True,False,correct
+a-baseline-3,p1,brand,Larkfield,True,False,correct
+a-baseline-3,p1,category,Headphones,True,False,correct
+a-baseline-3,p1,price,$89.99,True,False,correct
+a-baseline-3,p1,sku,LF-HP-2041,True,False,correct
+a-baseline-3,p1,rating,4.5,True,False,correct
+a-baseline-3,p1,review_count,"1,284",True,False,correct
+a-baseline-3,p1,availability,In stock,True,False,correct
+a-baseline-3,p1,release_date,2024-09-12,True,False,correct
+a-baseline-3,p1,description,Closed-back over-ear headphones with 40 mm drivers and a detachable cable.,True,False,correct
+a-baseline-3,p2,name,Corvane Desk Lamp,True,False,correct
+a-baseline-3,p2,brand,Corvane,True,False,correct
+a-baseline-3,p2,category,Lighting,True,False,correct
+a-baseline-3,p2,price,$34.50,True,False,correct
+a-baseline-3,p2,sku,CV-LT-0317,True,False,correct
+a-baseline-3,p2,rating,4.2,True,False,correct
+a-baseline-3,p2,review_count,356,True,False,correct
+a-baseline-3,p2,availability,Low stock,True,False,correct
+a-baseline-3,p2,release_date,2023-11-03,True,False,correct
+a-baseline-3,p2,description,Adjustable LED lamp with three color temperatures and a weighted base.,True,False,correct
+a-baseline-3,p3,name,Brimvale Pour-Over Kettle,True,False,correct
+a-baseline-3,p3,brand,Brimvale,True,False,correct
+a-baseline-3,p3,category,Kitchen,True,False,correct
+a-baseline-3,p3,price,$47.00,True,False,correct
+a-baseline-3,p3,sku,BV-KT-1180,True,False,correct
+a-baseline-3,p3,rating,4.7,True,False,correct
+a-baseline-3,p3,review_count,"2,031",True,False,correct
+a-baseline-3,p3,availability,In stock,True,False,correct
+a-baseline-3,p3,release_date,2025-02-20,True,False,correct
+a-baseline-3,p3,description,Gooseneck kettle with a built-in thermometer and a 1-liter capacity.,True,False,correct
+a-baseline-3,p4,name,Tessaro Trail Backpack,True,False,correct
+a-baseline-3,p4,brand,Tessaro,True,False,correct
+a-baseline-3,p4,category,Outdoor,True,False,correct
+a-baseline-3,p4,price,$112.95,True,False,correct
+a-baseline-3,p4,sku,TS-BP-0552,True,False,correct
+a-baseline-3,p4,rating,4.4,True,False,correct
+a-baseline-3,p4,review_count,718,True,False,correct
+a-baseline-3,p4,availability,Out of stock,True,False,correct
+a-baseline-3,p4,release_date,2024-04-08,True,False,correct
+a-baseline-3,p4,description,28-liter daypack with a padded laptop sleeve and side water-bottle pockets.,True,False,correct
+a-baseline-3,p5,name,Mirelle Wireless Mouse,True,False,correct
+a-baseline-3,p5,brand,Mirelle,True,False,correct
+a-baseline-3,p5,category,Computer Accessories,True,False,correct
+a-baseline-3,p5,price,$24.99,True,False,correct
+a-baseline-3,p5,sku,MR-MS-0903,True,False,correct
+a-baseline-3,p5,rating,3.9,True,False,correct
+a-baseline-3,p5,review_count,"4,567",True,False,correct
+a-baseline-3,p5,availability,In stock,True,False,correct
+a-baseline-3,p5,release_date,2025-06-30,True,False,correct
+a-baseline-3,p5,description,Silent-click mouse with a USB-C receiver and up to 12 months of battery life.,True,False,correct
+a-baseline-3,p6,name,Halden Cast Iron Skillet,True,False,correct
+a-baseline-3,p6,brand,Halden,True,False,correct
+a-baseline-3,p6,category,Cookware,True,False,correct
+a-baseline-3,p6,price,$58.75,True,False,correct
+a-baseline-3,p6,sku,HD-CI-1026,True,False,correct
+a-baseline-3,p6,rating,4.8,True,False,correct
+a-baseline-3,p6,review_count,"9,412",True,False,correct
+a-baseline-3,p6,availability,Pre-order,True,False,correct
+a-baseline-3,p6,release_date,2026-12-01,True,False,correct
+a-baseline-3,p6,description,"Pre-seasoned 10-inch skillet that works on induction, gas and in the oven.",True,False,correct
+a-baseline-3,a1,title,Caring for Cast Iron Cookware,True,False,correct
+a-baseline-3,a1,author,Maya Okafor,True,False,correct
+a-baseline-3,a1,publish_date,2025-05-14,True,False,correct
+a-baseline-3,a1,tags,"cookware, cleaning, kitchen",True,False,correct
+a-baseline-3,a1,summary,"How to clean, dry and re-season a cast iron pan so it lasts for decades.",True,False,correct
+a-baseline-3,a2,title,Choosing a Daypack for Short Hikes,True,False,correct
+a-baseline-3,a2,author,Daniel Reyes,True,False,correct
+a-baseline-3,a2,publish_date,2025-08-02,True,False,correct
+a-baseline-3,a2,tags,"outdoor, hiking, buying guide",True,False,correct
+a-baseline-3,a2,summary,"What to look for in size, fit and pockets when picking a pack for day trips.",True,False,correct
