@@ -19,10 +19,10 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Wed Nov 4 (Turn 108 of the chat-keeper).*
+*Last updated: Wed Nov 4 (Turn 111 of the chat-keeper).*
 
 > **▶ Resume here (Milestone 2).** Wed Nov 4: Playwright pinned and working on the laptop; scraper (b) part 1 written (load a page in Chromium, read the DOM after load, apply (a)'s rules: D51).
-> Next: Joseph runs (b) part 1 (expect the 10 values and `b-test-1` in the log) and commits it. Thu Nov 5: (b) crawl loop, copied from (a), using Playwright for each page.
+> Done Wed: (b) part 1 runs on the laptop (10 correct values, `b-test-1` logged). Next: Joseph commits it. Thu Nov 5: (b) crawl loop, copied from (a), using Playwright for each page.
 
 ---
 
@@ -68,7 +68,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | Day | Tasks | Who |
 |---|---|---|
 | **Wed Nov 4** | ✅ Pin Playwright in `requirements.txt` (1.63.0, D50) and add the Chromium install step. | C |
-| | ✅ Ran two Playwright examples on the laptop. (b)'s design chosen (D51). Wrote `scrapers/b_browser_text.py` part 1: Chromium loads `/products/p1`, takes `page.content()` after the load event, and applies (a)'s field loop (identical to the version checked with Chromium: 10 correct values). Laptop run and commit pending. | J |
+| | ✅ Ran two Playwright examples on the laptop. (b)'s design chosen (D51). Wrote `scrapers/b_browser_text.py` part 1: Chromium loads `/products/p1`, takes `page.content()` after the load event, and applies (a)'s field loop and ran it on the laptop: status 200, all 10 values correct, logged as `b-test-1`. Commit pending. | J |
 | **Thu Nov 5** | (b): crawl loop that follows every link, hidden ones included; run ID in Playwright's User-Agent. | J |
 | **Fri Nov 6** | (b): extraction and output. First baseline run; score it. | J |
 | **Sat Nov 7** | Generator: per-page seeds saved with the output, and a slot where defenses plug in (§5: the generator saves the seeds). | C |
