@@ -202,6 +202,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J111 | 111 | Scraper (b) part 1 laptop output: status 200, 10 values, log `b-test-1` | Part 1 of (b) done on the laptop (Turn 111) |
 | J112 | 112 | Stop here for today | Session ended (Turn 112); end-of-session pull request opened |
 | J113 | 113 | Committed and synced; can Claude make a detailed animated picture of how scraper (a) works? | Yes: a 26-step animated walkthrough, published as a private page (Turn 113). Teaching visual, not project code |
+| J114 | 114 | Make it less wordy, with two sections: the animation on the left, the running code highlighted on the right | Done: same link, version 2 (Turn 114) |
 
 ### Questions from Claude
 
@@ -4603,3 +4604,20 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The page is a teaching visual made by Claude. It explains Joseph's own code and changes none of it, which fits the midterm's AI-use boundary (§2 "AI assistance": Claude may explain concepts). Not part of any measurement.
+
+### Turn 114 — 2026-11-04 19:30 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> make it less wordy with two sections 1 is the left with the animation and the right highlights the part of the code thats executing
+
+**What Claude did:** rebuilt the walkthrough page and republished it at the same link (https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1, version 2):
+- **Two sections:** "Animation" on the left (scraper ↔ site packets, the scene, the queue/visited/pages/records counters) and "Code running now" on the right (Joseph's `a_raw_html.py`, with the executing lines highlighted and the exact call marked).
+- **Less text:** each step is now a short title plus a note of a few words, down from 2–3 sentences. Removed the intro paragraph, the chapter tabs, the terminal and server-log boxes, the explanatory side notes and the "About this picture" list. One footnote line keeps the accuracy disclosure.
+- Same 26 steps, same data from run `a-baseline-3`. Checked at desktop and phone widths: no script errors, no sideways scrolling.
+
+**Claude's answer (summary):** same link, now in two sections and much shorter. Nothing in the repository changes except this log.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. It is still a Claude-made teaching visual that explains Joseph's code (§2 "AI assistance").
