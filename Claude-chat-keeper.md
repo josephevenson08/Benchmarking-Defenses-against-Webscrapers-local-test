@@ -204,6 +204,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J113 | 113 | Committed and synced; can Claude make a detailed animated picture of how scraper (a) works? | Yes: a 26-step animated walkthrough, published as a private page (Turn 113). Teaching visual, not project code |
 | J114 | 114 | Make it less wordy, with two sections: the animation on the left, the running code highlighted on the right | Done: same link, version 2 (Turn 114) |
 | J115 | 115 | Shared an animation-prompt checklist from the internet; asked for code only on the right, and on the left a black-and-white point-to-point animation on white: main path on top, a lower section that pauses at a stop to show what's happening | Done: same link, version 3, with 3 still frames checked first (Turn 115) |
+| J116 | 116 | That works! | Walkthrough version 3 accepted as final (Turn 116) |
 
 ### Questions from Claude
 
@@ -240,7 +241,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 **▶ Resume here (Thu Nov 5, Milestone 2):** (b) part 1 runs on the laptop (D51) and is on `main` (`54f418d`, pull request #16 merged). Next: the (b) crawl loop, reusing (a), with `page.goto`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
-**Study aid (Turn 113):** animated walkthrough of scraper (a): https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1 (private page; Claude-made teaching visual, not project code).
+**Study aid (Turns 113–116):** animated walkthrough of scraper (a), black-and-white version 3 accepted: https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1 (private page; Claude-made teaching visual, not project code).
 
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
@@ -254,7 +255,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed (no rush):** pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), the Turn 113 log entry only.
+- **⚠️ Merge needed (no rush):** pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), log entries for Turns 113–116 only.
 
 ---
 
@@ -4675,3 +4676,17 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. It is still a Claude-made teaching visual that explains Joseph's code (§2 "AI assistance"). Not project code.
+
+### Turn 116 — 2026-11-04 20:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> that works!
+
+**What Claude did:** logged the approval; no other changes. Version 3 of the walkthrough (https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1) is the final version.
+
+**Claude's answer (summary):** confirmed it's final. Pull request #17 (log only) is still open to merge whenever. Next session: Thu Nov 5, the (b) crawl loop.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
