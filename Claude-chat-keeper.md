@@ -78,6 +78,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D47 | 93 | **Scrapers use `http://127.0.0.1:3000/`, not `localhost`.** Joseph's laptop test: with `localhost`, 20.564 s for 10 pages (2.056 s per page); with `127.0.0.1`, 0.113 s (0.011 s per page). This confirms the slowdown is the `localhost` name lookup on Windows (D46's cause). The default start URL in `docs/scraper-output.md` is amended (approved contract D32 changed with Joseph's approval). README and the server's startup message updated; Joseph changes his scraper's `--start-url` default. Dual loopback listening (D46) is kept as harmless extra robustness. | Use 127.0.0.1; keep localhost | Joseph (Claude recommended) | §4 Metrics (time per page). §1/§3 (local only; `127.0.0.1` is the same machine). D32 (amended). | Adds (amends D32's default value; protects a metric) |
 | D48 | 97 | **⭐ Check 2's runs are kept as a real result**, not a practice output. Three runs (`a-baseline-1..3`) go into a dated folder, `results/2026-10-30-check2/`, which is committed, with each score's summary and one run's `--records` CSV for the hand count. `results/dev/` stays for throwaway runs (D45). | Commit them; keep them in `results/dev/` | Claude | §5 Reproducibility ("Each experiment writes to a dated results folder with outputs, logs …"). §7 Milestone 1 completion check. §7 verification step 5 (hand-count one real run). | Follows |
 | D49 | 99 | **⭐ Check 2 passed; Milestone 1 complete (Fri Oct 30, four days early).** Scraper (a), written by Joseph, scored 70/70 = 1.000 on baseline in each of 3 runs on his laptop (time per page 0.016–0.020 s), saved in `results/2026-10-30-check2/`. With Check 1 (D43), both §7 completion checks are met. README roadmap ticked; schedule updated (Mon–Tue now free). The hand count of 5 fields (§7 verification step 5) follows. | — | Joseph | §7 milestone table ("(a) scores at least 90% on baseline in each of 3 runs"). §1 Essential 1 ("(a) … each score at least 90% in each of 3 runs"). | Follows |
+| D50 | 104 | **Playwright for Python pinned at 1.63.0** (Sep 15, 2026) with `greenlet` 3.5.6 and `pyee` 13.0.1, rather than 1.64.0 (Oct 13). 1.63.0 matches the Chromium preinstalled in Claude's cloud environment, so examples and harnesses can be tested against a real browser before Joseph runs them; on the laptop, `python -m playwright install chromium` fetches the matching browser. A clean install from `requirements.txt` was verified; README Setup gained the browser install step. | 1.63.0; 1.64.0; 1.64.1 (under two weeks old) | Claude | §3 Technology choices (Playwright for (b)–(e)). §5 Reproducibility ("Python packages pinned in requirements.txt"; record the Playwright and Chromium versions). | Follows |
+| D51 | 104 | **Design of scraper (b):** load each page in Chromium with `page.goto(url, wait_until="load")`, take `page.content()` (the DOM as HTML right after the load event, scripts already run), then apply (a)'s rules unchanged: the label-then-next-text extraction and following every `<a href>` including hidden ones. Same inputs and output format (D31, D32). So (b) differs from (a) only in that page scripts have run. | DOM after load + (a)'s rule; visible text only (`inner_text`) | Joseph (Claude recommended) | §2 Baseline scrapers ("(b) reads the rendered text right after the load event, without extra waiting"). §4 Hypothesis 1–3 (shuffling fools (a) and (b), which read source order; poisoning fools readers right after load; honeypot hits expected from (a), (b) and (c), which follow hidden links). | Interprets ("rendered text" read as the DOM right after load) |
 
 ---
 
@@ -190,6 +192,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J101 | 101 | Pull request #12 merged | Milestone 1 fully closed (Turn 101) |
 | J102 | 102 | "OK! good work today we will meet up again here soon" | Session ended (Turn 102) |
 | J103 | 103 | Next phase: what does the day-to-day schedule look like? | Answered in Turn 103 (Milestone 2 plan, Nov 4–17) |
+| J104 | 104 | Let's just do what's needed for today | Done in Turn 104: Playwright pinned (D50); (b) design chosen (D51); examples and today's task |
 
 ### Questions from Claude
 
@@ -218,6 +221,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C21 | 44, 46 | Step 8b explain-back: (1) why p3 price `$41.00` is fake, not wrong; (2) which line makes p2 sku `""` missing; (3) is `Larkfield Studio Headphones` vs `larkfield studio headphones` a conflict? | (1) Joseph: a valid number that was changed. Half right: what decides it is that the value matches the `fakes.json` entry (line 261); `$42.00` would be plain wrong. (2) `if not values:` (line 249), correct. (3) Not a conflict because of `casefold()`, correct. | Closed (Turn 46) |
 | C22 | 90, 91 | Speed diagnosis: (1) after restarting, does the server print `Listening on ::1`? (2) Is `--start-url http://127.0.0.1:3000/` fast? | (2) Yes: 0.113 s vs 20.564 s. (1) Startup lines not pasted; not needed once (2) settled it. | Closed (Turn 93) → D47 |
 | C23 | 93 | Change the scrapers' default start URL to `http://127.0.0.1:3000/` (amending the approved contract)? Options: "Yes, use 127.0.0.1 (Recommended)" or "No, keep localhost". | Yes. | Closed (Turn 93) → D47 |
+| C24 | 104 | How should scraper (b) read each page? Options: "Browser HTML + (a)'s rule (Recommended)" or "Visible text only". | Browser HTML + (a)'s rule. | Closed (Turn 104) → D51 |
 
 ---
 
@@ -237,7 +241,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #13 merged by Joseph (`617940b`); `main` merged into the branch (D41). No merge needed now.
+- **⚠️ Merge needed:** pull request #15 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/15), the Playwright pin (D50) that Joseph needs before installing it.
 
 ---
 
@@ -4288,3 +4292,32 @@ Noted that (b) reuses most of (a)'s logic, so it may go faster than planned. Off
 **Questions Claude asked:** start with the Playwright setup now?
 
 **Direction and fit:** no new decision. Follows the Milestone 2 plan (D30 schedule, §7 milestone table, Figure 3).
+
+### Turn 104 — 2026-11-04 18:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets just do what is needed for today
+
+**What Claude did (today's tasks from the Milestone 2 plan)**
+- **Chose a Playwright version.** PyPI has 1.64.1 (newest, Oct 22, under two weeks old), 1.64.0 (Oct 13) and 1.63.0 (Sep 15). The cloud environment has Chromium for Node Playwright 1.63.0 at `/opt/pw-browsers`, so **1.63.0** was chosen (D50).
+- **Checked the install** in a scratch venv: `playwright` 1.63.0 plus `greenlet` 3.5.6 and `pyee` 13.0.1; `pip check` clean.
+- **Pinned it** in `requirements.txt` (with the `playwright install chromium` note) and added the browser step to README Setup. A clean install from the file matches exactly.
+- **Wrote and tested two standalone examples** (scratchpad) against the preinstalled Chromium:
+  - **`browser_example.py`:** `set_content` with a script that changes a price at load and again after 2 s. Printed: raw HTML `$1.00`, right after load `$2.00`, 2.5 s later `$3.00`. This illustrates (a) vs (b) vs the poisoning swap.
+  - **`goto_example.py`:** `page.goto(url, wait_until="load", timeout=…)`, `response.status`, `page.title()`, `page.content()`; tested against a local stand-in page, giving status 200.
+- Stopped the temporary local servers.
+- **Asked C24, the design of (b).** Joseph chose browser HTML after load + (a)'s rule (D51).
+- Committed, pushed, and opened **pull request #15**: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/15
+
+**Claude's answer (summary):** today's work:
+- ⚠️ merge the pull request, then sync;
+- `pip install -r requirements.txt` and `python -m playwright install chromium`;
+- run the two examples;
+- **start (b):** create `scrapers/b_browser_text.py`, load `/products/p1` with Playwright (User-Agent `run=b-test-1`), take `page.content()`, apply the part 1 label loop, and print the 10 pairs.
+
+Tomorrow (Thu): the crawl loop, reusing (a).
+
+**Questions Claude asked:** C24 (answered).
+
+**Direction and fit:** D50, D51.
