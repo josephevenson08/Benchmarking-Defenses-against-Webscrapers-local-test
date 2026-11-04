@@ -132,7 +132,7 @@ Requirements:
 
 - Node.js 20 or newer, and npm
 - Python 3 and pip
-- Playwright for Python with Chromium (from Milestone 2, for scrapers (b)–(e))
+- Playwright for Python with Chromium (for scrapers (b)–(e); pinned in `requirements.txt`)
 - Ollama, only for scrapers (c) and (e)
 
 Install:
@@ -140,6 +140,7 @@ Install:
 ```bash
 npm ci
 pip install -r requirements.txt
+python -m playwright install chromium   # downloads the browser Playwright uses (about 150 MB)
 ```
 
 ## Usage
