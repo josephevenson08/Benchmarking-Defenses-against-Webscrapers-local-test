@@ -200,6 +200,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J109 | 109 | Scraper (b) part 1 with Joseph's own comments | Reviewed in Turn 109: two comments wrong on key concepts (goto timeout; `page.content()`), four small ones |
 | J110 | 110 | Scraper (b) part 1 with corrected comments | Checked in Turn 110: key comments now right; one small addition suggested |
 | J111 | 111 | Scraper (b) part 1 laptop output: status 200, 10 values, log `b-test-1` | Part 1 of (b) done on the laptop (Turn 111) |
+| J112 | 112 | Stop here for today | Session ended (Turn 112); end-of-session pull request opened |
 
 ### Questions from Claude
 
@@ -234,7 +235,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Milestone 2, Wed Nov 4):** Playwright pinned (D50) and working on the laptop; (b) part 1 written (D51). Next: Joseph runs and commits (b) part 1; Thu: the (b) crawl loop. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Thu Nov 5, Milestone 2):** (b) part 1 runs on the laptop (D51). First, Joseph commits `scrapers/b_browser_text.py` if not done; then the (b) crawl loop, reusing (a), with `page.goto`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
@@ -4560,3 +4561,20 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **Questions Claude asked:** continue or stop for today?
 
 **Direction and fit:** no new decision. D51 is working on the laptop.
+
+### Turn 112 — 2026-11-04 18:52 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> stop here
+
+**What Claude did:**
+- Checked GitHub: `scrapers/b_browser_text.py` is **not on `main` yet** (newest commit: pull request #15's merge).
+- Updated the `SCHEDULE.md` resume note and the top of Open items (Thu Nov 5: commit (b) part 1 if not done, then the crawl loop).
+- Committed, pushed, and opened the end-of-session pull request (D40), schedule and log only.
+
+**Claude's answer (summary):** asked Joseph to commit (b) part 1 before leaving so it's safe on GitHub. ⚠️ Merge the end-of-session pull request (no rush). Next session: Thu Nov 5, the (b) crawl loop.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Applies D40.

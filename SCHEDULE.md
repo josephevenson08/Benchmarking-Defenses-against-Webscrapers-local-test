@@ -19,10 +19,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Wed Nov 4 (Turn 111 of the chat-keeper).*
+*Last updated: Wed Nov 4 (Turn 112 of the chat-keeper).*
 
-> **▶ Resume here (Milestone 2).** Wed Nov 4: Playwright pinned and working on the laptop; scraper (b) part 1 written (load a page in Chromium, read the DOM after load, apply (a)'s rules: D51).
-> Done Wed: (b) part 1 runs on the laptop (10 correct values, `b-test-1` logged). Next: Joseph commits it. Thu Nov 5: (b) crawl loop, copied from (a), using Playwright for each page.
+> **▶ Resume here: Thu Nov 5 (Milestone 2).** Wed Nov 4 done: Playwright pinned and working on the laptop (D50); scraper (b) part 1 runs on the laptop (10 correct values, `b-test-1` logged; D51).
+> 1. If not done yet: Joseph commits `scrapers/b_browser_text.py` (part 1).
+> 2. Thu: (b) crawl loop, copied from (a) (queue, visited, every `<a href>`, page cap, `robots.txt`, inputs), with `page.goto` for each page.
 
 ---
 
