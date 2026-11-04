@@ -203,6 +203,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J112 | 112 | Stop here for today | Session ended (Turn 112); end-of-session pull request opened |
 | J113 | 113 | Committed and synced; can Claude make a detailed animated picture of how scraper (a) works? | Yes: a 26-step animated walkthrough, published as a private page (Turn 113). Teaching visual, not project code |
 | J114 | 114 | Make it less wordy, with two sections: the animation on the left, the running code highlighted on the right | Done: same link, version 2 (Turn 114) |
+| J115 | 115 | Shared an animation-prompt checklist from the internet; asked for code only on the right, and on the left a black-and-white point-to-point animation on white: main path on top, a lower section that pauses at a stop to show what's happening | Done: same link, version 3, with 3 still frames checked first (Turn 115) |
 
 ### Questions from Claude
 
@@ -4621,3 +4622,56 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. It is still a Claude-made teaching visual that explains Joseph's code (§2 "AI assistance").
+
+### Turn 115 — 2026-11-04 19:44 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i pulled this off the internet: 
+>
+> Output target. "One self-contained HTML file" or "a Remotion composition rendered to out/video.mp4". [Without it Claude picks a framework you can't run.]
+>
+> Canvas. Size and frame rate: 1920×1080 at 30fps, or a 48px loader. [Otherwise you get odd sizes and choppy 24fps.]
+>
+> Duration and loop. "6 seconds, seamless loop" or "12 seconds, ends on logo". [Loops visibly jump without this.]
+>
+> Scenes with timestamps. 0 to 2s, 2 to 5s, and so on. [Scenes bleed together.]
+>
+> Exact copy. Every word on screen, in quotes. [Claude invents taglines.]
+>
+> Motion feel. Name the easing ("ease-in-out, slight overshoot") and speed. [Default linear motion looks robotic.]
+>
+> Look. Hex colours, font and how to load it. [Wireflow's run fell back to Segoe UI because no font package was named.]
+>
+> Constraints. No external images, respect reduced motion, GPU-friendly transforms only. [Broken asset links and jank.]
+>
+> Check step. "Show me 3 still frames before the final render." [Layout bugs surface after a 5-minute render instead of before.],
+>
+>
+> i want it to just show the code on the right hand side, and then just do a simple point to point animation on the left with a white background and black and white shapes and text , animated of course, you can sectionate the left side to show certain parts, the top left being the main path and then the bottom left being a section for pausing at a seciton of themain path to shwo whats going on
+
+**What Claude did:** rebuilt the walkthrough as Joseph described and republished it at the same link (https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1, version 3).
+- **Top left, "Main path":** a black-and-white flowchart of the scraper's route.
+  - **Setup row:** run → load labels → robots.txt → make lists.
+  - **Loop box:** pop URL → fetch → find labels → find links, with a "next URL" line back to pop URL.
+  - **Exit:** a "queue empty" line to write JSON → score.
+  - **Motion:** a black dot travels point to point along the lines. Each node fills black when the dot arrives. Nodes not reached yet stay grey and dashed.
+- **Bottom left, "Paused at":** shows what happens at the current stop.
+  - The command and `args`; `fields.json` vs `items.json`; robots.txt; the four lists; pop; fetch (request and response pills); label search; link filtering.
+  - A lap card for each later page, whose rows tick as the dot passes.
+  - The p1 Price walk, the JSON file, and the 70-square score.
+- **Right, "Code running":** only Joseph's code. The lines for the current stop are inverted (white on black) and change as the dot passes each node. Long lines wrap so the marked call is always visible.
+- **Checklist Joseph pasted:**
+  - output target: one HTML page;
+  - look: white background, black and greys only, IBM Plex Sans/Mono loaded from Google Fonts;
+  - motion: ease-in-out travel with a slight overshoot when a node lights up;
+  - constraints: no external images, reduced motion respected, the moving parts use transforms;
+  - check step: 3 still frames reviewed (mid-lap on `/products/`, the `.get_text()` pause on p1, the final score) and sent to Joseph.
+  - The fixed canvas size, video frame rate and loop items were skipped: this is an interactive page, not a rendered video.
+- Walked all 25 steps in a headless browser at desktop and phone sizes: no script errors, no sideways scrolling.
+
+**Claude's answer (summary):** same link, version 3, and the 3 still frames. Explained how each part of the checklist was applied and which parts didn't fit an interactive page.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. It is still a Claude-made teaching visual that explains Joseph's code (§2 "AI assistance"). Not project code.
