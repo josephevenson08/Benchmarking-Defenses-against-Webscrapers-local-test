@@ -194,6 +194,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J103 | 103 | Next phase: what does the day-to-day schedule look like? | Answered in Turn 103 (Milestone 2 plan, Nov 4–17) |
 | J104 | 104 | Let's just do what's needed for today | Done in Turn 104: Playwright pinned (D50); (b) design chosen (D51); examples and today's task |
 | J105 | 105 | How do I run the two examples? | Answered in Turn 105 |
+| J106 | 106 | Examples failed: `ModuleNotFoundError: No module named 'playwright'` (run from `Desktop\scraper-practice`, no `(.venv)`) | Diagnosed in Turn 106: venv not active; install steps next |
 
 ### Questions from Claude
 
@@ -242,7 +243,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed:** pull request #15 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/15), the Playwright pin (D50) that Joseph needs before installing it.
+- **Merge status:** pull request #15 merged by Joseph (`28f90aa`); `main` merged into the branch. No merge needed now.
 
 ---
 
@@ -4336,6 +4337,37 @@ Tomorrow (Thu): the crawl loop, reusing (a).
 - **Create the files:** New Text File → paste → Save As into `Desktop\scraper-practice\` as `browser_example.py` and `goto_example.py`.
 - **Run:** from the project's VS Code terminal with `(.venv)`, using the full paths. Expected output given for both.
 - **Troubleshooting:** a missing `playwright` module (venv / install), a missing Chromium executable (`playwright install chromium`), and "can't open file" (the path).
+
+**Questions Claude asked:** Joseph to paste the output.
+
+**Direction and fit:** no new decision.
+
+### Turn 106 — 2026-11-04 18:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> PS C:\Users\josep\OneDrive\Desktop\scraper-practice> python "C:\Users\josep\OneDrive\Desktop\scraper-practice\browser_example.py"
+> >> python "C:\Users\josep\OneDrive\Desktop\scraper-practice\goto_example.py"
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive\Desktop\scraper-practice\browser_example.py", line 3, in <module>
+>     from playwright.sync_api import sync_playwright
+> ModuleNotFoundError: No module named 'playwright'
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive\Desktop\scraper-practice\goto_example.py", line 3, in <module>
+>     from playwright.sync_api import sync_playwright
+> ModuleNotFoundError: No module named 'playwright'
+> PS C:\Users\josep\OneDrive\Desktop\scraper-practice>
+
+**What Claude did:** read the error. The prompt showed no `(.venv)` and the folder `Desktop\scraper-practice`, so the system Python ran, without Playwright. Confirmed pull request #15 is merged (`28f90aa`, Playwright on `main`) and merged `main` into the branch (D41).
+
+**Claude's answer (summary):** five lines in order:
+1. `cd` to the project;
+2. activate `.venv` (check `(.venv)` shows);
+3. `git pull`;
+4. `pip install -r requirements.txt`;
+5. `python -m playwright install chromium`.
+
+Then rerun both examples by full path. Rule of thumb: run project Python from the project folder with `(.venv)` on.
 
 **Questions Claude asked:** Joseph to paste the output.
 
