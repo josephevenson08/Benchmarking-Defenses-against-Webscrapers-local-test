@@ -201,6 +201,10 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J110 | 110 | Scraper (b) part 1 with corrected comments | Checked in Turn 110: key comments now right; one small addition suggested |
 | J111 | 111 | Scraper (b) part 1 laptop output: status 200, 10 values, log `b-test-1` | Part 1 of (b) done on the laptop (Turn 111) |
 | J112 | 112 | Stop here for today | Session ended (Turn 112); end-of-session pull request opened |
+| J113 | 113 | Committed and synced; can Claude make a detailed animated picture of how scraper (a) works? | Yes: a 26-step animated walkthrough, published as a private page (Turn 113). Teaching visual, not project code |
+| J114 | 114 | Make it less wordy, with two sections: the animation on the left, the running code highlighted on the right | Done: same link, version 2 (Turn 114) |
+| J115 | 115 | Shared an animation-prompt checklist from the internet; asked for code only on the right, and on the left a black-and-white point-to-point animation on white: main path on top, a lower section that pauses at a stop to show what's happening | Done: same link, version 3, with 3 still frames checked first (Turn 115) |
+| J116 | 116 | That works! | Walkthrough version 3 accepted as final (Turn 116) |
 
 ### Questions from Claude
 
@@ -235,7 +239,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Thu Nov 5, Milestone 2):** (b) part 1 runs on the laptop (D51). First, Joseph commits `scrapers/b_browser_text.py` if not done; then the (b) crawl loop, reusing (a), with `page.goto`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Thu Nov 5, Milestone 2):** (b) part 1 runs on the laptop (D51) and is on `main` (`54f418d`, pull request #16 merged). Next: the (b) crawl loop, reusing (a), with `page.goto`. Still open: C20 (#1 page mapping, #6 tags as a list).
+
+**Study aid (Turns 113–116):** animated walkthrough of scraper (a), black-and-white version 3 accepted: https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1 (private page; Claude-made teaching visual, not project code).
 
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
@@ -249,7 +255,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed (no rush):** pull request #16 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/16), the schedule and log for Nov 4.
+- **⚠️ Merge needed (no rush):** pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), log entries for Turns 113–116 only.
 
 ---
 
@@ -4578,3 +4584,109 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Applies D40.
+
+### Turn 113 — 2026-11-04 19:04 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> commit and synched see you tmr, but before i go, is it possible to get a deatiled animated graphical art of how scraper a works so i can see it visually, i think that it will help out a lot
+
+**What Claude did:**
+- Checked GitHub: Joseph's commit `54f418d` ((b) part 1) and the pull request #16 merge (`7fafa80`) are on `main`. Merged `main` into the branch.
+- Read Joseph's committed `scrapers/a_raw_html.py`, the generated baseline pages, `data/fields.json` and the real run `results/2026-10-30-check2/a-baseline-3.json`; re-ran `scoring/score.py` on it (70/70 = 1.000).
+- Built a 26-step animated walkthrough of scraper (a) as one HTML page and published it as a private page: https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1
+  - **Five chapters:** set up (argparse, `fields.json`, User-Agent, robots.txt, the four lists) → the first page in detail (loop check, fetch with the three `try`/`except` outcomes, label search, link collection) → the crawl → product pages (the `find` → `.parent` → `.find_next_sibling()` → `.get_text()` walk on p1's Price row, then p2–p6) → finish (loop stops, output file, score, habits to remember for Milestone 2).
+  - **What moves:** request and response packets between the scraper and the site, a site tree that lights up in the real visiting order, the queue, visited, pages and records counters, the terminal and server-log lines, and the matching lines of Joseph's code highlighted step by step.
+  - **Accuracy:** page order, values, timing and score come from `a-baseline-3`. The command line and the log `timestamp`/`response_ms` are illustrative and are labelled as such on the page.
+- Checked the page in a headless browser at desktop and phone widths: no script errors, no sideways scrolling.
+- Nothing added to the repository except this log entry. The page is a study aid, not project code.
+
+**Claude's answer (summary):** gave the link and how to use it (Play, or Next/Back and the arrow keys; chapters jump ahead). ⚠️ Merge needed (no rush): pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), log only. See you Thursday for the (b) crawl loop.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The page is a teaching visual made by Claude. It explains Joseph's own code and changes none of it, which fits the midterm's AI-use boundary (§2 "AI assistance": Claude may explain concepts). Not part of any measurement.
+
+### Turn 114 — 2026-11-04 19:30 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> make it less wordy with two sections 1 is the left with the animation and the right highlights the part of the code thats executing
+
+**What Claude did:** rebuilt the walkthrough page and republished it at the same link (https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1, version 2):
+- **Two sections:** "Animation" on the left (scraper ↔ site packets, the scene, the queue/visited/pages/records counters) and "Code running now" on the right (Joseph's `a_raw_html.py`, with the executing lines highlighted and the exact call marked).
+- **Less text:** each step is now a short title plus a note of a few words, down from 2–3 sentences. Removed the intro paragraph, the chapter tabs, the terminal and server-log boxes, the explanatory side notes and the "About this picture" list. One footnote line keeps the accuracy disclosure.
+- Same 26 steps, same data from run `a-baseline-3`. Checked at desktop and phone widths: no script errors, no sideways scrolling.
+
+**Claude's answer (summary):** same link, now in two sections and much shorter. Nothing in the repository changes except this log.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. It is still a Claude-made teaching visual that explains Joseph's code (§2 "AI assistance").
+
+### Turn 115 — 2026-11-04 19:44 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i pulled this off the internet: 
+>
+> Output target. "One self-contained HTML file" or "a Remotion composition rendered to out/video.mp4". [Without it Claude picks a framework you can't run.]
+>
+> Canvas. Size and frame rate: 1920×1080 at 30fps, or a 48px loader. [Otherwise you get odd sizes and choppy 24fps.]
+>
+> Duration and loop. "6 seconds, seamless loop" or "12 seconds, ends on logo". [Loops visibly jump without this.]
+>
+> Scenes with timestamps. 0 to 2s, 2 to 5s, and so on. [Scenes bleed together.]
+>
+> Exact copy. Every word on screen, in quotes. [Claude invents taglines.]
+>
+> Motion feel. Name the easing ("ease-in-out, slight overshoot") and speed. [Default linear motion looks robotic.]
+>
+> Look. Hex colours, font and how to load it. [Wireflow's run fell back to Segoe UI because no font package was named.]
+>
+> Constraints. No external images, respect reduced motion, GPU-friendly transforms only. [Broken asset links and jank.]
+>
+> Check step. "Show me 3 still frames before the final render." [Layout bugs surface after a 5-minute render instead of before.],
+>
+>
+> i want it to just show the code on the right hand side, and then just do a simple point to point animation on the left with a white background and black and white shapes and text , animated of course, you can sectionate the left side to show certain parts, the top left being the main path and then the bottom left being a section for pausing at a seciton of themain path to shwo whats going on
+
+**What Claude did:** rebuilt the walkthrough as Joseph described and republished it at the same link (https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1, version 3).
+- **Top left, "Main path":** a black-and-white flowchart of the scraper's route.
+  - **Setup row:** run → load labels → robots.txt → make lists.
+  - **Loop box:** pop URL → fetch → find labels → find links, with a "next URL" line back to pop URL.
+  - **Exit:** a "queue empty" line to write JSON → score.
+  - **Motion:** a black dot travels point to point along the lines. Each node fills black when the dot arrives. Nodes not reached yet stay grey and dashed.
+- **Bottom left, "Paused at":** shows what happens at the current stop.
+  - The command and `args`; `fields.json` vs `items.json`; robots.txt; the four lists; pop; fetch (request and response pills); label search; link filtering.
+  - A lap card for each later page, whose rows tick as the dot passes.
+  - The p1 Price walk, the JSON file, and the 70-square score.
+- **Right, "Code running":** only Joseph's code. The lines for the current stop are inverted (white on black) and change as the dot passes each node. Long lines wrap so the marked call is always visible.
+- **Checklist Joseph pasted:**
+  - output target: one HTML page;
+  - look: white background, black and greys only, IBM Plex Sans/Mono loaded from Google Fonts;
+  - motion: ease-in-out travel with a slight overshoot when a node lights up;
+  - constraints: no external images, reduced motion respected, the moving parts use transforms;
+  - check step: 3 still frames reviewed (mid-lap on `/products/`, the `.get_text()` pause on p1, the final score) and sent to Joseph.
+  - The fixed canvas size, video frame rate and loop items were skipped: this is an interactive page, not a rendered video.
+- Walked all 25 steps in a headless browser at desktop and phone sizes: no script errors, no sideways scrolling.
+
+**Claude's answer (summary):** same link, version 3, and the 3 still frames. Explained how each part of the checklist was applied and which parts didn't fit an interactive page.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. It is still a Claude-made teaching visual that explains Joseph's code (§2 "AI assistance"). Not project code.
+
+### Turn 116 — 2026-11-04 20:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> that works!
+
+**What Claude did:** logged the approval; no other changes. Version 3 of the walkthrough (https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1) is the final version.
+
+**Claude's answer (summary):** confirmed it's final. Pull request #17 (log only) is still open to merge whenever. Next session: Thu Nov 5, the (b) crawl loop.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
