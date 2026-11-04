@@ -196,6 +196,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J105 | 105 | How do I run the two examples? | Answered in Turn 105 |
 | J106 | 106 | Examples failed: `ModuleNotFoundError: No module named 'playwright'` (run from `Desktop\scraper-practice`, no `(.venv)`) | Diagnosed in Turn 106: venv not active; install steps next |
 | J107 | 107 | Both Playwright examples ran on the laptop ($1.00/$2.00/$3.00; example.com status 200) | Playwright working on the laptop; scraper (b) part 1 walkthrough given (Turn 107) |
+| J108 | 108 | Scraper (b) part 1 code (blanks filled) | Checked in Turn 108: identical to the version tested with Chromium; laptop run pending |
 
 ### Questions from Claude
 
@@ -230,7 +231,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Wed Nov 4): Milestone 2.** Milestone 1 closed Oct 30 (D43, D49). First: Claude pins Playwright and installs Chromium; Joseph starts scraper (b) from a small Playwright example. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Milestone 2, Wed Nov 4):** Playwright pinned (D50) and working on the laptop; (b) part 1 written (D51). Next: Joseph runs and commits (b) part 1; Thu: the (b) crawl loop. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
@@ -4405,3 +4406,45 @@ Then rerun both examples by full path. Rule of thumb: run project Python from th
 **Questions Claude asked:** Joseph to paste his code and output.
 
 **Direction and fit:** no new decision. Implements D51 (DOM after the load event plus (a)'s rules). Scraper (b) is Joseph's code (§2).
+
+### Turn 108 — 2026-11-04 18:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> import json
+> from bs4 import BeautifulSoup
+> from playwright.sync_api import sync_playwright
+>
+> labels = json.load(open("data/fields.json"))
+> all_fields = labels["product"] + labels["article"]
+>
+> url = "http://127.0.0.1:3000/products/p1"
+> with sync_playwright() as p:
+>     browser = p.chromium.launch()
+>     page = browser.new_page(user_agent="run=b-test-1")
+>     response = page.goto(url, wait_until="load", timeout=5000)
+>     print(response.status, url)
+>     soup = BeautifulSoup(page.content(), "html.parser")
+>     browser.close()
+>
+> for field in all_fields:
+>     label_element = soup.find(string=field["label"])
+>     if label_element:
+>         value_element = label_element.parent.find_next_sibling()
+>         if value_element:
+>             print(f"{field['label']}: {value_element.get_text(strip=True)}")
+
+**What Claude did:**
+- Compared Joseph's code (blank lines ignored) with the scratch version tested against Chromium in Turn 107: **identical**. That version printed all 10 correct values for p1 and the server logged `b-test-1`.
+- Updated `SCHEDULE.md`: the Wed Nov 4 rows are ticked (Playwright pin; examples; (b) part 1 written, with the laptop run pending); the resume note now points to Thu's crawl loop.
+
+**Claude's answer (summary):** the three blanks are correct, and the code matches the tested version. Next:
+- run it on the laptop (expect 200, the 10 values, and `b-test-1` in the log);
+- add his own comments;
+- commit only `scrapers/b_browser_text.py`.
+
+That completes today's plan. Thu: the crawl loop, reusing (a).
+
+**Questions Claude asked:** Joseph to paste the laptop output.
+
+**Direction and fit:** no new decision. Implements D51.
