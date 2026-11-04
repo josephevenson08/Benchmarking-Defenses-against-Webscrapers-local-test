@@ -241,7 +241,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #13 merged by Joseph (`617940b`); `main` merged into the branch (D41). No merge needed now.
+- **⚠️ Merge needed:** pull request #15 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/15), the Playwright pin (D50) that Joseph needs before installing it.
 
 ---
 
@@ -4308,7 +4308,7 @@ Noted that (b) reuses most of (a)'s logic, so it may go faster than planned. Off
   - **`goto_example.py`:** `page.goto(url, wait_until="load", timeout=…)`, `response.status`, `page.title()`, `page.content()`; tested against a local stand-in page, giving status 200.
 - Stopped the temporary local servers.
 - **Asked C24, the design of (b).** Joseph chose browser HTML after load + (a)'s rule (D51).
-- Committed, pushed, and opened a pull request (link below).
+- Committed, pushed, and opened **pull request #15**: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/15
 
 **Claude's answer (summary):** today's work:
 - ⚠️ merge the pull request, then sync;
