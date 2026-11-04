@@ -193,6 +193,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J102 | 102 | "OK! good work today we will meet up again here soon" | Session ended (Turn 102) |
 | J103 | 103 | Next phase: what does the day-to-day schedule look like? | Answered in Turn 103 (Milestone 2 plan, Nov 4–17) |
 | J104 | 104 | Let's just do what's needed for today | Done in Turn 104: Playwright pinned (D50); (b) design chosen (D51); examples and today's task |
+| J105 | 105 | How do I run the two examples? | Answered in Turn 105 |
 
 ### Questions from Claude
 
@@ -4321,3 +4322,21 @@ Tomorrow (Thu): the crawl loop, reusing (a).
 **Questions Claude asked:** C24 (answered).
 
 **Direction and fit:** D50, D51.
+
+### Turn 105 — 2026-11-04 18:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how do i run the two examples
+
+**What Claude did:** answered in chat. No files changed besides this log.
+
+**Claude's answer (summary):**
+- **Prerequisite:** steps 1–2 (merge pull request #15, sync, `pip install -r requirements.txt`, `python -m playwright install chromium`).
+- **Create the files:** New Text File → paste → Save As into `Desktop\scraper-practice\` as `browser_example.py` and `goto_example.py`.
+- **Run:** from the project's VS Code terminal with `(.venv)`, using the full paths. Expected output given for both.
+- **Troubleshooting:** a missing `playwright` module (venv / install), a missing Chromium executable (`playwright install chromium`), and "can't open file" (the path).
+
+**Questions Claude asked:** Joseph to paste the output.
+
+**Direction and fit:** no new decision.
