@@ -249,7 +249,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **Merge status:** pull request #15 merged by Joseph (`28f90aa`); `main` merged into the branch. No merge needed now.
+- **⚠️ Merge needed (no rush):** pull request #16 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/16), the schedule and log for Nov 4.
 
 ---
 
@@ -4571,7 +4571,7 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **What Claude did:**
 - Checked GitHub: `scrapers/b_browser_text.py` is **not on `main` yet** (newest commit: pull request #15's merge).
 - Updated the `SCHEDULE.md` resume note and the top of Open items (Thu Nov 5: commit (b) part 1 if not done, then the crawl loop).
-- Committed, pushed, and opened the end-of-session pull request (D40), schedule and log only.
+- Committed, pushed, and opened **pull request #16**, the end-of-session pull request (D40), schedule and log only: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/16
 
 **Claude's answer (summary):** asked Joseph to commit (b) part 1 before leaving so it's safe on GitHub. ⚠️ Merge the end-of-session pull request (no rush). Next session: Thu Nov 5, the (b) crawl loop.
 
