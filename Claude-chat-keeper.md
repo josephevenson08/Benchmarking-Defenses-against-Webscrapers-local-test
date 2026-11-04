@@ -252,7 +252,7 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed (no rush):** the end-of-session pull request for Turn 113 (log only); link in the Turn 113 entry.
+- **⚠️ Merge needed (no rush):** pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), the Turn 113 log entry only.
 
 ---
 
@@ -4598,7 +4598,7 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 - Checked the page in a headless browser at desktop and phone widths: no script errors, no sideways scrolling.
 - Nothing added to the repository except this log entry. The page is a study aid, not project code.
 
-**Claude's answer (summary):** gave the link and how to use it (Play, or Next/Back and the arrow keys; chapters jump ahead). ⚠️ Merge needed (no rush) for the end-of-session pull request (log only). See you Thursday for the (b) crawl loop.
+**Claude's answer (summary):** gave the link and how to use it (Play, or Next/Back and the arrow keys; chapters jump ahead). ⚠️ Merge needed (no rush): pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), log only. See you Thursday for the (b) crawl loop.
 
 **Questions Claude asked:** none.
 
