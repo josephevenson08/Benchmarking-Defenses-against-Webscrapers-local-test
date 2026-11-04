@@ -195,6 +195,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J104 | 104 | Let's just do what's needed for today | Done in Turn 104: Playwright pinned (D50); (b) design chosen (D51); examples and today's task |
 | J105 | 105 | How do I run the two examples? | Answered in Turn 105 |
 | J106 | 106 | Examples failed: `ModuleNotFoundError: No module named 'playwright'` (run from `Desktop\scraper-practice`, no `(.venv)`) | Diagnosed in Turn 106: venv not active; install steps next |
+| J107 | 107 | Both Playwright examples ran on the laptop ($1.00/$2.00/$3.00; example.com status 200) | Playwright working on the laptop; scraper (b) part 1 walkthrough given (Turn 107) |
 
 ### Questions from Claude
 
@@ -4372,3 +4373,35 @@ Then rerun both examples by full path. Rule of thumb: run project Python from th
 **Questions Claude asked:** Joseph to paste the output.
 
 **Direction and fit:** no new decision.
+
+### Turn 107 — 2026-11-04 18:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> sers\josep\AppData\python "C:\Users\josep\OneDrive\Desktop\scraper-practice\browser_example.py"ouis Un
+> >> python "C:\Users\josep\OneDrive\Desktop\scraper-practice\goto_example.py"local-test> 
+> raw HTML has:       $1.00
+> right after load:   $2.00
+> 2.5 seconds later:  $3.00
+> status: 200
+> title:  Example Domain
+> HTML length: 1989 characters
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did**
+- Confirmed both examples ran on Joseph's laptop: Playwright 1.63.0 and Chromium are installed, and the venv works.
+- **Checked the (b) part 1 plan** on a scratch copy (scratchpad, not shared) against the local site with Chromium. `page.goto(…/products/p1, wait_until="load")` returned 200; `page.content()` put through the (a) field loop printed all 10 correct values; the server logged `b-test-1`.
+- Stopped the server.
+
+**Claude's answer (summary):** a fill-in walkthrough for `scrapers/b_browser_text.py` part 1:
+1. Imports (`json`, BeautifulSoup, `sync_playwright`).
+2. `all_fields` from `fields.json`.
+3. A `with sync_playwright()` block: launch, `new_page(user_agent=…)` (blank: `run=b-test-1`), `goto` with wait-until load (blank: `"load"`), print the status, `soup` from `page.content()` (blank), close.
+4. The (a) field loop, copied, printing label and value.
+5. Run it with the server on; expect the 10 lines and `b-test-1` in the log.
+
+**Disclosure:** fill-in guidance at the level of earlier turns. The field loop is Joseph's own from (a).
+
+**Questions Claude asked:** Joseph to paste his code and output.
+
+**Direction and fit:** no new decision. Implements D51 (DOM after the load event plus (a)'s rules). Scraper (b) is Joseph's code (§2).
