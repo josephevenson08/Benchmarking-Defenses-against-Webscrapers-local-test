@@ -19,10 +19,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Oct 30 (Turn 101 of the chat-keeper).*
+*Last updated: Wed Nov 4 (Turn 112 of the chat-keeper).*
 
-> **▶ Resume here: Wed Nov 4, Milestone 2.** ✅ **Milestone 1 complete on Fri Oct 30, four days early** (pull request #12): ⭐ Check 1 (Oct 27) and ⭐ Check 2 (Oct 30: 70/70 in all 3 baseline runs) passed; hand count done; error codes match the contract. Mon Nov 2 and Tue Nov 3 are free.
-> Next (Wed Nov 4): pin Playwright and install Chromium (Claude); Joseph starts scraper (b) from a small Playwright example. Optional before then: read the Playwright for Python intro (playwright.dev/python).
+> **▶ Resume here: Thu Nov 5 (Milestone 2).** Wed Nov 4 done: Playwright pinned and working on the laptop (D50); scraper (b) part 1 runs on the laptop (10 correct values, `b-test-1` logged; D51).
+> 1. If not done yet: Joseph commits `scrapers/b_browser_text.py` (part 1).
+> 2. Thu: (b) crawl loop, copied from (a) (queue, visited, every `<a href>`, page cap, `robots.txt`, inputs), with `page.goto` for each page.
 
 ---
 
@@ -67,8 +68,8 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 
 | Day | Tasks | Who |
 |---|---|---|
-| **Wed Nov 4** | Pin Playwright in `requirements.txt` and install Chromium. | C |
-| | Study a small Playwright example; start (b): load a page and read the rendered text right after the load event. | J |
+| **Wed Nov 4** | ✅ Pin Playwright in `requirements.txt` (1.63.0, D50) and add the Chromium install step. | C |
+| | ✅ Ran two Playwright examples on the laptop. (b)'s design chosen (D51). Wrote `scrapers/b_browser_text.py` part 1: Chromium loads `/products/p1`, takes `page.content()` after the load event, and applies (a)'s field loop and ran it on the laptop: status 200, all 10 values correct, logged as `b-test-1`. Commit pending. | J |
 | **Thu Nov 5** | (b): crawl loop that follows every link, hidden ones included; run ID in Playwright's User-Agent. | J |
 | **Fri Nov 6** | (b): extraction and output. First baseline run; score it. | J |
 | **Sat Nov 7** | Generator: per-page seeds saved with the output, and a slot where defenses plug in (§5: the generator saves the seeds). | C |
