@@ -205,6 +205,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J114 | 114 | Make it less wordy, with two sections: the animation on the left, the running code highlighted on the right | Done: same link, version 2 (Turn 114) |
 | J115 | 115 | Shared an animation-prompt checklist from the internet; asked for code only on the right, and on the left a black-and-white point-to-point animation on white: main path on top, a lower section that pauses at a stop to show what's happening | Done: same link, version 3, with 3 still frames checked first (Turn 115) |
 | J116 | 116 | That works! | Walkthrough version 3 accepted as final (Turn 116) |
+| J117 | 117 | Let's continue for today | Thu Nov 5: (b) crawl loop; step 1 (Playwright error example) given (Turn 117) |
 
 ### Questions from Claude
 
@@ -255,7 +256,6 @@ The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
   The scoring script starts after that.
 - **Next for Joseph (Tue Oct 27):** write the Test 2 fixture by hand in the approved format: a scraper output file plus a small fake-values file (`docs/scraper-output.md`, last section). This must happen before any scoring code exists. Then start scraper (a).
 - **Next for Claude (Wed Oct 28):** the scoring script, from the midterm's prompt and the approved matching rules, once the fixture exists.
-- **⚠️ Merge needed (no rush):** pull request #17 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/17), log entries for Turns 113–116 only.
 
 ---
 
@@ -4690,3 +4690,30 @@ That completes today's plan. Thu: the crawl loop, reusing (a).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 117 — 2026-11-05 17:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets continue for today
+
+**What Claude did:**
+- Synced: pull request #17 is merged; fast-forwarded the branch to `main`. Joseph's (b) part 1 (`54f418d`) is on `main`.
+- Read the Thu Nov 5 plan in `SCHEDULE.md`: the (b) crawl loop that follows every link, hidden ones included, with the run ID in Playwright's User-Agent.
+- Wrote a small standalone example (not project code) showing the three ways `page.goto` can end, and tested it against the local test site with Playwright 1.63.0 in a scratch environment:
+  - loads → `200`;
+  - a 1 ms limit → `TimeoutError`;
+  - a closed port (3999) → `Error` with `net::ERR_CONNECTION_REFUSED`.
+- Checked that Playwright's `TimeoutError` is a kind of its `Error` (subclass: True), so it must be caught first, the same rule as (a).
+
+**Claude's answer (summary):** today's steps for (b):
+1. Run the example to learn Playwright's two error names.
+2. Copy (a)'s inputs, labels, settings, robots.txt block and lists into (b).
+3. Wrap (a)'s loop in one Chromium page that carries the run ID, swapping `requests.get` for `page.goto` and the two `except` blocks for Playwright's errors.
+4. Run it on the laptop and check that all 10 pages appear in the log.
+
+Step 1 given now: save the example as `demo_errors.py` (don't commit it), run it with the site running, and paste the output.
+
+**Questions Claude asked:** none yet.
+
+**Direction and fit:** no new decision. Follows the Thu Nov 5 plan and D51. Joseph writes (b); Claude only gave a standalone example (§2 "AI assistance").
