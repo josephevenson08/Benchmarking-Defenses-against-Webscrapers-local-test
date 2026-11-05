@@ -209,6 +209,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J118 | 118 | Example output: OK 200, TIMEOUT, ERROR connection refused | Step 1 done; step 2 (top half of (b) from (a)) given (Turn 118) |
 | J119 | 119 | Step 2 code (top half of (b)) | Reviewed: missing closing quote on the `user_agent` line; rest matches (a) (Turn 119) |
 | J120 | 120 | Step 2 output: check line and robots.txt logged as `b-test-2` | Works; remove the stray `;` in the User-Agent; step 3 (the loop) given (Turn 120) |
+| J121 | 121 | Step 3 code (the loop) | Reviewed: indentation, `page,goto`, `status_code`, `page.content` without `()`; Chromium's `/favicon.ico` request found (Turn 121) |
 
 ### Questions from Claude
 
@@ -244,6 +245,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 ## Open items
 
 **▶ Resume here (Thu Nov 5, Milestone 2):** (b) part 1 runs on the laptop (D51) and is on `main` (`54f418d`, pull request #16 merged). Next: the (b) crawl loop, reusing (a), with `page.goto`. Still open: C20 (#1 page mapping, #6 tags as a list).
+
+**For the Nov 19 scoring work (found Turn 121):** scraper (b)'s Chromium also requests `/favicon.ico` once per run (404, logged with the run ID). When honeypot hits and time per page are read from the request log, count only page requests (for example, paths in the scraper's `pages` list), not `/favicon.ico` or, later, any script or style files a defense adds.
 
 **Study aid (Turns 113–116):** animated walkthrough of scraper (a), black-and-white version 3 accepted: https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1 (private page; Claude-made teaching visual, not project code).
 
@@ -4842,3 +4845,116 @@ Claude recommended keeping (a)'s robots.txt block (`requests`) unchanged in (b).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Applies D51 (same rules as (a), pages loaded in Chromium) and the approved User-Agent format.
+
+### Turn 121 — 2026-11-05 17:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> import json
+> from bs4 import BeautifulSoup
+> from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> #all three imports needed for this scraper so that it can scrap after js load
+> import requests #everything including this and below is from scraper (a)
+> from urllib.parse import urljoin, urlparse
+> import argparse
+> from urllib.robotparser import RobotFileParser
+> import time
+> from datetime import datetime, timezone
+>
+> parser = argparse.ArgumentParser(description="Scraper (b): browser")
+> parser.add_argument("--start-url", default="http://127.0.0.1:3000/") #default url to scrape, can be changed with command line argument
+> parser.add_argument("--page-cap", type=int, default=15) #max pages to scrape
+> parser.add_argument("--robots", choices=["obey", "ignore"], default="obey") #two choices obey and ignore
+> parser.add_argument("--run-id", required=True) # run id is required, tells the server whos asking
+> parser.add_argument("--out", required=True)# output file is required, where the scraped data will be saved
+> args = parser.parse_args()
+>
+> start_url = args.start_url
+> page_cap = args.page_cap
+> user_agent = f"run={args.run_id}"
+>
+>
+> robots_url = urljoin(start_url, "/robots.txt")
+> rules = RobotFileParser()
+> try:
+>     robots_response = requests.get(robots_url, headers={"User-Agent": user_agent}, timeout=5)
+>     rules.parse(robots_response.text.splitlines())
+> except requests.exceptions.RequestException:
+>     print("could not read robots.txt; treating every page as allowed")
+>     rules.parse([])
+>
+> pages = [] #pages scraped
+> records = [] #holds the field values found, not the pages
+> started_at = datetime.now(timezone.utc).isoformat() #where we started at 
+> start_time = time.time() #time start
+>
+> queue = [start_url] #list of urls to scrape
+> visited = set() #set of urls already scraped 
+>
+> labels = json.load(open("data/fields.json")) #opening fields json file to get the labels for the fields we want to scrape
+> all_fields = labels["product"] + labels["article"] #setting all_fields to be both product and article from json
+>
+> print(start_url, page_cap, user_agent, queue)
+>
+>
+> with sync_playwright() as p:
+>     browser = p.chromium.launch()
+>     page = browser.new_page(user_agent=user_agent)
+>
+>     while queue and len(visited) < page_cap:
+>     url = queue.pop(0) #get the first url in the queue
+>     if url in visited:
+>         continue
+>     visited.add(url)
+>     if args.robots == "obey" and not rules.can_fetch(user_agent, url):
+>         print("skipped (robots.txt):", url)
+>         continue
+>
+>     path = urlparse(url).path
+>     try:
+>         response = page,goto(url, wait_until="load", timeout=5000)
+>     except PlaywrightTimeout:
+>         print("timeout", url)
+>         pages.append({"path": path, "status": None, "error": "timeout"})
+>         continue
+>     except PlaywrightError:
+>         print("connection error", url)
+>         pages.append({"path": path, "status": None, "error": "connection_error"})
+>         continue
+>     print(response.status, url)
+>     pages.append({"path": path, "status": response.status_code, "error": None})
+>
+>     soup = BeautifulSoup(page.content, "html.parser")
+>     for field in all_fields:
+>         label_element = soup.find(string=field["label"])
+>         if label_element:
+>             value_element = label_element.parent.find_next_sibling()
+>             if value_element:
+>                 records.append({"page": path, "field": field["key"], "value": value_element.get_text(strip=True)})
+>     for a in soup.find_all("a"):                 # every link, hidden ones too
+>         link = urljoin(url, a.get("href", ""))   
+>         same_site = urlparse(link).netloc == urlparse(start_url).netloc
+>         if same_site and link not in visited and link not in queue:
+>             queue.append(link)                   # wait in line to be visited
+>     browser.close()
+>
+> print(len(visited), "pages visited")
+> print(len(records), "records")
+
+**What Claude did:** reviewed Joseph's step 3 code. Compiled it as pasted, then ran a scratch copy with only the four fixes below against the local `baseline` site (Playwright 1.63.0).
+- **As pasted:** `IndentationError: expected an indented block after 'while' statement`. The loop body sits at the same depth as the `while`.
+- **Four fixes:**
+  1. Indent the loop body one more level, keeping `browser.close()` where it is.
+  2. `page,goto(` → `page.goto(`. The comma makes Python look for a function `goto`, so it raises `NameError`.
+  3. `"status": response.status_code` → `response.status` in `pages.append`.
+  4. `BeautifulSoup(page.content, …)` → `page.content()`.
+
+  Optional: delete the leftover check print.
+- **With those fixes:** 10 pages in (a)'s order, `10 pages visited`, `70 records`.
+- **Finding:** the log has **12** `b-test-3` lines, not the 11 Claude predicted. Chromium also asks for `/favicon.ico` on its own (404, once per run). Not a bug in Joseph's code. It matters for the Nov 19 log-based measures, so it is added to Open items and to the Nov 19 row in `SCHEDULE.md`.
+
+**Claude's answer (summary):** the four fixes, the corrected expectation (12 log lines, the extra one being `/favicon.ico`, 404), then paste the run output.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The favicon note is an open item for the scoring script (§3 Test 6 and the time-per-page measure).

@@ -102,7 +102,7 @@ Thanksgiving week is light.
 |---|---|---|
 | **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
 | | (A) Start poisoning: a same-format fake value for each field, real values in a per-page JSON file, a script that swaps them in after 2 s, and the fake-values file. | J |
-| **Thu Nov 19** | Scoring script: honeypot hits and time per page from the request log; write the results CSV. | C |
+| **Thu Nov 19** | Scoring script: honeypot hits and time per page from the request log; write the results CSV. Count page requests only: Chromium also asks for `/favicon.ico` (found Nov 5). | C |
 | | (A) Continue poisoning. | J |
 | **Fri Nov 20** | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff against baseline, reading-order mismatch rate. | C |
 | | (A) Test 5: no real value in the HTML; fakes shown at 0 s, real values at 3 s. | J + C |
