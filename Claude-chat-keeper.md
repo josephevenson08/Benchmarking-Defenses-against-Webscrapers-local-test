@@ -210,6 +210,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J119 | 119 | Step 2 code (top half of (b)) | Reviewed: missing closing quote on the `user_agent` line; rest matches (a) (Turn 119) |
 | J120 | 120 | Step 2 output: check line and robots.txt logged as `b-test-2` | Works; remove the stray `;` in the User-Agent; step 3 (the loop) given (Turn 120) |
 | J121 | 121 | Step 3 code (the loop) | Reviewed: indentation, `page,goto`, `status_code`, `page.content` without `()`; Chromium's `/favicon.ico` request found (Turn 121) |
+| J122 | 122 | So what should it look like? | Indentation shape shown as a skeleton with placeholders, plus the four corrected lines; Joseph applies them (Turn 122) |
 
 ### Questions from Claude
 
@@ -4958,3 +4959,24 @@ Claude recommended keeping (a)'s robots.txt block (`requests`) unchanged in (b).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The favicon note is an open item for the scoring script (§3 Test 6 and the time-per-page measure).
+
+### Turn 122 — 2026-11-05 17:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so what should it look like
+
+**What Claude did:** answered with the indentation shape of the `with`/`while` block as a skeleton with placeholder comments, plus the four corrected lines from Turn 121 as before → after. Claude did not write out the corrected scraper. Under the midterm's AI-use plan, scraper (b) is Joseph's to write.
+
+**Claude's answer (summary):**
+- **Four levels:**
+  - level 0: the `with` line, and the final prints after it;
+  - level 1 (4 spaces): `browser`, `page`, the `while` line and `browser.close()`;
+  - level 2 (8 spaces): the whole loop body;
+  - deeper levels: the existing nested blocks, which move along with it.
+- **Shortcut:** in VS Code, select from `url = queue.pop(0)` to `queue.append(link)` and press Tab once.
+- Then fix the three typo lines and run it with `b-test-3`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Follows the AI-use boundary (§2 "AI assistance", §7 "AI-agent plan"): Claude explained the structure and pointed to the fixes; Joseph writes the scraper.
