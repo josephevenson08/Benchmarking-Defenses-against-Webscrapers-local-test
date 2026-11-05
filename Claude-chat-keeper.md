@@ -259,6 +259,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
+- **⚠️ Merge needed (no rush):** pull request #19 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/19), schedule and log for Thu Nov 5.
+
 - **Fixture:** done. `output.json`, `fakes.json` and Joseph's `expected.md` are all on `main` (Turn 38).
 - **Scoring script:** ⭐ Check 1 passed (D43). Remaining: §7 verification step 5 (hand-count one real run) after scraper (a), and C20.
   1. check `output.json` against his paper notes;
@@ -5154,7 +5156,7 @@ Claude recommended keeping (a)'s robots.txt block (`requests`) unchanged in (b).
 - Fetched `main`: Joseph committed and synced `3b96a5a` ("Scraper (b) part 2: crawl loop with Playwright"). Merged `main` into the branch.
 - Checked the committed file: no `status_code`, no stray imports. The two temporary prints (the check line and the records count) are still there, to be removed in the output step.
 - Updated `SCHEDULE.md` (Thu row: committed `3b96a5a`; resume note: the output step next) and the Open items resume note.
-- Opened the end-of-session pull request (D40). It holds only the schedule and log; link below.
+- Opened the end-of-session pull request (D40), schedule and log only: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/19
 
 **Claude's answer (summary):** good stopping point; part 2 is safe on `main`. Next step whenever Joseph is back: (b)'s output block from (a), then the first baseline run and score. ⚠️ Merge the end-of-session pull request (no rush).
 
