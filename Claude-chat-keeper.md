@@ -212,6 +212,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J121 | 121 | Step 3 code (the loop) | Reviewed: indentation, `page,goto`, `status_code`, `page.content` without `()`; Chromium's `/favicon.ico` request found (Turn 121) |
 | J122 | 122 | So what should it look like? | Indentation shape shown as a skeleton with placeholders, plus the four corrected lines; Joseph applies them (Turn 122) |
 | J123 | 123 | Revised (b) code | Indentation, `goto`, `content()` fixed; `status_code` still in `pages.append`; 3 stray auto-imports (Turn 123) |
+| J124 | 124 | `b-test-3` output: 10 pages, 70 records, 11 log lines | Crawl loop done (Thu Nov 5 ✅); Claude's favicon prediction corrected (Turn 124) |
 
 ### Questions from Claude
 
@@ -246,9 +247,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Thu Nov 5, Milestone 2):** (b) part 1 runs on the laptop (D51) and is on `main` (`54f418d`, pull request #16 merged). Next: the (b) crawl loop, reusing (a), with `page.goto`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Fri Nov 6, Milestone 2):** the (b) crawl loop runs on the laptop (`b-test-3`: 10 pages, 70 records). Next: Joseph commits `scrapers/b_browser_text.py` if not done, then (b)'s output block from (a), the first baseline run and its score. Still open: C20 (#1 page mapping, #6 tags as a list).
 
-**For the Nov 19 scoring work (found Turn 121):** scraper (b)'s Chromium also requests `/favicon.ico` once per run (404, logged with the run ID). When honeypot hits and time per page are read from the request log, count only page requests (for example, paths in the scraper's `pages` list), not `/favicon.ico` or, later, any script or style files a defense adds.
+**For the Nov 19 scoring work (Turns 121, 124):** a browser may request files besides the pages: the full Chromium build asked for `/favicon.ico` in Claude's test, though the default headless shell on the laptop does not, and defenses may add script or style files. When honeypot hits and time per page are read from the request log, count only page requests (for example, paths in the scraper's `pages` list).
 
 **Study aid (Turns 113–116):** animated walkthrough of scraper (a), black-and-white version 3 accepted: https://claude.ai/artifact/6BMKAvzK7tXL6cPRNriPT1 (private page; Claude-made teaching visual, not project code).
 
@@ -5091,3 +5092,38 @@ Claude recommended keeping (a)'s robots.txt block (`requests`) unchanged in (b).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 124 — 2026-11-05 17:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> python scrapers/b_browser_text.py --run-id b-test-3 --out results/b-test-3.json
+> >> (Select-String -Path logs\requests.jsonl -Pattern '"run_id":"b-test-3"').Count
+> http://127.0.0.1:3000/ 15 run=b-test-3 ['http://127.0.0.1:3000/']
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 10 pages visited
+> 70 records
+> 11
+
+**What Claude did:**
+- Read the laptop output: 10 pages in the same order as (a), `10 pages visited`, `70 records`, and **11** log lines for `b-test-3`. ⭐ The Thu Nov 5 task works.
+- **Corrected Claude's Turn 121 finding.** The laptop shows 11 lines (robots.txt + 10 pages), not 12. Claude reran the same code in the scratch environment with Chromium's headless shell, which is what `p.chromium.launch()` uses by default: 11 requests, no `/favicon.ico`. The 12th line in Turn 121 came from the full Chromium build Claude had pointed the test at. So (b) as Joseph runs it makes no favicon request. The Nov 19 note now says a browser *may* fetch extra files (favicon, or script and style files a defense adds), so count page requests only.
+- Updated `SCHEDULE.md`:
+  - Thu Nov 5 ticked;
+  - Nov 19 note corrected;
+  - resume note moved to Fri Nov 6: commit (b), then the output block, the first baseline run and its score.
+
+**Claude's answer (summary):** the crawl loop is done and correct. The earlier "expect 12" was Claude's mistake, explained above. Next: commit `scrapers/b_browser_text.py`. Claude asked whether to keep going with Friday's step (the output file) or stop for today.
+
+**Questions Claude asked:** keep going with the output step now, or stop for today?
+
+**Direction and fit:** no new decision. Thu Nov 5 is done under D51.
