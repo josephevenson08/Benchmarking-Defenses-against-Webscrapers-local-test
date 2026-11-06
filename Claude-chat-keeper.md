@@ -80,6 +80,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D49 | 99 | **⭐ Check 2 passed; Milestone 1 complete (Fri Oct 30, four days early).** Scraper (a), written by Joseph, scored 70/70 = 1.000 on baseline in each of 3 runs on his laptop (time per page 0.016–0.020 s), saved in `results/2026-10-30-check2/`. With Check 1 (D43), both §7 completion checks are met. README roadmap ticked; schedule updated (Mon–Tue now free). The hand count of 5 fields (§7 verification step 5) follows. | — | Joseph | §7 milestone table ("(a) scores at least 90% on baseline in each of 3 runs"). §1 Essential 1 ("(a) … each score at least 90% in each of 3 runs"). | Follows |
 | D50 | 104 | **Playwright for Python pinned at 1.63.0** (Sep 15, 2026) with `greenlet` 3.5.6 and `pyee` 13.0.1, rather than 1.64.0 (Oct 13). 1.63.0 matches the Chromium preinstalled in Claude's cloud environment, so examples and harnesses can be tested against a real browser before Joseph runs them; on the laptop, `python -m playwright install chromium` fetches the matching browser. A clean install from `requirements.txt` was verified; README Setup gained the browser install step. | 1.63.0; 1.64.0; 1.64.1 (under two weeks old) | Claude | §3 Technology choices (Playwright for (b)–(e)). §5 Reproducibility ("Python packages pinned in requirements.txt"; record the Playwright and Chromium versions). | Follows |
 | D51 | 104 | **Design of scraper (b):** load each page in Chromium with `page.goto(url, wait_until="load")`, take `page.content()` (the DOM as HTML right after the load event, scripts already run), then apply (a)'s rules unchanged: the label-then-next-text extraction and following every `<a href>` including hidden ones. Same inputs and output format (D31, D32). So (b) differs from (a) only in that page scripts have run. | DOM after load + (a)'s rule; visible text only (`inner_text`) | Joseph (Claude recommended) | §2 Baseline scrapers ("(b) reads the rendered text right after the load event, without extra waiting"). §4 Hypothesis 1–3 (shuffling fools (a) and (b), which read source order; poisoning fools readers right after load; honeypot hits expected from (a), (b) and (c), which follow hidden links). | Interprets ("rendered text" read as the DOM right after load) |
+| D52 | 128 | **Browser scrapers time the crawl only:** in (b), and later (c) and (d), the clock (`started_at`, `start_time`) starts right after the browser and page are open, just before the loop. `seconds` is taken right after the loop, before `browser.close()`. Claude's scratch measurement: Chromium launch 0.45–0.55 s (5.6 s on a cold first start), 10 baseline pages 0.17–0.25 s, close about 0.06 s. Counting launch would make (b) about 3× slower per page than its crawl, or 25× on a cold start. | Start the clock before launching Chromium (as first written) | Claude recommended (Joseph to confirm by making the change) | Approved contract `docs/scraper-output.md` (D31): `seconds` = "crawl time, from just before the first request to after the last page is processed". §4 time per page = `seconds` / pages. | Follows |
 
 ---
 
@@ -216,6 +217,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J125 | 125 | What should I name the commit? | Suggested "Scraper (b) part 2: crawl loop with Playwright" (Turn 125) |
 | J126 | 126 | Let's stop for now; another step later today | Session paused; part 2 on `main` (`3b96a5a`); end-of-session pull request opened (Turn 126) |
 | J127 | 127 | What's the plan today? | Fri Nov 6: (b) output block, first baseline run `b-baseline-1`, score it, commit (Turn 127) |
+| J128 | 128 | This part? (pasted (a)'s output block) | Yes, with `"scraper": "b"`; plus timing fix so `seconds` excludes browser launch and close (D52) (Turn 128) |
 
 ### Questions from Claude
 
@@ -5183,3 +5185,42 @@ Saturday is next: the generator seeds and defense slot (Claude) and the start of
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Follows the schedule, D51 and the approved output contract.
+
+### Turn 128 — 2026-11-06 15:00 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> this part? 
+>
+> output = {
+>     "run": {
+>         "run_id": args.run_id,
+>         "scraper": "a",
+>         "start_url": start_url,
+>         "page_cap": page_cap,
+>         "obey_robots_txt": args.robots == "obey",
+>         "started_at": started_at,
+>         "seconds": round(time.time() - start_time, 3),
+>     },
+>     "pages": pages,
+>     "records": records,
+> }
+> with open(args.out, "w", encoding="utf-8") as f:
+>     json.dump(output, f, indent=2)
+> print(len(records), "records written to", args.out)
+
+**What Claude did:**
+- Confirmed this is the right block to copy, with `"scraper": "b"`.
+- Spotted a timing issue in (b): `started_at`/`start_time` are set before `with sync_playwright()`, so `seconds` would include launching and closing Chromium. Checked the approved contract (`docs/scraper-output.md`: `seconds` = crawl time from just before the first request to after the last page) and `scoring/score.py` (time per page = `seconds` / pages).
+- Measured in the scratch environment (3 runs): launch 0.45–0.55 s (5.64 s on the first, cold start), 10 pages 0.17–0.25 s, close 0.05–0.09 s.
+
+**Claude's answer (summary):** paste the block after `print(len(visited), "pages visited")` and change `"a"` to `"b"`. Three timing changes (D52):
+- move `started_at` and `start_time` into the `with` block, right after `page = browser.new_page(...)`;
+- add `seconds = round(time.time() - start_time, 3)` right after the loop, before `browser.close()`;
+- use `"seconds": seconds` in the output.
+
+Otherwise (b)'s time per page would mostly measure Chromium starting up.
+
+**Questions Claude asked:** none. Joseph can push back on D52.
+
+**Direction and fit:** D52 (Follows the approved `seconds` definition, D31).
