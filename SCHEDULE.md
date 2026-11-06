@@ -19,11 +19,10 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Wed Nov 4 (Turn 112 of the chat-keeper).*
+*Last updated: Thu Nov 5 (Turn 124 of the chat-keeper).*
 
-> **▶ Resume here: Thu Nov 5 (Milestone 2).** Wed Nov 4 done: Playwright pinned and working on the laptop (D50); scraper (b) part 1 runs on the laptop (10 correct values, `b-test-1` logged; D51).
-> 1. If not done yet: Joseph commits `scrapers/b_browser_text.py` (part 1).
-> 2. Thu: (b) crawl loop, copied from (a) (queue, visited, every `<a href>`, page cap, `robots.txt`, inputs), with `page.goto` for each page.
+> **▶ Resume here: next (b) step (later Thu Nov 5, or Fri Nov 6).** The (b) crawl loop is on `main` (`3b96a5a`; `b-test-3`: 10 pages, 70 records, run ID in every request).
+> - Next: (b) output, copied from (a)'s output block (`run`/`pages`/`records`, `"scraper": "b"`). Remove the two temporary prints, then do the first baseline run and score it.
 
 ---
 
@@ -70,7 +69,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 |---|---|---|
 | **Wed Nov 4** | ✅ Pin Playwright in `requirements.txt` (1.63.0, D50) and add the Chromium install step. | C |
 | | ✅ Ran two Playwright examples on the laptop. (b)'s design chosen (D51). Wrote `scrapers/b_browser_text.py` part 1: Chromium loads `/products/p1`, takes `page.content()` after the load event, and applies (a)'s field loop and ran it on the laptop: status 200, all 10 values correct, logged as `b-test-1`. Commit pending. | J |
-| **Thu Nov 5** | (b): crawl loop that follows every link, hidden ones included; run ID in Playwright's User-Agent. | J |
+| **Thu Nov 5** | ✅ (b): crawl loop that follows every link, hidden ones included; run ID in Playwright's User-Agent. Ran on the laptop as `b-test-3`: 10 pages in (a)'s order, 70 records found, 11 log lines (robots.txt + 10 pages). Committed (`3b96a5a`). | J |
 | **Fri Nov 6** | (b): extraction and output. First baseline run; score it. | J |
 | **Sat Nov 7** | Generator: per-page seeds saved with the output, and a slot where defenses plug in (§5: the generator saves the seeds). | C |
 | | Start DOM shuffling: seeded shuffle of label and value elements in the source. | J |
@@ -102,7 +101,7 @@ Thanksgiving week is light.
 |---|---|---|
 | **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
 | | (A) Start poisoning: a same-format fake value for each field, real values in a per-page JSON file, a script that swaps them in after 2 s, and the fake-values file. | J |
-| **Thu Nov 19** | Scoring script: honeypot hits and time per page from the request log; write the results CSV. | C |
+| **Thu Nov 19** | Scoring script: honeypot hits and time per page from the request log; write the results CSV. Count page requests only: a browser may also fetch `/favicon.ico` (the full Chromium build does; the default headless shell on the laptop doesn't) and any script or style files a defense adds. | C |
 | | (A) Continue poisoning. | J |
 | **Fri Nov 20** | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff against baseline, reading-order mismatch rate. | C |
 | | (A) Test 5: no real value in the HTML; fakes shown at 0 s, real values at 3 s. | J + C |
