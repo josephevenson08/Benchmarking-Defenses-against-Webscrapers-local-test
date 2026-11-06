@@ -218,6 +218,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J126 | 126 | Let's stop for now; another step later today | Session paused; part 2 on `main` (`3b96a5a`); end-of-session pull request opened (Turn 126) |
 | J127 | 127 | What's the plan today? | Fri Nov 6: (b) output block, first baseline run `b-baseline-1`, score it, commit (Turn 127) |
 | J128 | 128 | This part? (pasted (a)'s output block) | Yes, with `"scraper": "b"`; plus timing fix so `seconds` excludes browser launch and close (D52) (Turn 128) |
+| J129 | 129 | So what should it look like now? | Skeleton of the bottom half with the moved and new timing lines; Joseph applies it (Turn 129) |
 
 ### Questions from Claude
 
@@ -5224,3 +5225,19 @@ Otherwise (b)'s time per page would mostly measure Chromium starting up.
 **Questions Claude asked:** none. Joseph can push back on D52.
 
 **Direction and fit:** D52 (Follows the approved `seconds` definition, D31).
+
+### Turn 129 — 2026-11-06 15:04 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so what should it look like now
+
+**What Claude did:** answered with the shape of the bottom half of (b) as a skeleton with placeholders. Only the moved and new timing lines (D52) are written out, plus the one changed line in the output block. Claude did not write the scraper itself, the same approach as Turn 122.
+
+**Claude's answer (summary):**
+- **Skeleton:** `with` → `browser`/`page` → the two clock lines → `while` loop (unchanged) → `seconds = …` → `browser.close()` → `print(len(visited), …)` → the output block with `"scraper": "b"` and `"seconds": seconds` → the final print.
+- **Remove:** the old clock lines near the lists, the check print, and the records print.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Applies D52 and the AI-use boundary (§2, §7).
