@@ -221,6 +221,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J129 | 129 | So what should it look like now? | Skeleton of the bottom half with the moved and new timing lines; Joseph applies it (Turn 129) |
 | J130 | 130 | Full (b) with the output block | Scores 70/70 in Claude's check, but `seconds` is missing from the output and is computed inside the loop (Turn 130) |
 | J131 | 131 | Fixed (b); run failed with FileNotFoundError for the output path | Code correct; create `results/2026-11-06-b-baseline/` and rerun (Turn 131) |
+| J132 | 132 | `b-baseline-1` score: 70/70, 0.036 s per page | ⭐ Scraper (b) done (Fri Nov 6 ✅); commit as run (Turn 132) |
 
 ### Questions from Claude
 
@@ -255,7 +256,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (later Thu Nov 5 or Fri Nov 6, Milestone 2):** the (b) crawl loop is on `main` (`3b96a5a`). Next: (b)'s output block from (a) (`"scraper": "b"`), remove the two temporary prints, then the first baseline run and its score. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Sat Nov 7, Milestone 2):** scraper (b) is complete: `b-baseline-1` 70/70 = 1.000, 0.036 s per page (Nov 6). Next: Joseph commits (b) and the result if not done; then Claude's generator seeds and defense slot, and Joseph starts DOM shuffling. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **For the experiment runner (found Turn 131):** a failed or repeated run leaves extra request-log lines under the same run ID (e.g. `b-baseline-1` on Nov 6). Start each experiment with a fresh log, or make the log-based measures handle repeated run IDs.
 
@@ -5523,3 +5524,45 @@ Otherwise (b)'s time per page would mostly measure Chromium starting up.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Follows D45 (real results go in dated folders).
+
+### Turn 132 — 2026-11-06 15:12 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python scrapers/b_browser_text.py --run-id b-baseline-1 --out results/2026-11-06-b-baseline/b-baseline-1.json
+> >> python scoring/score.py results/2026-11-06-b-baseline/b-baseline-1.json
+> http://127.0.0.1:3000/ 15 run=b-baseline-1 ['http://127.0.0.1:3000/']
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 70 records written to results/2026-11-06-b-baseline/b-baseline-1.json
+> run b-baseline-1 (scraper b, condition baseline, run 1)
+> accuracy         70/70 = 1.000
+> fake-value rate  0/70 = 0.000
+> correct 70 | wrong 0 (fakes 0, malformed 0, conflicting 0, plain wrong 0) | missing 0
+> pages fetched 10 | seconds 0.356 | time per page 0.036 s | ignored records 0
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read the laptop run: `b-baseline-1` visited 10 pages and wrote 70 records. `score.py` gives **70/70 = 1.000**, fake-value rate 0/70, missing 0, `seconds 0.356`, **0.036 s per page**. (a) was 0.016–0.020 s per page on Oct 30; (b) is slower, as expected for a browser, and the clock now times only the crawl (D52).
+- Updated the plan files:
+  - `README.md` Milestone 2: "Scraper (b)" ticked with the result;
+  - `SCHEDULE.md`: Fri Nov 6 ticked, resume note moved to Sat Nov 7;
+  - Open items resume note.
+
+**Claude's answer (summary):**
+- ⭐ Scraper (b) is done.
+- Commit the scraper and the result file now, exactly as run, so the committed code matches the code that made the result. The two harmless leftovers (old clock lines and the check print) can go in the next change.
+- Suggested commit message: "Scraper (b) part 3: output file; first baseline run 70/70".
+- Asked whether to stop for today or have Claude start Saturday's generator work (per-page seeds and the defense slot) early.
+
+**Questions Claude asked:** stop here, or should Claude start Saturday's generator task now?
+
+**Direction and fit:** no new decision. The Fri Nov 6 task is done. Test 1's "(a) and (b) at least 90% on baseline in every run" is met for this first (b) run; the full baseline check (Tests 1 and 3) is still open on the Milestone 2 list.

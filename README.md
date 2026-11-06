@@ -203,7 +203,7 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 **Milestone 1 completed Oct 30, four days early.**
 
 ### Milestone 2: Nov 4 – Nov 17
-- [ ] Scraper (b)
+- [x] Scraper (b): written by Joseph; first baseline run 70/70 = 1.000, 0.036 s per page (Nov 6: [`results/2026-11-06-b-baseline/`](results/2026-11-06-b-baseline/))
 - [ ] DOM shuffling (Test 4)
 - [ ] Honeypot link (Test 6)
 - [ ] Basic pixel-diff script
