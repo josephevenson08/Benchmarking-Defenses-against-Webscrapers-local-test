@@ -33,8 +33,6 @@ except requests.exceptions.RequestException:
 
 pages = [] #pages scraped
 records = [] #holds the field values found, not the pages
-started_at = datetime.now(timezone.utc).isoformat() #where we started at 
-start_time = time.time() #time start
 
 queue = [start_url] #list of urls to scrape
 visited = set() #set of urls already scraped 
@@ -48,6 +46,9 @@ print(start_url, page_cap, user_agent, queue)
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page(user_agent=user_agent)
+    started_at = datetime.now(timezone.utc).isoformat() #where we started at
+
+    start_time = time.time() #time start
 
     while queue and len(visited) < page_cap:
         url = queue.pop(0) #get the first url in the queue
@@ -85,7 +86,23 @@ with sync_playwright() as p:
             same_site = urlparse(link).netloc == urlparse(start_url).netloc
             if same_site and link not in visited and link not in queue:
                 queue.append(link)                   # wait in line to be visited
+    seconds = round(time.time() - start_time, 3)
     browser.close()
 
-print(len(visited), "pages visited")
-print(len(records), "records")
+
+output = {
+    "run": {
+        "run_id": args.run_id,
+        "scraper": "b",
+        "start_url": start_url,
+        "page_cap": page_cap,
+        "obey_robots_txt": args.robots == "obey",
+        "started_at": started_at,
+        "seconds": seconds,
+    },
+    "pages": pages,
+    "records": records,
+}
+with open(args.out, "w", encoding="utf-8") as f:
+    json.dump(output, f, indent=2)
+print(len(records), "records written to", args.out)
