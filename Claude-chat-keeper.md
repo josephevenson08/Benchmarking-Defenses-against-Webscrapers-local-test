@@ -215,6 +215,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J124 | 124 | `b-test-3` output: 10 pages, 70 records, 11 log lines | Crawl loop done (Thu Nov 5 ✅); Claude's favicon prediction corrected (Turn 124) |
 | J125 | 125 | What should I name the commit? | Suggested "Scraper (b) part 2: crawl loop with Playwright" (Turn 125) |
 | J126 | 126 | Let's stop for now; another step later today | Session paused; part 2 on `main` (`3b96a5a`); end-of-session pull request opened (Turn 126) |
+| J127 | 127 | What's the plan today? | Fri Nov 6: (b) output block, first baseline run `b-baseline-1`, score it, commit (Turn 127) |
 
 ### Questions from Claude
 
@@ -259,7 +260,6 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **⚠️ Merge needed (no rush):** pull request #19 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/19), schedule and log for Thu Nov 5.
 
 - **Fixture:** done. `output.json`, `fakes.json` and Joseph's `expected.md` are all on `main` (Turn 38).
 - **Scoring script:** ⭐ Check 1 passed (D43). Remaining: §7 verification step 5 (hand-count one real run) after scraper (a), and C20.
@@ -5163,3 +5163,23 @@ Claude recommended keeping (a)'s robots.txt block (`requests`) unchanged in (b).
 **Questions Claude asked:** none. The Turn 124 question is answered: stop for now, continue later today.
 
 **Direction and fit:** no new decision. Applies D40.
+
+### Turn 127 — 2026-11-06 14:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> whats the plan today?
+
+**What Claude did:** synced. Pull request #19 is merged, and the branch is fast-forwarded to `main`. The output step was not done yesterday: the newest scraper commit is still `3b96a5a`. Read the Fri Nov 6 row in `SCHEDULE.md` and the run ID format in `docs/scraper-output.md` (`<scraper>-<condition>-<n>`).
+
+**Claude's answer (summary):** today's plan for Joseph (Fri Nov 6):
+1. Copy (a)'s output block into (b) with `"scraper": "b"`, and remove the two temporary prints.
+2. Run the first baseline as `b-baseline-1` into a new `results/2026-11-06-b-baseline/` folder.
+3. Score it with `scoring/score.py`. Expected 70/70: the baseline pages have no scripts, so (b) sees the same HTML as (a). Time per page will be higher than (a)'s, because a browser loads each page.
+4. Commit the scraper and the result.
+
+Saturday is next: the generator seeds and defense slot (Claude) and the start of DOM shuffling (Joseph).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Follows the schedule, D51 and the approved output contract.
