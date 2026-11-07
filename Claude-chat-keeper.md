@@ -228,6 +228,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J134 | 134 | Ready for today; how long should today take? | About 1.5–2 h for Joseph. Claude's generator slot built (D53, pull request #21); shuffle design chosen (D54); step 1 given (Turn 134) |
 | J135 | 135 | `node demo_rng.js` → TypeError: makeRng is not a function | Laptop hasn't pulled #21 (merged on GitHub); pull, then rerun (Turn 135) |
 | J136 | 136 | Walk me through the shuffle(list, rng) | Fisher–Yates explained with a worked trace (seed 42 → a e c b d) and the JS syntax pieces; Joseph assembles it (Turn 136) |
+| J137 | 137 | First shuffle(list, rng) | Tests are inside the function so it never runs; no copy, no return, extra makeRng lines; four fixes (Turn 137) |
 
 ### Questions from Claude
 
@@ -5673,3 +5674,48 @@ Sunday: the CSS that restores the on-screen order and the byte-identical check. 
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Teaching under the AI-use boundary (§2 "AI assistance"): the trace and syntax pieces are explanation; Joseph writes the function.
+
+### Turn 137 — 2026-11-07 16:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> // Standalone warm-up: the generator's seeded random function
+> const { makeRng } = require("./site/generate.js");
+>
+> const a = makeRng(42);
+> const b = makeRng(42);
+> const c = makeRng(7);
+> console.log([a(), a(), a()]);
+> console.log([b(), b(), b()]);   // same seed: same numbers as the line above
+> console.log([c(), c(), c()]);   // different seed: different numbers
+>
+> function shuffle(list, rng) {
+>     const a = makeRng(42);
+>     const b = makeRng(42);
+>     const c = makeRng(7); 
+>
+> for (let i = list.length - 1; i >= 1; i--) 
+>     {
+>     const j = Math.floor(rng() * (i + 1));
+>     [list[i], list[j]] = [list[j], list[i]]; 
+>
+>
+>     console.log(shuffle(["a", "b", "c", "d", "e"], makeRng(42)));
+>     console.log(shuffle(["a", "b", "c", "d", "e"], makeRng(42)));
+>     console.log(shuffle(["a", "b", "c", "d", "e"], makeRng(7)));
+>     }
+> }
+
+**What Claude did:** reviewed Joseph's first `shuffle` and ran it as pasted. It prints only the three `makeRng` lines: the `console.log(shuffle(...))` tests sit inside the function (inside the loop), so `shuffle` is never called. If it were called that way, it would call itself without end (stack overflow).
+
+**Claude's answer (summary):** four fixes:
+1. Move the three test lines out of the function, to the bottom of the file with no indentation.
+2. Remove the three `makeRng` lines inside `shuffle`; the function uses the `rng` it is given.
+3. Copy the list first (`const arr = [...list]`) and shuffle `arr`.
+4. Close the loop after the swap, then `return arr;` before the function's closing brace.
+
+Claude showed the brace layout with the lines Joseph already wrote.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
