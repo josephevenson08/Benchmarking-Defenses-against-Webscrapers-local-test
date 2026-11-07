@@ -235,6 +235,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J141 | 141 | Let's walk through what shuffled.js should look like together | Split into parts A–C; part A (skeleton + generator checkpoint) given (Turn 141) |
 | J142 | 142 | Generated p1 page and generate output (message cut off) | Answered with Turn 143 |
 | J143 | 143 | Part A file and generated p1 (empty fields block) | Part A works; part B (build the elements, temporary unshuffled return) given (Turn 143) |
+| J144 | 144 | Part B attempt (form inputs, `row.map`, no return, no export) | Back to part B's steps; generator now refuses empty exports and missing HTML (Turn 144) |
 
 ### Questions from Claude
 
@@ -5965,3 +5966,60 @@ Part C will then only add the shuffle before the join.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 144 — 2026-11-07 16:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> // shuffles the order of the fields in the HTML page
+>
+> function shuffle(list, rng) {
+>     const arr = [...list]; // make a copy of the list
+>     for (let i = arr.length - 1; i >= 1; i--) 
+>     {
+>     const j = Math.floor(rng() * (i + 1));
+>     [arr[i], arr[j]] = [arr[j], arr[i]]; 
+>     }
+>     return arr;
+> }
+>
+> function fieldRows(rows, rng) {
+>     for (let k = 0; k < rows.length; k++){
+>         const row = rows[k];
+>         const elements = row.map((field) => {
+>             return `<div class="field">
+>                 <label for="${field.id}">${field.label}</label>
+>                 <input type="text" id="${field.id}" name="${field.name}" value="${field.value}">
+>             </div>`;
+>         }
+>         );
+>     // B: build the list of elements
+>     // C: shuffle it and return the HTML
+>         const shuffledElements = shuffle(elements, rng);
+>         const html = shuffledElements.join("\n");
+>         row.html = html;
+>     }
+> }
+
+**What Claude did:**
+- Reviewed Joseph's part B, and ran it through the generator as a temporary `site/defenses/shuffled.js`, removed afterwards. It doesn't follow part B's steps:
+  - `row.map(...)`: each `row` is one object, not a list, so it fails with `TypeError: row.map is not a function`;
+  - it builds `<label>`/`<input type="text">` form fields with `field.id`/`field.name`, which don't exist in `rows`, instead of the site's `<span class="label">`/`<span class="value">`;
+  - `elements` is recreated for every row;
+  - there is no `return`;
+  - the `module.exports` line from part A is gone.
+
+  It looks like an editor autocomplete suggestion.
+- **Found a weak spot in Claude's slot (D53) and fixed it.** A defense file with no exports was silently built as the baseline, and a `fieldRows` that returns nothing would have put `undefined` into the page. The generator now stops with a clear message in both cases ("exports nothing … add `module.exports = { fieldRows }`", or "returned nothing"). One new test (15 in all, pass).
+
+**Claude's answer (summary):** go back to part B's four steps, in place of the pasted loop:
+1. `const elements = [];` once, before the loop;
+2. the loop over `rows` with `const row = rows[k]`;
+3. two `elements.push` lines, one label span with `order: ${2 * k}` and one value span with Joseph's own expression for `2k + 1`;
+4. the glue `return` line.
+
+Keep `module.exports = { fieldRows };` at the end. The shuffle comes in part C. Advice: turn down autocomplete suggestions here, since they don't know this site's markup.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The generator change refines D53 (clearer errors, same interface).
