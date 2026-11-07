@@ -250,6 +250,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J156 | 156 | Screenshot and page after rule 2b | 2b works; step 2c (the value rule) given (Turn 156) |
 | J157 | 157 | Value rule (2c) draft | `padding: A B` placeholder copied; `box-bottom` → `border-bottom`; close the rule and string (Turn 157) |
 | J158 | 158 | Final style (three rules) | ⭐ Pixel-identical to baseline on all 8 item pages; byte-identical regeneration; step 3 and commit (Turn 158) |
+| J159 | 159 | Full shuffled.js | Matches the verified version; not on `main` yet: run the checks, then commit both parts (Turn 159) |
 
 ### Questions from Claude
 
@@ -6571,3 +6572,62 @@ Expected: the page snaps into rows that look like the baseline.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. These are previews of §5 Test 4's conditions (pixel difference ≤ 1%, byte-identical regeneration); the formal Test 4 is Tue Nov 10.
+
+### Turn 159 — 2026-11-07 17:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> // shuffles the order of the fields in the HTML page
+>
+> function shuffle(list, rng) {
+>     const arr = [...list]; // make a copy of the list
+>     for (let i = arr.length - 1; i >= 1; i--) 
+>     {
+>     const j = Math.floor(rng() * (i + 1));
+>     [arr[i], arr[j]] = [arr[j], arr[i]]; 
+>     }
+>     return arr;
+> }
+>
+> function fieldRows(rows, rng) {
+>     const elements = [];    // 1. build the list of elements
+>
+>     for (let k = 0; k < rows.length; k++){ //2. one pass per field
+>
+>         const row = rows[k];
+>         elements.push(`<span class="label" style="order: ${2 * k}">${row.label}</span>`);
+>         elements.push(`<span class="value" style="order: ${2 * k + 1}">${row.value}</span>`); 
+>         }
+>     // C: shuffle it and return the HTML
+>         const shuffledElements = shuffle(elements, rng);
+>     
+>         return "    <div class=\"fields\">\n" + shuffledElements.map((x) => "      " + x).join("\n") + "\n    </div>";    }
+> const style = `
+>     .fields { flex-direction: row; flex-wrap: wrap; }
+>     .fields > .label { flex: 0 0 10rem; 
+>         padding: 0.5rem 1rem 0.5rem 0;
+>         box-sizing: border-box; 
+>         border-bottom: 1px solid #eaeef2; }
+>     .fields > .value { flex: 0 0 calc(100% - 10rem);
+>         padding: 0.5rem 0;
+>         border-bottom: 1px solid #eaeef2; }`;
+>
+> module.exports = { fieldRows, style };
+
+**What Claude did:**
+- Read Joseph's complete `shuffled.js`. It is the same code Claude verified in Turn 158 (pixel-identical, byte-identical regeneration); only blank lines differ, and those don't change the output.
+- Checked GitHub: `site/defenses/shuffled.js` is **not on `main` yet**. Neither part 1 nor part 2 has been committed and synced; the newest commit on `main` is the pull request #21 merge.
+
+**Claude's answer (summary):** the file is complete and correct. Next:
+1. Run the two step-3 checks: compare the tabs by eye, and `Get-FileHash` before and after a regenerate.
+2. Commit and sync `site/defenses/shuffled.js`, now with both parts, using a combined message.
+
+Tidy-ups for Monday's "finish shuffling" slot:
+- a more precise header comment;
+- comments on `style`;
+- update the leftover `// C:` comment;
+- even out the indentation in `fieldRows`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
