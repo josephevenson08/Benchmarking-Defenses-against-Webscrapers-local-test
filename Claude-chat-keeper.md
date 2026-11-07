@@ -241,6 +241,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J147 | 147 | Generated shuffled p1 and the final shuffled.js | ⭐ Shuffled source matches; preview (a) 4/70; commit; Sat Nov 7 done (Turn 147) |
 | J148 | 148 | Let's start on tomorrow's work | Sunday's CSS step explained (plan checked pixel-identical on Claude's scratch copy); steps 1–3 given (Turn 148) |
 | J149 | 149 | Let's run through it step by step | Step 1 only: serve shuffled, compare source with screen (Turn 149) |
+| J150 | 150 | Page source of shuffled p1 | Source confirmed; screen view shown by screenshot; step 2a (the `.fields` rule) given (Turn 150) |
 
 ### Questions from Claude
 
@@ -6234,6 +6235,78 @@ Each changed part was explained against the label line. This is a one-line varia
 **What Claude did:** narrowed the Sunday work to step 1 only, at Joseph's request: commit part 1 if needed, serve `shuffled`, then compare View source with the screen on p1. Joseph reports what he sees before step 2.
 
 **Claude's answer (summary):** the commands for step 1, the two things to look at, and what to paste back (a description or screenshot, plus the first few lines of the page source).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 150 — 2026-11-07 16:49 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> <!doctype html>
+> <html lang="en">
+> <head>
+>   <meta charset="utf-8">
+>   <meta name="viewport" content="width=device-width, initial-scale=1">
+>   <title>Product 1 · Demo Shop</title>
+>   <style>
+>     body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.5; color: #1f2328; background: #fff; }
+>     header, main, footer { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+>     header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; }
+>     .brand { font-weight: 700; color: inherit; text-decoration: none; }
+>     nav a { margin-left: 1rem; }
+>     a { color: #0969da; }
+>     .fields { display: flex; flex-direction: column; }
+>     .field { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #eaeef2; }
+>     .label { flex: 0 0 9rem; font-weight: 600; }
+>     .value { flex: 1; }
+>     footer { color: #57606a; font-size: 0.875rem; border-top: 1px solid #d0d7de; }
+>   </style>
+> </head>
+> <body>
+>   <header>
+>     <a class="brand" href="/">Demo Shop</a>
+>     <nav><a href="/">Home</a><a href="/products/">Products</a></nav>
+>   </header>
+>   <main>
+>     <h1>Product details</h1>
+>     <div class="fields">
+>       <span class="value" style="order: 1">Larkfield Studio Headphones</span>
+>       <span class="value" style="order: 13">1,284</span>
+>       <span class="label" style="order: 4">Category</span>
+>       <span class="value" style="order: 15">In stock</span>
+>       <span class="label" style="order: 14">Availability</span>
+>       <span class="value" style="order: 11">4.5</span>
+>       <span class="label" style="order: 0">Name</span>
+>       <span class="value" style="order: 7">$89.99</span>
+>       <span class="label" style="order: 6">Price</span>
+>       <span class="value" style="order: 17">2024-09-12</span>
+>       <span class="label" style="order: 16">Release date</span>
+>       <span class="value" style="order: 9">LF-HP-2041</span>
+>       <span class="label" style="order: 8">SKU</span>
+>       <span class="label" style="order: 12">Reviews</span>
+>       <span class="label" style="order: 18">Description</span>
+>       <span class="value" style="order: 3">Larkfield</span>
+>       <span class="value" style="order: 19">Closed-back over-ear headphones with 40 mm drivers and a detachable cable.</span>
+>       <span class="value" style="order: 5">Headphones</span>
+>       <span class="label" style="order: 10">Rating</span>
+>       <span class="label" style="order: 2">Brand</span>
+>     </div>
+>   </main>
+>   <footer>Synthetic test site for a local scraping study. All content is made up.</footer>
+> </body>
+> </html>
+
+**What Claude did:**
+- Read Joseph's page source. It is the same mixed order as before, starting with value "Larkfield Studio Headphones" (`order: 1`), so the shuffled site is being served.
+- Joseph didn't describe the screen, so Claude sent a screenshot of what his p1 looks like on screen right now, made from a scratch copy of his part 1 (no CSS yet): one item per line in `order` sequence, with a tall gap under each label.
+- Also checked, in a scratch copy, what the first CSS rule alone does (`.fields` switched to row + wrap), so Claude could describe what Joseph should expect. Scratch files removed.
+
+**Claude's answer (summary):**
+- Why the screen looks that way: `.fields` is a flex column from the baseline, `order` sorts the items, and `.label { flex: 0 0 9rem }` means 9rem of *height* in a column.
+- Step 2a: write only the `.fields` rule (row + wrap) and export `style`.
+- Expected after regenerating: the items flow left to right in order, several per line, labels 9rem wide and values squeezed. That's not right yet; rules 2b and 2c fix it.
 
 **Questions Claude asked:** none.
 
