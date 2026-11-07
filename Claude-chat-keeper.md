@@ -226,6 +226,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J132 | 132 | `b-baseline-1` score: 70/70, 0.036 s per page | ⭐ Scraper (b) done (Fri Nov 6 ✅); commit as run (Turn 132) |
 | J133 | 133 | OK, see you tomorrow | Session ended; (b) on `main` (`6d3fee9`); `main` already up to date via pull request #20 (Turn 133) |
 | J134 | 134 | Ready for today; how long should today take? | About 1.5–2 h for Joseph. Claude's generator slot built (D53, pull request #21); shuffle design chosen (D54); step 1 given (Turn 134) |
+| J135 | 135 | `node demo_rng.js` → TypeError: makeRng is not a function | Laptop hasn't pulled #21 (merged on GitHub); pull, then rerun (Turn 135) |
 
 ### Questions from Claude
 
@@ -273,7 +274,6 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **⚠️ Merge needed:** pull request #21 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/21), the generator's defense slot and seeds (Joseph needs it for shuffling).
 
 
 - **Fixture:** done. `output.json`, `fakes.json` and Joseph's `expected.md` are all on `main` (Turn 38).
@@ -5623,3 +5623,34 @@ Sunday: the CSS that restores the on-screen order and the byte-identical check. 
 **Questions Claude asked:** C25 (what to scramble): full mix in one container.
 
 **Direction and fit:** D53 (Follows), D54 (Interprets). The shuffle algorithm itself is described in words, not written, so the defense stays Joseph's (§2 "AI assistance").
+
+### Turn 135 — 2026-11-07 16:09 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> node demo_rng.js
+> C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\demo_rng.js:4
+> const a = makeRng(42);
+>           ^
+>
+> TypeError: makeRng is not a function
+>     at Object.<anonymous> (C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\demo_rng.js:4:11)
+>     at Module._compile (node:internal/modules/cjs/loader:1804:14)
+>     at Object..js (node:internal/modules/cjs/loader:1936:10)
+>     at Module.load (node:internal/modules/cjs/loader:1525:32)
+>     at Module._load (node:internal/modules/cjs/loader:1327:12)
+>     at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+>     at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+>     at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+>     at node:internal/main/run_main_module:33:47
+>
+> Node.js v24.13.1
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** read the error. `TypeError: makeRng is not a function` means the laptop's `site/generate.js` doesn't export `makeRng` yet, so the laptop is still on the old generator. Checked GitHub: pull request #21 is merged into `main` (`f7f3912`), so the laptop hasn't pulled it. Merged `main` into the branch.
+
+**Claude's answer (summary):** pull first: Sync in VS Code, or `git pull` in the terminal. Check with `git log --oneline -1` (should show `f7f3912 Merge pull request #21…`) and that `site/defenses/README.md` exists. Then `npm test` (14 pass) and `node demo_rng.js` again.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
