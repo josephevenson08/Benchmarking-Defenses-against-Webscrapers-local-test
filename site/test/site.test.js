@@ -6,7 +6,7 @@ const http = require("http");
 const os = require("os");
 const path = require("path");
 
-const { loadData, buildPages, writeCondition, availableConditions, pageSeed, makeRng } = require("../generate");
+const { loadData, buildPages, writeCondition, availableConditions, pageSeed, makeRng, checkDefense } = require("../generate");
 const { createApp, listenLocal, runIdFrom } = require("../server");
 
 const data = loadData();
@@ -138,6 +138,15 @@ test("a defense in the slot gets escaped rows, a seeded random function and its 
   assert.deepEqual(first.calls.map((c) => c.draws), second.calls.map((c) => c.draws), "same seed, same draws");
   assert.equal(new Set(first.calls.map((c) => c.draws[0])).size, first.calls.length, "each page has its own draws");
   for (const page of first.built) assert.ok(page.html.includes(".test-defense { color: red; }"), page.path);
+});
+
+test("a defense file that exports nothing, or returns no HTML, is refused with a clear message", () => {
+  assert.throws(() => checkDefense({}, "site/defenses/x.js"), /exports nothing.*module\.exports/);
+  assert.throws(() => checkDefense({ fieldRows: "no" }, "site/defenses/x.js"), /must be a function/);
+  assert.throws(() => checkDefense({ style: 3 }, "site/defenses/x.js"), /must be a string of CSS/);
+  assert.equal(checkDefense({ style: "" }, "x").style, "");
+  const silent = { fieldRows() {} };
+  assert.throws(() => buildPages(data, { condition: "test", defense: silent, seed: 1 }), /returned nothing/);
 });
 
 test("defense files are found by name, and unknown conditions are refused", () => {
