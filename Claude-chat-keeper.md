@@ -256,6 +256,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J162 | 162 | git status: ahead of origin/main by 3 commits; shuffled.js committed as 327027b | Committed but not pushed: Sync (pull, then push), merge #23, Sync again (Turn 162) |
 | J163 | 163 | Should I just push from VS Code with a comment? It's not popping up in Source Control | No new commit needed; use Sync Changes ↑3 or pull --no-edit then push (Turn 163) |
 | J164 | 164 | "Deletion of directory '.git/objects/01' failed. Should I try again? (y/n)" | Safe: answer n (OneDrive lock during git's clean-up); then push and check (Turn 164) |
+| J165 | 165 | Can I delete the demo_rng file? | Yes (untracked warm-up); push still not on GitHub (Turn 165) |
 
 ### Questions from Claude
 
@@ -6758,6 +6759,22 @@ Claude will confirm on GitHub once `shuffled.js` appears on `main`.
 3. `git status` should show up to date with `origin/main`.
 
 For later: OneDrive and `.git` folders clash. Moving the project out of OneDrive (for example `C:\dev\`) or pausing OneDrive while working avoids this. Not urgent.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 165 — 2026-11-07 17:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can i go ahead and delete the demo_rng file?
+
+**What Claude did:**
+- Answered yes. `demo_rng.js` was the standalone warm-up; it is untracked, so deleting it needs no commit, and its `shuffle` function now lives in `site/defenses/shuffled.js`.
+- Checked GitHub again: `main` is still at `4647a2f` (#23) without `shuffled.js`, so the push has not arrived yet.
+
+**Claude's answer (summary):** delete it with `Remove-Item demo_rng.js`, or from the VS Code Explorer. Reminder: the push still hasn't reached GitHub. Finish the pull or Sync, then `git push`, and paste `git status`.
 
 **Questions Claude asked:** none.
 
