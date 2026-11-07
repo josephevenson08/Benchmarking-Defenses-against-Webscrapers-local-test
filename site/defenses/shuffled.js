@@ -21,7 +21,13 @@ function fieldRows(rows, rng) {
         }
     // C: shuffle it and return the HTML
         const shuffledElements = shuffle(elements, rng);
-
-
+    
         return "    <div class=\"fields\">\n" + shuffledElements.map((x) => "      " + x).join("\n") + "\n    </div>";    }
-module.exports = { fieldRows };
+const style = `
+    .fields { flex-direction: row; flex-wrap: wrap; }
+    .fields > .label { flex: 0 0 10rem; 
+        padding: 0.5rem 1rem 0.5rem 0;
+        box-sizing: border-box; 
+        border-bottom: 1px solid #eaeef2; }`;
+
+module.exports = { fieldRows, style };        
