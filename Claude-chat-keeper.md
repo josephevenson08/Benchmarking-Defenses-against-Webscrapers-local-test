@@ -239,6 +239,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J145 | 145 | Part B file: labels only, shuffle call unused | Add the value line, return `shuffledElements`; expected first five lines confirmed (Turn 145) |
 | J146 | 146 | Help me with the value line | Line shown in place and explained; disclosed as Claude-supplied (Turn 146) |
 | J147 | 147 | Generated shuffled p1 and the final shuffled.js | ⭐ Shuffled source matches; preview (a) 4/70; commit; Sat Nov 7 done (Turn 147) |
+| J148 | 148 | Let's start on tomorrow's work | Sunday's CSS step explained (plan checked pixel-identical on Claude's scratch copy); steps 1–3 given (Turn 148) |
 
 ### Questions from Claude
 
@@ -6197,3 +6198,28 @@ Each changed part was explained against the label line. This is a one-line varia
 **Questions Claude asked:** stop for today?
 
 **Direction and fit:** no new decision. The Sat Nov 7 tasks (Claude and Joseph) are done.
+
+### Turn 148 — 2026-11-07 16:44 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets start on tmrs work
+
+**What Claude did:**
+- Started Sunday's work early, as Joseph asked.
+- Screenshot of p1 from Joseph's part 1 in a scratch copy: `order` already puts the spans in on-screen sequence (Name, Larkfield Studio Headphones, Brand, …). But they sit one per line, because the baseline's `.fields` is a flex **column**, and each label is about 9rem **tall**, because the baseline's `.label { flex: 0 0 9rem }` acts on height in a column.
+- **Checked the CSS plan before giving it.** With three rules on a scratch copy:
+  - `.fields`: row + wrap;
+  - `.fields > .label`: fixed 10rem = 9rem label + the 1rem gap as right padding, 0.5rem top/bottom padding, border-box, the baseline border;
+  - `.fields > .value`: the rest of the line, `calc(100% - 10rem)`, same padding and border.
+
+  Screenshots of all 8 item pages were **pixel-identical** to the baseline at 1280 px and 375 px. Claude's scratch CSS was not given to Joseph and was removed.
+
+**Claude's answer (summary):** Sunday's steps:
+1. Serve `shuffled` and look at p1. Compare *View source* (mixed) with the screen (in order, but one per line, with tall labels), and see why.
+2. Write the `style` export: three rules, described in words with the numbers. Joseph writes the CSS.
+3. Regenerate, compare by eye with the baseline on a second port, then check byte-identical regeneration with `Get-FileHash`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Applies D54. §5 Test 4 targets: pixel difference ≤ 1% and byte-identical regeneration.
