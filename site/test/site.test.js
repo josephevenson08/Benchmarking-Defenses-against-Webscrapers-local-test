@@ -6,7 +6,7 @@ const http = require("http");
 const os = require("os");
 const path = require("path");
 
-const { loadData, buildPages, writeCondition } = require("../generate");
+const { loadData, buildPages, writeCondition, availableConditions, pageSeed, makeRng } = require("../generate");
 const { createApp, listenLocal, runIdFrom } = require("../server");
 
 const data = loadData();
@@ -87,6 +87,72 @@ test("generating twice gives byte-identical files", () => {
     const [a, b] = dirs.map((dir) => fs.readFileSync(path.join(dir, "baseline", page.file)));
     assert.ok(a.equals(b), page.file);
   }
+});
+
+test("the baseline does not depend on the seed", () => {
+  const other = buildPages(data, { seed: 1 });
+  pages.forEach((page, i) => assert.equal(other[i].html, page.html, page.path));
+});
+
+test("every page gets its own seed from the config seed, the condition and the path", () => {
+  const seeds = pages.map((p) => p.seed);
+  assert.ok(seeds.every((s) => Number.isInteger(s) && s >= 0 && s < 2 ** 32));
+  assert.equal(new Set(seeds).size, seeds.length, "seeds differ by page");
+  assert.equal(pageSeed(1, "shuffled", "/"), pageSeed(1, "shuffled", "/"));
+  assert.notEqual(pageSeed(1, "shuffled", "/"), pageSeed(2, "shuffled", "/"));
+  assert.notEqual(pageSeed(1, "shuffled", "/"), pageSeed(1, "honeypot", "/"));
+});
+
+test("seeded random numbers repeat for the same seed and stay in [0, 1)", () => {
+  const draw = (seed) => Array.from({ length: 1000 }, makeRng(seed));
+  assert.deepEqual(draw(42), draw(42));
+  assert.notDeepEqual(draw(42), draw(43));
+  assert.ok(draw(42).every((x) => x >= 0 && x < 1));
+});
+
+test("a defense in the slot gets escaped rows, a seeded random function and its CSS", () => {
+  const tricky = JSON.parse(JSON.stringify(data));
+  tricky.items.products[0].name = "A & B <C>";
+  const build = () => {
+    const calls = [];
+    const defense = {
+      style: ".test-defense { color: red; }",
+      fieldRows(rows, rng) {
+        calls.push({ rows, draws: [rng(), rng()] });
+        return `    <div class="fields test-defense">${rows.length} rows</div>`;
+      },
+    };
+    return { built: buildPages(tricky, { condition: "test", defense, seed: 7 }), calls };
+  };
+  const first = build();
+  const second = build();
+
+  const itemPages = first.built.filter((p) => p.item_id);
+  assert.equal(first.calls.length, itemPages.length, "called once per item page");
+  first.calls.forEach((call, i) => {
+    const { fields } = itemFor(itemPages[i]);
+    assert.deepEqual(call.rows.map((r) => r.key), fields.map((f) => f.key), "rows in field order");
+    assert.ok(itemPages[i].html.includes(`<div class="fields test-defense">${fields.length} rows</div>`));
+  });
+  assert.equal(first.calls[0].rows[0].value, "A &amp; B &lt;C&gt;", "values arrive HTML-escaped");
+  assert.deepEqual(first.calls.map((c) => c.draws), second.calls.map((c) => c.draws), "same seed, same draws");
+  assert.equal(new Set(first.calls.map((c) => c.draws[0])).size, first.calls.length, "each page has its own draws");
+  for (const page of first.built) assert.ok(page.html.includes(".test-defense { color: red; }"), page.path);
+});
+
+test("defense files are found by name, and unknown conditions are refused", () => {
+  assert.equal(availableConditions()[0], "baseline");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "unknown-"));
+  assert.throws(() => writeCondition("no-such-defense", dir), /Unknown or not-yet-built condition "no-such-defense"/);
+});
+
+test("the manifest saves the config seed and every page's seed", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "manifest-"));
+  writeCondition("baseline", dir, 123);
+  const manifest = JSON.parse(fs.readFileSync(path.join(dir, "baseline.manifest.json"), "utf8"));
+  assert.equal(manifest.seed, 123);
+  assert.equal(manifest.pages.length, 10);
+  for (const p of manifest.pages) assert.equal(p.seed, pageSeed(123, "baseline", p.path), p.path);
 });
 
 test("run IDs are read from the User-Agent", () => {
