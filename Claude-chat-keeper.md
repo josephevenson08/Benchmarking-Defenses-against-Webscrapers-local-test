@@ -247,6 +247,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J153 | 153 | shuffled.js with the style inside fieldRows | Move `style` out of the function; fix `flex=wrap` typo (Turn 153) |
 | J154 | 154 | Screenshot after rule 2a: "ye squeezed" | 2a works; step 2b (the label rule) given (Turn 154) |
 | J155 | 155 | Label rule (2b) | Missing `rem` units and a missing `:` after padding (Turn 155) |
+| J156 | 156 | Screenshot and page after rule 2b | 2b works; step 2c (the value rule) given (Turn 156) |
 
 ### Questions from Claude
 
@@ -6432,6 +6433,83 @@ Expect a messier page for a moment.
 - `box-sizing` and `border-bottom` are correct.
 
 **Claude's answer (summary):** CSS lengths need a unit; only `0` can go without one. A missing `:` makes the browser skip the declaration silently, with no error. Fix the two lines (add `rem`, add `:`), then regenerate, refresh and screenshot.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 156 — 2026-11-07 17:01 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> <!doctype html>
+> <html lang="en">
+> <head>
+>   <meta charset="utf-8">
+>   <meta name="viewport" content="width=device-width, initial-scale=1">
+>   <title>Product 1 · Demo Shop</title>
+>   <style>
+>     body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.5; color: #1f2328; background: #fff; }
+>     header, main, footer { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+>     header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; }
+>     .brand { font-weight: 700; color: inherit; text-decoration: none; }
+>     nav a { margin-left: 1rem; }
+>     a { color: #0969da; }
+>     .fields { display: flex; flex-direction: column; }
+>     .field { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #eaeef2; }
+>     .label { flex: 0 0 9rem; font-weight: 600; }
+>     .value { flex: 1; }
+>     footer { color: #57606a; font-size: 0.875rem; border-top: 1px solid #d0d7de; }
+>
+>     .fields { flex-direction: row; flex-wrap: wrap; }
+>     .fields > .label { flex: 0 0 10rem; 
+>         padding: 0.5rem 1rem 0.5rem 0;
+>         box-sizing: border-box; 
+>         border-bottom: 1px solid #eaeef2; }
+>   </style>
+> </head>
+> <body>
+>   <header>
+>     <a class="brand" href="/">Demo Shop</a>
+>     <nav><a href="/">Home</a><a href="/products/">Products</a></nav>
+>   </header>
+>   <main>
+>     <h1>Product details</h1>
+>     <div class="fields">
+>       <span class="value" style="order: 1">Larkfield Studio Headphones</span>
+>       <span class="value" style="order: 13">1,284</span>
+>       <span class="label" style="order: 4">Category</span>
+>       <span class="value" style="order: 15">In stock</span>
+>       <span class="label" style="order: 14">Availability</span>
+>       <span class="value" style="order: 11">4.5</span>
+>       <span class="label" style="order: 0">Name</span>
+>       <span class="value" style="order: 7">$89.99</span>
+>       <span class="label" style="order: 6">Price</span>
+>       <span class="value" style="order: 17">2024-09-12</span>
+>       <span class="label" style="order: 16">Release date</span>
+>       <span class="value" style="order: 9">LF-HP-2041</span>
+>       <span class="label" style="order: 8">SKU</span>
+>       <span class="label" style="order: 12">Reviews</span>
+>       <span class="label" style="order: 18">Description</span>
+>       <span class="value" style="order: 3">Larkfield</span>
+>       <span class="value" style="order: 19">Closed-back over-ear headphones with 40 mm drivers and a detachable cable.</span>
+>       <span class="value" style="order: 5">Headphones</span>
+>       <span class="label" style="order: 10">Rating</span>
+>       <span class="label" style="order: 2">Brand</span>
+>     </div>
+>   </main>
+>   <footer>Synthetic test site for a local scraping study. All content is made up.</footer>
+> </body>
+> </html>
+
+**What Claude did:** looked at Joseph's screenshot and generated page. Rule 2b works: every label is 10rem wide with padding and a grey line, and the values are still squeezed and sit higher. This matches Claude's scratch preview from Turn 154. The page's `<style>` shows Joseph's two rules after the baseline CSS.
+
+**Claude's answer (summary):** 2b done. Step 2c: write the `.fields > .value` rule with three properties, described in words:
+- a fixed size of `calc(100% - 10rem)` (what `calc()` does);
+- padding 0.5rem top and bottom, 0 left and right (the two-value shorthand);
+- the same grey bottom border.
+
+Expected: the page snaps into rows that look like the baseline.
 
 **Questions Claude asked:** none.
 
