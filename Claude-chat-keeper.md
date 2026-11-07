@@ -227,6 +227,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J133 | 133 | OK, see you tomorrow | Session ended; (b) on `main` (`6d3fee9`); `main` already up to date via pull request #20 (Turn 133) |
 | J134 | 134 | Ready for today; how long should today take? | About 1.5–2 h for Joseph. Claude's generator slot built (D53, pull request #21); shuffle design chosen (D54); step 1 given (Turn 134) |
 | J135 | 135 | `node demo_rng.js` → TypeError: makeRng is not a function | Laptop hasn't pulled #21 (merged on GitHub); pull, then rerun (Turn 135) |
+| J136 | 136 | Walk me through the shuffle(list, rng) | Fisher–Yates explained with a worked trace (seed 42 → a e c b d) and the JS syntax pieces; Joseph assembles it (Turn 136) |
 
 ### Questions from Claude
 
@@ -5654,3 +5655,21 @@ Sunday: the CSS that restores the on-screen order and the byte-identical check. 
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 136 — 2026-11-07 16:12 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> walk me through the suffle(list,rng)
+
+**What Claude did:** walked Joseph through Fisher–Yates with a worked trace on `["a","b","c","d","e"]`, computed with the generator's `makeRng`. Seed 42 gives `a e c b d` (twice, identical); seed 7 gives `d b c e a`. Claude explained the four JavaScript pieces Joseph needs (copy the list, a backwards `for` loop, pick `j`, swap two items) as separate general syntax, and left the assembly of `shuffle(list, rng)` to Joseph, since it becomes part of his defense.
+
+**Claude's answer (summary):**
+- Why the loop runs from the last position down: each step fills position `i` with a random pick from the part not yet decided (0…`i`), so every order is equally likely.
+- The trace table for seed 42 shows `i`, the random number, `j`, and the list after each swap.
+- The pieces: `[...list]`, `for (let i = … ; i >= 1; i--)`, `Math.floor(rng() * (i + 1))`, `[x[i], x[j]] = [x[j], x[i]]`.
+- Expected results: seed 42 → `[ 'a', 'e', 'c', 'b', 'd' ]` twice; seed 7 → `[ 'd', 'b', 'c', 'e', 'a' ]`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Teaching under the AI-use boundary (§2 "AI assistance"): the trace and syntax pieces are explanation; Joseph writes the function.
