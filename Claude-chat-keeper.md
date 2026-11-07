@@ -244,6 +244,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J150 | 150 | Page source of shuffled p1 | Source confirmed; screen view shown by screenshot; step 2a (the `.fields` rule) given (Turn 150) |
 | J151 | 151 | (pasted prompt only: terminal in the parent `project` folder) | `cd` into the repository folder, then generate (Turn 151) |
 | J152 | 152 | Generate → Cannot access 'style' before initialization | Export line is above the style line; move `const style` up (Turn 152) |
+| J153 | 153 | shuffled.js with the style inside fieldRows | Move `style` out of the function; fix `flex=wrap` typo (Turn 153) |
 
 ### Questions from Claude
 
@@ -6343,6 +6344,50 @@ Each changed part was explained against the label line. This is a one-line varia
 **What Claude did:** read the error, `Cannot access 'style' before initialization`, and reproduced it with a scratch file (removed). It happens when `module.exports = { fieldRows, style };` comes *above* `const style = …`: JavaScript runs top to bottom, and a `const` can't be used before its line has run.
 
 **Claude's answer (summary):** move the `const style = …` block above the `module.exports` line, so `module.exports` is the last line of the file. Regenerate, refresh, and paste the style part plus what the page shows.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 153 — 2026-11-07 16:53 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> // shuffles the order of the fields in the HTML page
+>
+> function shuffle(list, rng) {
+>     const arr = [...list]; // make a copy of the list
+>     for (let i = arr.length - 1; i >= 1; i--) 
+>     {
+>     const j = Math.floor(rng() * (i + 1));
+>     [arr[i], arr[j]] = [arr[j], arr[i]]; 
+>     }
+>     return arr;
+> }
+>
+> function fieldRows(rows, rng) {
+>     const elements = [];    // 1. build the list of elements
+>
+>     for (let k = 0; k < rows.length; k++){ //2. one pass per field
+>
+>         const row = rows[k];
+>         elements.push(`<span class="label" style="order: ${2 * k}">${row.label}</span>`);
+>         elements.push(`<span class="value" style="order: ${2 * k + 1}">${row.value}</span>`); 
+>         }
+>     // C: shuffle it and return the HTML
+>         const shuffledElements = shuffle(elements, rng);
+>         const style = `
+>             .fields { flex-direction: row; flex=wrap: wrap; }`;
+>
+>         return "    <div class=\"fields\">\n" + shuffledElements.map((x) => "      " + x).join("\n") + "\n    </div>";    }
+>         
+> module.exports = { fieldRows, style };
+
+**What Claude did:** reviewed Joseph's file.
+- **`const style` is now *inside* `fieldRows`**, above its `return`. Outside the function, `style` doesn't exist, so the export line fails with `style is not defined`. It belongs between the function's closing `}` and `module.exports`.
+- **Typo in the rule:** `flex=wrap: wrap;` should be `flex-wrap: wrap;`. A browser silently ignores a property name it doesn't know, so the items would never wrap.
+
+**Claude's answer (summary):** move the two `style` lines out of the function, to just above `module.exports`, and fix `flex=wrap` → `flex-wrap`. Then regenerate and refresh.
 
 **Questions Claude asked:** none.
 
