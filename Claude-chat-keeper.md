@@ -249,6 +249,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J155 | 155 | Label rule (2b) | Missing `rem` units and a missing `:` after padding (Turn 155) |
 | J156 | 156 | Screenshot and page after rule 2b | 2b works; step 2c (the value rule) given (Turn 156) |
 | J157 | 157 | Value rule (2c) draft | `padding: A B` placeholder copied; `box-bottom` → `border-bottom`; close the rule and string (Turn 157) |
+| J158 | 158 | Final style (three rules) | ⭐ Pixel-identical to baseline on all 8 item pages; byte-identical regeneration; step 3 and commit (Turn 158) |
 
 ### Questions from Claude
 
@@ -284,7 +285,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Sun Nov 8, Milestone 2):** `site/defenses/shuffled.js` part 1 works: labels and values mixed in one `.fields` block, each with `style="order: N"`. Preview: (a) 4/70 on it. Next: Joseph commits it if not done; then the `style` export (CSS restoring label/value pairs on screen with `order`, plus the row look) and the byte-identical check. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Mon Nov 9, Milestone 2):** DOM shuffling works end to end: the source is scrambled (preview: (a) 4/70) and the page looks identical to the baseline (Claude's check: 0 different pixels on all 8 item pages at 1280 and 375 px; regeneration byte-identical). Next: Joseph commits part 2 if not done; Mon: Claude's pixel-diff script, Joseph finishes shuffling; Tue: Test 4. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **For the experiment runner (found Turn 131):** a failed or repeated run leaves extra request-log lines under the same run ID (e.g. `b-baseline-1` on Nov 6). Start each experiment with a fresh log, or make the log-based measures handle repeated run IDs.
 
@@ -6541,3 +6542,32 @@ Expected: the page snaps into rows that look like the baseline.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 158 — 2026-11-07 17:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> const style = `
+>     .fields { flex-direction: row; flex-wrap: wrap; }
+>     .fields > .label { flex: 0 0 10rem; 
+>         padding: 0.5rem 1rem 0.5rem 0;
+>         box-sizing: border-box; 
+>         border-bottom: 1px solid #eaeef2; }
+>     .fields > .value { flex: 0 0 calc(100% - 10rem);
+>         padding: 0.5rem 0;
+>         border-bottom: 1px solid #eaeef2; }`;
+
+**What Claude did:**
+- Reviewed Joseph's full `style`. All three rules are now correct.
+- Rebuilt his `shuffled.js` exactly as pasted (part 1 plus this `style`) in a scratch copy, removed afterwards, and checked:
+  - **pixels:** screenshots of all 8 item pages, baseline vs shuffled, at 1280 px and 375 px wide: **0 pages differ** (byte-identical screenshots);
+  - **regeneration:** generating `shuffled` twice gives identical files (same combined hash).
+- Ticked Sun Nov 8 in `SCHEDULE.md` (done early) and moved the resume notes to Mon Nov 9.
+
+**Claude's answer (summary):** ⭐ the shuffled page now looks exactly like the baseline while its source stays scrambled.
+- Step 3 on the laptop: compare the two tabs (shuffled on 3000, baseline on 3001) by eye, then run `Get-FileHash` on p1 before and after a second generate (same hash).
+- Then commit with "DOM shuffling part 2: CSS order restores the on-screen layout".
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. These are previews of §5 Test 4's conditions (pixel difference ≤ 1%, byte-identical regeneration); the formal Test 4 is Tue Nov 10.
