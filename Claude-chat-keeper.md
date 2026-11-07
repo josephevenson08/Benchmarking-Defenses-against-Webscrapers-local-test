@@ -246,6 +246,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J152 | 152 | Generate → Cannot access 'style' before initialization | Export line is above the style line; move `const style` up (Turn 152) |
 | J153 | 153 | shuffled.js with the style inside fieldRows | Move `style` out of the function; fix `flex=wrap` typo (Turn 153) |
 | J154 | 154 | Screenshot after rule 2a: "ye squeezed" | 2a works; step 2b (the label rule) given (Turn 154) |
+| J155 | 155 | Label rule (2b) | Missing `rem` units and a missing `:` after padding (Turn 155) |
 
 ### Questions from Claude
 
@@ -6409,6 +6410,28 @@ Each changed part was explained against the label line. This is a one-line varia
 - the baseline row border, `1px solid #eaeef2`.
 
 Expect a messier page for a moment.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 155 — 2026-11-07 16:59 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> const style = `
+>     .fields { flex-direction: row; flex-wrap: wrap; }
+>     .fields > .label { flex: 0 0 10; 
+>         padding 0.5 1 0.5 0; 
+>         box-sizing: border-box; 
+>         border-bottom: 1px solid #eaeef2; }`;
+
+**What Claude did:** reviewed Joseph's label rule.
+- **`flex: 0 0 10;`** is missing the unit. A size needs one (`10rem`), so the browser drops the whole declaration.
+- **`padding 0.5 1 0.5 0;`** is missing the colon after `padding` and the units (`0.5rem 1rem 0.5rem 0`). Without the colon the browser skips the line.
+- `box-sizing` and `border-bottom` are correct.
+
+**Claude's answer (summary):** CSS lengths need a unit; only `0` can go without one. A missing `:` makes the browser skip the declaration silently, with no error. Fix the two lines (add `rem`, add `:`), then regenerate, refresh and screenshot.
 
 **Questions Claude asked:** none.
 
