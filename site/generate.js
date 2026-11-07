@@ -62,12 +62,18 @@ function makeRng(seed) {
 //   fieldRows  function (rows, rng) returning the HTML of an item page's fields block
 function loadDefense(condition) {
   if (condition === "baseline") return null;
-  const defense = require(path.join(DEFENSES_DIR, `${condition}.js`));
+  return checkDefense(require(path.join(DEFENSES_DIR, `${condition}.js`)), `site/defenses/${condition}.js`);
+}
+
+function checkDefense(defense, name) {
+  if (!defense || (defense.style === undefined && defense.fieldRows === undefined)) {
+    throw new Error(`${name} exports nothing the generator can use. Add module.exports = { fieldRows } (and/or style) at the end.`);
+  }
   if (defense.style !== undefined && typeof defense.style !== "string") {
-    throw new Error(`site/defenses/${condition}.js: "style" must be a string of CSS.`);
+    throw new Error(`${name}: "style" must be a string of CSS.`);
   }
   if (defense.fieldRows !== undefined && typeof defense.fieldRows !== "function") {
-    throw new Error(`site/defenses/${condition}.js: "fieldRows" must be a function (rows, rng).`);
+    throw new Error(`${name}: "fieldRows" must be a function (rows, rng).`);
   }
   return defense;
 }
@@ -139,7 +145,11 @@ function fieldRows(item, fieldList) {
 function fieldsBlock(item, fieldList, defense, rng) {
   if (!defense || !defense.fieldRows) return fieldRows(item, fieldList);
   const rows = fieldList.map((f) => ({ key: f.key, label: escapeHtml(f.label), value: escapeHtml(item[f.key]) }));
-  return defense.fieldRows(rows, rng);
+  const html = defense.fieldRows(rows, rng);
+  if (typeof html !== "string") {
+    throw new Error(`fieldRows must return the fields block as a string of HTML (it returned ${html === undefined ? "nothing" : typeof html}).`);
+  }
+  return html;
 }
 
 function linkList(links) {
@@ -262,4 +272,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { availableConditions, loadData, buildPages, writeCondition, escapeHtml, pageSeed, makeRng };
+module.exports = { availableConditions, loadData, buildPages, writeCondition, escapeHtml, pageSeed, makeRng, checkDefense };
