@@ -229,6 +229,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J135 | 135 | `node demo_rng.js` → TypeError: makeRng is not a function | Laptop hasn't pulled #21 (merged on GitHub); pull, then rerun (Turn 135) |
 | J136 | 136 | Walk me through the shuffle(list, rng) | Fisher–Yates explained with a worked trace (seed 42 → a e c b d) and the JS syntax pieces; Joseph assembles it (Turn 136) |
 | J137 | 137 | First shuffle(list, rng) | Tests are inside the function so it never runs; no copy, no return, extra makeRng lines; four fixes (Turn 137) |
+| J138 | 138 | Second shuffle(list, rng) | Structure right; first line copies random numbers instead of the list; `[...list]` fixes it (Turn 138) |
 
 ### Questions from Claude
 
@@ -5715,6 +5716,42 @@ Sunday: the CSS that restores the on-screen order and the byte-identical check. 
 4. Close the loop after the swap, then `return arr;` before the function's closing brace.
 
 Claude showed the brace layout with the lines Joseph already wrote.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 138 — 2026-11-07 16:20 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> // Standalone warm-up: the generator's seeded random function
+> const { makeRng } = require("./site/generate.js");
+>
+> const a = makeRng(42);
+> const b = makeRng(42);
+> const c = makeRng(7);
+> console.log([a(), a(), a()]);
+> console.log([b(), b(), b()]);   // same seed: same numbers as the line above
+> console.log([c(), c(), c()]);   // different seed: different numbers
+>
+> function shuffle(list, rng) {
+>     const arr = [a(), b(), c()];
+> for (let i = arr.length - 1; i >= 1; i--) 
+>     {
+>     const j = Math.floor(rng() * (i + 1));
+>     [arr[i], arr[j]] = [arr[j], arr[i]]; 
+>     }
+>     return arr;
+> }
+>
+>     console.log(shuffle(["a", "b", "c", "d", "e"], makeRng(42)));
+>     console.log(shuffle(["a", "b", "c", "d", "e"], makeRng(42)));
+>     console.log(shuffle(["a", "b", "c", "d", "e"], makeRng(7)));
+
+**What Claude did:** reviewed the second version and ran it. The structure is right now: the tests are outside, the loop is closed and the function returns. But the first line is `const arr = [a(), b(), c()];`, so the function shuffles three random numbers from the outer generators instead of the five letters. The output is three arrays of numbers that differ on every call. Claude reran it with only that line changed to `const arr = [...list];`: `[ 'a', 'e', 'c', 'b', 'd' ]` twice, then `[ 'd', 'b', 'c', 'e', 'a' ]`, matching the expected output.
+
+**Claude's answer (summary):** change the first line to `const arr = [...list];`. The `...` (spread) copies every item of `list` into a new array; it is literal JavaScript, not a placeholder. Also: indentation doesn't change meaning in JavaScript (unlike Python), so the indented test lines still run, but they are usually not indented.
 
 **Questions Claude asked:** none.
 
