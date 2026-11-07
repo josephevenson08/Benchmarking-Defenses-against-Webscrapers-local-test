@@ -71,7 +71,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | | ✅ Ran two Playwright examples on the laptop. (b)'s design chosen (D51). Wrote `scrapers/b_browser_text.py` part 1: Chromium loads `/products/p1`, takes `page.content()` after the load event, and applies (a)'s field loop and ran it on the laptop: status 200, all 10 values correct, logged as `b-test-1`. Commit pending. | J |
 | **Thu Nov 5** | ✅ (b): crawl loop that follows every link, hidden ones included; run ID in Playwright's User-Agent. Ran on the laptop as `b-test-3`: 10 pages in (a)'s order, 70 records found, 11 log lines (robots.txt + 10 pages). Committed (`3b96a5a`). | J |
 | **Fri Nov 6** | ✅ (b): extraction and output. First baseline run; score it. `b-baseline-1`: 70/70 = 1.000, 0.356 s, 0.036 s per page ((a): 0.016–0.020 s). Clock times the crawl only (D52). Committed (`6d3fee9`). | J |
-| **Sat Nov 7** | Generator: per-page seeds saved with the output, and a slot where defenses plug in (§5: the generator saves the seeds). | C |
+| **Sat Nov 7** | ✅ Generator: per-page seeds saved with the output, and a slot where defenses plug in (§5: the generator saves the seeds). One file per defense in `site/defenses/` (`style`, `fieldRows(rows, rng)`); seeds in the manifest; baseline pages unchanged byte for byte; 14 tests pass. | C |
 | | Start DOM shuffling: seeded shuffle of label and value elements in the source. | J |
 | **Sun Nov 8** | Shuffling: restore the on-screen order with CSS `order`; the same seed must give byte-identical pages. | J |
 | **Mon Nov 9** | Basic pixel-diff script (pixelmatch on Playwright screenshots). | C |

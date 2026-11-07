@@ -151,6 +151,8 @@ npm run serve -- baseline      # serves it at http://127.0.0.1:3000 and logs to 
 npm test                       # checks for the generator and server
 ```
 
+**Defenses** plug into the generator as one file per condition in `site/defenses/` (for example `shuffled.js` → `npm run generate -- shuffled`). Each page gets a seed from `config.json`, saved in the condition's manifest. See [`site/defenses/README.md`](site/defenses/README.md).
+
 **Scoring a run** (Python, from the project folder, with the venv active):
 
 ```bash
