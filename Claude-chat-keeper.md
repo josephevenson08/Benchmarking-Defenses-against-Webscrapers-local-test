@@ -245,6 +245,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J151 | 151 | (pasted prompt only: terminal in the parent `project` folder) | `cd` into the repository folder, then generate (Turn 151) |
 | J152 | 152 | Generate → Cannot access 'style' before initialization | Export line is above the style line; move `const style` up (Turn 152) |
 | J153 | 153 | shuffled.js with the style inside fieldRows | Move `style` out of the function; fix `flex=wrap` typo (Turn 153) |
+| J154 | 154 | Screenshot after rule 2a: "ye squeezed" | 2a works; step 2b (the label rule) given (Turn 154) |
 
 ### Questions from Claude
 
@@ -6388,6 +6389,26 @@ Each changed part was explained against the label line. This is a one-line varia
 - **Typo in the rule:** `flex=wrap: wrap;` should be `flex-wrap: wrap;`. A browser silently ignores a property name it doesn't know, so the items would never wrap.
 
 **Claude's answer (summary):** move the two `style` lines out of the function, to just above `module.exports`, and fix `flex=wrap` → `flex-wrap`. Then regenerate and refresh.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 154 — 2026-11-07 16:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ye squeezed
+
+**What Claude did:** looked at Joseph's screenshot. Step 2a works: the items run left to right in the right sequence, several per line, with values squeezed (Joseph: "ye squeezed"). Previewed step 2b on a scratch copy (removed) to describe the in-between look: labels get a grey line and padding, and values still sit squeezed and a little higher. The page looks messier until 2c.
+
+**Claude's answer (summary):** 2a done. Step 2b: write the `.fields > .label` rule with four properties, described in words:
+- `flex: 0 0 10rem`, a fixed size;
+- padding top and bottom 0.5rem, right 1rem, left 0 (padding shorthand order: top, right, bottom, left);
+- `box-sizing: border-box`;
+- the baseline row border, `1px solid #eaeef2`.
+
+Expect a messier page for a moment.
 
 **Questions Claude asked:** none.
 
