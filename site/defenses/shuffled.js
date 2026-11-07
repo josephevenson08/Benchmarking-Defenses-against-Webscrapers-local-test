@@ -28,6 +28,9 @@ const style = `
     .fields > .label { flex: 0 0 10rem; 
         padding: 0.5rem 1rem 0.5rem 0;
         box-sizing: border-box; 
+        border-bottom: 1px solid #eaeef2; }
+    .fields > .value { flex: 0 0 calc(100% - 10rem);
+        padding: 0.5rem 0;
         border-bottom: 1px solid #eaeef2; }`;
 
 module.exports = { fieldRows, style };        
