@@ -251,6 +251,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J157 | 157 | Value rule (2c) draft | `padding: A B` placeholder copied; `box-bottom` → `border-bottom`; close the rule and string (Turn 157) |
 | J158 | 158 | Final style (three rules) | ⭐ Pixel-identical to baseline on all 8 item pages; byte-identical regeneration; step 3 and commit (Turn 158) |
 | J159 | 159 | Full shuffled.js | Matches the verified version; not on `main` yet: run the checks, then commit both parts (Turn 159) |
+| J160 | 160 | Get-FileHash before and after regenerating: same hash | Byte-identical on the laptop ✓; commit next (Turn 160) |
 
 ### Questions from Claude
 
@@ -6631,3 +6632,34 @@ Tidy-ups for Monday's "finish shuffling" slot:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 160 — 2026-11-07 17:09 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> Get-FileHash conditions\shuffled\products\p1.html
+>
+> Algorithm       Hash                                  
+> ---------       ----                                  
+> SHA256          09A5EC6EDF48217D3E9D9E05744D4D3DA41...
+>
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> npm run generate -- shuffled
+>
+> > benchmarking-defenses-against-webscrapers@0.1.0 generate
+> > node site/generate.js shuffled
+>
+> Wrote 10 pages and robots.txt to conditions\shuffled/ (70 scored fields)
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> Get-FileHash conditions\shuffled\products\p1.html
+>
+> Algorithm       Hash                                  
+> ---------       ----                                  
+> SHA256          09A5EC6EDF48217D3E9D9E05744D4D3DA41...
+
+**What Claude did:** read Joseph's laptop check. `Get-FileHash` on `conditions\shuffled\products\p1.html` gives `09A5EC6EDF48217D3E9D9E05744D4D3DA41…` before and after regenerating: the same seed gives a byte-identical page on the laptop too. (PowerShell cuts the hash off; `(Get-FileHash <file>).Hash` shows all of it.) The laptop's hash differs from the one in Claude's scratch copy (`ffa341…`). That is expected: the generated `<style>` contains Joseph's exact whitespace, which Claude's reconstruction from the chat can't match byte for byte. What Test 4 needs is that one machine gives the same bytes every time.
+
+**Claude's answer (summary):** byte-identical ✓. Commit and sync `site/defenses/shuffled.js` with the combined message. Then: stop for today (end-of-session pull request), or Claude starts Monday's pixel-diff script now?
+
+**Questions Claude asked:** stop, or should Claude start the pixel-diff script now?
+
+**Direction and fit:** no new decision. A preview of §5 Test 4's byte-identical condition on the laptop.
