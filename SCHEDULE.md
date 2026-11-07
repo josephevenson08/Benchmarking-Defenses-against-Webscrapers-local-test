@@ -19,10 +19,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Fri Nov 6 (Turn 132 of the chat-keeper).*
+*Last updated: Sat Nov 7 (Turn 147 of the chat-keeper).*
 
-> **▶ Resume here: Sat Nov 7 (Milestone 2).** Fri Nov 6 done: scraper (b) is complete. `b-baseline-1` scored 70/70 = 1.000, 0.036 s per page.
-> - Sat: Claude adds per-page seeds and a defense slot to the generator; Joseph starts DOM shuffling.
+> **▶ Resume here: Sun Nov 8 (Milestone 2).** Sat Nov 7 done: the generator's defense slot and seeds (D53), and the shuffled source in `site/defenses/shuffled.js` (D54).
+> 1. If not done yet: Joseph commits `site/defenses/shuffled.js` (not `demo_rng.js`).
+> 2. Sun: the `style` export, CSS that lays the mixed spans out as label/value pairs again using `order` (and the row look: widths, borders). Then check that the same seed gives byte-identical pages.
 
 ---
 
@@ -72,7 +73,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Thu Nov 5** | ✅ (b): crawl loop that follows every link, hidden ones included; run ID in Playwright's User-Agent. Ran on the laptop as `b-test-3`: 10 pages in (a)'s order, 70 records found, 11 log lines (robots.txt + 10 pages). Committed (`3b96a5a`). | J |
 | **Fri Nov 6** | ✅ (b): extraction and output. First baseline run; score it. `b-baseline-1`: 70/70 = 1.000, 0.356 s, 0.036 s per page ((a): 0.016–0.020 s). Clock times the crawl only (D52). Committed (`6d3fee9`). | J |
 | **Sat Nov 7** | ✅ Generator: per-page seeds saved with the output, and a slot where defenses plug in (§5: the generator saves the seeds). One file per defense in `site/defenses/` (`style`, `fieldRows(rows, rng)`); seeds in the manifest; baseline pages unchanged byte for byte; 14 tests pass. | C |
-| | Start DOM shuffling: seeded shuffle of label and value elements in the source. | J |
+| | ✅ Start DOM shuffling: seeded shuffle of label and value elements in the source. `site/defenses/shuffled.js` part 1: all labels and values of a page mixed in one `.fields` block (D54), each carrying its on-screen position as `style="order: N"`; p1 matches the expected order. Preview: scraper (a) scores 4/70 on it (Claude's check, not a recorded run). Commit pending. | J |
 | **Sun Nov 8** | Shuffling: restore the on-screen order with CSS `order`; the same seed must give byte-identical pages. | J |
 | **Mon Nov 9** | Basic pixel-diff script (pixelmatch on Playwright screenshots). | C |
 | | Finish shuffling. | J |

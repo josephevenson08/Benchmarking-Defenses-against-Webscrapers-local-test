@@ -238,6 +238,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J144 | 144 | Part B attempt (form inputs, `row.map`, no return, no export) | Back to part B's steps; generator now refuses empty exports and missing HTML (Turn 144) |
 | J145 | 145 | Part B file: labels only, shuffle call unused | Add the value line, return `shuffledElements`; expected first five lines confirmed (Turn 145) |
 | J146 | 146 | Help me with the value line | Line shown in place and explained; disclosed as Claude-supplied (Turn 146) |
+| J147 | 147 | Generated shuffled p1 and the final shuffled.js | ⭐ Shuffled source matches; preview (a) 4/70; commit; Sat Nov 7 done (Turn 147) |
 
 ### Questions from Claude
 
@@ -273,7 +274,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Sat Nov 7, Milestone 2):** the generator's defense slot and per-page seeds are built (D53, pull request #21). Shuffle design chosen: full mix in one container (D54). Next: Joseph merges #21 and pulls, does the seeded-shuffle warm-up, then writes `site/defenses/shuffled.js` part 1 (the source scramble). Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Sun Nov 8, Milestone 2):** `site/defenses/shuffled.js` part 1 works: labels and values mixed in one `.fields` block, each with `style="order: N"`. Preview: (a) 4/70 on it. Next: Joseph commits it if not done; then the `style` export (CSS restoring label/value pairs on screen with `order`, plus the row look) and the byte-identical check. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **For the experiment runner (found Turn 131):** a failed or repeated run leaves extra request-log lines under the same run ID (e.g. `b-baseline-1` on Nov 6). Start each experiment with a fresh log, or make the log-based measures handle repeated run IDs.
 
@@ -6098,3 +6099,101 @@ Each changed part was explained against the label line. This is a one-line varia
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Disclosed here: Claude supplied this one line of `shuffled.js` verbatim (§2 "AI assistance"; §7 disclosure).
+
+### Turn 147 — 2026-11-07 16:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> <!doctype html>
+> <html lang="en">
+> <head>
+>   <meta charset="utf-8">
+>   <meta name="viewport" content="width=device-width, initial-scale=1">
+>   <title>Product 1 · Demo Shop</title>
+>   <style>
+>     body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.5; color: #1f2328; background: #fff; }
+>     header, main, footer { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+>     header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; }
+>     .brand { font-weight: 700; color: inherit; text-decoration: none; }
+>     nav a { margin-left: 1rem; }
+>     a { color: #0969da; }
+>     .fields { display: flex; flex-direction: column; }
+>     .field { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #eaeef2; }
+>     .label { flex: 0 0 9rem; font-weight: 600; }
+>     .value { flex: 1; }
+>     footer { color: #57606a; font-size: 0.875rem; border-top: 1px solid #d0d7de; }
+>   </style>
+> </head>
+> <body>
+>   <header>
+>     <a class="brand" href="/">Demo Shop</a>
+>     <nav><a href="/">Home</a><a href="/products/">Products</a></nav>
+>   </header>
+>   <main>
+>     <h1>Product details</h1>
+>     <div class="fields">
+>       <span class="value" style="order: 1">Larkfield Studio Headphones</span>
+>       <span class="value" style="order: 13">1,284</span>
+>       <span class="label" style="order: 4">Category</span>
+>       <span class="value" style="order: 15">In stock</span>
+>       <span class="label" style="order: 14">Availability</span>
+>       <span class="value" style="order: 11">4.5</span>
+>       <span class="label" style="order: 0">Name</span>
+>       <span class="value" style="order: 7">$89.99</span>
+>       <span class="label" style="order: 6">Price</span>
+>       <span class="value" style="order: 17">2024-09-12</span>
+>       <span class="label" style="order: 16">Release date</span>
+>       <span class="value" style="order: 9">LF-HP-2041</span>
+>       <span class="label" style="order: 8">SKU</span>
+>       <span class="label" style="order: 12">Reviews</span>
+>       <span class="label" style="order: 18">Description</span>
+>       <span class="value" style="order: 3">Larkfield</span>
+>       <span class="value" style="order: 19">Closed-back over-ear headphones with 40 mm drivers and a detachable cable.</span>
+>       <span class="value" style="order: 5">Headphones</span>
+>       <span class="label" style="order: 10">Rating</span>
+>       <span class="label" style="order: 2">Brand</span>
+>     </div>
+>   </main>
+>   <footer>Synthetic test site for a local scraping study. All content is made up.</footer>
+> </body>
+> </html>
+>
+>
+> // shuffles the order of the fields in the HTML page
+>
+> function shuffle(list, rng) {
+>     const arr = [...list]; // make a copy of the list
+>     for (let i = arr.length - 1; i >= 1; i--) 
+>     {
+>     const j = Math.floor(rng() * (i + 1));
+>     [arr[i], arr[j]] = [arr[j], arr[i]]; 
+>     }
+>     return arr;
+> }
+>
+> function fieldRows(rows, rng) {
+>     const elements = [];    // 1. build the list of elements
+>
+>     for (let k = 0; k < rows.length; k++){ //2. one pass per field
+>
+>         const row = rows[k];
+>         elements.push(`<span class="label" style="order: ${2 * k}">${row.label}</span>`);
+>         elements.push(`<span class="value" style="order: ${2 * k + 1}">${row.value}</span>`); 
+>         }
+>     // C: shuffle it and return the HTML
+>         const shuffledElements = shuffle(elements, rng);
+>
+>
+>         return "    <div class=\"fields\">\n" + shuffledElements.map((x) => "      " + x).join("\n") + "\n    </div>";    }
+> module.exports = { fieldRows };
+
+**What Claude did:**
+- Read the generated p1. Its fields block has 20 spans, starting value 1 "Larkfield Studio Headphones", value 13 "1,284", label 4 "Category", value 15 "In stock", label 14 "Availability", exactly the expected order. ⭐ The shuffled source works.
+- **Preview of the defense's effect** (Claude's scratch check, not a recorded run): generated `shuffled` with Joseph's code, served it, ran Joseph's scraper (a) as `a-shuffled-1`, and scored it: **4/70 = 0.057** (wrong 62: 45 plain wrong, 17 malformed; missing 4). On p1, (a) reads Name = "$89.99", Category = "In stock", Price = "2024-09-12", SKU = "Reviews": the element after each label in source order. This matches §4 Hypothesis 1. Temporary files removed.
+- Updated `SCHEDULE.md` (Sat Nov 7 Joseph row ticked; resume note → Sun Nov 8) and the Open items resume note.
+
+**Claude's answer (summary):** part 1 is done, plus the preview result. Commit `site/defenses/shuffled.js` (not `demo_rng.js`) with the message "DOM shuffling part 1: seeded scramble of labels and values". Tomorrow: the CSS (`style`) that restores the on-screen look, and the byte-identical check. Asked whether to stop for today.
+
+**Questions Claude asked:** stop for today?
+
+**Direction and fit:** no new decision. The Sat Nov 7 tasks (Claude and Joseph) are done.
