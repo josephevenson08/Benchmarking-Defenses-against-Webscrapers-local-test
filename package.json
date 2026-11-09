@@ -6,12 +6,15 @@
   "scripts": {
     "generate": "node site/generate.js",
     "serve": "node site/server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "pixel-diff": "node measurement/pixel_diff.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "express": "5.2.1"
+    "express": "5.2.1",
+    "pixelmatch": "7.2.0",
+    "pngjs": "7.0.0"
   }
 }

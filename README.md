@@ -162,6 +162,19 @@ python -m unittest discover -s scoring/tests -t .   # 24 checks, including the h
 
 The scoring rules and the output format scrapers must write are in [`docs/scraper-output.md`](docs/scraper-output.md).
 
+**Pixel difference** between a condition and the baseline (Test 4; Node and Python, venv active):
+
+```bash
+npm run generate -- baseline
+npm run generate -- shuffled
+python measurement/screenshots.py baseline --out results/dev/screens/baseline   # 10 full-page PNGs, 1280x800 viewport, 3 s wait
+python measurement/screenshots.py shuffled --out results/dev/screens/shuffled
+npm run pixel-diff -- results/dev/screens/baseline results/dev/screens/shuffled --diff-dir results/dev/screens/diff --limit 1
+python -m unittest discover -s measurement/tests -t .
+```
+
+The screenshots open the generated files directly, so no server is needed. `pixel_diff.mjs` uses pixelmatch with its default settings; if two screenshots differ in size, the extra pixels count as different. `--diff-dir` writes an image per page with the differing pixels marked, for checking by eye.
+
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
 
 **Use `127.0.0.1`, not `localhost`, in scraper URLs.** On Windows, the name `localhost` adds about 2 s to every request, which would distort the time-per-page metric.
@@ -208,7 +221,7 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 - [x] Scraper (b): written by Joseph; first baseline run 70/70 = 1.000, 0.036 s per page (Nov 6: [`results/2026-11-06-b-baseline/`](results/2026-11-06-b-baseline/))
 - [ ] DOM shuffling (Test 4)
 - [ ] Honeypot link (Test 6)
-- [ ] Basic pixel-diff script
+- [x] Basic pixel-diff script (`measurement/screenshots.py` + `measurement/pixel_diff.mjs`; shuffled vs baseline: 0.000% on all 10 pages, Nov 9)
 - [ ] Baseline check for (a) and (b) (Tests 1 and 3)
 
 ### Milestone 3: Nov 18 – Dec 1
