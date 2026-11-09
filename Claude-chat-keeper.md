@@ -83,6 +83,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D52 | 128 | **Browser scrapers time the crawl only:** in (b), and later (c) and (d), the clock (`started_at`, `start_time`) starts right after the browser and page are open, just before the loop. `seconds` is taken right after the loop, before `browser.close()`. Claude's scratch measurement: Chromium launch 0.45–0.55 s (5.6 s on a cold first start), 10 baseline pages 0.17–0.25 s, close about 0.06 s. Counting launch would make (b) about 3× slower per page than its crawl, or 25× on a cold start. | Start the clock before launching Chromium (as first written) | Claude recommended (Joseph to confirm by making the change) | Approved contract `docs/scraper-output.md` (D31): `seconds` = "crawl time, from just before the first request to after the last page is processed". §4 time per page = `seconds` / pages. | Follows |
 | D53 | 134 | **Defense slot in the generator:** each condition other than `baseline` is one file `site/defenses/<condition>.js`, found by name. It may export `style` (extra CSS for every page) and `fieldRows(rows, rng)` (HTML of an item page's fields block; `rows` arrive in field order, HTML-escaped). Per-page seed = FNV-1a hash of config seed, condition and path; random function = mulberry32. Seeds saved in the condition's manifest. Baseline pages unchanged byte for byte. More hooks (honeypot link, poisoning script) are added when those defenses start. | Defenses as Python post-processors of the generated HTML; one big switch inside the generator | Claude (Claude's scheduled task, D30) | §2 Page defenses row ("Take a page's fields and a per-page seed and output the modified page"; the generator "writes one full copy of the site per condition"). §5 Reproducibility (the generator saves the seeds; same seed gives byte-identical pages, Test 4). | Follows |
 | D54 | 134 | **What the shuffle scrambles:** on each item page, every label and value element becomes a sibling in one flex container (`.fields`) and all of them are shuffled together with the page's seeded random function. CSS `order` puts each value back beside its label on screen. The `shuffled` condition therefore drops the per-field row wrappers; the baseline keeps them (D7 still holds for the baseline). | One container, full mix; keep rows and mix inside (shuffle the rows, swap label and value within each row) | Joseph (Claude recommended) | §2 Page defenses ("scramble label and value elements in the source with a seeded shuffle, then restore on-screen position with CSS (the CSS order property in a flex layout)"). §4 Hypothesis 1 (shuffling lowers (a) and (b), which take the text after a label in source order; (d) sorts by computed CSS order). §5 Test 4 (pixel difference ≤ 1%). | Interprets (the midterm doesn't say whether rows stay; the full mix is its direct reading) |
+| D55 | 168 | **Pixel-diff tooling:** `measurement/screenshots.py` (Python Playwright) takes full-page screenshots of a condition's 10 pages opened straight from `conditions/<condition>/` (no server, clean log), at a 1280×800 viewport and device scale 1, after a 3 s wait. `measurement/pixel_diff.mjs` (Node, pixelmatch 7.2.0 and pngjs 7.0.0, exact pins) compares folders page by page with pixelmatch defaults (threshold 0.1, anti-aliasing ignored), as differing pixels / total pixels. Pixels present in only one screenshot (size change) count as different. `--limit 1` checks Test 4. The manifest gains each page's `file`. | All in Node with Node Playwright (a new dependency); screenshots from the served site | Claude (Claude's scheduled task) | §2 Measurement row ("Playwright, pixelmatch (called from a short Node script on the screenshot PNGs)"). §3 ("a short Node script reads two PNGs and counts mismatched pixels, which I divide by the page's total pixels"). §5 user cost ("screenshots taken after a 3-second wait"); Test 4 (≤ 1%, screenshot pairs by eye). | Follows (viewport size, file-based loading and the size-change rule: Adds) |
 
 ---
 
@@ -259,6 +260,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J165 | 165 | Can I delete the demo_rng file? | Yes (untracked warm-up); push still not on GitHub (Turn 165) |
 | J166 | 166 | git push rejected (fetch first); branches diverged 3 vs 27 | Already resolved: Joseph pulled and pushed (`8c56761`); `shuffled.js` on GitHub, tests and pixel check pass (Turn 166) |
 | J167 | 167 | OK, see you tomorrow | Session ended; #24 (log only) open (Turn 167) |
+| J168 | 168 | What's the task today and how long is it estimated to be? | Mon Nov 9: Claude's pixel-diff built (D55, #25); Joseph about 1 h: merge and install, tidy shuffled.js, run the diff (Turn 168) |
 
 ### Questions from Claude
 
@@ -294,7 +296,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Mon Nov 9, Milestone 2):** DOM shuffling works end to end: the source is scrambled (preview: (a) 4/70) and the page looks identical to the baseline (Claude's check: 0 different pixels on all 8 item pages at 1280 and 375 px; regeneration byte-identical). `site/defenses/shuffled.js` is on `main` (Joseph's `327027b`, merged in `8c56761`). Mon: Claude's pixel-diff script, Joseph finishes shuffling (comments, tidy-up); Tue: Test 4. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Mon Nov 9, Milestone 2):** the pixel-diff tools are built (D55, pull request #25): shuffled vs baseline 0.000% on all 10 pages. Today for Joseph: merge #25, pull, `npm install`; tidy `shuffled.js` (comments, indentation); run screenshots and pixel-diff on the laptop. Tue: Test 4. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -307,6 +309,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
+
+- **⚠️ Merge needed:** pull request #25 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/25), the pixel-diff tools (Joseph needs them for Test 4).
 
 
 
@@ -6829,3 +6833,33 @@ For later: OneDrive and `.git` folders clash. Moving the project out of OneDrive
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 168 — 2026-11-09 16:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what the task today and how long is it estimated to be?
+
+**What Claude did:**
+- Synced: merged `main` (#24) into the branch.
+- Read the midterm's measurement text (§2 Measurement row, §3, §5 user cost, Test 4), then **built Claude's Mon Nov 9 task (D55)**:
+  - `measurement/screenshots.py` (Python Playwright);
+  - `measurement/pixel_diff.mjs` (Node pixelmatch), with pinned `pixelmatch` 7.2.0 and `pngjs` 7.0.0;
+  - an npm script `pixel-diff`;
+  - the manifest now lists each page's `file`;
+  - tests: 4 Node (19 in all) and 4 Python (`measurement/tests`); the scoring tests still pass (24).
+- **End-to-end check** with Joseph's committed `shuffled.js`:
+  - screenshots of baseline (3 s wait; 43 s for 10 pages) and shuffled, then the diff: **0.000% on all 10 pages**, all within the 1% limit;
+  - a deliberately broken copy (shuffled without its CSS, removed afterwards) read up to **58.5%**, with 8 pages over the limit, so the tool catches layout damage.
+- Updated `README.md` (usage section; Milestone 2 "Basic pixel-diff script" ticked) and `SCHEDULE.md` (Mon Nov 9 Claude row ticked). Committed `bd20376` and opened pull request #25: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/25
+
+**Claude's answer (summary):** today's tasks and time. Claude's part is done. Joseph has about 1 hour:
+1. Merge #25, Sync, and `npm install` (new packages).
+2. Tidy `shuffled.js` (header comment, comments on the CSS rules, indentation), then regenerate and check the page still looks the same.
+3. Run the screenshot and pixel-diff commands on the laptop.
+
+Tuesday is Test 4.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D55 (Follows, with Adds for the viewport, file loading and size-change rule).
