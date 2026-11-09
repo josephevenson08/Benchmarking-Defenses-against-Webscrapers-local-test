@@ -7076,7 +7076,7 @@ Tuesday is Test 4.
 **What Claude did:**
 - Fetched `main`: Joseph committed and synced the tidy-up (`eef2fdf`, "DOM shuffling: comments and tidy-up"; header typo fixed). Merged `main` into the branch; `npm test` 19 pass.
 - Read the rest of `SCHEDULE.md` and summarized what's left and where the project stands against the schedule.
-- Updated `SCHEDULE.md` (Mon row committed `eef2fdf`) and the resume notes. Opened the end-of-session pull request (D40); link below.
+- Updated `SCHEDULE.md` (Mon row committed `eef2fdf`) and the resume notes. Opened the end-of-session pull request (D40): https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/26
 
 **Claude's answer (summary):** on schedule, about a day ahead (Sunday's shuffling CSS was done Saturday).
 - **Done:** Milestone 1, plus in Milestone 2: scraper (b), the defense slot and seeds, DOM shuffling (looks identical, fools (a) in a preview), and the pixel-diff tools.
