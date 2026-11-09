@@ -1,4 +1,4 @@
-// shuffles the order of the fields in the HTML page
+// mixes every label and value of the page in the html source with a seeded shuffle and CSS order puts them back on screen
 
 function shuffle(list, rng) {
     const arr = [...list]; // make a copy of the list
@@ -16,10 +16,10 @@ function fieldRows(rows, rng) {
     for (let k = 0; k < rows.length; k++){ //2. one pass per field
 
         const row = rows[k];
-        elements.push(`<span class="label" style="order: ${2 * k}">${row.label}</span>`);
-        elements.push(`<span class="value" style="order: ${2 * k + 1}">${row.value}</span>`); 
+        elements.push(`<span class="label" style="order: ${2 * k}">${row.label}</span>`); // label is even order
+        elements.push(`<span class="value" style="order: ${2 * k + 1}">${row.value}</span>`);  // value is odd order
         }
-    // C: shuffle it and return the HTML
+    // 3. shuffle the list of elements
         const shuffledElements = shuffle(elements, rng);
     
         return "    <div class=\"fields\">\n" + shuffledElements.map((x) => "      " + x).join("\n") + "\n    </div>";    }
