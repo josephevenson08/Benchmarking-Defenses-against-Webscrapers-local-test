@@ -251,7 +251,7 @@ function writeCondition(condition, outDir = path.join(ROOT, "conditions"), seed 
     condition,
     seed,
     scored_fields: scoredFields,
-    pages: pages.map(({ path: p, type, item_id, seed: s }) => ({ path: p, type, ...(item_id && { item_id }), seed: s })),
+    pages: pages.map(({ path: p, file, type, item_id, seed: s }) => ({ path: p, file, type, ...(item_id && { item_id }), seed: s })),
   };
   fs.writeFileSync(path.join(outDir, `${condition}.manifest.json`), JSON.stringify(manifest, null, 2) + "\n");
   return { siteDir, pages, manifest };
