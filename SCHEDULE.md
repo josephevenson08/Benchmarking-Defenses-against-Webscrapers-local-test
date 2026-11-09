@@ -22,8 +22,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 *Last updated: Mon Nov 9 (Turn 171 of the chat-keeper).*
 
 > **▶ Resume here: Tue Nov 10 (Milestone 2).** Mon Nov 9 done: pixel-diff tools (D55) and shuffling tidied. On the laptop, shuffled vs baseline is 0.000% on all 10 pages.
-> 1. If not done yet: Joseph commits the tidied `site/defenses/shuffled.js`.
-> 2. Tue: Test 4. Source order differs from the baseline on every page; the same seed regenerates byte-identical pages; pixel difference ≤ 1%; all 10 screenshot pairs checked by eye. Results go in a dated `results/` folder.
+> - Tue: Test 4. Source order differs from the baseline on every page; the same seed regenerates byte-identical pages; pixel difference ≤ 1%; all 10 screenshot pairs checked by eye. Results go in a dated `results/` folder.
 
 ---
 
@@ -76,7 +75,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | | ✅ Start DOM shuffling: seeded shuffle of label and value elements in the source. `site/defenses/shuffled.js` part 1: all labels and values of a page mixed in one `.fields` block (D54), each carrying its on-screen position as `style="order: N"`; p1 matches the expected order. Preview: scraper (a) scores 4/70 on it (Claude's check, not a recorded run). Commit pending. | J |
 | **Sun Nov 8** | ✅ (done early, Sat Nov 7) Shuffling: restore the on-screen order with CSS `order`; the same seed must give byte-identical pages. Joseph's `style`: `.fields` row + wrap, label 10rem (1rem gap as padding), value `calc(100% - 10rem)`, baseline padding and border. Claude's check: all 8 item pages pixel-identical to baseline at 1280 px and 375 px; regenerating gives identical files. Commit pending. | J |
 | **Mon Nov 9** | ✅ Basic pixel-diff script (pixelmatch on Playwright screenshots). `measurement/screenshots.py` (Python Playwright, 1280×800, full page, 3 s wait) and `measurement/pixel_diff.mjs` (pixelmatch 7.2.0, pngjs 7.0.0). Shuffled vs baseline: 0.000% on all 10 pages; a broken layout reads up to 58%. | C |
-| | ✅ Finish shuffling. Comments and tidy-up in `site/defenses/shuffled.js`; pixel-diff on the laptop: shuffled vs baseline 0.000% on all 10 pages. Commit pending. | J |
+| | ✅ Finish shuffling. Comments and tidy-up in `site/defenses/shuffled.js`; pixel-diff on the laptop: shuffled vs baseline 0.000% on all 10 pages. Committed (`eef2fdf`). | J |
 | **Tue Nov 10** | Test 4: source order differs, byte-identical regeneration, pixel diff ≤ 1%, all 10 screenshot pairs checked by eye. | J + C |
 | | Start the honeypot link: one `display:none` link per page to the trap path. | J |
 | **Wed Nov 11** | Finish the honeypot condition. Test 6: trap hit logged for run R, a normal page not flagged, missing User-Agent logged as `unknown`. | J + C |

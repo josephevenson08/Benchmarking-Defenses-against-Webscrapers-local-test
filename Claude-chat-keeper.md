@@ -264,6 +264,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J169 | 169 | Generated shuffled p1 page (after tidy-up?) | Output unchanged; paste shuffled.js itself; CSS comments must be `/* */` (Turn 169) |
 | J170 | 170 | Tidied shuffled.js | Good (header, step comments); optional CSS comments and indentation; step 3 (run the pixel-diff) given (Turn 170) |
 | J171 | 171 | Laptop pixel-diff: 0.000% on all 10 pages | ⭐ Mon Nov 9 done; commit tidy-up; Test 4 tomorrow (Turn 171) |
+| J172 | 172 | Stop for today; what's left and are we on schedule? | On schedule (about a day ahead); remaining work by milestone summarized; end-of-session pull request (Turn 172) |
 
 ### Questions from Claude
 
@@ -299,7 +300,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Tue Nov 10, Milestone 2):** Mon Nov 9 done. The pixel-diff tools are built (D55) and, on Joseph's laptop, shuffled vs baseline is 0.000% on all 10 pages. Next: Joseph commits the tidied `shuffled.js` if not done; Test 4 (source order differs, byte-identical regeneration, pixel ≤ 1%, 10 pairs by eye). Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Tue Nov 10, Milestone 2):** Mon Nov 9 done. The pixel-diff tools are built (D55) and, on Joseph's laptop, shuffled vs baseline is 0.000% on all 10 pages. The tidied `shuffled.js` is on `main` (`eef2fdf`). Next: Test 4 (Claude's check script; Joseph runs it and checks 10 pairs by eye), then the honeypot link. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -7065,3 +7066,25 @@ Tuesday is Test 4.
 **Questions Claude asked:** stop, or should Claude start the Test 4 script now?
 
 **Direction and fit:** no new decision. Preview of §5 Test 4's pixel condition on the laptop.
+
+### Turn 172 — 2026-11-09 17:06 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> yes lets stop here for today! Thanks again, what all is left in the project and are we on schedule?
+
+**What Claude did:**
+- Fetched `main`: Joseph committed and synced the tidy-up (`eef2fdf`, "DOM shuffling: comments and tidy-up"; header typo fixed). Merged `main` into the branch; `npm test` 19 pass.
+- Read the rest of `SCHEDULE.md` and summarized what's left and where the project stands against the schedule.
+- Updated `SCHEDULE.md` (Mon row committed `eef2fdf`) and the resume notes. Opened the end-of-session pull request (D40); link below.
+
+**Claude's answer (summary):** on schedule, about a day ahead (Sunday's shuffling CSS was done Saturday).
+- **Done:** Milestone 1, plus in Milestone 2: scraper (b), the defense slot and seeds, DOM shuffling (looks identical, fools (a) in a preview), and the pixel-diff tools.
+- **Left in Milestone 2 (to Nov 17):** Test 4 (Tue), the honeypot link and Test 6 (Tue–Wed), the Test 3 fixtures and harness (Thu–Fri), (b)'s 3 baseline runs and Test 1 (Sat), buffers, and Cut-line 1 on Nov 17.
+- **Milestone 3 (Nov 18–Dec 1):** experiment runner, log-based measures, user-cost runner (pixel, reading order, Lighthouse, axe-core), Essential runs (a) and (b) × 3 conditions × 3, Test 7; Ambitious work (poisoning, (d), (c)/(e) setup) only if Cut-line 1 passes. Cut-line 2 on Dec 1.
+- **Milestone 4 (Dec 2–10):** final tables and figure, report, reproducibility, clean rerun, tag by Dec 8, deadline Dec 10.
+- **Still open:** C20 (scoring assumptions #1 and #6).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Status against the §7 milestones and the D30 schedule.
