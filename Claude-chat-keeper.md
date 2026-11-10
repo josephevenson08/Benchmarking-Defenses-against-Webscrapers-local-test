@@ -269,6 +269,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J172 | 172 | Stop for today; what's left and are we on schedule? | On schedule (about a day ahead); remaining work by milestone summarized; end-of-session pull request (Turn 172) |
 | J173 | 173 | OK, let's get started | Tue Nov 10: Test 4 script (D56) and honeypot hook (D57) built, #27; Joseph runs Test 4, then starts the honeypot (Turn 173) |
 | J174 | 174 | Test 4 on the laptop: all three automated checks PASS | ⭐ Automated part passes; by-eye check and commit next (Turn 174) |
+| J175 | 175 | Filled-in by-eye.md | 9 of 10 marked yes; home row blank, fill it in and commit (Turn 175) |
 
 ### Questions from Claude
 
@@ -7169,3 +7170,35 @@ Merged `main` into the branch.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. §5 Test 4, automated part, passed on Joseph's machine; the manual part is still open.
+
+### Turn 175 — 2026-11-10 17:32 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> # Test 4: by-eye check of the 10 screenshot pairs (shuffled vs baseline)
+>
+> Open `pairs.html` in a browser. For each page, do the baseline and the shuffled screenshots look the same?
+>
+> | Page | Look the same? (yes/no) | Notes |
+> |---|---|---|
+> | `/` |  |  |
+> | `/products/` | yes |  |
+> | `/products/p1` | yes |  |
+> | `/products/p2` | yes |  |
+> | `/products/p3` | yes |  |
+> | `/products/p4` | yes |  |
+> | `/products/p5` | yes |  |
+> | `/products/p6` | yes |  |
+> | `/articles/a1` | yes |  |
+> | `/articles/a2` | yes |  |
+>
+> Checked by: Joseph Evenson
+> Date: 11/10/2026
+
+**What Claude did:** read Joseph's filled-in `by-eye.md`. 9 of 10 pages are marked "yes" (`/products/`, p1–p6, a1, a2), "Checked by: Joseph Evenson", date 11/10/2026. **The `/` (home) row is still blank.**
+
+**Claude's answer (summary):** add the home page's "yes" (it has no fields, so it trivially looks the same), commit and sync `by-eye.md`. Then Test 4 is complete (automated and by eye). Claude will tick it in `README.md` and `SCHEDULE.md` once it is on GitHub. Gave a preview of the honeypot step that follows.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. §5 Test 4's manual check, nearly complete.
