@@ -276,6 +276,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J178 | 178 | Honeypot part 1 file | Function named `main` but exported as `mainEnd` → "mainEnd is not defined"; rename (Turn 178) |
 | J179 | 179 | Generate honeypot: Wrote 10 pages | Part 1 works; part 2 (build the visible link, click it, see the log hit) given (Turn 179) |
 | J180 | 180 | honeypot.js with the hidden link | Works: 0.000% pixels; (a) and (b) each hit /trap once and still score 70/70 (Claude's check); laptop checks and part 4 given (Turn 180) |
+| J181 | 181 | Revised honeypot line (`${page.Archive}`, spaces inside href) | Produces `href="    undefined"`; corrected line shown (disclosed) (Turn 181) |
 
 ### Questions from Claude
 
@@ -7334,3 +7335,29 @@ Then the laptop checks:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The honeypot follows §2 (one `display:none` link per page to the trap path). Joseph chose an inline style; the link text is his.
+
+### Turn 181 — 2026-11-10 17:45 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //honeypot defense, adds one hidden link per page to trap a path, cant be seen by real users, follows every link
+>
+>
+> function mainEnd(page, rng) { //calls once for each of the 10 pages
+>     return `<a href="    ${page.Archive}" style="display: none;">${page.Archive}</a>`;
+> }
+>
+>
+> module.exports = { mainEnd };
+
+**What Claude did:** reviewed the revised line and generated it in a scratch copy (removed). Both optional touches went in the wrong place:
+- the 4 spaces ended up *inside* `href="…"`, not before `<a`;
+- `${page.trapPath}` was replaced by `${page.Archive}`, which doesn't exist.
+
+Result: `<a href="    undefined" style="display: none;">undefined</a>`. The link no longer points to `/trap`; a scraper would request `/undefined` (a 404), so **the honeypot would catch nothing**.
+
+**Claude's answer (summary):** explained the difference between `${...}` (looks up a value) and plain text (typed as is). Gave the corrected line: `return \`    <a href="${page.trapPath}" style="display: none;">Archive</a>\`;`, with 4 spaces before `<a`, `href` kept as `${page.trapPath}`, and "Archive" as plain text. Disclosed here: Claude supplied this corrected line of `honeypot.js`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The link text "Archive" was Claude's suggestion (Turn 180); Joseph chose to use it.
