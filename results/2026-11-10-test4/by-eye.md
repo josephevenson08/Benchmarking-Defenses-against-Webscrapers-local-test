@@ -5,15 +5,15 @@ Open `pairs.html` in a browser. For each page, do the baseline and the shuffled 
 | Page | Look the same? (yes/no) | Notes |
 |---|---|---|
 | `/` |  |  |
-| `/products/` |  |  |
-| `/products/p1` |  |  |
-| `/products/p2` |  |  |
-| `/products/p3` |  |  |
-| `/products/p4` |  |  |
-| `/products/p5` |  |  |
-| `/products/p6` |  |  |
-| `/articles/a1` |  |  |
-| `/articles/a2` |  |  |
+| `/products/` | yes |  |
+| `/products/p1` | yes |  |
+| `/products/p2` | yes |  |
+| `/products/p3` | yes |  |
+| `/products/p4` | yes |  |
+| `/products/p5` | yes |  |
+| `/products/p6` | yes |  |
+| `/articles/a1` | yes |  |
+| `/articles/a2` | yes |  |
 
-Checked by: 
-Date: 
+Checked by: Joseph Evenson
+Date: 11/10/2026
