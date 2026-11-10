@@ -1,0 +1,133 @@
+{
+  "test": "Test 4: shuffle keeps layout",
+  "condition": "shuffled",
+  "run_at": "2026-11-10T11:26:18",
+  "commit": "991bfcc",
+  "seed": 20261021,
+  "wait_seconds": 3.0,
+  "regeneration": {
+    "files": 12,
+    "differing": [],
+    "only_in_first": [],
+    "only_in_second": [],
+    "passed": true
+  },
+  "source_order": {
+    "pages": [
+      {
+        "page": "/products/p1",
+        "elements": 20,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 10,
+        "pairs_still_adjacent": 0
+      },
+      {
+        "page": "/products/p2",
+        "elements": 20,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 10,
+        "pairs_still_adjacent": 0
+      },
+      {
+        "page": "/products/p3",
+        "elements": 20,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 10,
+        "pairs_still_adjacent": 1
+      },
+      {
+        "page": "/products/p4",
+        "elements": 20,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 10,
+        "pairs_still_adjacent": 0
+      },
+      {
+        "page": "/products/p5",
+        "elements": 20,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 10,
+        "pairs_still_adjacent": 1
+      },
+      {
+        "page": "/products/p6",
+        "elements": 20,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 10,
+        "pairs_still_adjacent": 0
+      },
+      {
+        "page": "/articles/a1",
+        "elements": 10,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 5,
+        "pairs_still_adjacent": 0
+      },
+      {
+        "page": "/articles/a2",
+        "elements": 10,
+        "same_elements": true,
+        "order_differs": true,
+        "label_value_pairs_in_baseline": 5,
+        "pairs_still_adjacent": 2
+      }
+    ],
+    "passed": true
+  },
+  "pixels": {
+    "limit_percent": 1.0,
+    "max_percent": 0,
+    "mean_percent": 0,
+    "pages": [
+      {
+        "page": "articles-a1.png",
+        "percent": 0
+      },
+      {
+        "page": "articles-a2.png",
+        "percent": 0
+      },
+      {
+        "page": "index.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p1.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p2.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p3.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p4.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p5.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p6.png",
+        "percent": 0
+      },
+      {
+        "page": "products.png",
+        "percent": 0
+      }
+    ],
+    "passed": true
+  },
+  "passed": true
+}
