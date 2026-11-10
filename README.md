@@ -173,6 +173,12 @@ npm run pixel-diff -- results/dev/screens/baseline results/dev/screens/shuffled 
 python -m unittest discover -s measurement/tests -t .
 ```
 
+**Test 4** in one command (regeneration hashes, source order, pixel difference; writes `results/<date>-test4/` with `report.md`, the screenshots, `pairs.html` for the by-eye check and a `by-eye.md` to fill in):
+
+```bash
+python measurement/test4.py
+```
+
 The screenshots open the generated files directly, so no server is needed. `pixel_diff.mjs` uses pixelmatch with its default settings; if two screenshots differ in size, the extra pixels count as different. `--diff-dir` writes an image per page with the differing pixels marked, for checking by eye.
 
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
