@@ -273,6 +273,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J175 | 175 | Filled-in by-eye.md | 9 of 10 marked yes; home row blank, fill it in and commit (Turn 175) |
 | J176 | 176 | Ready | ⭐ Test 4 complete (D58); honeypot part A given (Turn 176) |
 | J177 | 177 | Walk me through each part to make honeypot | Honeypot split into 4 parts; part 1 (skeleton + generator check) given (Turn 177) |
+| J178 | 178 | Honeypot part 1 file | Function named `main` but exported as `mainEnd` → "mainEnd is not defined"; rename (Turn 178) |
 
 ### Questions from Claude
 
@@ -7247,3 +7248,25 @@ Part 1 given now, as a skeleton with a placeholder header comment.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Teaching approach as before; Joseph writes the defense (§2 "AI assistance").
+
+### Turn 178 — 2026-11-10 17:38 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //honeypot defense, adds hidden links per page to trap a path, cant be seen by real users, follows every link
+>
+>
+> function main(page, rng) { //calls once for each of the 10 pages
+>     return "";
+> }
+>
+>
+> module.exports = { mainEnd };
+
+**What Claude did:** reviewed Joseph's part 1 file. The function is named `main`, but the export says `mainEnd`, so `npm run generate -- honeypot` stops with `mainEnd is not defined` (reproduced with a scratch file, then removed). The header comment is good; small wording note: it is one link per page.
+
+**Claude's answer (summary):** rename `function main(` to `function mainEnd(`; the name must match the export and the generator's hook. Optionally tighten the comment to "one hidden link per page". Then generate and paste the output.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
