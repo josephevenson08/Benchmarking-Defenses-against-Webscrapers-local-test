@@ -179,6 +179,12 @@ python -m unittest discover -s measurement/tests -t .
 python measurement/test4.py
 ```
 
+**Test 6** in one command (starts its own server on port 3100 with a fresh log, sends a trap request and a normal request with run ID `test6` plus one without a User-Agent, and checks the honeypot pages: one hidden trap link each, pixel difference ≤ 1%; writes `results/<date>-test6/`):
+
+```bash
+python measurement/test6.py
+```
+
 The screenshots open the generated files directly, so no server is needed. `pixel_diff.mjs` uses pixelmatch with its default settings; if two screenshots differ in size, the extra pixels count as different. `--diff-dir` writes an image per page with the differing pixels marked, for checking by eye.
 
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
