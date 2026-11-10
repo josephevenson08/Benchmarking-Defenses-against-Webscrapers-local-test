@@ -4,7 +4,7 @@ Open `pairs.html` in a browser. For each page, do the baseline and the shuffled 
 
 | Page | Look the same? (yes/no) | Notes |
 |---|---|---|
-| `/` |  |  |
+| `/` | yes |  |
 | `/products/` | yes |  |
 | `/products/p1` | yes |  |
 | `/products/p2` | yes |  |
