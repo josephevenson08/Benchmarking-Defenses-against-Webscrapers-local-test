@@ -19,10 +19,10 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Mon Nov 9 (Turn 171 of the chat-keeper).*
+*Last updated: Tue Nov 10 (Turn 176 of the chat-keeper).*
 
-> **▶ Resume here: Tue Nov 10 (Milestone 2).** Mon Nov 9 done: pixel-diff tools (D55) and shuffling tidied. On the laptop, shuffled vs baseline is 0.000% on all 10 pages.
-> - Tue: Test 4. Source order differs from the baseline on every page; the same seed regenerates byte-identical pages; pixel difference ≤ 1%; all 10 screenshot pairs checked by eye. Results go in a dated `results/` folder.
+> **▶ Resume here: honeypot (Tue Nov 10 – Wed Nov 11, Milestone 2).** ⭐ Test 4 passed (Nov 10, `results/2026-11-10-test4/`).
+> - Now: Joseph writes `site/defenses/honeypot.js`, a `mainEnd(page, rng)` that returns one `display:none` link to `page.trapPath`. Then generate `honeypot`, check that the page looks unchanged, and Test 6 (Wed).
 
 ---
 
@@ -76,7 +76,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Sun Nov 8** | ✅ (done early, Sat Nov 7) Shuffling: restore the on-screen order with CSS `order`; the same seed must give byte-identical pages. Joseph's `style`: `.fields` row + wrap, label 10rem (1rem gap as padding), value `calc(100% - 10rem)`, baseline padding and border. Claude's check: all 8 item pages pixel-identical to baseline at 1280 px and 375 px; regenerating gives identical files. Commit pending. | J |
 | **Mon Nov 9** | ✅ Basic pixel-diff script (pixelmatch on Playwright screenshots). `measurement/screenshots.py` (Python Playwright, 1280×800, full page, 3 s wait) and `measurement/pixel_diff.mjs` (pixelmatch 7.2.0, pngjs 7.0.0). Shuffled vs baseline: 0.000% on all 10 pages; a broken layout reads up to 58%. | C |
 | | ✅ Finish shuffling. Comments and tidy-up in `site/defenses/shuffled.js`; pixel-diff on the laptop: shuffled vs baseline 0.000% on all 10 pages. Committed (`eef2fdf`). | J |
-| **Tue Nov 10** | Test 4: source order differs, byte-identical regeneration, pixel diff ≤ 1%, all 10 screenshot pairs checked by eye. Claude: `measurement/test4.py` (automated part; Claude's run: all three checks PASS) and the generator's `mainEnd` hook for the honeypot. Joseph: run it, by-eye check. | J + C |
+| **Tue Nov 10** | ✅ Test 4: source order differs, byte-identical regeneration, pixel diff ≤ 1%, all 10 screenshot pairs checked by eye. ⭐ **Passed** on the laptop (12 files identical; 8/8 item pages reordered; 0.000% on all 10 pages; 10/10 "yes" by eye), saved in `results/2026-11-10-test4/`. Claude: `measurement/test4.py` and the generator's `mainEnd` hook for the honeypot. | J + C |
 | | Start the honeypot link: one `display:none` link per page to the trap path. | J |
 | **Wed Nov 11** | Finish the honeypot condition. Test 6: trap hit logged for run R, a normal page not flagged, missing User-Agent logged as `unknown`. | J + C |
 | **Thu Nov 12** | Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. | J |

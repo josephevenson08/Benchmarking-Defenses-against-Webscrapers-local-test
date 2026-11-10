@@ -86,6 +86,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D55 | 168 | **Pixel-diff tooling:** `measurement/screenshots.py` (Python Playwright) takes full-page screenshots of a condition's 10 pages opened straight from `conditions/<condition>/` (no server, clean log), at a 1280×800 viewport and device scale 1, after a 3 s wait. `measurement/pixel_diff.mjs` (Node, pixelmatch 7.2.0 and pngjs 7.0.0, exact pins) compares folders page by page with pixelmatch defaults (threshold 0.1, anti-aliasing ignored), as differing pixels / total pixels. Pixels present in only one screenshot (size change) count as different. `--limit 1` checks Test 4. The manifest gains each page's `file`. | All in Node with Node Playwright (a new dependency); screenshots from the served site | Claude (Claude's scheduled task) | §2 Measurement row ("Playwright, pixelmatch (called from a short Node script on the screenshot PNGs)"). §3 ("a short Node script reads two PNGs and counts mismatched pixels, which I divide by the page's total pixels"). §5 user cost ("screenshots taken after a 3-second wait"); Test 4 (≤ 1%, screenshot pairs by eye). | Follows (viewport size, file-based loading and the size-change rule: Adds) |
 | D56 | 173 | **Test 4 harness** (`measurement/test4.py`) runs the automated part and writes `results/<date>-test4/`: (1) generate the condition twice with the same seed into temporary folders, then compare every file by SHA-256; (2) the label/value source order differs from the baseline on all 8 item pages (home and category have no fields to shuffle), plus an informational count of labels still followed by their own value; (3) screenshots of all 10 pages, each pixel difference ≤ 1%. It also writes `pairs.html` and a `by-eye.md` template for Joseph's manual check (4). | Separate manual commands for each check | Claude (Claude's harness task, D30) | §5 Test 4 ("I generate the shuffled pages twice with the same seed. Source order should differ from baseline on every page, the two generations should be byte-identical, and the pixel difference from baseline should be at most 1%... comparing order, hashing the files, running the pixel-diff, and viewing the 10 screenshot pairs by eye"). | Follows ("every page" read as every page that has fields: Interprets) |
 | D57 | 173 | **Honeypot hook:** defense files may export `mainEnd(page, rng)`, which returns HTML appended at the end of every page's `<main>`. `page` = `{ path, type, item_id, trapPath }`, with `trapPath` from `config.json`. The generator also gains `--out` and `--seed` options. Baseline and shuffled output are unchanged. | A hook that rewrites the whole page HTML | Claude (extends D53) | §2 Page defenses ("Honeypot: add one display:none link per page to a trap path"; defenses "take a page's fields and a per-page seed and output the modified page"). D23 (the trap route and `honeypot_hit` logging already exist in the server). | Follows |
+| D58 | 176 | **⭐ Test 4 passed (Tue Nov 10).** On Joseph's laptop, `measurement/test4.py` gave: 12 files identical across two generations with the same seed; source order differs on 8 of 8 item pages; pixel difference 0.000% on all 10 pages (limit 1%). Joseph checked all 10 screenshot pairs by eye: 10/10 "yes" (`by-eye.md`). Saved in `results/2026-11-10-test4/` (commits `9249f3a`, `8cb66ee`, `119a18f`). README Milestone 2 "DOM shuffling (Test 4)" ticked. | — | Joseph (ran it and did the by-eye check); Claude (harness) | §5 Test 4 (all four conditions). §7 Milestone 2 (shuffling built and tested). | Follows |
 
 ---
 
@@ -270,6 +271,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J173 | 173 | OK, let's get started | Tue Nov 10: Test 4 script (D56) and honeypot hook (D57) built, #27; Joseph runs Test 4, then starts the honeypot (Turn 173) |
 | J174 | 174 | Test 4 on the laptop: all three automated checks PASS | ⭐ Automated part passes; by-eye check and commit next (Turn 174) |
 | J175 | 175 | Filled-in by-eye.md | 9 of 10 marked yes; home row blank, fill it in and commit (Turn 175) |
+| J176 | 176 | Ready | ⭐ Test 4 complete (D58); honeypot part A given (Turn 176) |
 
 ### Questions from Claude
 
@@ -305,7 +307,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Tue Nov 10, Milestone 2):** Claude's Test 4 script (D56) and the `mainEnd` hook for the honeypot (D57) are in pull request #27. Next for Joseph: merge and pull; run `python measurement/test4.py`, check the 10 pairs by eye, fill in `by-eye.md` and commit the results folder; then start `site/defenses/honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (honeypot, Milestone 2):** ⭐ Test 4 passed (D58). Next: Joseph writes `site/defenses/honeypot.js` (`mainEnd` returning one `display:none` link to `page.trapPath`), generates `honeypot` and checks that the page looks unchanged; Wed: finish the honeypot and Test 6. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -7202,3 +7204,25 @@ Merged `main` into the branch.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. §5 Test 4's manual check, nearly complete.
+
+### Turn 176 — 2026-11-10 17:33 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ready
+
+**What Claude did:**
+- Fetched `main`: Joseph committed the completed `by-eye.md` (`8cb66ee`, `119a18f`), all 10 rows "yes", and merged it into the branch. **⭐ Test 4 passed (D58).**
+- Ticked "DOM shuffling (Test 4)" in the README's Milestone 2 list and the Tue Nov 10 row in `SCHEDULE.md`, and moved the resume notes to the honeypot.
+- Read the server's trap route (`site/server.js`): `/trap` returns a small page ("Archive" / "Nothing here.") and every request to it is logged with `honeypot_hit: true` and the run ID (D23).
+
+**Claude's answer (summary):** Test 4 done. Honeypot, part A, described in words for Joseph to write:
+- create `site/defenses/honeypot.js` with a header comment and a `mainEnd(page, rng)` that returns one link to `page.trapPath`, hidden with `display:none`, indented 4 spaces, with link text that contains no scored value;
+- add `module.exports = { mainEnd };`;
+- check with `npm run generate -- honeypot`: the link appears just before `</main>` on all 10 pages, and the page looks the same in the browser.
+
+Joseph's choices: the link text, and how to hide it (inline `style` or a class plus the `style` export).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D58 (Follows). The honeypot follows §2 ("add one display:none link per page to a trap path"); its link text and hiding method are Joseph's to decide.

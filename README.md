@@ -225,7 +225,7 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 
 ### Milestone 2: Nov 4 – Nov 17
 - [x] Scraper (b): written by Joseph; first baseline run 70/70 = 1.000, 0.036 s per page (Nov 6: [`results/2026-11-06-b-baseline/`](results/2026-11-06-b-baseline/))
-- [ ] DOM shuffling (Test 4)
+- [x] DOM shuffling (Test 4 passed Nov 10: byte-identical regeneration, source order differs on all 8 item pages, 0.000% pixel difference, 10 pairs checked by eye; [`results/2026-11-10-test4/`](results/2026-11-10-test4/))
 - [ ] Honeypot link (Test 6)
 - [x] Basic pixel-diff script (`measurement/screenshots.py` + `measurement/pixel_diff.mjs`; shuffled vs baseline: 0.000% on all 10 pages, Nov 9)
 - [ ] Baseline check for (a) and (b) (Tests 1 and 3)
