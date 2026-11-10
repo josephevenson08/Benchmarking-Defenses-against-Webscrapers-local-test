@@ -84,6 +84,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D53 | 134 | **Defense slot in the generator:** each condition other than `baseline` is one file `site/defenses/<condition>.js`, found by name. It may export `style` (extra CSS for every page) and `fieldRows(rows, rng)` (HTML of an item page's fields block; `rows` arrive in field order, HTML-escaped). Per-page seed = FNV-1a hash of config seed, condition and path; random function = mulberry32. Seeds saved in the condition's manifest. Baseline pages unchanged byte for byte. More hooks (honeypot link, poisoning script) are added when those defenses start. | Defenses as Python post-processors of the generated HTML; one big switch inside the generator | Claude (Claude's scheduled task, D30) | §2 Page defenses row ("Take a page's fields and a per-page seed and output the modified page"; the generator "writes one full copy of the site per condition"). §5 Reproducibility (the generator saves the seeds; same seed gives byte-identical pages, Test 4). | Follows |
 | D54 | 134 | **What the shuffle scrambles:** on each item page, every label and value element becomes a sibling in one flex container (`.fields`) and all of them are shuffled together with the page's seeded random function. CSS `order` puts each value back beside its label on screen. The `shuffled` condition therefore drops the per-field row wrappers; the baseline keeps them (D7 still holds for the baseline). | One container, full mix; keep rows and mix inside (shuffle the rows, swap label and value within each row) | Joseph (Claude recommended) | §2 Page defenses ("scramble label and value elements in the source with a seeded shuffle, then restore on-screen position with CSS (the CSS order property in a flex layout)"). §4 Hypothesis 1 (shuffling lowers (a) and (b), which take the text after a label in source order; (d) sorts by computed CSS order). §5 Test 4 (pixel difference ≤ 1%). | Interprets (the midterm doesn't say whether rows stay; the full mix is its direct reading) |
 | D55 | 168 | **Pixel-diff tooling:** `measurement/screenshots.py` (Python Playwright) takes full-page screenshots of a condition's 10 pages opened straight from `conditions/<condition>/` (no server, clean log), at a 1280×800 viewport and device scale 1, after a 3 s wait. `measurement/pixel_diff.mjs` (Node, pixelmatch 7.2.0 and pngjs 7.0.0, exact pins) compares folders page by page with pixelmatch defaults (threshold 0.1, anti-aliasing ignored), as differing pixels / total pixels. Pixels present in only one screenshot (size change) count as different. `--limit 1` checks Test 4. The manifest gains each page's `file`. | All in Node with Node Playwright (a new dependency); screenshots from the served site | Claude (Claude's scheduled task) | §2 Measurement row ("Playwright, pixelmatch (called from a short Node script on the screenshot PNGs)"). §3 ("a short Node script reads two PNGs and counts mismatched pixels, which I divide by the page's total pixels"). §5 user cost ("screenshots taken after a 3-second wait"); Test 4 (≤ 1%, screenshot pairs by eye). | Follows (viewport size, file-based loading and the size-change rule: Adds) |
+| D56 | 173 | **Test 4 harness** (`measurement/test4.py`) runs the automated part and writes `results/<date>-test4/`: (1) generate the condition twice with the same seed into temporary folders, then compare every file by SHA-256; (2) the label/value source order differs from the baseline on all 8 item pages (home and category have no fields to shuffle), plus an informational count of labels still followed by their own value; (3) screenshots of all 10 pages, each pixel difference ≤ 1%. It also writes `pairs.html` and a `by-eye.md` template for Joseph's manual check (4). | Separate manual commands for each check | Claude (Claude's harness task, D30) | §5 Test 4 ("I generate the shuffled pages twice with the same seed. Source order should differ from baseline on every page, the two generations should be byte-identical, and the pixel difference from baseline should be at most 1%... comparing order, hashing the files, running the pixel-diff, and viewing the 10 screenshot pairs by eye"). | Follows ("every page" read as every page that has fields: Interprets) |
+| D57 | 173 | **Honeypot hook:** defense files may export `mainEnd(page, rng)`, which returns HTML appended at the end of every page's `<main>`. `page` = `{ path, type, item_id, trapPath }`, with `trapPath` from `config.json`. The generator also gains `--out` and `--seed` options. Baseline and shuffled output are unchanged. | A hook that rewrites the whole page HTML | Claude (extends D53) | §2 Page defenses ("Honeypot: add one display:none link per page to a trap path"; defenses "take a page's fields and a per-page seed and output the modified page"). D23 (the trap route and `honeypot_hit` logging already exist in the server). | Follows |
 
 ---
 
@@ -265,6 +267,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J170 | 170 | Tidied shuffled.js | Good (header, step comments); optional CSS comments and indentation; step 3 (run the pixel-diff) given (Turn 170) |
 | J171 | 171 | Laptop pixel-diff: 0.000% on all 10 pages | ⭐ Mon Nov 9 done; commit tidy-up; Test 4 tomorrow (Turn 171) |
 | J172 | 172 | Stop for today; what's left and are we on schedule? | On schedule (about a day ahead); remaining work by milestone summarized; end-of-session pull request (Turn 172) |
+| J173 | 173 | OK, let's get started | Tue Nov 10: Test 4 script (D56) and honeypot hook (D57) built, #27; Joseph runs Test 4, then starts the honeypot (Turn 173) |
 
 ### Questions from Claude
 
@@ -300,7 +303,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Tue Nov 10, Milestone 2):** Mon Nov 9 done. The pixel-diff tools are built (D55) and, on Joseph's laptop, shuffled vs baseline is 0.000% on all 10 pages. The tidied `shuffled.js` is on `main` (`eef2fdf`). Next: Test 4 (Claude's check script; Joseph runs it and checks 10 pairs by eye), then the honeypot link. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Tue Nov 10, Milestone 2):** Claude's Test 4 script (D56) and the `mainEnd` hook for the honeypot (D57) are in pull request #27. Next for Joseph: merge and pull; run `python measurement/test4.py`, check the 10 pairs by eye, fill in `by-eye.md` and commit the results folder; then start `site/defenses/honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -313,6 +316,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
+
+- **⚠️ Merge needed:** pull request #27 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/27), Test 4 script and honeypot hook (Joseph needs both today).
 
 
 
@@ -7088,3 +7093,33 @@ Tuesday is Test 4.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Status against the §7 milestones and the D30 schedule.
+
+### Turn 173 — 2026-11-10 17:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets get started
+
+**What Claude did:**
+- Synced: merged `main` (#26) into the branch.
+- Read the midterm's Test 4 text (§5).
+- **Built Claude's part of Test 4 (D56):** `measurement/test4.py`, with 4 Python tests (8 in `measurement/tests`). To support it, added `--out` and `--seed` options to the generator.
+  - A bulk text replacement first went wrong and filled `site/generate.js` with junk (12 MB). Claude restored the file from git and redid the change; nothing was lost.
+- **Ran Test 4 on Joseph's committed defense** (scratch folder, 70 s):
+  - 12 files compared, 0 differ;
+  - 8 of 8 item pages in a different order;
+  - max pixel difference 0.000%;
+  - **automated part PASS**. Labels still followed by their own value: 4 of 70 (p3 1, p5 1, a2 2), the same 4/70 scraper (a) scored on Nov 7.
+- **Added the honeypot hook (D57)** `mainEnd(page, rng)` to the generator, with 1 Node test (20 pass) and docs in `site/defenses/README.md`. Baseline and shuffled output stayed byte-identical.
+- Updated `README.md` (Test 4 command) and `SCHEDULE.md` (Tue row). Committed `86db910` and opened pull request #27: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/27
+
+**Claude's answer (summary):** today is about 1–1.5 hours for Joseph:
+1. Merge #27 and Sync.
+2. Run `python measurement/test4.py` (about a minute), open `pairs.html`, fill in `by-eye.md`, and commit the results folder.
+3. Start `site/defenses/honeypot.js`: a `mainEnd` that returns one hidden (`display:none`) link to `page.trapPath`. Link text and how to hide it are Joseph's choices; the text must not contain a scored value.
+
+Wednesday: finish the honeypot and Test 6.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D56 (Follows; "every page" read as item pages: Interprets), D57 (Follows).
