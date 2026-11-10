@@ -7164,6 +7164,8 @@ Merged `main` into the branch.
 - fill in `by-eye.md` (yes/no and notes for each page, name and date);
 - commit the whole `results/2026-11-10-test4/` folder and Sync, then paste `by-eye.md`.
 
+**Update (same turn):** after the pull, `main` already has Joseph's commit `9249f3a` "Test 4: shuffling keeps the layout (pass)" with the whole `results/2026-11-10-test4/` folder. But its `by-eye.md` is still the empty template (no yes/no, no name or date). Claude told Joseph to fill it in after looking at `pairs.html`, then commit it as a second commit.
+
 **Questions Claude asked:** none.
 
-**Direction and fit:** no new decision. §5 Test 4, automated part, passed on Joseph's machine.
+**Direction and fit:** no new decision. §5 Test 4, automated part, passed on Joseph's machine; the manual part is still open.
