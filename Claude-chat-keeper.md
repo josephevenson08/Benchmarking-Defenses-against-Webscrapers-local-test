@@ -277,6 +277,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J179 | 179 | Generate honeypot: Wrote 10 pages | Part 1 works; part 2 (build the visible link, click it, see the log hit) given (Turn 179) |
 | J180 | 180 | honeypot.js with the hidden link | Works: 0.000% pixels; (a) and (b) each hit /trap once and still score 70/70 (Claude's check); laptop checks and part 4 given (Turn 180) |
 | J181 | 181 | Revised honeypot line (`${page.Archive}`, spaces inside href) | Produces `href="    undefined"`; corrected line shown (disclosed) (Turn 181) |
+| J182 | 182 | Practice run: (a) visits /trap; log shows honeypot_hit true | ⭐ Honeypot catches (a); commit; Tue Nov 10 done (Turn 182) |
 
 ### Questions from Claude
 
@@ -312,7 +313,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (honeypot, Milestone 2):** ⭐ Test 4 passed (D58). Next: Joseph writes `site/defenses/honeypot.js` (`mainEnd` returning one `display:none` link to `page.trapPath`), generates `honeypot` and checks that the page looks unchanged; Wed: finish the honeypot and Test 6. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Wed Nov 11, Milestone 2):** ⭐ Test 4 passed (D58). The honeypot works on the laptop: scraper (a) as `a-honeypot-1` visited `/trap`, logged as `honeypot_hit: true`. Next: Joseph commits `honeypot.js` if not done; Wed: finish the honeypot condition and Test 6. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -7361,3 +7362,44 @@ Result: `<a href="    undefined" style="display: none;">undefined</a>`. The link
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The link text "Archive" was Claude's suggestion (Turn 180); Joseph chose to use it.
+
+### Turn 182 — 2026-11-10 17:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> >> Select-String -Path logs\requests.jsonl -Pattern '"honeypot_hit":true'rapers-local-test> 
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/trap
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 11 pages visited
+> 70 records written to results/dev/a-honeypot-1.json
+>
+> logs\requests.jsonl:228:{"timestamp":"2026-11-
+> 10T17:47:56.424Z","run_id":"a-honeypot-1","pat
+> h":"/trap","status":200,"response_ms":1.371,"h
+> oneypot_hit":true,"user_agent":"run=a-honeypot
+> -1"}
+>
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** read Joseph's laptop practice run.
+- Scraper (a) as `a-honeypot-1` visited **11 pages**. `/trap` was 5th: the home page's hidden link sits at the end of `<main>`, so `/trap` joined the queue after the two articles.
+- 70 records written.
+- The log line shows `"run_id":"a-honeypot-1","path":"/trap","status":200,"honeypot_hit":true`. ⭐ The honeypot catches (a) on the laptop.
+- Checked GitHub: `honeypot.js` is not on `main` yet.
+- Updated `SCHEDULE.md` (Tue Nov 10 "Start the honeypot" ticked; resume note → Wed Nov 11) and the Open items resume note.
+
+**Claude's answer (summary):** the honeypot works. Commit `site/defenses/honeypot.js` with "Honeypot: one hidden link per page to the trap path" (not the `results/dev/` file). Today's two tasks are done. Asked: stop for today, or should Claude build the Test 6 check now?
+
+**Questions Claude asked:** stop, or should Claude build Test 6 now?
+
+**Direction and fit:** no new decision. Matches §4 H3 for (a) (it follows hidden links, so it registers honeypot hits).
