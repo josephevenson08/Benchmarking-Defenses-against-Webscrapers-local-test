@@ -19,10 +19,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Mon Nov 9 (Turn 171 of the chat-keeper).*
+*Last updated: Tue Nov 10 (Turn 176 of the chat-keeper).*
 
-> **▶ Resume here: Tue Nov 10 (Milestone 2).** Mon Nov 9 done: pixel-diff tools (D55) and shuffling tidied. On the laptop, shuffled vs baseline is 0.000% on all 10 pages.
-> - Tue: Test 4. Source order differs from the baseline on every page; the same seed regenerates byte-identical pages; pixel difference ≤ 1%; all 10 screenshot pairs checked by eye. Results go in a dated `results/` folder.
+> **▶ Resume here: Wed Nov 11 (Milestone 2).** ⭐ Test 4 passed (Nov 10). The honeypot works: (a) gets caught at `/trap`.
+> 1. If not done yet: Joseph commits `site/defenses/honeypot.js`.
+> 2. Wed: finish the honeypot condition (check that it looks like the baseline) and Test 6. The trap request is logged as a hit for run R, a normal page is not, and a request with no User-Agent is logged as `unknown`.
 
 ---
 
@@ -76,9 +77,9 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Sun Nov 8** | ✅ (done early, Sat Nov 7) Shuffling: restore the on-screen order with CSS `order`; the same seed must give byte-identical pages. Joseph's `style`: `.fields` row + wrap, label 10rem (1rem gap as padding), value `calc(100% - 10rem)`, baseline padding and border. Claude's check: all 8 item pages pixel-identical to baseline at 1280 px and 375 px; regenerating gives identical files. Commit pending. | J |
 | **Mon Nov 9** | ✅ Basic pixel-diff script (pixelmatch on Playwright screenshots). `measurement/screenshots.py` (Python Playwright, 1280×800, full page, 3 s wait) and `measurement/pixel_diff.mjs` (pixelmatch 7.2.0, pngjs 7.0.0). Shuffled vs baseline: 0.000% on all 10 pages; a broken layout reads up to 58%. | C |
 | | ✅ Finish shuffling. Comments and tidy-up in `site/defenses/shuffled.js`; pixel-diff on the laptop: shuffled vs baseline 0.000% on all 10 pages. Committed (`eef2fdf`). | J |
-| **Tue Nov 10** | Test 4: source order differs, byte-identical regeneration, pixel diff ≤ 1%, all 10 screenshot pairs checked by eye. Claude: `measurement/test4.py` (automated part; Claude's run: all three checks PASS) and the generator's `mainEnd` hook for the honeypot. Joseph: run it, by-eye check. | J + C |
-| | Start the honeypot link: one `display:none` link per page to the trap path. | J |
-| **Wed Nov 11** | Finish the honeypot condition. Test 6: trap hit logged for run R, a normal page not flagged, missing User-Agent logged as `unknown`. | J + C |
+| **Tue Nov 10** | ✅ Test 4: source order differs, byte-identical regeneration, pixel diff ≤ 1%, all 10 screenshot pairs checked by eye. ⭐ **Passed** on the laptop (12 files identical; 8/8 item pages reordered; 0.000% on all 10 pages; 10/10 "yes" by eye), saved in `results/2026-11-10-test4/`. Claude: `measurement/test4.py` and the generator's `mainEnd` hook for the honeypot. | J + C |
+| | ✅ Start the honeypot link: one `display:none` link per page to the trap path. `site/defenses/honeypot.js`: `mainEnd` returns `<a href="/trap" style="display: none;">Archive</a>` at the end of every page's `<main>`. Laptop practice run: scraper (a) as `a-honeypot-1` visited 11 pages including `/trap`, logged as `honeypot_hit: true`. Claude's check: 0.000% pixels vs baseline; (a) and (b) each one trap hit and 70/70. Commit pending. | J |
+| **Wed Nov 11** | Finish the honeypot condition. Test 6: trap hit logged for run R, a normal page not flagged, missing User-Agent logged as `unknown`. Claude (done early, Tue Nov 10): `measurement/test6.py` (Test 6 plus checks on the honeypot pages); Claude's run with Joseph's honeypot: all PASS. Joseph: run it. | J + C |
 | **Thu Nov 12** | Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. | J |
 | | Draft the harness that runs (a) and (b) on those fixtures. | C |
 | **Fri Nov 13** | Run Test 3 for (a) and (b) on baseline and shuffled; fix problems. | J |
