@@ -1,0 +1,131 @@
+{
+  "test": "Test 6: honeypot and logging",
+  "run_at": "2026-11-10T11:53:48",
+  "commit": "1333604",
+  "test6": {
+    "run_id": "test6",
+    "trap_path": "/trap",
+    "normal_path": "/products/p1",
+    "statuses": {
+      "trap, run R": 200,
+      "normal page, run R": 200,
+      "no User-Agent": 200,
+      "afterwards (server still up)": 200
+    },
+    "server_stayed_up": true,
+    "counts": {
+      "trap_lines_for_run": 1,
+      "trap_hits_for_run": 1,
+      "normal_lines_for_run": 1,
+      "normal_hits_for_run": 0,
+      "unknown_lines": 1,
+      "unknown_without_user_agent": 1,
+      "hits_for_other_runs": 0
+    },
+    "passed": true
+  },
+  "trap_links": {
+    "pages": [
+      {
+        "page": "/",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/p1",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/p2",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/p3",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/p4",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/p5",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/products/p6",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/articles/a1",
+        "trap_links": 1,
+        "hidden": true
+      },
+      {
+        "page": "/articles/a2",
+        "trap_links": 1,
+        "hidden": true
+      }
+    ],
+    "passed": true
+  },
+  "pixels": {
+    "limit_percent": 1.0,
+    "max_percent": 0,
+    "mean_percent": 0,
+    "pages": [
+      {
+        "page": "articles-a1.png",
+        "percent": 0
+      },
+      {
+        "page": "articles-a2.png",
+        "percent": 0
+      },
+      {
+        "page": "index.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p1.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p2.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p3.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p4.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p5.png",
+        "percent": 0
+      },
+      {
+        "page": "products-p6.png",
+        "percent": 0
+      },
+      {
+        "page": "products.png",
+        "percent": 0
+      }
+    ],
+    "passed": true
+  },
+  "passed": true
+}

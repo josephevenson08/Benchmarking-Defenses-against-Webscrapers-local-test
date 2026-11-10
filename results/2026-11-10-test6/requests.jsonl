@@ -1,0 +1,4 @@
+{"timestamp":"2026-11-10T17:52:41.651Z","run_id":"test6","path":"/trap","status":200,"response_ms":3.624,"honeypot_hit":true,"user_agent":"bench-test (run=test6)"}
+{"timestamp":"2026-11-10T17:52:41.673Z","run_id":"test6","path":"/products/p1","status":200,"response_ms":9,"honeypot_hit":false,"user_agent":"bench-test (run=test6)"}
+{"timestamp":"2026-11-10T17:52:41.684Z","run_id":"unknown","path":"/","status":200,"response_ms":2.582,"honeypot_hit":false,"user_agent":null}
+{"timestamp":"2026-11-10T17:52:41.689Z","run_id":"test6-alive","path":"/products/","status":200,"response_ms":2.104,"honeypot_hit":false,"user_agent":"bench-test (run=test6-alive)"}

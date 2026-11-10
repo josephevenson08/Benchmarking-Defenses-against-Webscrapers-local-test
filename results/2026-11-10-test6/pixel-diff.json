@@ -1,0 +1,150 @@
+{
+  "baseline": "C:\\Users\\josep\\OneDrive - Saint Louis University\\FALL 26\\Web tech\\project\\Benchmarking-Defenses-against-Webscrapers-local-test\\results\\2026-11-10-test6\\screenshots\\baseline",
+  "other": "C:\\Users\\josep\\OneDrive - Saint Louis University\\FALL 26\\Web tech\\project\\Benchmarking-Defenses-against-Webscrapers-local-test\\results\\2026-11-10-test6\\screenshots\\honeypot",
+  "threshold": 0.1,
+  "pages": [
+    {
+      "page": "articles-a1.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "articles-a2.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "index.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products-p1.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products-p2.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products-p3.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products-p4.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products-p5.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products-p6.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    },
+    {
+      "page": "products.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 0,
+      "total": 1024000,
+      "percent": 0
+    }
+  ],
+  "missing": [],
+  "max_percent": 0,
+  "mean_percent": 0
+}
