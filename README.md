@@ -185,6 +185,12 @@ python measurement/test4.py
 python measurement/test6.py
 ```
 
+**Test 3** (the extraction rule): each case in `measurement/fixtures/test3/` is a saved page plus the output worked out by hand (`expected.json`). The script serves each page on its own, runs (a) and (b) on it with `--page-cap 1`, and compares; writes `results/<date>-test3/`:
+
+```bash
+python measurement/test3.py
+```
+
 The screenshots open the generated files directly, so no server is needed. `pixel_diff.mjs` uses pixelmatch with its default settings; if two screenshots differ in size, the extra pixels count as different. `--diff-dir` writes an image per page with the differing pixels marked, for checking by eye.
 
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
