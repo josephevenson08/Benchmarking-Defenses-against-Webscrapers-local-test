@@ -268,6 +268,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J171 | 171 | Laptop pixel-diff: 0.000% on all 10 pages | ⭐ Mon Nov 9 done; commit tidy-up; Test 4 tomorrow (Turn 171) |
 | J172 | 172 | Stop for today; what's left and are we on schedule? | On schedule (about a day ahead); remaining work by milestone summarized; end-of-session pull request (Turn 172) |
 | J173 | 173 | OK, let's get started | Tue Nov 10: Test 4 script (D56) and honeypot hook (D57) built, #27; Joseph runs Test 4, then starts the honeypot (Turn 173) |
+| J174 | 174 | Test 4 on the laptop: all three automated checks PASS | ⭐ Automated part passes; by-eye check and commit next (Turn 174) |
 
 ### Questions from Claude
 
@@ -317,7 +318,6 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **⚠️ Merge needed:** pull request #27 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/27), Test 4 script and honeypot hook (Joseph needs both today).
 
 
 
@@ -7123,3 +7123,47 @@ Wednesday: finish the honeypot and Test 6.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D56 (Follows; "every page" read as item pages: Interprets), D57 (Follows).
+
+### Turn 174 — 2026-11-10 17:28 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> create mode 100644 measurement/tests/test_test4.py
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/test4.py
+> Generating baseline and shuffled ...
+> 1. Regenerating shuffled twice with the same seed ...
+> 2. Comparing source order with the baseline ...
+> 3. Taking screenshots and comparing pixels (about a minute) ...
+>
+> # Test 4: shuffled keeps the layout
+>
+> Run 2026-11-10T11:26:18 · commit 991bfcc · config seed 20261021
+>
+> | Check | Result | |
+> |---|---|---|
+> | 1. Same seed gives byte-identical files | 12 files compared, 0 differ | PASS |
+> | 2. Source order differs from baseline on every item page | 8 of 8 item pages differ | PASS |
+> | 3. Pixel difference at most 1.0% | max 0.000%, mean 0.000% over 10 pages | PASS |
+> | 4. 10 screenshot pairs checked by eye | see `by-eye.md` (Joseph) | — |
+>
+> **Automated part: PASS**
+>
+> Next (by eye): open C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-10-test4\pairs.html and fill in C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-10-test4\by-eye.md
+
+**What Claude did:** read Joseph's laptop run of `python measurement/test4.py` (commit `991bfcc`, after merging #27):
+- 12 files compared, 0 differ;
+- 8 of 8 item pages differ in source order;
+- max pixel difference 0.000% over 10 pages;
+- **automated part PASS**, the same as Claude's run.
+
+Merged `main` into the branch.
+
+**Claude's answer (summary):** the automated part of Test 4 passes on the laptop. Next, the by-eye part (Joseph's):
+- open `pairs.html` and compare the baseline and shuffled screenshots for all 10 pages (layout, spacing, grey lines, every label next to its value);
+- the difference images should be pale grey copies with **no red**;
+- fill in `by-eye.md` (yes/no and notes for each page, name and date);
+- commit the whole `results/2026-11-10-test4/` folder and Sync, then paste `by-eye.md`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. §5 Test 4, automated part, passed on Joseph's machine.
