@@ -16,10 +16,13 @@ module.exports = {
   fieldRows(rows, rng) {   // optional: returns the HTML of an item page's fields block
     // ...
   },
+  mainEnd(page, rng) {     // optional: returns HTML added at the end of every page's <main>
+    // ...
+  },
 };
 ```
 
-Anything a file doesn't export stays exactly as in the baseline. More hooks, such as one for the honeypot link and one for the poisoning script, are added when those defenses start.
+Anything a file doesn't export stays exactly as in the baseline. A hook for the poisoning script is added when that defense starts.
 
 ### `fieldRows(rows, rng)`
 
@@ -36,6 +39,14 @@ Called once for each of the 8 item pages (6 products, 2 articles).
       ...
     </div>
 ```
+
+### `mainEnd(page, rng)`
+
+Called once for each of the 10 pages. Whatever it returns is added on a new line at the end of the page's `<main>`, just before `</main>`. Return `""` to add nothing on a page.
+
+- **`page`**: `{ path, type, item_id, trapPath }`, for example `{ path: "/products/p1", type: "product", item_id: "p1", trapPath: "/trap" }`. `type` is `home`, `category`, `product` or `article`; `item_id` exists on item pages only. `trapPath` comes from `config.json` (`trap_path`), the path the server logs as a honeypot hit.
+- **`rng`**: the page's seeded random function, as above.
+- **Returns**: an HTML string, for example one link. Indent it 4 spaces to match the rest of `<main>`.
 
 ### `style`
 

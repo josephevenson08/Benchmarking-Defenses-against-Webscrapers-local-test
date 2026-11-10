@@ -60,20 +60,24 @@ function makeRng(seed) {
 // A defense file exports any of these hooks (see site/defenses/README.md):
 //   style      extra CSS (text) added to every page's <style>
 //   fieldRows  function (rows, rng) returning the HTML of an item page's fields block
+//   mainEnd    function (page, rng) returning HTML added at the end of every page's <main>
 function loadDefense(condition) {
   if (condition === "baseline") return null;
   return checkDefense(require(path.join(DEFENSES_DIR, `${condition}.js`)), `site/defenses/${condition}.js`);
 }
 
 function checkDefense(defense, name) {
-  if (!defense || (defense.style === undefined && defense.fieldRows === undefined)) {
-    throw new Error(`${name} exports nothing the generator can use. Add module.exports = { fieldRows } (and/or style) at the end.`);
+  if (!defense || (defense.style === undefined && defense.fieldRows === undefined && defense.mainEnd === undefined)) {
+    throw new Error(`${name} exports nothing the generator can use. Add module.exports = { ... } at the end, with fieldRows, mainEnd and/or style.`);
   }
   if (defense.style !== undefined && typeof defense.style !== "string") {
     throw new Error(`${name}: "style" must be a string of CSS.`);
   }
   if (defense.fieldRows !== undefined && typeof defense.fieldRows !== "function") {
     throw new Error(`${name}: "fieldRows" must be a function (rows, rng).`);
+  }
+  if (defense.mainEnd !== undefined && typeof defense.mainEnd !== "function") {
+    throw new Error(`${name}: "mainEnd" must be a function (page, rng).`);
   }
   return defense;
 }
@@ -152,6 +156,18 @@ function fieldsBlock(item, fieldList, defense, rng) {
   return html;
 }
 
+// Extra HTML for the end of a page's <main>: "" without a defense, otherwise what
+// the defense's mainEnd returns, on a new line. The defense gets the page's path,
+// type, item_id (item pages only) and the trap path from config.json.
+function mainEnd(defense, page, rng) {
+  if (!defense || !defense.mainEnd) return "";
+  const html = defense.mainEnd(page, rng);
+  if (typeof html !== "string") {
+    throw new Error(`mainEnd must return a string of HTML (it returned ${html === undefined ? "nothing" : typeof html}).`);
+  }
+  return html ? "\n" + html : "";
+}
+
 function linkList(links) {
   const items = links.map((l) => `      <li><a href="${l.href}">${escapeHtml(l.text)}</a></li>`);
   return `    <ul>\n${items.join("\n")}\n    </ul>`;
@@ -168,7 +184,9 @@ function buildPages({ items, fields }, options = {}) {
   const baseSeed = options.seed !== undefined ? options.seed : loadConfig().seed;
   const style = (defense && defense.style) || "";
   const seedFor = (pagePath) => pageSeed(baseSeed, condition, pagePath);
-  const page = (title, main) => layout(title, main, style);
+  const trapPath = options.trapPath || loadConfig().trap_path;
+  // Each page's HTML; a defense's mainEnd hook can add HTML at the end of <main>.
+  const page = (title, main, info) => layout(title, main + mainEnd(defense, { ...info, trapPath }, makeRng(seedFor(info.path))), style);
   const fieldsFor = (pagePath, item, fieldList) => fieldsBlock(item, fieldList, defense, makeRng(seedFor(pagePath)));
 
   const products = items.products.map((p, i) => ({ item: p, id: p.product_id, n: i + 1 }));
@@ -186,7 +204,8 @@ function buildPages({ items, fields }, options = {}) {
     <h2>Shop</h2>
 ${linkList([{ href: "/products/", text: "All products" }])}
     <h2>Articles</h2>
-${linkList(articles.map((a) => ({ href: `/articles/${a.id}`, text: `Article ${a.n}` })))}`
+${linkList(articles.map((a) => ({ href: `/articles/${a.id}`, text: `Article ${a.n}` })))}`,
+        { path: "/", type: "home" }
       ),
     },
     {
@@ -196,7 +215,8 @@ ${linkList(articles.map((a) => ({ href: `/articles/${a.id}`, text: `Article ${a.
       html: page(
         "Products",
         `    <h1>Products</h1>
-${linkList(products.map((p) => ({ href: `/products/${p.id}`, text: `Product ${p.n}` })))}`
+${linkList(products.map((p) => ({ href: `/products/${p.id}`, text: `Product ${p.n}` })))}`,
+        { path: "/products/", type: "category" }
       ),
     },
   ];
@@ -208,7 +228,11 @@ ${linkList(products.map((p) => ({ href: `/products/${p.id}`, text: `Product ${p.
       file: `products/${p.id}.html`,
       type: "product",
       item_id: p.id,
-      html: page(`Product ${p.n}`, `    <h1>Product details</h1>\n${fieldsFor(pagePath, p.item, fields.product)}`),
+      html: page(`Product ${p.n}`, `    <h1>Product details</h1>\n${fieldsFor(pagePath, p.item, fields.product)}`, {
+        path: pagePath,
+        type: "product",
+        item_id: p.id,
+      }),
     });
   }
   for (const a of articles) {
@@ -218,7 +242,11 @@ ${linkList(products.map((p) => ({ href: `/products/${p.id}`, text: `Product ${p.
       file: `articles/${a.id}.html`,
       type: "article",
       item_id: a.id,
-      html: page(`Article ${a.n}`, `    <h1>Article</h1>\n${fieldsFor(pagePath, a.item, fields.article)}`),
+      html: page(`Article ${a.n}`, `    <h1>Article</h1>\n${fieldsFor(pagePath, a.item, fields.article)}`, {
+        path: pagePath,
+        type: "article",
+        item_id: a.id,
+      }),
     });
   }
   for (const pg of pages) pg.seed = seedFor(pg.path);
@@ -258,13 +286,24 @@ function writeCondition(condition, outDir = path.join(ROOT, "conditions"), seed 
 }
 
 if (require.main === module) {
-  const condition = process.argv[2];
+  const { parseArgs } = require("util");
+  let parsed;
+  try {
+    parsed = parseArgs({ allowPositionals: true, options: { out: { type: "string" }, seed: { type: "string" } } });
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+  const condition = parsed.positionals[0];
   if (!condition) {
-    console.error(`Usage: node site/generate.js <condition>   (built so far: ${availableConditions().join(", ")})`);
+    console.error(`Usage: node site/generate.js <condition> [--out <dir>] [--seed <n>]   (built so far: ${availableConditions().join(", ")})`);
     process.exit(1);
   }
   try {
-    const { siteDir, pages, manifest } = writeCondition(condition);
+    const outDir = parsed.values.out ? path.resolve(parsed.values.out) : undefined;
+    const seed = parsed.values.seed !== undefined ? Number(parsed.values.seed) : undefined;
+    if (seed !== undefined && !Number.isInteger(seed)) throw new Error(`--seed must be a whole number, got "${parsed.values.seed}".`);
+    const { siteDir, pages, manifest } = writeCondition(condition, outDir, seed);
     console.log(`Wrote ${pages.length} pages and robots.txt to ${path.relative(ROOT, siteDir)}/ (${manifest.scored_fields} scored fields)`);
   } catch (err) {
     console.error(err.message);

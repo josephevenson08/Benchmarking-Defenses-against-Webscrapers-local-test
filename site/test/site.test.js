@@ -149,6 +149,30 @@ test("a defense file that exports nothing, or returns no HTML, is refused with a
   assert.throws(() => buildPages(data, { condition: "test", defense: silent, seed: 1 }), /returned nothing/);
 });
 
+test("a defense's mainEnd adds HTML at the end of every page's main and gets the trap path", () => {
+  const seen = [];
+  const defense = {
+    mainEnd(page, rng) {
+      seen.push({ ...page, draw: rng() });
+      return `    <a class="test-trap" href="${page.trapPath}">trap</a>`;
+    },
+  };
+  const built = buildPages(data, { condition: "test", defense, seed: 3 });
+  assert.deepEqual(seen.map((p) => p.path), built.map((p) => p.path), "called once per page, all 10");
+  assert.ok(seen.every((p) => p.trapPath === "/trap"), "trap path from config.json");
+  assert.equal(seen.find((p) => p.path === "/products/p1").item_id, "p1");
+  assert.equal(seen.find((p) => p.path === "/").type, "home");
+  for (const page of built) {
+    assert.match(page.html, /<a class="test-trap" href="\/trap">trap<\/a>\n  <\/main>/, page.path);
+  }
+  for (const page of built.filter((p) => p.item_id)) {
+    const { record, fields } = itemFor(page);
+    assert.deepEqual(rows(page.html), fields.map((f) => ({ label: f.label, value: record[f.key] })), "fields untouched");
+  }
+  assert.throws(() => buildPages(data, { condition: "test", defense: { mainEnd() {} }, seed: 1 }), /mainEnd must return/);
+  assert.throws(() => checkDefense({ mainEnd: 3 }, "x"), /"mainEnd" must be a function/);
+});
+
 test("defense files are found by name, and unknown conditions are refused", () => {
   assert.equal(availableConditions()[0], "baseline");
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "unknown-"));
