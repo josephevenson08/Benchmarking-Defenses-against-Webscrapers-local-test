@@ -1,0 +1,183 @@
+{
+  "test": "Test 1: normal workflow",
+  "run_at": "2026-11-11T12:05:12",
+  "commit": "7c5ae6c",
+  "port": 3100,
+  "min_accuracy": 0.9,
+  "conditions": [
+    {
+      "condition": "baseline",
+      "html_files": 10,
+      "manifest_pages": 10,
+      "manifest_scored_fields": 70,
+      "label_elements": 70,
+      "value_elements": 70,
+      "passed": true
+    },
+    {
+      "condition": "shuffled",
+      "html_files": 10,
+      "manifest_pages": 10,
+      "manifest_scored_fields": 70,
+      "label_elements": 70,
+      "value_elements": 70,
+      "passed": true
+    },
+    {
+      "condition": "honeypot",
+      "html_files": 10,
+      "manifest_pages": 10,
+      "manifest_scored_fields": 70,
+      "label_elements": 70,
+      "value_elements": 70,
+      "passed": true
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "a-baseline-1",
+      "score": {
+        "run_id": "a-baseline-1",
+        "scraper": "a",
+        "condition": "baseline",
+        "run_number": 1,
+        "scored_fields": 70,
+        "correct": 70,
+        "wrong": 0,
+        "fakes": 0,
+        "malformed": 0,
+        "conflicting": 0,
+        "plain_wrong": 0,
+        "missing": 0,
+        "ignored_records": 0,
+        "accuracy": 1.0,
+        "fake_value_rate": 0.0,
+        "pages_fetched": 10,
+        "seconds": 0.146,
+        "time_per_page": 0.014599999999999998
+      },
+      "passed": true
+    },
+    {
+      "run_id": "a-baseline-2",
+      "score": {
+        "run_id": "a-baseline-2",
+        "scraper": "a",
+        "condition": "baseline",
+        "run_number": 2,
+        "scored_fields": 70,
+        "correct": 70,
+        "wrong": 0,
+        "fakes": 0,
+        "malformed": 0,
+        "conflicting": 0,
+        "plain_wrong": 0,
+        "missing": 0,
+        "ignored_records": 0,
+        "accuracy": 1.0,
+        "fake_value_rate": 0.0,
+        "pages_fetched": 10,
+        "seconds": 0.163,
+        "time_per_page": 0.016300000000000002
+      },
+      "passed": true
+    },
+    {
+      "run_id": "a-baseline-3",
+      "score": {
+        "run_id": "a-baseline-3",
+        "scraper": "a",
+        "condition": "baseline",
+        "run_number": 3,
+        "scored_fields": 70,
+        "correct": 70,
+        "wrong": 0,
+        "fakes": 0,
+        "malformed": 0,
+        "conflicting": 0,
+        "plain_wrong": 0,
+        "missing": 0,
+        "ignored_records": 0,
+        "accuracy": 1.0,
+        "fake_value_rate": 0.0,
+        "pages_fetched": 10,
+        "seconds": 0.174,
+        "time_per_page": 0.0174
+      },
+      "passed": true
+    },
+    {
+      "run_id": "b-baseline-1",
+      "score": {
+        "run_id": "b-baseline-1",
+        "scraper": "b",
+        "condition": "baseline",
+        "run_number": 1,
+        "scored_fields": 70,
+        "correct": 70,
+        "wrong": 0,
+        "fakes": 0,
+        "malformed": 0,
+        "conflicting": 0,
+        "plain_wrong": 0,
+        "missing": 0,
+        "ignored_records": 0,
+        "accuracy": 1.0,
+        "fake_value_rate": 0.0,
+        "pages_fetched": 10,
+        "seconds": 0.306,
+        "time_per_page": 0.0306
+      },
+      "passed": true
+    },
+    {
+      "run_id": "b-baseline-2",
+      "score": {
+        "run_id": "b-baseline-2",
+        "scraper": "b",
+        "condition": "baseline",
+        "run_number": 2,
+        "scored_fields": 70,
+        "correct": 70,
+        "wrong": 0,
+        "fakes": 0,
+        "malformed": 0,
+        "conflicting": 0,
+        "plain_wrong": 0,
+        "missing": 0,
+        "ignored_records": 0,
+        "accuracy": 1.0,
+        "fake_value_rate": 0.0,
+        "pages_fetched": 10,
+        "seconds": 0.26,
+        "time_per_page": 0.026000000000000002
+      },
+      "passed": true
+    },
+    {
+      "run_id": "b-baseline-3",
+      "score": {
+        "run_id": "b-baseline-3",
+        "scraper": "b",
+        "condition": "baseline",
+        "run_number": 3,
+        "scored_fields": 70,
+        "correct": 70,
+        "wrong": 0,
+        "fakes": 0,
+        "malformed": 0,
+        "conflicting": 0,
+        "plain_wrong": 0,
+        "missing": 0,
+        "ignored_records": 0,
+        "accuracy": 1.0,
+        "fake_value_rate": 0.0,
+        "pages_fetched": 10,
+        "seconds": 0.268,
+        "time_per_page": 0.0268
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}
