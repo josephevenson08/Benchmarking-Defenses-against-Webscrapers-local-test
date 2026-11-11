@@ -305,6 +305,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J200 | 200 | What's the code for the test site | Test site files, commands and code printed in the chat (Turn 200) |
 | J201 | 201 | Make what I've done so far into a table I can put in a Word doc | `completed-work-table.docx` sent (Turn 201) |
 | J202 | 202 | Just give it to me here | Completed-work table printed in the chat (Turn 202) |
+| J203 | 203 | But in an Excel export | `completed-work-table.xlsx` sent (Turn 203) |
 
 ### Questions from Claude
 
@@ -8019,6 +8020,28 @@ Then Joseph's questions.
 - Logged this turn (J202).
 
 **Claude's answer (summary):** the table in the chat, ready to copy into Word.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 203 — 2026-11-11 22:31 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> but in an excel export
+
+**What Claude did:**
+- Made `completed-work-table.xlsx` and sent it to Joseph. It has one sheet, "Completed so far", with the same rows and wording as Turns 201–202:
+  - a Date, Work, Result and Who table: Arial, wrapped text, a shaded header row, the header frozen, filters on;
+  - the key and the unit-test line below the table;
+  - landscape and fit to one page wide for printing.
+- Checked the contents with markitdown and rendered a page image: one page, no clipped text. The sheet has no formulas, so no recalculation was needed.
+- The file and its build script are in Claude's scratch folder, not the repo.
+- `main` had nothing new; pull request #32 is still open.
+- Logged this turn (J203).
+
+**Claude's answer (summary):** here is the Excel file, with what is in it.
 
 **Questions Claude asked:** none.
 
