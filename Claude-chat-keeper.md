@@ -286,6 +286,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J185 | 185 | Let's stop here for today | Session ended; end-of-session pull request (Turn 185) |
 | J186 | 186 | Let's continue | Test 3 harness and saved pages built (D61, #30); Joseph fills in expected.json by hand (Turn 186) |
 | J187 | 187 | OK I'm back, what do we need to do today? | Wed Nov 11: Test 3 (merge #30, expected.json by hand, run and commit), about 1–1.5 h (Turn 187) |
+| J188 | 188 | First drafts of both expected.json files | Format: drop `<…>`, use field keys; p2 values right; p1 must follow the source order, not the screen (Turn 188) |
 
 ### Questions from Claude
 
@@ -7557,3 +7558,50 @@ That completes Test 3 two days early. Saturday's (b) baseline runs and Test 1 th
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Follows the schedule (D30), a day or two ahead.
+
+### Turn 188 — 2026-11-11 17:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "path": "/products/p1",
+>   "records": [{"field": "<Name>", "value": "<Larkfield Studio Headphones>"}, 
+>               {"field":"<Brand>", "value":"<Larkfield>"},
+>               {"field":"<Category>", "value":"<Headphones>"},
+>               {"field":"<Price>", "value":"<$89.99>"},
+>               {"field":"<SKU>", "value":"<LF-HP-2041>"},
+>               {"field":"<Rating>", "value":"<4.5>"},
+>               {"field":"<Reviews>", "value":"<1,284>"},
+>               {"field":"<Availability>", "value":"<In stock>"},
+>               {"field":"<Release date>", "value":"<2024-09-12>"},
+>               {"field":"<Description>", "value":"<Closed-back over-ear headphones with 40 mm drivers and a detachable cable.>"}]
+> }
+>
+>
+>
+> {
+>   "path": "/products/p2",
+>   "records": [{"field":"<Name>", "value":"<Corvane Desk Lamp>"},
+>               {"field":"<Brand>", "value":"<Corvane>"},
+>               {"field":"<Category>", "value":"<Lighting>"},
+>               {"field":"<Price>", "value":"<$34.50>"},
+>               {"field":"<SKU>", "value":"<CV-LT-0317>"},
+>               {"field":"<Rating>", "value":"<4.2>"},
+>               {"field":"<Reviews>", "value":"<356>"},
+>               {"field":"<Availability>", "value":"<Low stock>"},
+>               {"field":"<Release date>", "value":"<2023-11-03>"},
+>               {"field":"<Description>", "value":"<Adjustable LED lamp with three color temperatures and a weighted base.>"}]
+> }
+
+**What Claude did:** checked Joseph's two `expected.json` drafts against the format and the rule.
+- **Both files:** the `<…>` angle brackets from the example were copied literally into every field and value, so they must go. The `field` entries use the labels (`Name`, `Reviews`, `Release date`) instead of the keys from `data/fields.json` (`name`, `review_count`, `release_date`, …).
+- **baseline-p2:** the 10 values are right (the real values, since every label is followed by its own value). Only the keys and brackets need fixing.
+- **shuffled-p1:** the values are the *real* values a person sees on screen, not what the label-then-next-element rule takes from the scrambled source. Test 3 checks the rule, so this file has to follow the source order.
+
+**Claude's answer (summary):**
+- Fix the format in both files: no angle brackets, and keys from `fields.json` (with a label-to-key table).
+- Redo shuffled-p1 from the source order. Claude walked through the first label as an example: `Name` (order 0) is followed in the source by the value with order 7, `$89.99`, so the record is `{"field": "name", "value": "$89.99"}`. Joseph works out the other nine, including what happens when the next element is another label, or when there is none (no record).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The expected output stays Joseph's hand work (§5 Test 3); Claude gave one worked example.
