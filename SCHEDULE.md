@@ -19,10 +19,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Tue Nov 10 (Turn 184 of the chat-keeper).*
+*Last updated: Wed Nov 11 (Turn 193 of the chat-keeper).*
 
-> **▶ Resume here: Thu Nov 12 (Milestone 2).** ⭐ Test 4 and ⭐ Test 6 passed (Nov 10), so Wednesday's work is done a day early.
-> - Thu: Test 3 fixtures. Joseph works out by hand the JSON that the label-then-next-element rule should give on a baseline page and on a shuffled page in a known scrambled order. Claude drafts the harness that runs (a) and (b) on them.
+> **▶ Resume here: Test 1, the last Milestone 2 check (Sat Nov 14 task, can start early).** ⭐ Tests 3, 4 and 6 passed (Nov 10–11).
+> 1. If not done yet: Joseph commits both `measurement/fixtures/test3/*/expected.json` and `results/<date>-test3/`.
+> 2. Next: (b)'s 3 baseline runs and Test 1. Baseline, shuffled and honeypot each have 10 pages and 70 fields, and (a) and (b) reach at least 90% on baseline in every run.
 
 ---
 
@@ -79,9 +80,9 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Tue Nov 10** | ✅ Test 4: source order differs, byte-identical regeneration, pixel diff ≤ 1%, all 10 screenshot pairs checked by eye. ⭐ **Passed** on the laptop (12 files identical; 8/8 item pages reordered; 0.000% on all 10 pages; 10/10 "yes" by eye), saved in `results/2026-11-10-test4/`. Claude: `measurement/test4.py` and the generator's `mainEnd` hook for the honeypot. | J + C |
 | | ✅ Start the honeypot link: one `display:none` link per page to the trap path. `site/defenses/honeypot.js`: `mainEnd` returns `<a href="/trap" style="display: none;">Archive</a>` at the end of every page's `<main>`. Laptop practice run: scraper (a) as `a-honeypot-1` visited 11 pages including `/trap`, logged as `honeypot_hit: true`. Claude's check: 0.000% pixels vs baseline; (a) and (b) each one trap hit and 70/70. Committed (`ed19725`). | J |
 | **Wed Nov 11** | ✅ (done early, Tue Nov 10) Finish the honeypot condition. Test 6: trap hit logged for run R, a normal page not flagged, missing User-Agent logged as `unknown`. ⭐ **Passed** on the laptop (`measurement/test6.py`): Test 6 PASS; honeypot pages PASS (10/10 one hidden trap link, 0.000% pixels). Saved in `results/2026-11-10-test6/` (`e72ea07`). | J + C |
-| **Thu Nov 12** | Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. | J |
+| **Thu Nov 12** | ✅ (done early, Wed Nov 11) Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. Joseph's `expected.json` for `baseline-p2` (10 real values) and `shuffled-p1` (9 records: the text after each label in source order; Brand, the last element, gives none). Commit pending. | J |
 | | ✅ (done early, Tue Nov 10) Draft the harness that runs (a) and (b) on those fixtures. `measurement/test3.py`, with the two saved pages in `measurement/fixtures/test3/` (`baseline-p2`, `shuffled-p1`); the `expected.json` files are left empty for Joseph's hand-worked answers. | C |
-| **Fri Nov 13** | Run Test 3 for (a) and (b) on baseline and shuffled; fix problems. | J |
+| **Fri Nov 13** | ✅ (done early, Wed Nov 11) Run Test 3 for (a) and (b) on baseline and shuffled; fix problems. ⭐ **Passed** on the laptop: (a) and (b) match the hand-worked output exactly on both pages (10/10 and 9/9 records). Commit pending. | J |
 | **Sat Nov 14** | (b) baseline check: 3 runs at ≥ 90%. Test 1: baseline, shuffled and honeypot each have 10 pages and 70 fields; (a) and (b) reach ≥ 90% on baseline. | J |
 | **Sun Nov 15** | Buffer. | — |
 | **Mon Nov 16** | Buffer. Update the chat-keeper and README. | J, C |

@@ -90,6 +90,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D59 | 183 | **Test 6 harness** (`measurement/test6.py`). **Part A (Test 6):** serves `honeypot` on its own port (3100) with a fresh log; sends a trap request and a normal-page request with run ID `test6`, one request with no User-Agent, and a follow-up to show the server is up; counts log lines by run ID and path. Tarpit part reported n/a. **Part B (the honeypot pages):** exactly one trap link per page, not visible in Chromium, and pixel difference ≤ 1%. Writes `results/<date>-test6/`. | Test 6 only, without the page checks | Claude (Claude's harness task) | §5 Test 6 ("I send one request to the trap path and one to a normal page, both with run ID R, plus one request with no User-Agent... I count log lines by run ID and path"). §2 (one `display:none` link per page). Part B: Adds. A visible link moved pixels only 0.343%, so the explicit visibility check matters. | Follows (Part B: Adds) |
 | D60 | 184 | **⭐ Test 6 passed (Tue Nov 10, a day early).** On Joseph's laptop (commit `1333604`), `measurement/test6.py` gave: trap request with run `test6` logged as 1 hit; normal page with `test6` not a hit; no-User-Agent request logged as `unknown` with empty user agent; server stayed up; no other run flagged. Honeypot pages: 10/10 with exactly one hidden trap link; 0.000% pixel difference from baseline. Saved in `results/2026-11-10-test6/` (`e72ea07`). README Milestone 2 "Honeypot link (Test 6)" ticked. | — | Joseph (ran it); Claude (harness) | §5 Test 6. §7 Milestone 2 (honeypot built and tested). | Follows |
 | D61 | 186 | **Test 3 harness** (`measurement/test3.py`). Each case is a folder in `measurement/fixtures/test3/` with a saved `page.html` and a hand-worked `expected.json` (`{path, records: [{field, value}]}`). The harness serves the saved page alone at its real path (plus an allow-all robots.txt), runs (a) and (b) with `--page-cap 1` (no scraper changes needed), and compares field by field: same fields, same values, nothing missing or extra. Cases: `baseline-p2` and `shuffled-p1`, saved from the generator on Nov 10, so the cases never change under the test. `expected.json` is left empty for Joseph. (d) and poisoned cases come later. | Run the scrapers on the live generated site; Claude writing the expected output | Claude (harness); Joseph (expected output, by hand) | §5 Test 3 ("I run the label-plus-next-text rule in (a), (b) and (d) on a baseline page, a shuffled page with a known scrambled order, and a poisoned page (once built), with expected JSON worked out by hand. (a) and (b) should match their expected output exactly"). | Follows (saved snapshot pages: Adds) |
+| D62 | 193 | **⭐ Test 3 passed for (a) and (b) (Wed Nov 11, two days early).** On Joseph's laptop (commit `c0972ff`), `measurement/test3.py`: (a) and (b) each match Joseph's hand-worked `expected.json` exactly on `baseline-p2` (10/10 records) and `shuffled-p1` (9/9: the text after each label in source order, no record for Brand). The (d) and poisoned-page parts of Test 3 wait until those exist (Milestone 3, Ambitious). | — | Joseph (expected output by hand; ran it); Claude (harness) | §5 Test 3 ("(a) and (b) should match their expected output exactly"). | Follows |
 
 ---
 
@@ -291,6 +292,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J190 | 190 | p1's 20 source lines | p2 done; p1 still real values: numbered lines and a lookup table with one worked row (Turn 190) |
 | J191 | 191 | So what should it look like? | Full skeleton of shuffled-p1/expected.json with name filled and 8 empty values plus their source lines; Joseph fills them in (Turn 191) |
 | J192 | 192 | Filled-in shuffled-p1 values | Values right except `In Stock` → `In stock`; field keys reverted to labels, put keys back (Turn 192) |
+| J193 | 193 | Test 3 on the laptop: all PASS | ⭐ Test 3 passed for (a) and (b) (D62); commit answers and results (Turn 193) |
 
 ### Questions from Claude
 
@@ -326,7 +328,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Test 3, Milestone 2):** ⭐ Test 4 (D58) and ⭐ Test 6 (D60) passed on Nov 10. The Test 3 harness and two saved pages are built (D61, pull request #30). Next: Joseph fills in `measurement/fixtures/test3/*/expected.json` by hand, runs `python measurement/test3.py` and commits the results. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Test 1, Milestone 2):** ⭐ Tests 3 (D62), 4 (D58) and 6 (D60) passed. Next: Joseph commits the Test 3 answers and results if not done; then (b)'s 3 baseline runs and Test 1, the last Milestone 2 check before Cut-line 1 (Nov 17). Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -340,7 +342,6 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **⚠️ Merge needed:** pull request #30 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/30), the Test 3 harness and its saved pages.
 
 
 
@@ -7735,3 +7736,45 @@ Joseph reads the other nine values from the numbered list. The last line is a la
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The values are Joseph's hand work.
+
+### Turn 193 — 2026-11-11 17:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> rpython measurement/test3.py
+> (a) on baseline-p2 ...
+> (b) on baseline-p2 ...
+> (a) on shuffled-p1 ...
+> (b) on shuffled-p1 ...
+>
+> # Test 3: the extraction rule
+>
+> Run 2026-11-11T11:55:29 · commit c0972ff
+>
+> | Case | Scraper | Expected records | Got | Missing | Extra| Wrong value | |
+> |---|---|---|---|---|---|---|---|
+> | `baseline-p2` | (a) | 10 | 10 | — | — | — | PASS |
+> | `baseline-p2` | (b) | 10 | 10 | — | — | — | PASS |
+> | `shuffled-p1` | (a) | 9 | 9 | — | — | — | PASS |
+> | `shuffled-p1` | (b) | 9 | 9 | — | — | — | PASS |
+>
+> **Test 3 ((a) and (b)): PASS**
+>
+> Each case's page is served on its own and each scraper runswith `--page-cap 1`. Scraper outputs are in `outputs/`. (d)and the poisoned page are added once they are built.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop run of `python measurement/test3.py` (commit `c0972ff`, after merging #30): all four rows PASS, (a) and (b) on `baseline-p2` (10/10) and `shuffled-p1` (9/9). **⭐ Test 3 passed for (a) and (b) (D62).**
+- Checked GitHub: the filled-in `expected.json` files and `results/2026-11-11-test3/` are not committed yet; merged #30 into the branch.
+- Ticked Thu Nov 12 and Fri Nov 13 (Joseph) in `SCHEDULE.md`, both done early, and moved the resume notes to Test 1.
+
+**Claude's answer (summary):**
+- Test 3 passed.
+- Commit the two `expected.json` files and `results/2026-11-11-test3/` together, as "Test 3: hand-worked expected output; (a) and (b) pass".
+- Milestone 2 now needs only Test 1 and (b)'s 3 baseline runs, scheduled Saturday.
+- Asked: stop, or start Test 1 now? Claude would write a Test 1 script, as for Tests 3, 4 and 6.
+
+**Questions Claude asked:** stop, or start Test 1 now?
+
+**Direction and fit:** D62 (Follows).
