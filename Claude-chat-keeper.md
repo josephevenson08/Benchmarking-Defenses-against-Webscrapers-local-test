@@ -92,6 +92,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D61 | 186 | **Test 3 harness** (`measurement/test3.py`). Each case is a folder in `measurement/fixtures/test3/` with a saved `page.html` and a hand-worked `expected.json` (`{path, records: [{field, value}]}`). The harness serves the saved page alone at its real path (plus an allow-all robots.txt), runs (a) and (b) with `--page-cap 1` (no scraper changes needed), and compares field by field: same fields, same values, nothing missing or extra. Cases: `baseline-p2` and `shuffled-p1`, saved from the generator on Nov 10, so the cases never change under the test. `expected.json` is left empty for Joseph. (d) and poisoned cases come later. | Run the scrapers on the live generated site; Claude writing the expected output | Claude (harness); Joseph (expected output, by hand) | §5 Test 3 ("I run the label-plus-next-text rule in (a), (b) and (d) on a baseline page, a shuffled page with a known scrambled order, and a poisoned page (once built), with expected JSON worked out by hand. (a) and (b) should match their expected output exactly"). | Follows (saved snapshot pages: Adds) |
 | D62 | 193 | **⭐ Test 3 passed for (a) and (b) (Wed Nov 11, two days early).** On Joseph's laptop (commit `c0972ff`), `measurement/test3.py`: (a) and (b) each match Joseph's hand-worked `expected.json` exactly on `baseline-p2` (10/10 records) and `shuffled-p1` (9/9: the text after each label in source order, no record for Brand). The (d) and poisoned-page parts of Test 3 wait until those exist (Milestone 3, Ambitious). | — | Joseph (expected output by hand; ran it); Claude (harness) | §5 Test 3 ("(a) and (b) should match their expected output exactly"). | Follows |
 | D63 | 195 | **Test 1 harness** (`measurement/test1.py`): generates baseline, shuffled and honeypot; checks 10 HTML pages, 10 manifest pages, `scored_fields` 70, and 70 label plus 70 value elements on item pages per condition; serves the baseline on its own port (3100) with a fresh log; runs (a) and (b) 3 times each (`a-baseline-1..3`, `b-baseline-1..3`) and scores each with `score.py` (≥ 0.90); writes `results/<date>-test1/`. This also covers Saturday's "(b) baseline check: 3 runs at ≥ 90%". Claude's run: PASS, six runs at 70/70. | Two separate steps (manual (b) runs plus counts) | Claude (harness); Joseph runs it | §5 Test 1 ("I generate the baseline, shuffled and honeypot folders, serve the baseline, and run (a) and (b) three times each. Each condition should have 10 pages and 70 scored fields, and every run should reach at least 90% accuracy"). §7 Milestone 1/2 completion criteria. | Follows |
+| D64 | 196 | **⭐ Test 1 passed and ⭐ Milestone 2 complete (Wed Nov 11, six days before Cut-line 1).** Test 1 on Joseph's laptop (commit `7c5ae6c`): baseline, shuffled and honeypot each 10 pages and 70 fields; (a) 70/70 ×3 (0.015–0.017 s per page), (b) 70/70 ×3 (0.026–0.031 s). All of Milestone 2's §7 done-when items are met: Tests 1 (D64), 3 for (a)/(b) (D62), 4 (D58) and 6 (D60) pass; (b) ≥ 90% in 3 runs; shuffled ≤ 1% pixels (0.000%); a trap request is logged with its run ID. README and schedule ticked. | — | Joseph (ran it); Claude (harness) | §5 Test 1; §7 Milestone 2 ("Done when"); §7 Cut-line 1 (Nov 17: (a), (b), shuffling and the honeypot working). | Follows |
 
 ---
 
@@ -296,6 +297,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J193 | 193 | Test 3 on the laptop: all PASS | ⭐ Test 3 passed for (a) and (b) (D62); commit answers and results (Turn 193) |
 | J194 | 194 | How long will the next step take? | Test 1: about 30–40 min for Claude to build, about 15–20 min for Joseph to run and commit (Turn 194) |
 | J195 | 195 | Check that we're current, then finish the milestone; then questions | Current (Test 3 on `main`, re-checked); Test 1 script built (D63, #31); Joseph runs it (Turn 195) |
+| J196 | 196 | Test 1 on the laptop: PASS | ⭐ Test 1 passed; ⭐ Milestone 2 complete (D64); commit the results; questions next (Turn 196) |
 
 ### Questions from Claude
 
@@ -331,7 +333,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Test 1, Milestone 2):** ⭐ Tests 3 (D62), 4 (D58) and 6 (D60) passed; Test 3 answers and results are on `main` (`4203f7f`). The Test 1 script is built (D63, pull request #31; Claude's run PASS). Next: Joseph merges #31, runs `python measurement/test1.py` and commits `results/<date>-test1/`. That completes Milestone 2's checks. Then Joseph's questions. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (after Milestone 2):** ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. Next: Joseph commits `results/2026-11-11-test1/` if not done; Joseph's questions; Cut-line 1 (Nov 17) is already met, so Milestone 3 can start early if Joseph wants. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -345,7 +347,6 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
 
-- **⚠️ Merge needed:** pull request #31 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/31), the Test 1 script.
 
 
 
@@ -7826,3 +7827,61 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D63 (Follows).
+
+### Turn 196 — 2026-11-11 18:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Depython measurement/test1.pylocal-test> 
+> 1. Generating baseline, shuffled, honeypot and counting pages and fields ...
+> 2. Serving baseline on port 3100 and running the scrapers ...
+>    a-baseline-1
+>    a-baseline-2
+>    a-baseline-3
+>    b-baseline-1
+>    b-baseline-2
+>    b-baseline-3
+> 3. Scoring every run ...
+>
+> # Test 1: normal workflow
+>
+> Run 2026-11-11T12:05:12 · commit 7c5ae6c · baseline servedon port 3100
+>
+> ## Conditions: 10 pages and 70 scored fields each
+>
+> | Condition | HTML pages | Manifest pages | Manifest fields | Label elements | Value elements | |
+> |---|---|---|---|---|---|---|
+> | baseline | 10 | 10 | 70 | 70 | 70 | PASS |
+> | shuffled | 10 | 10 | 70 | 70 | 70 | PASS |
+> | honeypot | 10 | 10 | 70 | 70 | 70 | PASS |
+>
+> ## Runs on baseline: each at least 90% accurate
+>
+> | Run | Accuracy | Fake-value rate | Missing | Pages | Seconds | Time per page | |
+> |---|---|---|---|---|---|---|---|
+> | `a-baseline-1` | 70/70 = 1.000 | 0/70 | 0 | 10 | 0.146 |0.015 s | PASS |
+> | `a-baseline-2` | 70/70 = 1.000 | 0/70 | 0 | 10 | 0.163 |0.016 s | PASS |
+> | `a-baseline-3` | 70/70 = 1.000 | 0/70 | 0 | 10 | 0.174 |0.017 s | PASS |
+> | `b-baseline-1` | 70/70 = 1.000 | 0/70 | 0 | 10 | 0.306 |0.031 s | PASS |
+> | `b-baseline-2` | 70/70 = 1.000 | 0/70 | 0 | 10 | 0.26 | 0.026 s | PASS |
+> | `b-baseline-3` | 70/70 = 1.000 | 0/70 | 0 | 10 | 0.268 |0.027 s | PASS |
+>
+> **Test 1: PASS**
+>
+> Scraper outputs: `runs/`. Request log: `requests.jsonl`.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop run of `python measurement/test1.py` (commit `7c5ae6c`, after merging #31): **PASS**.
+  - All three conditions have 10 pages and 70 fields.
+  - (a) 70/70 in three runs (0.015–0.017 s per page); (b) 70/70 in three runs (0.026–0.031 s).
+- Checked Milestone 2's §7 done-when list in `SCHEDULE.md`: every item is met. **⭐ Milestone 2 complete (D64)**, six days before Cut-line 1.
+- Merged `main`. Ticked the README's last Milestone 2 item and added "Milestone 2 completed Nov 11". Ticked Sat Nov 14 in `SCHEDULE.md` and marked the Test 3 rows committed. Moved the resume notes.
+- `results/2026-11-11-test1/` is not on GitHub yet.
+
+**Claude's answer (summary):** Test 1 passed and Milestone 2 is complete. Commit `results/2026-11-11-test1/` ("Test 1: normal workflow (pass)"). Then Joseph's questions.
+
+**Questions Claude asked:** none (waiting for Joseph's questions).
+
+**Direction and fit:** D64 (Follows).
