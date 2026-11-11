@@ -308,6 +308,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J203 | 203 | But in an Excel export | `completed-work-table.xlsx` sent (Turn 203) |
 | J204 | 204 | I need a demo to be able to show what I've done | Started a one-command demo script; superseded by Turn 205 |
 | J205 | 205 | No, the steps to run a demo for someone to see | Demo steps in the chat; the script was dropped (Turn 205) |
+| J206 | 206 | Give it to me in steps so I can paste it on the doc | Demo steps as plain text (Turn 206) |
 
 ### Questions from Claude
 
@@ -8090,3 +8091,20 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The demo steps extend the meeting doc's demo plan (D65).
+
+### Turn 206 — 2026-11-11 22:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok give it to me in steps so i can paste it on the doc
+
+**What Claude did:**
+- Rewrote the Turn 205 demo steps as plain numbered steps in one plain-text block, so they paste cleanly into a document with no Markdown symbols. Same commands, expected results and talking points, in a shorter form.
+- `main` had nothing new; pull request #32 is still open.
+- Logged this turn (J206).
+
+**Claude's answer (summary):** the demo steps as plain text, ready to paste.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
