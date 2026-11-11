@@ -1,0 +1,65 @@
+{
+  "run": {
+    "run_id": "test3-a-shuffled-p1",
+    "scraper": "a",
+    "start_url": "http://127.0.0.1:50591/products/p1",
+    "page_cap": 1,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-11T17:55:28.084467+00:00",
+    "seconds": 0.004
+  },
+  "pages": [
+    {
+      "path": "/products/p1",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/products/p1",
+      "field": "name",
+      "value": "$89.99"
+    },
+    {
+      "page": "/products/p1",
+      "field": "category",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "price",
+      "value": "2024-09-12"
+    },
+    {
+      "page": "/products/p1",
+      "field": "sku",
+      "value": "Reviews"
+    },
+    {
+      "page": "/products/p1",
+      "field": "rating",
+      "value": "Brand"
+    },
+    {
+      "page": "/products/p1",
+      "field": "review_count",
+      "value": "Description"
+    },
+    {
+      "page": "/products/p1",
+      "field": "availability",
+      "value": "4.5"
+    },
+    {
+      "page": "/products/p1",
+      "field": "release_date",
+      "value": "LF-HP-2041"
+    },
+    {
+      "page": "/products/p1",
+      "field": "description",
+      "value": "Larkfield"
+    }
+  ]
+}

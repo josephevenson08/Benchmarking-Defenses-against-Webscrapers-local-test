@@ -1,0 +1,60 @@
+{
+  "test": "Test 3: extraction rule",
+  "run_at": "2026-11-11T11:55:29",
+  "commit": "c0972ff",
+  "results": [
+    {
+      "case": "baseline-p2",
+      "scraper": "a",
+      "path": "/products/p2",
+      "expected_records": 10,
+      "records": 10,
+      "pages_ok": true,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "duplicates": false,
+      "passed": true
+    },
+    {
+      "case": "baseline-p2",
+      "scraper": "b",
+      "path": "/products/p2",
+      "expected_records": 10,
+      "records": 10,
+      "pages_ok": true,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "duplicates": false,
+      "passed": true
+    },
+    {
+      "case": "shuffled-p1",
+      "scraper": "a",
+      "path": "/products/p1",
+      "expected_records": 9,
+      "records": 9,
+      "pages_ok": true,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "duplicates": false,
+      "passed": true
+    },
+    {
+      "case": "shuffled-p1",
+      "scraper": "b",
+      "path": "/products/p1",
+      "expected_records": 9,
+      "records": 9,
+      "pages_ok": true,
+      "missing": [],
+      "extra": [],
+      "wrong": [],
+      "duplicates": false,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

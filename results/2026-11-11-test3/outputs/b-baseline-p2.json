@@ -1,0 +1,70 @@
+{
+  "run": {
+    "run_id": "test3-b-baseline-p2",
+    "scraper": "b",
+    "start_url": "http://127.0.0.1:58431/products/p2",
+    "page_cap": 1,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-11T17:55:27.190940+00:00",
+    "seconds": 0.116
+  },
+  "pages": [
+    {
+      "path": "/products/p2",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/products/p2",
+      "field": "name",
+      "value": "Corvane Desk Lamp"
+    },
+    {
+      "page": "/products/p2",
+      "field": "brand",
+      "value": "Corvane"
+    },
+    {
+      "page": "/products/p2",
+      "field": "category",
+      "value": "Lighting"
+    },
+    {
+      "page": "/products/p2",
+      "field": "price",
+      "value": "$34.50"
+    },
+    {
+      "page": "/products/p2",
+      "field": "sku",
+      "value": "CV-LT-0317"
+    },
+    {
+      "page": "/products/p2",
+      "field": "rating",
+      "value": "4.2"
+    },
+    {
+      "page": "/products/p2",
+      "field": "review_count",
+      "value": "356"
+    },
+    {
+      "page": "/products/p2",
+      "field": "availability",
+      "value": "Low stock"
+    },
+    {
+      "page": "/products/p2",
+      "field": "release_date",
+      "value": "2023-11-03"
+    },
+    {
+      "page": "/products/p2",
+      "field": "description",
+      "value": "Adjustable LED lamp with three color temperatures and a weighted base."
+    }
+  ]
+}
