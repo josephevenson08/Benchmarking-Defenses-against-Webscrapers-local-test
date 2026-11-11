@@ -290,6 +290,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J189 | 189 | Fixed format in both files (message cut off) | Answered with Turn 190 |
 | J190 | 190 | p1's 20 source lines | p2 done; p1 still real values: numbered lines and a lookup table with one worked row (Turn 190) |
 | J191 | 191 | So what should it look like? | Full skeleton of shuffled-p1/expected.json with name filled and 8 empty values plus their source lines; Joseph fills them in (Turn 191) |
+| J192 | 192 | Filled-in shuffled-p1 values | Values right except `In Stock` → `In stock`; field keys reverted to labels, put keys back (Turn 192) |
 
 ### Questions from Claude
 
@@ -7705,3 +7706,32 @@ Joseph reads the other nine values from the numbered list. The last line is a la
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The expected values remain Joseph's.
+
+### Turn 192 — 2026-11-11 17:54 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "path": "/products/p1",
+>   "records": [
+>     {"field": "Name",         "value": "$89.99"},
+>     {"field": "Category",     "value": "In Stock"},
+>     {"field": "Availability", "value": "4.5"},
+>     {"field": "Price",        "value": "2024-09-12"},
+>     {"field": "Release Date", "value": "LF-HP-2041"},
+>     {"field": "SKU",          "value": "Reviews"},
+>     {"field": "Reviews", "value": "Description"},
+>     {"field": "Description",  "value": "Larkfield"},
+>     {"field": "Rating",       "value": "Brand"}
+>   ]
+> }
+
+**What Claude did:** checked Joseph's filled-in `shuffled-p1/expected.json`.
+- **Values:** 8 of 9 are now right, all read correctly from the line after each label (including the label-as-value cases). One is off by a capital letter: `category` should be `In stock`, as on line 4, not `In Stock`. The test compares text exactly.
+- **Fields:** the `field` entries were changed back to labels (`Name`, `Release Date`, `Reviews`, …). They have to be the keys (`name`, `release_date`, `review_count`, …), as in the skeleton.
+
+**Claude's answer (summary):** the values are right. Two fixes: put the field keys back as in the skeleton (all lowercase, with underscores), and make it `In stock` with a lowercase s. Then save both files and run `python measurement/test3.py`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The values are Joseph's hand work.
