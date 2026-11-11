@@ -287,6 +287,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J186 | 186 | Let's continue | Test 3 harness and saved pages built (D61, #30); Joseph fills in expected.json by hand (Turn 186) |
 | J187 | 187 | OK I'm back, what do we need to do today? | Wed Nov 11: Test 3 (merge #30, expected.json by hand, run and commit), about 1–1.5 h (Turn 187) |
 | J188 | 188 | First drafts of both expected.json files | Format: drop `<…>`, use field keys; p2 values right; p1 must follow the source order, not the screen (Turn 188) |
+| J189 | 189 | Fixed format in both files (message cut off) | Answered with Turn 190 |
+| J190 | 190 | p1's 20 source lines | p2 done; p1 still real values: numbered lines and a lookup table with one worked row (Turn 190) |
 
 ### Questions from Claude
 
@@ -7605,3 +7607,86 @@ That completes Test 3 two days early. Saturday's (b) baseline runs and Test 1 th
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The expected output stays Joseph's hand work (§5 Test 3); Claude gave one worked example.
+
+### Turn 189 — 2026-11-11 17:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "path": "/products/p1",
+>   "records": [{"field": "name", "value": "Larkfield Studio Headphones"}, 
+>               {"field":"brand", "value":"Larkfield"},
+>               {"field":"category", "value":"Headphones"},
+>               {"field":"price", "value":"$89.99"},
+>               {"field":"sku", "value":"LF-HP-2041"},
+>               {"field":"rating", "value":"4.5"},
+>               {"field":"review_count", "value":"1,284"},
+>               {"field":"availability", "value":"In stock"},
+>               {"field":"release_date", "value":"2024-09-12"},
+>               {"field":"description", "value":"Closed-back over-ear headphones with 40 mm drivers and a detachable cable."}]
+> }
+>
+> {
+>   "path": "/products/p2",
+>   "records": [{"field":"name", "value":"Corvane Desk Lamp"},
+>               {"field":"brand", "value":"Corvane"},
+>               {"field":"category", "value":"Lighting"},
+>               {"field":"price", "value":"$34.50"},
+>               {"field":"sku", "value":"CV-LT-0317"},
+>               {"field":"rating", "value":"4.2"},
+>               {"field":"review_count", "value":"356"},
+>               {"field":"availability", "value":"Low stock"},
+>               {"field":"release_date", "value":"2023-11-03"},
+>               {"field":"description", "value":"Adjustable LED lamp with three color temperatures and a weighted base."}]
+> }
+
+**What Claude did:** nothing separately. Joseph interrupted this message and sent the p1 source lines in Turn 190; both are answered together there.
+
+**Claude's answer (summary):** see Turn 190.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 190 — 2026-11-11 17:45 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> <span class="value" style="order: 1">Larkfield Studio Headphones</span>
+>       <span class="value" style="order: 13">1,284</span>
+>       <span class="label" style="order: 4">Category</span>
+>       <span class="value" style="order: 15">In stock</span>
+>       <span class="label" style="order: 14">Availability</span>
+>       <span class="value" style="order: 11">4.5</span>
+>       <span class="label" style="order: 0">Name</span>
+>       <span class="value" style="order: 7">$89.99</span>
+>       <span class="label" style="order: 6">Price</span>
+>       <span class="value" style="order: 17">2024-09-12</span>
+>       <span class="label" style="order: 16">Release date</span>
+>       <span class="value" style="order: 9">LF-HP-2041</span>
+>       <span class="label" style="order: 8">SKU</span>
+>       <span class="label" style="order: 12">Reviews</span>
+>       <span class="label" style="order: 18">Description</span>
+>       <span class="value" style="order: 3">Larkfield</span>
+>       <span class="value" style="order: 19">Closed-back over-ear headphones with 40 mm drivers and a detachable cable.</span>
+>       <span class="value" style="order: 5">Headphones</span>
+>       <span class="label" style="order: 10">Rating</span>
+>       <span class="label" style="order: 2">Brand</span>
+
+**What Claude did:** read both messages together (Turn 189, cut off, and this one).
+- **baseline-p2:** now correct (keys, no brackets, the 10 real values). Done.
+- **shuffled-p1:** the format is fixed, but the values are still the *real* ones from the screen, not what the rule takes from the source.
+- Joseph pasted the 20 source lines of p1's fields block, so he is working from the right place.
+
+To help him read it off without Claude doing it for him:
+- numbered the 20 lines;
+- made a table listing each of the 10 labels with its line number and "the line after it" (line N+1);
+- filled in only the first row as a worked example (Name, line 7 → line 8, `$89.99`).
+
+Joseph reads the other nine values from the numbered list. The last line is a label, so it has no record.
+
+**Claude's answer (summary):** p2 done. For p1: the numbered source lines plus the table with one row worked. Joseph fills in the value column from line N+1 (and leaves out the label with no line after it), then writes the records with the field keys. Paste the result.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The values stay Joseph's hand work (§5 Test 3); Claude only numbered the lines and set up the lookup.
