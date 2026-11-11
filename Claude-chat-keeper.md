@@ -8083,7 +8083,7 @@ Then Joseph's questions.
   - the honeypot page's source has `<a href="/trap" style="display: none;">Archive</a>`;
   - (b) on shuffled: 4/70, the same as (a).
 - `main` had nothing new; pull request #32 is still open.
-- Logged this turn (J204).
+- Logged this turn (J205; J204 for Turn 204).
 
 **Claude's answer (summary):** the demo steps in the chat, about 8 minutes, with expected results and fixes for common problems.
 
