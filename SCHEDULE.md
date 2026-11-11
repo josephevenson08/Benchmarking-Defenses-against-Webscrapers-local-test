@@ -83,7 +83,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Thu Nov 12** | ✅ (done early, Wed Nov 11) Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. Joseph's `expected.json` for `baseline-p2` (10 real values) and `shuffled-p1` (9 records: the text after each label in source order; Brand, the last element, gives none). Commit pending. | J |
 | | ✅ (done early, Tue Nov 10) Draft the harness that runs (a) and (b) on those fixtures. `measurement/test3.py`, with the two saved pages in `measurement/fixtures/test3/` (`baseline-p2`, `shuffled-p1`); the `expected.json` files are left empty for Joseph's hand-worked answers. | C |
 | **Fri Nov 13** | ✅ (done early, Wed Nov 11) Run Test 3 for (a) and (b) on baseline and shuffled; fix problems. ⭐ **Passed** on the laptop: (a) and (b) match the hand-worked output exactly on both pages (10/10 and 9/9 records). Commit pending. | J |
-| **Sat Nov 14** | (b) baseline check: 3 runs at ≥ 90%. Test 1: baseline, shuffled and honeypot each have 10 pages and 70 fields; (a) and (b) reach ≥ 90% on baseline. | J |
+| **Sat Nov 14** | (b) baseline check: 3 runs at ≥ 90%. Test 1: baseline, shuffled and honeypot each have 10 pages and 70 fields; (a) and (b) reach ≥ 90% on baseline. Claude (Wed Nov 11): `measurement/test1.py` runs all of it; Claude's run: PASS (all six runs 70/70). Joseph: run it. | J |
 | **Sun Nov 15** | Buffer. | — |
 | **Mon Nov 16** | Buffer. Update the chat-keeper and README. | J, C |
 | **Tue Nov 17** | ⚠️ **Cut-line 1.** Are (a), (b), shuffling and the honeypot all working? If not, no Ambitious work starts. | J |
