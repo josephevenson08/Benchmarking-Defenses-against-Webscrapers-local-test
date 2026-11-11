@@ -22,8 +22,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 *Last updated: Wed Nov 11 (Turn 196 of the chat-keeper).*
 
 > **▶ Resume here: ⭐ Milestone 2 complete (Wed Nov 11, six days before Cut-line 1).** Tests 1, 3, 4 and 6 passed; (b) 70/70 in 3 runs; shuffled 0.000% pixels; trap hits logged with run IDs.
-> 1. If not done yet: Joseph commits `results/2026-11-11-test1/`.
-> 2. Next: Joseph's questions. Then the Cut-line 1 check (formally on Nov 17; already met) and an early start on Milestone 3 if Joseph wants it.
+> - Next: Joseph's questions. Then the Cut-line 1 check (formally on Nov 17; already met) and an early start on Milestone 3 if Joseph wants it.
 
 ---
 
@@ -83,7 +82,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | **Thu Nov 12** | ✅ (done early, Wed Nov 11) Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. Joseph's `expected.json` for `baseline-p2` (10 real values) and `shuffled-p1` (9 records: the text after each label in source order; Brand, the last element, gives none). Committed (`4203f7f`). | J |
 | | ✅ (done early, Tue Nov 10) Draft the harness that runs (a) and (b) on those fixtures. `measurement/test3.py`, with the two saved pages in `measurement/fixtures/test3/` (`baseline-p2`, `shuffled-p1`); the `expected.json` files are left empty for Joseph's hand-worked answers. | C |
 | **Fri Nov 13** | ✅ (done early, Wed Nov 11) Run Test 3 for (a) and (b) on baseline and shuffled; fix problems. ⭐ **Passed** on the laptop: (a) and (b) match the hand-worked output exactly on both pages (10/10 and 9/9 records). Committed (`results/2026-11-11-test3/`). | J |
-| **Sat Nov 14** | ✅ (done early, Wed Nov 11) (b) baseline check: 3 runs at ≥ 90%. Test 1: baseline, shuffled and honeypot each have 10 pages and 70 fields; (a) and (b) reach ≥ 90% on baseline. ⭐ **Passed** on the laptop (`measurement/test1.py`, commit `7c5ae6c`): all three conditions 10 pages / 70 fields; (a) and (b) 70/70 in all 3 runs each ((a) 0.015–0.017 s per page, (b) 0.026–0.031 s). Commit of `results/2026-11-11-test1/` pending. | J |
+| **Sat Nov 14** | ✅ (done early, Wed Nov 11) (b) baseline check: 3 runs at ≥ 90%. Test 1: baseline, shuffled and honeypot each have 10 pages and 70 fields; (a) and (b) reach ≥ 90% on baseline. ⭐ **Passed** on the laptop (`measurement/test1.py`, commit `7c5ae6c`): all three conditions 10 pages / 70 fields; (a) and (b) 70/70 in all 3 runs each ((a) 0.015–0.017 s per page, (b) 0.026–0.031 s). Committed (`ff9bf29`, `results/2026-11-11-test1/`). | J |
 | **Sun Nov 15** | Buffer. | — |
 | **Mon Nov 16** | Buffer. Update the chat-keeper and README. | J, C |
 | **Tue Nov 17** | ⚠️ **Cut-line 1.** Are (a), (b), shuffling and the honeypot all working? If not, no Ambitious work starts. | J |
