@@ -1,4 +1,14 @@
 {
   "path": "/products/p1",
-  "records": []
+  "records": [
+    {"field": "name",         "value": "$89.99"},
+    {"field": "category",     "value": "In stock"},
+    {"field": "availability", "value": "4.5"},
+    {"field": "price",        "value": "2024-09-12"},
+    {"field": "release_date", "value": "LF-HP-2041"},
+    {"field": "sku",          "value": "Reviews"},
+    {"field": "review_count", "value": "Description"},
+    {"field": "description",  "value": "Larkfield"},
+    {"field": "rating",       "value": "Brand"}
+  ]
 }
