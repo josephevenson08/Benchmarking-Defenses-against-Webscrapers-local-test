@@ -1,4 +1,13 @@
 {
   "path": "/products/p2",
-  "records": []
+  "records": [{"field":"name", "value":"Corvane Desk Lamp"},
+              {"field":"brand", "value":"Corvane"},
+              {"field":"category", "value":"Lighting"},
+              {"field":"price", "value":"$34.50"},
+              {"field":"sku", "value":"CV-LT-0317"},
+              {"field":"rating", "value":"4.2"},
+              {"field":"review_count", "value":"356"},
+              {"field":"availability", "value":"Low stock"},
+              {"field":"release_date", "value":"2023-11-03"},
+              {"field":"description", "value":"Adjustable LED lamp with three color temperatures and a weighted base."}]
 }
