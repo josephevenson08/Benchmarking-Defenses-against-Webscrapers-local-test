@@ -89,6 +89,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D58 | 176 | **⭐ Test 4 passed (Tue Nov 10).** On Joseph's laptop, `measurement/test4.py` gave: 12 files identical across two generations with the same seed; source order differs on 8 of 8 item pages; pixel difference 0.000% on all 10 pages (limit 1%). Joseph checked all 10 screenshot pairs by eye: 10/10 "yes" (`by-eye.md`). Saved in `results/2026-11-10-test4/` (commits `9249f3a`, `8cb66ee`, `119a18f`). README Milestone 2 "DOM shuffling (Test 4)" ticked. | — | Joseph (ran it and did the by-eye check); Claude (harness) | §5 Test 4 (all four conditions). §7 Milestone 2 (shuffling built and tested). | Follows |
 | D59 | 183 | **Test 6 harness** (`measurement/test6.py`). **Part A (Test 6):** serves `honeypot` on its own port (3100) with a fresh log; sends a trap request and a normal-page request with run ID `test6`, one request with no User-Agent, and a follow-up to show the server is up; counts log lines by run ID and path. Tarpit part reported n/a. **Part B (the honeypot pages):** exactly one trap link per page, not visible in Chromium, and pixel difference ≤ 1%. Writes `results/<date>-test6/`. | Test 6 only, without the page checks | Claude (Claude's harness task) | §5 Test 6 ("I send one request to the trap path and one to a normal page, both with run ID R, plus one request with no User-Agent... I count log lines by run ID and path"). §2 (one `display:none` link per page). Part B: Adds. A visible link moved pixels only 0.343%, so the explicit visibility check matters. | Follows (Part B: Adds) |
 | D60 | 184 | **⭐ Test 6 passed (Tue Nov 10, a day early).** On Joseph's laptop (commit `1333604`), `measurement/test6.py` gave: trap request with run `test6` logged as 1 hit; normal page with `test6` not a hit; no-User-Agent request logged as `unknown` with empty user agent; server stayed up; no other run flagged. Honeypot pages: 10/10 with exactly one hidden trap link; 0.000% pixel difference from baseline. Saved in `results/2026-11-10-test6/` (`e72ea07`). README Milestone 2 "Honeypot link (Test 6)" ticked. | — | Joseph (ran it); Claude (harness) | §5 Test 6. §7 Milestone 2 (honeypot built and tested). | Follows |
+| D61 | 186 | **Test 3 harness** (`measurement/test3.py`). Each case is a folder in `measurement/fixtures/test3/` with a saved `page.html` and a hand-worked `expected.json` (`{path, records: [{field, value}]}`). The harness serves the saved page alone at its real path (plus an allow-all robots.txt), runs (a) and (b) with `--page-cap 1` (no scraper changes needed), and compares field by field: same fields, same values, nothing missing or extra. Cases: `baseline-p2` and `shuffled-p1`, saved from the generator on Nov 10, so the cases never change under the test. `expected.json` is left empty for Joseph. (d) and poisoned cases come later. | Run the scrapers on the live generated site; Claude writing the expected output | Claude (harness); Joseph (expected output, by hand) | §5 Test 3 ("I run the label-plus-next-text rule in (a), (b) and (d) on a baseline page, a shuffled page with a known scrambled order, and a poisoned page (once built), with expected JSON worked out by hand. (a) and (b) should match their expected output exactly"). | Follows (saved snapshot pages: Adds) |
 
 ---
 
@@ -283,6 +284,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J183 | 183 | Let's continue | Test 6 script built (D59, #28); Joseph's committed honeypot passes it in Claude's run; suggestion: `${page.trapPath}` instead of a hard-coded `/trap` (Turn 183) |
 | J184 | 184 | Test 6 on the laptop: all PASS | ⭐ Test 6 passed (D60); a day ahead; stop or start Test 3? (Turn 184) |
 | J185 | 185 | Let's stop here for today | Session ended; end-of-session pull request (Turn 185) |
+| J186 | 186 | Let's continue | Test 3 harness and saved pages built (D61, #30); Joseph fills in expected.json by hand (Turn 186) |
+| J187 | 187 | OK I'm back, what do we need to do today? | Wed Nov 11: Test 3 (merge #30, expected.json by hand, run and commit), about 1–1.5 h (Turn 187) |
 
 ### Questions from Claude
 
@@ -318,7 +321,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Thu Nov 12, Milestone 2):** ⭐ Test 4 (D58) and ⭐ Test 6 (D60) passed on Nov 10. Next: Test 3. Joseph works out the expected JSON by hand for a baseline page and a shuffled page; Claude drafts the harness that runs (a) and (b) on them. Optional for Joseph: use `${page.trapPath}` instead of the hard-coded `/trap` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Test 3, Milestone 2):** ⭐ Test 4 (D58) and ⭐ Test 6 (D60) passed on Nov 10. The Test 3 harness and two saved pages are built (D61, pull request #30). Next: Joseph fills in `measurement/fixtures/test3/*/expected.json` by hand, runs `python measurement/test3.py` and commits the results. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -331,6 +334,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 **▶ Resume here (Fri Oct 30, after a break):** part 1 done. Next: Joseph commits `scrapers/a_raw_html.py`, then part 2a (crawl loop; Claude opens with a standalone queue + visited example). Earlier note: see the re-plan (D44) in `SCHEDULE.md`. C20 → scraper (a) parts 1–2 today → parts 3–4 Sat → first full run Sun → ⭐ Check 2 Mon → close Tue. Older note: ⭐ Check 1 passed. Next: C20 (#1 page mapping, #6 tags as a list), then step 9 (scraper (a): fetch `/products/p1`, find the label rows, print 10 pairs). Older note: Joseph starts step 8 (verify the scoring script, ⭐ Check 1), then decides C20, then scraper (a). Earlier note: Milestone 1 steps 1–5 are done. Joseph sets up the project on the laptop, writes the Test 2 fixture by hand (step 6), and starts scraper (a). Claude writes the scoring script once the fixture is in the repo. The full plan is in `SCHEDULE.md`.
 
 The day-by-day plan, with who does what, is in [`SCHEDULE.md`](SCHEDULE.md).
+
+- **⚠️ Merge needed:** pull request #30 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/30), the Test 3 harness and its saved pages.
 
 
 
@@ -7497,3 +7502,58 @@ Result: `<a href="    undefined" style="display: none;">undefined</a>`. The link
 **Questions Claude asked:** none. The Turn 184 question is answered: stop for today.
 
 **Direction and fit:** no new decision. Applies D40.
+
+### Turn 186 — 2026-11-10 20:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets continue
+
+**What Claude did:**
+- Synced: merged `main` (#29).
+- Read the midterm's Test 3 text (§5).
+- **Built Claude's half of Test 3 (D61)**, scheduled Thu Nov 12, done early:
+  - `measurement/test3.py`;
+  - two cases saved from the generator: `measurement/fixtures/test3/baseline-p2/` and `shuffled-p1/`, each a `page.html` plus an empty `expected.json`;
+  - a guide in `measurement/fixtures/test3/README.md` for working out the answers by hand;
+  - 3 Python tests (15 in `measurement/tests`).
+- **Checked it** with Claude's own answers in a scratch copy, not committed (Joseph must work them out himself):
+  - (a) and (b) PASS on both cases (10 records on baseline p2, 9 on shuffled p1);
+  - a deliberately wrong answer fails and names the field;
+  - the empty files fail with "has no records yet".
+- Python Playwright's default browser now launches here, so (b) ran unmodified.
+- Updated `README.md` (Test 3 command) and `SCHEDULE.md` (Thu Nov 12 Claude row ticked). Committed `5765254` and opened pull request #30: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/30
+
+**Claude's answer (summary):** Joseph's part of Test 3, about 45–60 minutes:
+1. Merge #30 and Sync.
+2. Fill in both `expected.json` files by hand from `page.html`, following the README there:
+   - baseline p2: 10 records, the real values;
+   - shuffled p1: for each label, the text of the element right after it in the source; a label that is last gives no record.
+
+   Paste them for a check before running.
+3. `python measurement/test3.py`, then commit `results/<date>-test3/` and the two `expected.json` files.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D61 (Follows; saved snapshot pages: Adds). Joseph writes the expected output (§5: "worked out by hand").
+
+### Turn 187 — 2026-11-11 17:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok im back what do we need to do today
+
+**What Claude did:**
+- Checked GitHub: pull request #30 (Test 3 harness) is **not merged yet**, and the two `expected.json` files are still empty. The branch is up to date with `main`.
+- Worked out today's plan from `SCHEDULE.md`. Wed Nov 11's own tasks (honeypot, Test 6) were done on Nov 10, so today can take Thursday's and Friday's Test 3 work.
+
+**Claude's answer (summary):** today (Wed Nov 11) is about 1–1.5 hours for Joseph, all Test 3:
+1. Merge #30 and Sync (5 min).
+2. Fill in both `expected.json` files by hand (45–60 min): baseline p2's 10 real values; shuffled p1's "text of the element right after each label". Paste them for a check.
+3. Run `python measurement/test3.py` and commit the results (10 min).
+
+That completes Test 3 two days early. Saturday's (b) baseline runs and Test 1 then become the last Milestone 2 tasks before Cut-line 1.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Follows the schedule (D30), a day or two ahead.

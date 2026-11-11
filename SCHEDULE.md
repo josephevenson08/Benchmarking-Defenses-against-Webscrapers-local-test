@@ -80,7 +80,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | | ✅ Start the honeypot link: one `display:none` link per page to the trap path. `site/defenses/honeypot.js`: `mainEnd` returns `<a href="/trap" style="display: none;">Archive</a>` at the end of every page's `<main>`. Laptop practice run: scraper (a) as `a-honeypot-1` visited 11 pages including `/trap`, logged as `honeypot_hit: true`. Claude's check: 0.000% pixels vs baseline; (a) and (b) each one trap hit and 70/70. Committed (`ed19725`). | J |
 | **Wed Nov 11** | ✅ (done early, Tue Nov 10) Finish the honeypot condition. Test 6: trap hit logged for run R, a normal page not flagged, missing User-Agent logged as `unknown`. ⭐ **Passed** on the laptop (`measurement/test6.py`): Test 6 PASS; honeypot pages PASS (10/10 one hidden trap link, 0.000% pixels). Saved in `results/2026-11-10-test6/` (`e72ea07`). | J + C |
 | **Thu Nov 12** | Test 3 fixtures: work out the expected JSON by hand for a baseline page and for a page in a known scrambled order. | J |
-| | Draft the harness that runs (a) and (b) on those fixtures. | C |
+| | ✅ (done early, Tue Nov 10) Draft the harness that runs (a) and (b) on those fixtures. `measurement/test3.py`, with the two saved pages in `measurement/fixtures/test3/` (`baseline-p2`, `shuffled-p1`); the `expected.json` files are left empty for Joseph's hand-worked answers. | C |
 | **Fri Nov 13** | Run Test 3 for (a) and (b) on baseline and shuffled; fix problems. | J |
 | **Sat Nov 14** | (b) baseline check: 3 runs at ≥ 90%. Test 1: baseline, shuffled and honeypot each have 10 pages and 70 fields; (a) and (b) reach ≥ 90% on baseline. | J |
 | **Sun Nov 15** | Buffer. | — |
