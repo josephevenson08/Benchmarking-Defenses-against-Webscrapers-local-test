@@ -289,6 +289,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J188 | 188 | First drafts of both expected.json files | Format: drop `<…>`, use field keys; p2 values right; p1 must follow the source order, not the screen (Turn 188) |
 | J189 | 189 | Fixed format in both files (message cut off) | Answered with Turn 190 |
 | J190 | 190 | p1's 20 source lines | p2 done; p1 still real values: numbered lines and a lookup table with one worked row (Turn 190) |
+| J191 | 191 | So what should it look like? | Full skeleton of shuffled-p1/expected.json with name filled and 8 empty values plus their source lines; Joseph fills them in (Turn 191) |
 
 ### Questions from Claude
 
@@ -7690,3 +7691,17 @@ Joseph reads the other nine values from the numbered list. The last line is a la
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The values stay Joseph's hand work (§5 Test 3); Claude only numbered the lines and set up the lookup.
+
+### Turn 191 — 2026-11-11 17:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so what should it look like?
+
+**What Claude did:** answered "so what should it look like?" with the finished *structure* of `shuffled-p1/expected.json`: the path, the 9 records in place with their field keys, `name` filled in as the worked example (`$89.99`), and the other 8 values left as empty strings `""`. Next to each empty value, Claude gave the line to copy it from (line N+1 in the numbered list). Claude did not fill in the 8 values: the expected output is meant to be worked out by Joseph (§5 Test 3, D61), and empty strings can't be mistaken for answers. If one is left empty, Test 3 fails, which flags it.
+
+**Claude's answer (summary):** the file skeleton, a "label → copy line" list, and a reminder that `brand` is left out. Paste the filled file, then run `python measurement/test3.py`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The expected values remain Joseph's.
