@@ -306,6 +306,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J201 | 201 | Make what I've done so far into a table I can put in a Word doc | `completed-work-table.docx` sent (Turn 201) |
 | J202 | 202 | Just give it to me here | Completed-work table printed in the chat (Turn 202) |
 | J203 | 203 | But in an Excel export | `completed-work-table.xlsx` sent (Turn 203) |
+| J204 | 204 | I need a demo to show what I've done; then: no, the steps to run a demo for someone to see | Demo steps in the chat; the one-command script was dropped (Turn 204) |
 
 ### Questions from Claude
 
@@ -8046,3 +8047,43 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 204 — 2026-11-11 22:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i need a demo to be able to show what i have done
+
+<!-- chat-keeper:pending -->
+
+### Turn 205 — 2026-11-11 22:49 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> no i mean that i need the steps to run a demo for someone to see
+
+**Joseph's follow-up while Claude was working (verbatim):**
+
+> no i mean that i need the steps to run a demo for someone to see
+
+**What Claude did:**
+- First read the request as "build a one-command demo". Started `measurement/demo.py`, which runs (a) and (b) on all three conditions and prints a results table, and ran it once:
+  - baseline: 70/70 for (a) and (b);
+  - shuffled: 4/70 for (a) and (b);
+  - honeypot: 70/70 for both, with 1 hit each and 11 pages fetched.
+
+  After Joseph's follow-up, deleted the script and its output. It was never committed.
+- Wrote step-by-step demo instructions for Joseph's laptop (VS Code, two terminals): set-up beforehand, then baseline, shuffled, honeypot, his code, the test reports and the AI-use log. Each step has what to run, what the audience should see, and what to say.
+- Checked the commands in the cloud:
+  - `npm run serve -- honeypot --log logs/demo-honeypot.jsonl` writes a fresh log;
+  - (a) on honeypot: 11 pages, 70/70, one `"honeypot_hit":true` line for `demo-a-honeypot`;
+  - the honeypot page's source has `<a href="/trap" style="display: none;">Archive</a>`;
+  - (b) on shuffled: 4/70, the same as (a).
+- `main` had nothing new; pull request #32 is still open.
+- Logged this turn (J204).
+
+**Claude's answer (summary):** the demo steps in the chat, about 8 minutes, with expected results and fixes for common problems.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The demo steps extend the meeting doc's demo plan (D65).
