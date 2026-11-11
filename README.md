@@ -191,6 +191,12 @@ python measurement/test6.py
 python measurement/test3.py
 ```
 
+**Test 1** (normal workflow): generates baseline, shuffled and honeypot and checks 10 pages and 70 fields in each, then serves the baseline on port 3100 with a fresh log, runs (a) and (b) three times each and scores every run (each must reach 90%); writes `results/<date>-test1/`:
+
+```bash
+python measurement/test1.py
+```
+
 The screenshots open the generated files directly, so no server is needed. `pixel_diff.mjs` uses pixelmatch with its default settings; if two screenshots differ in size, the extra pixels count as different. `--diff-dir` writes an image per page with the differing pixels marked, for checking by eye.
 
 Settings shared by every part (port, page cap, delays, seed, number of runs, trap path) are in `config.json`.
