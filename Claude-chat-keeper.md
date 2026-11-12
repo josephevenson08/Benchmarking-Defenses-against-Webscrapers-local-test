@@ -309,6 +309,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J204 | 204 | I need a demo to be able to show what I've done | Started a one-command demo script; superseded by Turn 205 |
 | J205 | 205 | No, the steps to run a demo for someone to see | Demo steps in the chat; the script was dropped (Turn 205) |
 | J206 | 206 | Give it to me in steps so I can paste it on the doc | Demo steps as plain text (Turn 206) |
+| J207 | 207 | What is left in Milestone 2? | Nothing required: merge #32 and the Nov 17 Cut-line 1 check (already met); three optional tidy-ups (Turn 207) |
 
 ### Questions from Claude
 
@@ -8104,6 +8105,30 @@ Then Joseph's questions.
 - Logged this turn (J206).
 
 **Claude's answer (summary):** the demo steps as plain text, ready to paste.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 207 — 2026-11-12 17:19 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok what is left in milestone 2?
+
+**What Claude did:**
+- Checked `SCHEDULE.md` (Milestone 2 rows and its "Done when" list) against the results. Every Milestone 2 task and every "Done when" item is done (D64).
+- Listed what is left:
+  1. Merge pull request #32, which puts the README and schedule updates on `main`. This is the Nov 16 "update the chat-keeper and README" task.
+  2. The formal Cut-line 1 check on Tue Nov 17, already met.
+  3. Optional tidy-ups:
+     - a debug print left at line 43 of `scrapers/b_browser_text.py` (the old clock lines near the lists are gone);
+     - `/trap` hard-coded in `site/defenses/honeypot.js` (works because `config.json` says `/trap`; `${page.trapPath}` would follow the config);
+     - C20, the scoring assumptions from Milestone 1.
+- `main` had nothing new; #32 is still open.
+- Logged this turn (J207).
+
+**Claude's answer (summary):** Milestone 2 is done. All that's left is merging #32 and the Nov 17 Cut-line 1 check (already met), plus three optional tidy-ups. Nov 12–16 are free for an early start on Milestone 3.
 
 **Questions Claude asked:** none.
 
