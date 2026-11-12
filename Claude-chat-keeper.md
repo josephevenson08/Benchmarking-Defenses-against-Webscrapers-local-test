@@ -310,6 +310,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J205 | 205 | No, the steps to run a demo for someone to see | Demo steps in the chat; the script was dropped (Turn 205) |
 | J206 | 206 | Give it to me in steps so I can paste it on the doc | Demo steps as plain text (Turn 206) |
 | J207 | 207 | What is left in Milestone 2? | Nothing required: merge #32 and the Nov 17 Cut-line 1 check (already met); three optional tidy-ups (Turn 207) |
+| J208 | 208 | Code visuals for my scrum meeting on how the scrapers work, very simple, for my presentation | Four 16:9 slide images sent (Turn 208) |
 
 ### Questions from Claude
 
@@ -8133,3 +8134,29 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 208 — 2026-11-12 17:21 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok, lets make some code visuals for my scrum meeting on how the scrapers work, very simple to put in my presentation
+
+**What Claude did:**
+- Fetched GitHub: Joseph merged pull request #32 (`67499f6`). Merged `main` into the branch (a fast-forward), per D40/D41.
+- Read `scrapers/a_raw_html.py` and `scrapers/b_browser_text.py`, so the visuals quote Joseph's real code.
+- Made four simple 16:9 slide images (PNG, 2560×1440) for Joseph's scrum presentation and sent them to him:
+  1. **The crawl loop:** start at the home page; take the next URL (`queue.pop(0)`, robots.txt check); download (`requests.get` / `page.goto`); find the fields (label → next element); queue every link, hidden ones too; repeat until the queue is empty or 15 pages; write the JSON. The run ID goes in the User-Agent.
+  2. **(a) vs (b):** only the download differs (`requests.get` + `response.content` vs `page.goto` + `page.content()`); about 0.016 vs 0.03 s per page; both 70/70 in Test 1.
+  3. **Finding a field:** the `Price`/`$89.99` HTML next to Joseph's three lines (`soup.find(string=...)`, `.parent.find_next_sibling()`, `records.append(...)`) and the resulting record; 70 fields.
+  4. **Why the defenses work:**
+     - shuffling: "Name" is followed by "$89.99", 70/70 → 4/70 for (a) and (b);
+     - honeypot: the hidden `/trap` link gets followed and logged as `honeypot_hit: true`, still 70/70 but flagged;
+     - next, (d) should beat both.
+- Drew them as HTML (Inter and JetBrains Mono, black and white with one blue accent) and screenshotted them with Playwright. Checked each one at 1× for overflowing text: fixed a wrapped title and a note that spilled out of its box on slide 1, and a squeezed badge on slide 3, then rendered at 2×. Files are in Claude's scratch folder, not the repo (presentation material, not project code). The numbers come from the Test 1 report and the Turn 204–205 runs.
+- Logged this turn (J208).
+
+**Claude's answer (summary):** the four images, what each one shows, and a suggested order. Each fills a 16:9 slide.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. These are teaching visuals of Joseph's own code; Claude wrote no scraper code (CLAUDE.md, midterm §2).
