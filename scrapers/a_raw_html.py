@@ -71,14 +71,14 @@ while queue and len(visited) < page_cap:
     if url in visited:
         continue
     visited.add(url)
-    if args.robots == "obey" and not rules.can_fetch(user_agent, url):
+    if args.robots == "obey" and not rules.can_fetch(user_agent, url): #if robots disallows the page and i obey, skip it
         print("skipped (robots.txt):", url)
         continue
 
-    path = urlparse(url).path
+    path = urlparse(url).path #get the path of the url
     try:
-        response = requests.get(url, headers={"User-Agent": user_agent}, timeout=5)
-    except requests.exceptions.Timeout:
+        response = requests.get(url, headers={"User-Agent": user_agent}, timeout=5) #timeout or connection error, skip the page
+    except requests.exceptions.Timeout: 
         print("timeout", url)
         pages.append({"path": path, "status": None, "error": "timeout"})
         continue
@@ -89,13 +89,13 @@ while queue and len(visited) < page_cap:
     print(response.status_code, url)
     pages.append({"path": path, "status": response.status_code, "error": None})
 
-    soup = BeautifulSoup(response.content, "html.parser")
-    for field in all_fields:
+    soup = BeautifulSoup(response.content, "html.parser") #build the tree
+    for field in all_fields: #iterate through each field to extract
         label_element = soup.find(string=field["label"])
-        if label_element:
-            value_element = label_element.parent.find_next_sibling()
+        if label_element: 
+            value_element = label_element.parent.find_next_sibling() 
             if value_element:
-                records.append({"page": path, "field": field["key"], "value": value_element.get_text(strip=True)})
+                records.append({"page": path, "field": field["key"], "value": value_element.get_text(strip=True)}) #save the field value to records
     for a in soup.find_all("a"):                 # every link, hidden ones too
         link = urljoin(url, a.get("href", ""))   
         same_site = urlparse(link).netloc == urlparse(start_url).netloc
