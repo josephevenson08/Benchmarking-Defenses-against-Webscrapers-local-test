@@ -246,7 +246,9 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 - [x] DOM shuffling (Test 4 passed Nov 10: byte-identical regeneration, source order differs on all 8 item pages, 0.000% pixel difference, 10 pairs checked by eye; [`results/2026-11-10-test4/`](results/2026-11-10-test4/))
 - [x] Honeypot link (Test 6 passed Nov 10: trap hit logged for the run, normal page not flagged, missing User-Agent logged as `unknown`; one hidden trap link per page, 0.000% pixel difference; [`results/2026-11-10-test6/`](results/2026-11-10-test6/))
 - [x] Basic pixel-diff script (`measurement/screenshots.py` + `measurement/pixel_diff.mjs`; shuffled vs baseline: 0.000% on all 10 pages, Nov 9)
-- [ ] Baseline check for (a) and (b) (Tests 1 and 3)
+- [x] Baseline check for (a) and (b) (Test 3 passed Nov 11: (a) and (b) match the hand-worked output on the baseline and shuffled pages, [`results/2026-11-11-test3/`](results/2026-11-11-test3/); Test 1 passed Nov 11: 10 pages and 70 fields in each condition, (a) and (b) 70/70 in all 3 runs each, [`results/2026-11-11-test1/`](results/2026-11-11-test1/))
+
+**Milestone 2 completed Nov 11, six days before Cut-line 1.**
 
 ### Milestone 3: Nov 18 – Dec 1
 - [ ] User-cost runner (pixel-diff, Lighthouse, axe-core, reading order)
