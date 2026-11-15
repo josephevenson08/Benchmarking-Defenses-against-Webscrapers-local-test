@@ -311,6 +311,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J206 | 206 | Give it to me in steps so I can paste it on the doc | Demo steps as plain text (Turn 206) |
 | J207 | 207 | What is left in Milestone 2? | Nothing required: merge #32 and the Nov 17 Cut-line 1 check (already met); three optional tidy-ups (Turn 207) |
 | J208 | 208 | Code visuals for my scrum meeting on how the scrapers work, very simple, for my presentation | Four 16:9 slide images sent (Turn 208) |
+| J209 | 209 | What should I show about the test site? | Five things to show, with what to say (Turn 209) |
 
 ### Questions from Claude
 
@@ -8160,3 +8161,28 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. These are teaching visuals of Joseph's own code; Claude wrote no scraper code (CLAUDE.md, midterm §2).
+
+### Turn 209 — 2026-11-15 23:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok can you tell me what i should show about the test site
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new; the branch is level with it apart from log commits.
+- Regenerated the baseline to confirm the folder layout and manifest fields quoted in the answer:
+  - the home page, the product list, 6 product pages, 2 article pages and robots.txt;
+  - the manifest holds `seed` 20261021, `scored_fields` 70 and a seed per page.
+- Listed what to show about the test site for the scrum presentation, from `site/generate.js`, `site/server.js`, `data/` and `config.json`:
+  1. the site in the browser;
+  2. the data list as the answer key;
+  3. one data list building every condition;
+  4. the request log;
+  5. the design choices that keep the test fair.
+- Logged this turn (J209).
+
+**Claude's answer (summary):** what to show about the test site and what to say, in five points, plus what to skip. Offered a slide image like the scraper ones.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
