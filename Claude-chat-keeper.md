@@ -312,6 +312,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J207 | 207 | What is left in Milestone 2? | Nothing required: merge #32 and the Nov 17 Cut-line 1 check (already met); three optional tidy-ups (Turn 207) |
 | J208 | 208 | Code visuals for my scrum meeting on how the scrapers work, very simple, for my presentation | Four 16:9 slide images sent (Turn 208) |
 | J209 | 209 | What should I show about the test site? | Five things to show, with what to say (Turn 209) |
+| J210 | 210 | Walk me through the scrapers I have done: (a) raw HTTP + HTML parser, then (b) the Playwright browser | Walkthrough of (a) and (b) (Turn 210) |
 
 ### Questions from Claude
 
@@ -8186,3 +8187,28 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 210 — 2026-11-15 23:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now walk me the scrapers i have done, teh raw http plus html parser and then the playwright browser that reads text after load,
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Read `scrapers/a_raw_html.py` and `scrapers/b_browser_text.py` in full.
+- Ran (a) once on the baseline (scratch log, deleted) to show the real visiting order:
+  - `/`, `/products/`, `/articles/a1`, `/articles/a2`, then `p1`–`p6`;
+  - 10 pages, 70 records.
+- Walked Joseph through his own code (explanation only; no code changes):
+  - (a), part by part with line numbers: imports; inputs; the field list from `fields.json`; robots.txt; bookkeeping; the crawl loop (pick, robots check, download, extract, queue links); output;
+  - (b), only what differs: the Playwright import, one browser and page with the run ID, `page.goto(wait_until="load")`, Playwright's own errors, `response.status`, `page.content()`, the clock (D52) and `browser.close()`.
+- Noted that (b) reads the browser's HTML after load with (a)'s rule (Joseph's choice in D51), not the visible text.
+- Listed optional tidy-ups: the commented-out first version in (a), lines 22–45; the debug print at (b) line 43.
+- Logged this turn (J210).
+
+**Claude's answer (summary):** the walkthrough of (a) and then (b), with a one-run trace and things worth knowing.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Explaining Joseph's code is allowed (CLAUDE.md, midterm §2).
