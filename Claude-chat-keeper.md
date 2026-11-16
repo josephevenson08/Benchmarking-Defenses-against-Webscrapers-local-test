@@ -331,6 +331,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J226 | 226 | So we run the test site first, then scrapers (a) and (b), then the defenses (DOM shuffling and honeypot)? | Order clarified: the site version is switched for each defense, then the scraper reruns; optional (b) baseline command (Turn 226) |
 | J227 | 227 | So what am I showing: testbed, which scrapers and which defenses? | Testbed + (a) and (b) + shuffling and honeypot; poisoning, tarpit, (c)–(e) not built yet (Turn 227) |
 | J228 | 228 | So scraper (a) against both defenses, then scraper (b) against both? | Recommended (a) then (b) on each site version; six runs with commands (Turn 228) |
+| J229 | 229 | Is my understanding right? Shuffled: both 4/70 ((a) raw HTML, (b) after CSS loads); honeypot: both 70/70 with 11 pages | Mostly right; CSS doesn't change the HTML (b) reads; 1 trap hit per run (Turn 229) |
 
 ### Questions from Claude
 
@@ -9110,5 +9111,30 @@ Then Joseph's questions.
 **Claude's answer (summary):** yes, but grouped by site version; the six runs, with commands and expected results.
 
 **Questions Claude asked:** whether to update `scrum meeting demo 11-15.docx` to the six-run version (open).
+
+**Direction and fit:** no new decision.
+
+### Turn 229 — 2026-11-16 02:20 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so from what i can tell from the shuffled defense both scrapers get 4/70 becuase the first is just taking the html values and then b scraps after the css loads after the html loads, both resulting in 4/70
+>
+> with the honey pot the first scraper gets 70/70 but 11 pages visited triggering the extra page trap, and scrapber b does the same ting visting all 10 pages with the trap as well?
+
+**What Claude did:**
+- Checked Joseph's understanding against fresh cloud runs (scratch outputs, deleted):
+  - shuffled: (a) and (b) wrote identical record sets (66 records, the same 4 correct);
+  - honeypot: (a) and (b) each fetched 11 pages and wrote 70 records, and each run has exactly one `/trap` hit in the log;
+  - the honeypot site has 10 trap links, one per page.
+- A first attempt was refused by the built-in safety check because of an `rm` on a shell-variable path. Nothing ran. Reran it with literal scratch paths for the cleanup.
+- Explained:
+  - Shuffling: his reading of (a) is right. For (b), the browser does load the CSS, but CSS never rewrites the HTML; `order` only moves things on screen. `page.content()` returns the HTML, still in shuffled order, so (b) reads exactly what (a) reads. What the browser adds is running scripts, which matters for poisoning, not shuffling.
+  - Honeypot: right. 11 pages = the 10 real pages + `/trap`. The link is on all 10 pages, but each scraper remembers what it has queued or visited, so it requests `/trap` once, giving 1 hit per run. The trap page has no fields, so the score stays 70/70. (b) follows the link because it reads links from the HTML, where the hidden link still exists.
+- Logged this turn (J229).
+
+**Claude's answer (summary):** mostly right; one correction for (b) on shuffling (CSS doesn't change the HTML) and two details on the honeypot (one hit per run; why the score is unchanged).
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
 **Direction and fit:** no new decision.
