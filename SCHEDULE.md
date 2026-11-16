@@ -19,11 +19,12 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Mon Nov 16 (Turn 240 of the chat-keeper): Milestone 3 re-planned after the scrum meeting (D66, D67, D68).*
+*Last updated: Mon Nov 16 (Turn 250 of the chat-keeper): Milestones 3 and 4 checked against the scrum feedback and decisions D66–D71, with time limits and fallbacks added.*
 
-> **▶ Resume here: Milestone 3 re-planned after the scrum meeting (Mon Nov 16).** The instructor asked for the LLM scraper (c) and the adaptive scraper (d) next, and for metrics that can be compared with published work. Joseph chose (c) first, then (d) (D67). The Essential experiment tooling (Claude) continues in parallel. Standard metrics and a table of published scores in the same units are added (D68).
-> - Next: Joseph installs Ollama and pulls 2–3 small models; Claude drafts the model-timing script.
-> - Poisoning, (e) and the tarpit now come after (c) and (d), so Cut-line 2 (Dec 1) will likely drop them unless (c) and (d) finish early.
+> **▶ Resume here (Mon Nov 16 evening):** the plan follows the scrum feedback: (c) first, then (d) (D66, D67); metrics comparable with published work (D68, D70, D71; `docs/metrics-plan.md`). The related-work table is already drafted from the papers.
+> - **Tue Nov 17, first:** Joseph installs Ollama, sends his RAM, pulls 2–3 small models. Claude drafts the model-timing script.
+> - **Time limits:** (c) gets until Sun Nov 22 to pass its baseline check, otherwise it is reported as "not usable" and work moves to (d). (d) gets until Sat Nov 28. The Essential work (runner, CSV, user cost, Essential runs, Test 7) is never delayed for (c) or (d).
+> - Poisoning, (e) and the tarpit start only if (c) and (d) finish early. Otherwise Cut-line 2 (Dec 1) drops them and the report says so.
 
 ---
 
@@ -90,16 +91,52 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 
 ---
 
-## Milestone 3 · Nov 18 – Dec 1 · Essential experiment, user cost, then (c) and (d)
+## Milestone 3 · Nov 17 – Dec 1 · Essential experiment, user cost, then (c) and (d)
 
-⭐ **Done when** (§7):
+⭐ **Done when** (§7, unchanged):
 - The results CSV has accuracy, honeypot hits and time per page for every cell, plus user-cost rows for each condition.
 - Test 7 passes for the (a) and (b) crawl loops.
 
-Re-planned on Mon Nov 16 after the scrum meeting (D66, D67, D68). The instructor asked for the LLM scraper (c) and the adaptive scraper (d) next; Joseph chose (c) first. Both are Joseph's code (§2); Claude explains, shows standalone examples, reviews, and drafts the tooling around them. The Essential tooling stays on its dates. Thanksgiving week is light.
+**Done when, for the Ambitious work as re-planned** (§1 items 3 and 4, narrowed by D66–D67):
+- (c) passes its baseline check (3 runs at ≥ 90%) and runs 3 times on baseline, shuffled and honeypot, or is reported as "not usable".
+- (d) passes the (d) part of Test 3 and runs 3 times on baseline, shuffled and honeypot.
+- The defense-by-scraper table is filled in for (a)–(d), with the standard metrics from `docs/metrics-plan.md`.
+
+Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor asked for the LLM scraper (c) and the adaptive scraper (d) next, and for metrics that can be compared with published work. Joseph chose (c) first. Both scrapers are Joseph's code (§2); Claude explains, shows standalone examples, reviews, and drafts the tooling around them. The Essential tooling stays on its dates and is never delayed for (c) or (d). Thanksgiving week is light.
+
+**Time limits:** (c) until Sun Nov 22 for its baseline check, otherwise "not usable" (§4 allows this for a model that cannot reach 90% on baseline) and work moves to (d). (d) until Sat Nov 28 for its runs. Whatever isn't running on Tue Dec 1 is dropped and reported (§7).
 
 | Day | Tasks | Who |
 |---|---|---|
+| **Tue Nov 17** | ⚠️ **Cut-line 1** (Milestone 2's last day): (a), (b), shuffling and the honeypot all work. ✅ Already met on Nov 11. | J |
+| | (A) Install Ollama on the laptop and pull 2–3 small models (CPU only: Intel Iris Xe; sizes chosen from the laptop's RAM). Check each model's license allows local research use (§2). | J |
+| | Model-timing script: time each pulled model on the text of 2–3 pages; record each model's name and digest, and the prompt tokens per page (D71). | C |
+| **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
+| | (A) Scraper (c), part 1: get each page's rendered text with (b)'s crawler; a first standalone call to Ollama. | J |
+| **Thu Nov 19** | Scoring: honeypot hits and time per page from the request log; write the results CSV. Count page requests only (a browser may also fetch `/favicon.ico`, and defenses may add script or style files). | C |
+| | (A) Time the models with the script and choose one for (c); record its name and digest. | J |
+| **Fri Nov 20** | Standard metrics in the scoring (D68, D70): field-level precision, recall and F1; extraction success rate (ESR, a run with 70/70 correct); relative reduction against baseline; honeypot detection and evasion rates. Accuracy and the fake-value rate stay as they are. | C |
+| | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff and SSIM against baseline, reading-order mismatch rate, HTML size per page against baseline (D71). | C |
+| | (A) Scraper (c), part 2: one fixed prompt per page type listing the field names, temperature 0; parse the reply as JSON. | J |
+| **Sat Nov 21** | User-cost runner, part 2: Lighthouse 5 times per page (median; performance score, FCP, LCP, TTI as changes from baseline) and axe-core violations. | C |
+| | (A) Scraper (c), part 3: require every expected key, convert price and rating to numbers; invalid JSON, a missing key or a timeout is a failure, with no retry. First baseline run. | J |
+| **Sun Nov 22** | (A) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. **Time limit for (c).** | J |
+| | (A) Start scraper (d): wait until the page has had no changes for 3 s, with a 10 s timeout. | J |
+| **Mon Nov 23** | **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs, with the runner. Check the outputs. | J |
+| **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. | J + C |
+| | User-cost runs for each condition. | C |
+| | (A) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. | J |
+| **Wed Nov 25** | (A) The (d) part of Test 3; (d) baseline check (3 runs at ≥ 90%). | J |
+| | Related-work table (`docs/metrics-plan.md`): the published side is already drafted from the papers; fill in our column with the Essential results ((a) and (b)). | C drafts, J reviews |
+| **Thu Nov 26** | **Thanksgiving: off.** | — |
+| **Fri Nov 27** | Light day or off. | — |
+| **Sat Nov 28** | (A) Runs: (c) (if usable) and (d) × baseline, shuffled and honeypot × 3 runs. **Time limit for (d).** | J |
+| **Sun Nov 29** | (A) The stub-model parts of Test 7 for (c). | J + C |
+| | Honeypot false-positive check: a human-like visitor that clicks only visible links should never hit the trap (D68). | C |
+| **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. | J |
+| **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. Poisoning, (e) and the tarpit start only if (c) and (d) finished early. | J |
+
+---|---|---|
 | **Tue Nov 17** | ⚠️ **Cut-line 1** (Milestone 2's last day): (a), (b), shuffling and the honeypot all work. ✅ Already met on Nov 11. | J |
 | | (A) Install Ollama on the laptop and pull 2–3 small models (CPU only: Intel Iris Xe). Check each model's license allows local research use (§2). | J |
 | | Model-timing script: time each pulled model on the text of 2–3 pages; record each model's name and digest. | C |
@@ -159,11 +196,11 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66, D67, D68). The instructor
 | Day | Tasks | Who |
 |---|---|---|
 | **Wed Dec 2** | (A) Remaining Ambitious runs (Dec 2–5): any remaining (c) and (d) runs; poisoning and (e) only if they were running by Dec 1. **Tarpit:** only if all three other defenses and all five scrapers ran by Dec 1; if so, build it Dec 2–4. | J |
-| **Thu Dec 3** | Script for the final tables: accuracy and fake-value rate by defense and scraper; honeypot hits and time per page; user cost against baseline. | C |
+| **Thu Dec 3** | Script for the final tables, with the standard metrics (`docs/metrics-plan.md`): accuracy (= recall), precision, F1, ESR, fake-value rate and relative reduction by defense and scraper; honeypot detection, evasion and false-positive rates and time per page; user cost against baseline (pixel diff, SSIM, Lighthouse changes, axe-core, reading order, HTML size). Fill our column of the related-work table with (c) and (d). | C |
 | | Check the tables against the raw outputs. Start the report. | J |
-| **Fri Dec 4** | Figure pairing accuracy drop with user cost. Compare the results with the predicted pattern cell by cell and list every mismatch (§4). | J + C |
+| **Fri Dec 4** | Figure: protection (relative reduction) against user cost, one point per defense and scraper. Compare the results with the predicted pattern cell by cell and list every mismatch (§4); compare with the related-work table and note where we agree or differ with published findings. | J + C |
 | **Sat Dec 5** | Final README and reproducibility manifest: OS, hardware, versions, model digests, config and seeds (§5). | C |
-| | Report writing. | J |
+| | Report writing: results with the standard metrics, the related-work comparison, and a scope-change section (instructor feedback; D66–D69; what was not done and which hypothesis that leaves untested). | J |
 | **Sun Dec 6** | Report writing. | J |
 | **Mon Dec 7** | Clean rerun from the README on a fresh clone; confirm it reproduces the results table. Final report draft. | J + C |
 | **Tue Dec 8** | Final report PDF. **Tag the submission commit.** | J |

@@ -4,7 +4,7 @@
 
 - **Author:** Joseph Evenson
 - **Track:** Blue Track (Research)
-- **Status:** In development. Milestone 1 (test site and baseline scoring), Oct 21 – Nov 3, 2026.
+- **Status:** In development. Milestones 1 and 2 done (Oct 30, Nov 11). Milestone 3 (Nov 17 – Dec 1) re-planned after the Nov 16 scrum meeting: scrapers (c) then (d), and metrics comparable with published work (see Roadmap).
 
 This project builds a small local test site and five scrapers of increasing capability, adds simple versions of four page-level defenses, and measures which defenses stop which scrapers and what each defense costs real users in speed, visual fidelity, and accessibility.
 
@@ -97,11 +97,21 @@ All storage is plain files (JSON, CSV, and logs). There is no database.
 
 A defense **stops** a scraper when accuracy falls below 10%. Raw accuracy is always reported as well.
 
+**Standard, comparable metrics** (added after the Nov 16 scrum meeting, so the results can be read against published work). Each is used by a published study; see [`docs/metrics-plan.md`](docs/metrics-plan.md) for the definitions, sources and a related-work table.
+
+| Metric | Definition | Used by |
+|---|---|---|
+| **Recall, precision, F1** (per field) | Recall = correct ÷ 70 (the same number as accuracy); precision = correct ÷ fields returned; F1 combines them | WebCloak (scraping recall and precision); FreeDOM / SWDE (F1) |
+| **Extraction success rate** (per run) | Share of runs with all 70 fields correct | Beyond BeautifulSoup |
+| **Relative reduction** | 1 − score with the defense ÷ score without | WebCloak (recall before → after) |
+| **Detection, evasion and false-positive rates** (honeypot) | Scraper runs caught ÷ runs; 1 − detection; trap hits by a human-like visitor that clicks only visible links | Shy Guys; FP-Inconsistent |
+| **SSIM**, Lighthouse changes, HTML size | Visual similarity to baseline; change in score, FCP, LCP, TTI; page weight against baseline | Wang et al. (SSIM); WebCloak (Lighthouse, HTML size) |
+
 What scrapers write, and how the scoring script decides a value is correct, is defined in [`docs/scraper-output.md`](docs/scraper-output.md).
 
 ## Experiment design
 
-- **Grid:** scrapers (a)–(d) on `baseline`, `shuffled`, `honeypot`, and `poisoned`; scraper (e) on `baseline`, `shuffled`, and `poisoned`. That is 19 cells × 3 runs = 57 scraper runs, plus tarpit runs for (a), (b), and (d) if the tarpit is built.
+- **Grid (as re-planned on Nov 16):** scrapers (a)–(d) on `baseline`, `shuffled`, and `honeypot`: 12 cells × 3 runs = 36 scraper runs. The midterm's full grid (19 cells × 3 = 57 runs) adds `poisoned` and scraper (e); those, and the tarpit, are run only if (c) and (d) finish early, and are otherwise reported as not done.
 - **Baseline gate:** a scraper must reach at least 90% accuracy on `baseline` before any of its defended runs count.
 - **Reporting:** mean and min–max over 3 runs per cell. A difference smaller than the baseline min–max range is not counted as an effect.
 - **User cost:** measured once per condition on the same 10 pages, with screenshots taken after a 3-second wait and Lighthouse run 5 times per page (median reported).
@@ -114,7 +124,7 @@ This layout is a plan and may change during development.
 
 ```
 data/          data list (ground truth for the site and for scoring)
-docs/          specifications, such as the scraper output format
+docs/          specifications (scraper output format) and the metrics plan
 site/          Node.js page generator, defenses, Express server, request logger
 scrapers/      Python scrapers (a)–(e)
 prompts/       prompt files for (c) and (e)
@@ -254,15 +264,18 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptive scraper (d), come next among the Ambitious work, and the metrics gain standard, comparable measures. See `SCHEDULE.md`.
 - [ ] Experiment runner and results CSV (honeypot hits and time per page from the request log)
 - [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order)
-- [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; relative reduction against baseline; honeypot false-positive check (plan: `docs/metrics-plan.md`)
-- [ ] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each
-- [ ] Test 7 for (a) and (b)
-- [ ] Stretch: scraper (c) (Ollama, CPU), then scraper (d); a related-work table of published scores in the same units
-- [ ] Stretch, only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
+- [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; extraction success rate; relative reduction against baseline; honeypot detection, evasion and false-positive rates; HTML size (plan: `docs/metrics-plan.md`)
+- [ ] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (Nov 23)
+- [ ] Test 7 for (a) and (b) (Nov 24)
+- [ ] Scraper (c) (Ollama, CPU): baseline check by Nov 22, or reported as not usable
+- [ ] Scraper (d): Test 3 part and baseline check by Nov 25; runs by Nov 28
+- [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
+- [ ] Only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
 
 ### Milestone 4: Dec 2 – Dec 10
 - [ ] Remaining Ambitious runs (only if ready)
-- [ ] Final tables and figure
+- [ ] Final tables with the standard metrics, and the figure of protection against user cost
+- [ ] Related-work comparison and a scope-change section in the report
 - [ ] Reproducibility manifest and final README
 - [ ] Report PDF
 - [ ] Tag the submission commit by Dec 8
@@ -277,6 +290,8 @@ The day-by-day plan is in [`SCHEDULE.md`](SCHEDULE.md).
 
 - **Excluded:** real or third-party websites, personal data, commercial AI agents, CAPTCHAs, rate limiting, IP blocking, fingerprinting, human screen-reader studies, and large-scale crawling.
 - **Not generalized:** results describe this site, these local models, and these scrapers only. Both the defenses and the scrapers are written by the same author.
+- **Scope change (Nov 16):** after the scrum meeting, the LLM scraper (c) and the adaptive scraper (d) come before poisoning, scraper (e) and the tarpit. Those three are likely to be dropped at Cut-line 2 (Dec 1); if so, the report says so, along with which hypothesis that leaves untested.
+- **Comparability:** published studies use real sites, so raw scores are not directly comparable with this synthetic site. Comparisons are made through the same metric definitions and through relative effects (see [`docs/metrics-plan.md`](docs/metrics-plan.md)).
 - **Fixed fakes:** each poisoned page carries one fixed set of fake values rather than new values per visit, so the results may overstate how well poisoning works against a scraper that fetches a page twice and compares.
 
 ## AI assistance
@@ -297,3 +312,9 @@ Every prompt, question, and design decision made with AI assistance is logged in
 6. GoogleChrome, "Lighthouse." https://github.com/GoogleChrome/lighthouse
 7. Deque Systems, "axe-core." https://github.com/dequelabs/axe-core
 8. Mapbox, "pixelmatch." https://github.com/mapbox/pixelmatch
+9. X. Li, T. Qiu, Y. Jin, L. Wang, H. Guo, X. Jia, X. Wang, and W. Dong, "WebCloak: Characterizing and Mitigating the Threats of LLM-Driven Web Agents as Intelligent Scrapers," IEEE S&P 2026. https://web-cloak.github.io/
+10. A. Bhardwaj, N. Diwan, and G. Wang, "Beyond BeautifulSoup: Benchmarking LLM-Powered Web Scraping for Everyday Users," arXiv:2601.06301, 2026.
+11. B. Y. Lin, Y. Sheng, N. Vo, and S. Tata, "FreeDOM: A Transferable Neural Architecture for Structured Information Extraction on Web Documents," KDD 2020.
+12. R. Van Boxem, T. Barbette, C. Pelsser, and R. Sadre, "Shy Guys: A Light-Weight Approach to Detecting Robots on Websites," arXiv:2603.28546, 2026.
+13. H. Venugopalan, S. Munir, S. Ahmed, T. Wang, S. T. King, and Z. Shafiq, "FP-Inconsistent: Measurement and Analysis of Fingerprint Inconsistencies in Evasive Bot Traffic," arXiv:2406.07647, 2025.
+14. Z. Wang, A. C. Bovik, H. R. Sheikh, and E. P. Simoncelli, "Image Quality Assessment: From Error Visibility to Structural Similarity," IEEE Transactions on Image Processing, 13(4), 2004.
