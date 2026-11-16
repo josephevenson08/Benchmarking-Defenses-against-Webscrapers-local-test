@@ -318,6 +318,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J213 | 213 | (pasted scraper (b) with updated comments) | 4 of 5 fixes in; "wwhen" typo; closing block still to replace (Turn 213) |
 | J214 | 214 | Tell me what my bottom comments should say | Replacement comment block for (b), ready to paste (Turn 214) |
 | J215 | 215 | It's pushed, make the printout | `scraper-b-browser.docx` sent; "wwhen" typo on line 48 noted (Turn 215) |
+| J216 | 216 | Now do it for the defenses (honeypot and DOM shuffle) | `defenses-printout.docx` sent (Turn 216) |
 
 ### Questions from Claude
 
@@ -8702,6 +8703,32 @@ Then Joseph's questions.
 - Logged this turn (J215).
 
 **Claude's answer (summary):** here is the (b) printout; the only issue is the "wwhen" typo on line 48. Fix and push it, and Claude reprints.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 216 — 2026-11-16 00:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now lets do it for the defenses we have which is only the honey pot and dom shuffle
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new; the defense files on the branch match `main`.
+- Made `defenses-printout.docx` from Joseph's committed defense files, `site/defenses/shuffled.js` (36 lines) and `site/defenses/honeypot.js` (8 lines), and sent it to him:
+  - same look as the scraper printouts;
+  - one heading per file, with its own line numbers;
+  - each file's code kept together on one page, so the honeypot doesn't split across pages.
+- Wrote a small JavaScript tokenizer for the colors (comments, strings and whole template literals, keywords, numbers). Joseph's code is printed exactly as committed.
+- Rendered it to PDF to check: shuffling on page 1, the honeypot on page 2.
+- Noted optional comment fixes in `honeypot.js`:
+  - line 1: "follows every link" describes the scrapers, not the defense;
+  - line 4: "calls once" should be "is called once".
+- The files are in Claude's scratch folder, not the repo.
+- Logged this turn (J216).
+
+**Claude's answer (summary):** here is the defenses printout, plus the optional honeypot comment fixes, with a reprint offered after a push.
 
 **Questions Claude asked:** none.
 
