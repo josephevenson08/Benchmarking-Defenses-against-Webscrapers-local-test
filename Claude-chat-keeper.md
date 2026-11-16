@@ -321,6 +321,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J216 | 216 | Now do it for the defenses (honeypot and DOM shuffle) | `defenses-printout.docx` sent (Turn 216) |
 | J217 | 217 | Fix my "what will you accomplish next week" answer and check it against GitHub | Rewritten for Nov 17–23 from SCHEDULE.md; the Nov 12–16 early start did not happen (Turn 217) |
 | J218 | 218 | Anything blocking my progress? | Nothing blocking; five things to watch; pasteable answer (Turn 218) |
+| J219 | 219 | Question 4: how are you prompting the AI agent, and verifying and testing its code? | Pasteable answer with current numbers (Turn 219) |
 
 ### Questions from Claude
 
@@ -8793,3 +8794,25 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 219 — 2026-11-16 00:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 4.	If you use an AI agent or LLM, how are you prompting it, verifying and testing its code?
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new) and refreshed the counts used in the answer:
+  - 32 merged pull requests;
+  - 65 decisions;
+  - 219 turns;
+  - 65 unit tests (20 site, 24 scoring, 17 measurement, 4 pixel-diff).
+- Checked the favicon example against Turns 121–124: in the cloud, Claude's test logged 12 lines (Chromium asked for `/favicon.ico`), and Claude expected the same on the laptop. Joseph's run logged 11, and the note was corrected.
+- Wrote a ready-to-paste answer to the meeting's AI-use question, in Joseph's outline format: the tool and set-up, who writes what (midterm §2, §7), how he prompts, how he verifies and tests (with a real example of catching a wrong prediction), and traceability. It updates the D65 meeting-doc section with current numbers.
+- Logged this turn (J219).
+
+**Claude's answer (summary):** the pasteable answer to question 4.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. It reports the §7 "AI-agent plan" verification steps as actually followed.
