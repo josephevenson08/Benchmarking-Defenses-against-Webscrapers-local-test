@@ -317,6 +317,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J212 | 212 | Are these comments correct? (pasted scraper (b) with new comments and a closing note on BeautifulSoup vs the DOM) | Comments reviewed with fixes; closing note corrected against D51 (Turn 212) |
 | J213 | 213 | (pasted scraper (b) with updated comments) | 4 of 5 fixes in; "wwhen" typo; closing block still to replace (Turn 213) |
 | J214 | 214 | Tell me what my bottom comments should say | Replacement comment block for (b), ready to paste (Turn 214) |
+| J215 | 215 | It's pushed, make the printout | `scraper-b-browser.docx` sent; "wwhen" typo on line 48 noted (Turn 215) |
 
 ### Questions from Claude
 
@@ -8678,6 +8679,29 @@ Then Joseph's questions.
 - Logged this turn (J214).
 
 **Claude's answer (summary):** the replacement comment block, what changed from his version, and where to paste it.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 215 — 2026-11-16 00:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok its pushed make the printoput
+
+**What Claude did:**
+- Fetched GitHub: Joseph pushed `ba0a7f1` "comment update to scraper b". Merged `main` into the branch (`2b6f593`), per D40/D41.
+- Checked the committed (b):
+  - the new bottom comment block is in;
+  - line 48 still says "#wwhen the run started";
+  - the file parses;
+  - one baseline run in the cloud still gives 70/70 (scratch output, deleted).
+- Made `scraper-b-browser.docx` from the committed file, in the same format as the (a) printout (Turn 211): title, header, page numbers, Consolas 8.5 pt, line numbers 1–132, light syntax colors, long lines wrapping under the code. Rendered it to PDF to check: 3 pages. Sent it to Joseph.
+- The file is in Claude's scratch folder, not the repo.
+- Logged this turn (J215).
+
+**Claude's answer (summary):** here is the (b) printout; the only issue is the "wwhen" typo on line 48. Fix and push it, and Claude reprints.
 
 **Questions Claude asked:** none.
 
