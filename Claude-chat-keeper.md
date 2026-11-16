@@ -334,6 +334,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J229 | 229 | Is my understanding right? Shuffled: both 4/70 ((a) raw HTML, (b) after CSS loads); honeypot: both 70/70 with 11 pages | Mostly right; CSS doesn't change the HTML (b) reads; 1 trap hit per run (Turn 229) |
 | J230 | 230 | So what differs from (a) to (b)? | Differences, similarities and predicted results; why (b) matters (Turn 230) |
 | J231 | 231 | So (a) reads what the HTML says and (b) loads it in Playwright, lets the JS run, then scrapes it? | Yes, with "different page" clarified as a browser tab (Turn 231) |
+| J232 | 232 | ("How it loads" outline) Where is each of these in the project, by file path? | File paths for each part; trap hits and most user-cost measures not built yet (Turn 232) |
 
 ### Questions from Claude
 
@@ -9177,6 +9178,48 @@ Then Joseph's questions.
 - Logged this turn (J231).
 
 **Claude's answer (summary):** yes, with the "different page" wording fixed and the no-extra-waiting detail added.
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 232 — 2026-11-16 02:27 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> How it loads:
+> Data list has 70 fields
+> -	6 products x 10 fields + 2 articles x 5 fields = 70 fields, this serves as the answer key
+> Generator + defense
+> -	Each defense is given a fresh site per condition, a seed associated with each of these
+> Server and logger
+> -	Express server, local only, serves one condition, logs each request + ID
+> Scrapers
+> -	All scrapers run and are never exposed to answer key
+> Scraper output
+> -	One JSON file per run: includes page, field, and value for every record found
+> Scoring + user cost
+> -	Accuracy, fake values, trap hits, time per page,
+>
+>
+> can you tell me where each of these are in the projet, like file path
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new) and confirmed every path in the answer with `git ls-files`. `conditions/`, `logs/` and `results/dev/` are git-ignored, generated folders.
+- Mapped each part of Joseph's "how it loads" outline to its files:
+  - data list: `data/items.json` (the answer key), `data/fields.json` (labels; the scrapers' only data file);
+  - generator and defenses: `site/generate.js`, `site/defenses/*.js`, `config.json` (seed, trap path); output in `conditions/<condition>/` plus the manifest with per-page seeds;
+  - server and logger: `site/server.js`, `logs/requests.jsonl`;
+  - scrapers: `scrapers/a_raw_html.py`, `scrapers/b_browser_text.py`;
+  - output: the `--out` file; the format is in `docs/scraper-output.md`; examples in `results/2026-11-11-test1/runs/`;
+  - scoring and user cost: `scoring/score.py`, `measurement/*`.
+- Noted where the outline is ahead of the code:
+  - `score.py` doesn't count trap hits; today Test 6 counts them from the log, and the results CSV with trap hits is the Nov 19 task;
+  - for user cost only the pixel diff exists so far (reading order, Lighthouse and axe-core are Nov 20–21).
+- Suggested a clearer wording for the generator line: one site copy per condition, one seed per page.
+- Logged this turn (J232).
+
+**Claude's answer (summary):** a file-path table for each part, with notes on which parts aren't built yet.
 
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
