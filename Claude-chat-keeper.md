@@ -95,6 +95,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D64 | 196 | **⭐ Test 1 passed and ⭐ Milestone 2 complete (Wed Nov 11, six days before Cut-line 1).** Test 1 on Joseph's laptop (commit `7c5ae6c`): baseline, shuffled and honeypot each 10 pages and 70 fields; (a) 70/70 ×3 (0.015–0.017 s per page), (b) 70/70 ×3 (0.026–0.031 s). All of Milestone 2's §7 done-when items are met: Tests 1 (D64), 3 for (a)/(b) (D62), 4 (D58) and 6 (D60) pass; (b) ≥ 90% in 3 runs; shuffled ≤ 1% pixels (0.000%); a trap request is logged with its run ID. README and schedule ticked. | — | Joseph (ran it); Claude (harness) | §5 Test 1; §7 Milestone 2 ("Done when"); §7 Cut-line 1 (Nov 17: (a), (b), shuffling and the honeypot working). | Follows |
 | D65 | 198 | **Meeting prep for the first course check-in:** a private Claude Docs page, "Project check-in: first meeting" (https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa). It has a project overview with a diagram of how the parts fit together, a dated table of what is completed, the plan for Nov 12–18, blockers and help needed, how the AI agent is prompted, verified and tested, and a 5-minute demo. Written in Joseph's voice from the chat-keeper, `SCHEDULE.md` and the committed `results/` reports, for Joseph to edit before the meeting. The demo steps were re-run in the cloud: (a) on shuffled 4/70; (a) on honeypot 70/70 with 11 pages and one `honeypot_hit` log line. The "next week" plan proposes starting Milestone 3 tooling early; Joseph has not confirmed it yet. | A doc page (chosen) or an answer in chat only | Claude (Joseph asked for meeting prep) | §7 "AI-agent plan and disclosure" (the AI-use answer reports the verification steps 1–5 actually followed); §7 schedule and cut-lines (next-week plan); §5 Tests 1–4 and 6 (completed table). The meeting itself is a course requirement outside the midterm. | Adds |
 | D66 | 237 | **Ambitious order changed after the scrum meeting:** the instructor told Joseph to do the LLM scraper (c) and the adaptive scraper (d) next, before the other Ambitious work. Poisoning, (e) and the tarpit move after them. Claude recommends (d) before (c): (d) builds on (b) with no new install and can be tested on shuffled and honeypot at once, while (c) first needs Ollama and timing on a CPU-only laptop (Intel Iris Xe). Claude also recommends keeping the Essential experiment tooling (runner, results CSV, user-cost runner; Claude's tasks) going in parallel, so Milestone 3's "Done when" is not at risk. Which of (c)/(d) comes first, and whether poisoning is kept, are open (C26). | Midterm order: poisoning + (d), then (c) + (e), then tarpit | Instructor (relayed by Joseph); details open (C26) | §1 items 3–4 and §7 schedule put poisoning and (d) first, then (c) and (e). §7 Cut-line 2 (Dec 1) still applies: Ambitious items not running are dropped. | **Deviates** (order of Ambitious work, on the instructor's direction) |
+| D67 | 240 | **Order for Milestone 3's Ambitious work: scraper (c) first, then (d)** (Joseph's choice; Claude had recommended (d) first). The Essential tooling (experiment runner, results CSV, user-cost runner; Claude) stays on its dates in parallel. Poisoning, (e) and the tarpit come after (c) and (d) and start only if those finish early. Cut-line 2 (Dec 1) will likely drop them. `SCHEDULE.md` Milestone 3 rewritten and README checklist updated. | (d) first (Claude's recommendation); poisoning kept on its original dates | Joseph | D66 (instructor's direction). §2: (c) and (d) are Joseph's code, Ollama on the CPU, model chosen after timing on 2–3 pages with its name and digest recorded. §7 Milestone 3 "Done when" unchanged. | **Deviates** (order of Ambitious work, following D66) |
+| D68 | 240 | **Metrics: keep Joseph's, add standard ones, and compare with published scores.** Keep accuracy (correct ÷ 70), fake-value rate, honeypot hits, time per page and the user-cost measures. Add: field-level precision, recall (= accuracy) and F1; relative reduction against baseline (1 − F1 with the defense ÷ F1 without); honeypot detection rate with a false-positive check from a human-like visitor; SSIM next to the pixel diff. Then a related-work table of what published studies measured and their scores in the same units (for example WebCloak's scraping recall 88.7% → 0%; SWDE extraction F1; bot-detection TPR at a given FPR), each with how its setting differs from this synthetic 70-field site. No single composite score: protection against user cost is shown as two axes. The scraper output format and the matching rules (`docs/scraper-output.md`, D31–D35) are unchanged. | Keep only the midterm's metrics; a single composite score | Joseph (Claude recommended; instructor's request) | §4 metrics (accuracy, fake-value rate, honeypot hits, time per page, user cost) and analysis (mean and min–max over 3 runs, "reduces"/"stops" rules), all kept. The instructor asked for metrics comparable with other work. | **Adds** |
 
 ---
 
@@ -341,6 +343,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J235 | 235 | Where are the correct values held? | `data/items.json`; read by the generator and the scorer, never by the scrapers (Turn 235) |
 | J236 | 236 | Can you make a small ASCII visual of how what I've done works together? | ASCII flow diagram given (Turn 236) |
 | J237 | 237 | Back from the scrum meeting: do the LLM scraper (c) and adaptive scraper (d) next; make metrics comparable to modern research with an algorithmic scale. Thoughts? | D66 recorded; thoughts on order and metrics; C26, C27 open (Turn 237) |
+| J240 | 240 | Let's do the LLM scraper (c), then (d); continue my metrics with what others used and their scores, or what do you think? | D67, D68; schedule re-planned; first (c) step given (Turn 240) |
 
 ### Questions from Claude
 
@@ -371,14 +374,14 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C23 | 93 | Change the scrapers' default start URL to `http://127.0.0.1:3000/` (amending the approved contract)? Options: "Yes, use 127.0.0.1 (Recommended)" or "No, keep localhost". | Yes. | Closed (Turn 93) → D47 |
 | C24 | 104 | How should scraper (b) read each page? Options: "Browser HTML + (a)'s rule (Recommended)" or "Visible text only". | Browser HTML + (a)'s rule. | Closed (Turn 104) → D51 |
 | C25 | 134 | What should the shuffle scramble on each item page? Options: "One container, full mix (Recommended)" or "Keep rows, mix inside". | One container, full mix. | Closed (Turn 134) → D54 |
-| C26 | 237 | After the scrum meeting: which first, (d) or (c)? Keep the Essential experiment tooling going in parallel? Keep poisoning (now after (c)/(d), at risk at Cut-line 2)? Claude recommends (d) first, tooling in parallel, poisoning kept if time allows. | — | **Open** |
-| C27 | 237 | Metrics: add standard, comparable metrics (field-level precision, recall, F1; relative reduction vs baseline; honeypot TPR/FPR with a human-like control visitor; SSIM next to pixel diff; Lighthouse and axe-core as planned), keeping accuracy and fake-value rate? Do a short literature review first (arxiv.org and the WebCloak paper could not be opened from this session). | — | **Open** |
+| C26 | 237 | After the scrum meeting: which first, (d) or (c)? Keep the Essential experiment tooling going in parallel? Keep poisoning (now after (c)/(d), at risk at Cut-line 2)? Claude recommends (d) first, tooling in parallel, poisoning kept if time allows. | Joseph: (c) first, then (d). Essential tooling continues in parallel (Claude's default, not objected to). Poisoning only if time allows. | Closed (Turn 240) → D67 |
+| C27 | 237 | Metrics: add standard, comparable metrics (field-level precision, recall, F1; relative reduction vs baseline; honeypot TPR/FPR with a human-like control visitor; SSIM next to pixel diff; Lighthouse and axe-core as planned), keeping accuracy and fake-value rate? Do a short literature review first (arxiv.org and the WebCloak paper could not be opened from this session). | Joseph: keep his metrics, add the ones others use, and show their scores alongside. Claude agreed, with caveats on comparability. | Closed (Turn 240) → D68 |
 
 ---
 
 ## Open items
 
-**▶ Resume here (after the scrum meeting, Turn 237):** the instructor wants (c) and (d) next (D66, Deviates) and metrics comparable with published work. Waiting on Joseph for C26 ((d) or (c) first; Essential tooling in parallel; poisoning) and C27 (standard metrics + literature review). Then re-plan SCHEDULE.md. Earlier: Demo guide done (Turn 224; rehearsal ran Steps 1–3 on the laptop). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (Turn 240):** Milestone 3 re-planned (D66–D68; see `SCHEDULE.md`). Next: Joseph installs Ollama, reports his RAM and pulls 2–3 small models; Claude drafts the model-timing script (Nov 17), then the experiment runner (Nov 18). (c) is Joseph's code (§2): Claude explains, gives standalone examples and reviews. Open: the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -9433,3 +9436,34 @@ Then Joseph's questions.
 **What Claude did:** read the report from the web-fetch agent `ab42e938404ba614d`, which Claude started in Turn 237 to read the arXiv paper "Beyond BeautifulSoup" (2601.06301). The fetch failed (DNS: host not found), so nothing from the page was used. Handled within Turn 237. Because the prompt hook captured this report as a new turn, Turn 237's entry briefly landed under Turn 239; it was moved back.
 
 **Direction and fit:** no new decision.
+
+### Turn 240 — 2026-11-16 21:52 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets do the llm and then d,  continue my metrics to include what someone else has used and then what their score is  or what do you think?
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Recorded Joseph's answers:
+  - C26: (c) first, then (d); recorded as D67 (Deviates, after D66);
+  - C27: keep his metrics, add standard ones, and compare with published scores; recorded as D68 (Adds).
+- Rewrote `SCHEDULE.md` Milestone 3 for the new order:
+  - Nov 17: Ollama install and models (J), model-timing script (C);
+  - Nov 18–22: (c) parts 1–3 and its baseline check (J); experiment runner, results CSV, user-cost runner with SSIM, and standard metrics (C);
+  - Nov 22–25: (d) (J); Essential runs Nov 23 and Test 7 Nov 24 unchanged;
+  - Nov 25: related-work metrics table (C drafts, J reviews);
+  - Nov 28: (c) and (d) runs;
+  - Nov 29: honeypot false-positive check;
+  - Dec 1: Cut-line 2; poisoning, (e) and the tarpit only if (c) and (d) finished early.
+  Updated the Milestone 4 Dec 2 row, the header resume note, and the README's Milestone 3 checklist.
+- Checked current small Ollama models (one web search; third-party sources, so indicative only). Candidates for a CPU laptop: llama3.2:3b, qwen3 (1.7b/4b) and gemma3:1b; qwen3:4b may run out of memory on low-RAM machines. Ollama's `format` option can force JSON output, a choice for Joseph's (c) parsing rules.
+- Gave Joseph the first step for (c): install Ollama, check his RAM, pull 2–3 small models, check their licenses (§2), and paste the output.
+- Opened a pull request for the schedule and README changes.
+- Logged this turn (J240).
+
+**Claude's answer (summary):** agreed with comparing against published scores as a related-work table, with caveats (same units, different settings; no composite score). Showed the new plan and the first step for (c).
+
+**Questions Claude asked:** how much RAM the laptop has (for model choice; asked in the answer).
+
+**Direction and fit:** D67 (Deviates, following D66), D68 (Adds).
