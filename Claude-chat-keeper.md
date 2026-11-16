@@ -335,6 +335,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J230 | 230 | So what differs from (a) to (b)? | Differences, similarities and predicted results; why (b) matters (Turn 230) |
 | J231 | 231 | So (a) reads what the HTML says and (b) loads it in Playwright, lets the JS run, then scrapes it? | Yes, with "different page" clarified as a browser tab (Turn 231) |
 | J232 | 232 | ("How it loads" outline) Where is each of these in the project, by file path? | File paths for each part; trap hits and most user-cost measures not built yet (Turn 232) |
+| J233 | 233 | (revised "how it loads" outline with file paths) | Corrected outline: misplaced items moved, typos, trap-hit caveat (Turn 233) |
 
 ### Questions from Claude
 
@@ -9220,6 +9221,56 @@ Then Joseph's questions.
 - Logged this turn (J232).
 
 **Claude's answer (summary):** a file-path table for each part, with notes on which parts aren't built yet.
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 233 — 2026-11-16 02:34 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> How it loads:
+> Data list has 70 fields
+> -	6 products x 10 fields + 2 articles x 5 fields = 70 fields, this serves as the answer key
+> -	data/items.json and data/fields.json
+> -	The values: 6 products and 2 articles. Scrapers never read this.
+> Generator + defense
+> -	Each defense is given a fresh site per condition, a seed associated with each of these
+> -	site/generate.js (Builds the site from the data list.)
+> -	site/generate.js, site/defenses/shuffled.js, site/defenses/honeypot.js, config.json (holds see and the trap path for honeypot), conditions/baseline/, conditions/shuffled/, conditions/honeypot/ (built sites for whats built)
+> -	conditions/<condition>.manifest.json (list of pages with each page’s seed)
+> Server and logger
+> -	Express server, local only, serves one condition, logs each request + ID
+> -	site/server.js (express server)
+> -	logs/requests.jsonl (default log)
+> -	results/2026-11-11-test1/runs/ (real example)
+> Scrapers
+> -	All scrapers run and are never exposed to answer key
+> -	scrapers/a_raw_html.py and scrapers/b_browser_text.py
+> -	results/dev/demo-a-baseline.json (output)
+> Scraper output
+> -	One JSON file per run: includes page, field, and value for every record found
+> -	scoring/score.py (accuracy, gake values, and time per page), test is in (scoring/tests/test_score.py)
+> -	measurement/screenshots.py, measurement/pixel_diff.mjs ( user cost/pixel difference)
+> -	measurement/test1.py, test3.py, test4.py, test6.py (test scripts, reports are in results/)
+> Scoring + user cost
+> -	Accuracy, fake values, trap hits, time per page
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Reviewed Joseph's revised "how it loads" outline against the Turn 232 paths. Fixes:
+  - the data-list note reads as if the scrapers never read either file; in fact they read `fields.json` but never `items.json`;
+  - `site/generate.js` is listed twice;
+  - "see" should be "seed", and "gake" should be "fake";
+  - `results/2026-11-11-test1/runs/` holds scraper outputs, not logs; the log example is `results/2026-11-11-test1/requests.jsonl`;
+  - the scoring and measurement files sat under "Scraper output" instead of "Scoring + user cost";
+  - trap hits aren't in `score.py` yet (`measurement/test6.py` today, the results CSV on Nov 19);
+  - the generator line is reworded: one site copy per condition, one seed per page.
+- Gave the corrected outline in his format, ready to paste.
+- Logged this turn (J233).
+
+**Claude's answer (summary):** what to fix and why, then the corrected outline.
 
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
