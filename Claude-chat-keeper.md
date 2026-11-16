@@ -330,6 +330,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J225 | 225 | Put this in a Word doc named "scrum meeting demo 11-15"; I'll run it myself first | `scrum meeting demo 11-15.docx` sent (Turn 225) |
 | J226 | 226 | So we run the test site first, then scrapers (a) and (b), then the defenses (DOM shuffling and honeypot)? | Order clarified: the site version is switched for each defense, then the scraper reruns; optional (b) baseline command (Turn 226) |
 | J227 | 227 | So what am I showing: testbed, which scrapers and which defenses? | Testbed + (a) and (b) + shuffling and honeypot; poisoning, tarpit, (c)–(e) not built yet (Turn 227) |
+| J228 | 228 | So scraper (a) against both defenses, then scraper (b) against both? | Recommended (a) then (b) on each site version; six runs with commands (Turn 228) |
 
 ### Questions from Claude
 
@@ -9084,5 +9085,30 @@ Then Joseph's questions.
 **Claude's answer (summary):** a short table of what's shown and what isn't, and why.
 
 **Questions Claude asked:** none (the Turn 226 offer to add (b) on baseline to the Word doc is still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 228 — 2026-11-16 02:15 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so scraper a against both defenses and then scraper b against both?
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Answered Joseph's proposed order: run (a) against both defenses, then (b) against both. It works, but it means switching the server back and forth (four switches instead of two).
+- Recommended grouping by site version instead: on each version, run (a) then (b). That covers all six scraper × condition pairs with one server start per version, and the two scrapers sit side by side on each defense.
+- Gave the full commands and expected results:
+  - baseline: (a) 70/70, (b) 70/70;
+  - shuffled: 4/70 each;
+  - honeypot: 70/70 each, 11 pages and 1 trap hit each, so two `"honeypot_hit":true` lines in the log.
+
+  These rest on Test 1 (D64), Turn 223, and J180 / Turn 204 for (b) on honeypot.
+- Offered to update the Word doc to this version.
+- Logged this turn (J228).
+
+**Claude's answer (summary):** yes, but grouped by site version; the six runs, with commands and expected results.
+
+**Questions Claude asked:** whether to update `scrum meeting demo 11-15.docx` to the six-run version (open).
 
 **Direction and fit:** no new decision.
