@@ -322,6 +322,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J217 | 217 | Fix my "what will you accomplish next week" answer and check it against GitHub | Rewritten for Nov 17–23 from SCHEDULE.md; the Nov 12–16 early start did not happen (Turn 217) |
 | J218 | 218 | Anything blocking my progress? | Nothing blocking; five things to watch; pasteable answer (Turn 218) |
 | J219 | 219 | Question 4: how are you prompting the AI agent, and verifying and testing its code? | Pasteable answer with current numbers (Turn 219) |
+| J220 | 220 | Walk me through a demo of what I've done, explaining after each step, then a complete step-by-step guide for the scrum meeting | Rehearsal started: Steps 0–1 given (Turn 220) |
 
 ### Questions from Claude
 
@@ -357,7 +358,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (after Milestone 2):** ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (after Milestone 2):** Demo rehearsal in progress (Turn 220: Steps 0–1 given; after Step 7, write the full reproducible guide). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -8816,3 +8817,30 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. It reports the §7 "AI-agent plan" verification steps as actually followed.
+
+### Turn 220 — 2026-11-16 00:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now, lets walk through a demo on how to show what ive done so far, i want a simple walk through and after each step, explain what we did and whats next, after we are done with the walkthrough, lets make a complete step by step guide so that i can reproduce this in the scrum meeting
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new; the laptop's last push (`ba0a7f1`) is the current state.
+- Started an interactive demo rehearsal on Joseph's laptop, one step at a time. After each step Claude explains what it showed and what comes next. Planned steps:
+  0. Set-up.
+  1. The test site.
+  2. (a) with no defense.
+  3. Shuffling.
+  4. Honeypot.
+  5. His code.
+  6. The test results.
+  7. The AI-use record.
+- The commands are the ones verified in Turn 205. After the last step, Claude writes the complete reproducible guide.
+- Gave Step 0 (set-up) and Step 1 (build and open the baseline site), and asked Joseph to paste the T1 output.
+- Logged this turn (J220).
+
+**Claude's answer (summary):** the plan of the walkthrough, then Steps 0 and 1 with what to run, what to expect and what to paste back.
+
+**Questions Claude asked:** none (waiting for Joseph's Step 1 output).
+
+**Direction and fit:** no new decision.
