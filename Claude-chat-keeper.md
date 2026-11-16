@@ -328,6 +328,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J223 | 223 | (Step 3 output: 66 records, 4/70) | Explained with field-level examples; Step 4 given (Turn 223) |
 | J224 | 224 | Just give me the steps to run through everything I've done, with a short blurb and the commands for each | Full demo guide given (Turn 224) |
 | J225 | 225 | Put this in a Word doc named "scrum meeting demo 11-15"; I'll run it myself first | `scrum meeting demo 11-15.docx` sent (Turn 225) |
+| J226 | 226 | So we run the test site first, then scrapers (a) and (b), then the defenses (DOM shuffling and honeypot)? | Order clarified: the site version is switched for each defense, then the scraper reruns; optional (b) baseline command (Turn 226) |
 
 ### Questions from Claude
 
@@ -9042,5 +9043,24 @@ Then Joseph's questions.
 **Claude's answer (summary):** here is the Word guide, with tips for the dry run.
 
 **Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 226 — 2026-11-16 01:01 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so we are running the testsite first, then scrapers a and b then the defenses of dom shuffling as well as honeypots?
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Clarified the demo order in the Turn 224–225 guide. It isn't "site, then both scrapers, then the defenses": each defense is a version of the site. The server is switched to that version, then the same scraper is run again, so the audience sees the before and after.
+  - The order is: baseline site, (a) on baseline, shuffled site and (a) (optional (b)), honeypot site and (a), then the code, the reports and the AI log.
+  - Noted that (b) isn't run on the baseline in the guide. Gave its optional command (expected 70/70, about 0.03 s per page, the Test 1 figures) and offered to add it to the Word doc.
+- Logged this turn (J226).
+
+**Claude's answer (summary):** nearly; the defenses are site versions you switch to, each followed by a scraper run. A one-line flow, plus the optional (b) baseline command.
+
+**Questions Claude asked:** whether to add the optional (b) baseline run to the Word doc (open).
 
 **Direction and fit:** no new decision.
