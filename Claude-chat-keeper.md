@@ -98,6 +98,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D67 | 240 | **Order for Milestone 3's Ambitious work: scraper (c) first, then (d)** (Joseph's choice; Claude had recommended (d) first). The Essential tooling (experiment runner, results CSV, user-cost runner; Claude) stays on its dates in parallel. Poisoning, (e) and the tarpit come after (c) and (d) and start only if those finish early. Cut-line 2 (Dec 1) will likely drop them. `SCHEDULE.md` Milestone 3 rewritten and README checklist updated. | (d) first (Claude's recommendation); poisoning kept on its original dates | Joseph | D66 (instructor's direction). §2: (c) and (d) are Joseph's code, Ollama on the CPU, model chosen after timing on 2–3 pages with its name and digest recorded. §7 Milestone 3 "Done when" unchanged. | **Deviates** (order of Ambitious work, following D66) |
 | D68 | 240 | **Metrics: keep Joseph's, add standard ones, and compare with published scores.** Keep accuracy (correct ÷ 70), fake-value rate, honeypot hits, time per page and the user-cost measures. Add: field-level precision, recall (= accuracy) and F1; relative reduction against baseline (1 − F1 with the defense ÷ F1 without); honeypot detection rate with a false-positive check from a human-like visitor; SSIM next to the pixel diff. Then a related-work table of what published studies measured and their scores in the same units (for example WebCloak's scraping recall 88.7% → 0%; SWDE extraction F1; bot-detection TPR at a given FPR), each with how its setting differs from this synthetic 70-field site. No single composite score: protection against user cost is shown as two axes. The scraper output format and the matching rules (`docs/scraper-output.md`, D31–D35) are unchanged. | Keep only the midterm's metrics; a single composite score | Joseph (Claude recommended; instructor's request) | §4 metrics (accuracy, fake-value rate, honeypot hits, time per page, user cost) and analysis (mean and min–max over 3 runs, "reduces"/"stops" rules), all kept. The instructor asked for metrics comparable with other work. | **Adds** |
 | D69 | 246 | **No reference scraping tool:** an existing open-source scraper will not be run on the testbed as a reference point. Comparison with other work goes through the three layers in `docs/metrics-plan.md` (relative reduction against our baseline, standard metrics and yardsticks, a related-work table). Papers to read for the related-work table, which Joseph shares with Claude in the chat and does not commit: WebCloak, Beyond BeautifulSoup, FreeDOM (SWDE F1 protocol); optional: Shy Guys, FP-Inconsistent, the SSIM paper. | Run one widely used open-source scraper on the testbed (Claude's optional idea) | Joseph | §1 scope (only the scrapers the midterm defines; no commercial AI agents); D68. | Follows |
+| D70 | 248 | **Metric set checked against the papers Joseph supplied** (Beyond BeautifulSoup, FreeDOM, Shy Guys, FP-Inconsistent, the SSIM paper, and WebCloak's project page). Two more standard measures are added: **extraction success rate** (ESR: share of runs fully correct; here 70/70), as in Beyond BeautifulSoup, and **evasion rate** (1 − detection rate), as in FP-Inconsistent. `docs/metrics-plan.md` now holds a related-work table with verified numbers, the main differences per study, and full references. WebCloak's definition of recall still needs the full paper (only the project page was supplied). | Keep D68's set without ESR and evasion rate | Claude (from the papers; within D68, which Joseph approved) | §4 metrics and analysis kept; D68. | Adds |
 
 ---
 
@@ -351,6 +352,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J244 | 244 | What do I have left based on these suggestions? | Remaining work by owner and date (Turn 244) |
 | J245 | 245 | Check the suggestions are implemented; explain how to do the metrics so results compare with others' work, and what that means for the testbed | Status checked; `docs/metrics-plan.md` written; explanation given (Turn 245) |
 | J246 | 246 | Let's not do the reference scraping tool; what papers do you need? I'll do this and the merge before logging off | D69; paper list with links (Turn 246) |
+| J247 | 247 | (attached five papers: SSIM, FP-Inconsistent, Shy Guys, FreeDOM, Beyond BeautifulSoup) | Read; metrics plan rewritten with verified numbers; D70 (Turn 247) |
+| J248 | 248 | (attached the WebCloak file mid-turn) | A project-page printout, not the paper; full paper requested (Turns 247–248) |
 
 ### Questions from Claude
 
@@ -9610,3 +9613,47 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D69 (Follows).
+
+### Turn 247 — 2026-11-16 22:13 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/d429fd4b-wang03-preprint.pdf" @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/02eef929-FP-Inconsistent__Measurement_and_Analysis_of_Fingerprint_Inconsistencies_in_Evasive_Bot_Traffic_-_2406.07647v3.pdf" @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/2b6db4df-Shy_Guys__A_Light-Weight_Approach_to_Detecting_Robots_on_Websites_-_2603.28546v1.pdf" @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/b76b430c-FreeDOM__A_Transferable_Neural_Architecture_for_Structured_Information_Extraction_on_Web_Documents_-_2010.10755v1.pdf" @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/5df968dd-Beyond_BeautifulSoup__Benchmarking_LLM-Powered_Web_Scraping_for_Everyday_Users_-_2601.06301v1.pdf"
+
+**What Claude did:**
+- Joseph attached five papers: the SSIM paper (Wang et al., 2004), FP-Inconsistent, Shy Guys, FreeDOM and Beyond BeautifulSoup. The WebCloak file followed mid-turn (Turn 248).
+- Converted each to text with `pdftotext` (scratch folder; not committed). Read each one's abstract, metric definitions and main results:
+  - Beyond BeautifulSoup (AAAI 2026, per its copyright line): extraction success rate (ESR) = % of runs with complete and correct output, over 3 trials; execution time; manual effort. Simple HTML: BeautifulSoup 0.93, Scrapy 0.82, Claude and Simular.ai 1.00. Scripts under 2 s; agents 10–20 s.
+  - FreeDOM (KDD 2020): SWDE has 8 verticals × 10 sites; page-level F1 per field with top-1 predictions; FreeDOM-Full 82.32–92.56 F1 with 1–5 seed sites; Render-Full 84.3–88.6.
+  - Shy Guys (arXiv 2026): 4.6M requests; a honeypot used as bot ground truth ("real users have no reason to access"); TP/FN over bots, FP/TN over humans; 67.6% detected at 3.0% FPR; existing tools 12–18% at 0.0–0.1%.
+  - FP-Inconsistent (arXiv 2025): a honey site, 507,080 requests from 20 bot services; DataDome detected 55.44%, BotD 47.07% (evasion 52.93% and 44.56%); their method cuts evasion by 44.95–48.11% at 96.84% TNR.
+  - SSIM: IEEE Transactions on Image Processing 13(4), 2004.
+  - WebCloak: the file is a printout of the project page, not the paper. It confirms IEEE S&P 2026, the authors, LLMCrawlBench (237 pages, 50 sites), 32+ scrapers in 3 classes, and recall 88.7% → 0%; it protects images.
+- Rewrote `docs/metrics-plan.md`:
+  - the measures table now names the study that uses each measure;
+  - added ESR and evasion rate;
+  - the testbed section maps (a)–(d) to the papers' scraper classes and notes that Shy Guys uses a honeypot the same way;
+  - the related-work table has verified numbers, our comparable result, and the main differences for 5 studies;
+  - added full references.
+- Recorded D70 (Adds). Pushed to the branch, so pull request #34 (still open) includes it.
+- Logged Turns 247–248 (J247, J248).
+
+**Claude's answer (summary):** what each paper measures and found; how that sets your metrics (field P/R/F1 like FreeDOM/SWDE, run ESR like Beyond BeautifulSoup, before → after recall like WebCloak, TPR/FPR/evasion like Shy Guys and FP-Inconsistent, SSIM from Wang et al.); where your results already line up; and that the WebCloak paper itself is still needed.
+
+**Questions Claude asked:** asked for the full WebCloak paper (the "Paper" link on its project page).
+
+**Direction and fit:** D70 (Adds), within D68.
+
+### Turn 248 — 2026-11-16 22:13 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/4db27665-WebCloak__Characterizing_and_Mitigating_the_Threats_of_LLM-Driven_Web_Agents_as_Intelligent_Scrapers.pdf"
+
+**What Claude did:** read the WebCloak file (a 6-page printout of the project page web-cloak.github.io, not the paper) as part of Turn 247's work. Findings and changes are logged there.
+
+**Claude's answer (summary):** see Turn 247.
+
+**Questions Claude asked:** asked for the full WebCloak paper.
+
+**Direction and fit:** D70 (see Turn 247).
