@@ -346,6 +346,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J240 | 240 | Let's do the LLM scraper (c), then (d); continue my metrics with what others used and their scores, or what do you think? | D67, D68; schedule re-planned; first (c) step given (Turn 240) |
 | J241 | 241 | In terms of the project scope, what does this mean? (first version, sent again in full as Turn 242) | Answered in Turn 242 |
 | J242 | 242 | What does the feedback mean for the project scope and how the rest of the project will turn out? | Scope impact by midterm item; grid 36 runs; hypotheses still testable; report notes (Turn 242) |
+| J243 | 243 | I have Claude; would that work for the LLM? | Interrupted; answered in Turn 244: keep Ollama (assignment, §1, §2) |
+| J244 | 244 | What do I have left based on these suggestions? | Remaining work by owner and date (Turn 244) |
 
 ### Questions from Claude
 
@@ -9514,3 +9516,43 @@ Then Joseph's questions.
 **Questions Claude asked:** none (still waiting for RAM and Ollama output from Turn 240).
 
 **Direction and fit:** no new decision. Follows the §7 decision points (Cut-line 2 handles what isn't done) and D66–D68.
+
+### Turn 243 — 2026-11-16 22:01 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i have claude would that work for the llm or?
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new) and the midterm on which LLM (c) may use:
+  - §2 tools: "Ollama for (c) and (e): the assigned project prescribes it", and the experiment "stays free and private with no API key";
+  - §1 exclusions: "No commercial AI agents".
+- Joseph interrupted before the answer was sent. The short answer is given in Turn 244: keep Ollama. Using Claude (the Anthropic API, billed separately from a Claude subscription) would go against the assignment and the midterm; at most it could be an extra comparison point, with the instructor's approval.
+
+**Claude's answer (summary):** given in Turn 244.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Keep Ollama for (c) (§1 exclusions, §2 tools).
+
+### Turn 244 — 2026-11-16 22:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok in terms of the project, what do i have left based on these suggestions
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new; #33 open) and read `SCHEDULE.md` Milestones 3 and 4 as re-planned in Turn 240 (D66–D68).
+- Listed everything left, by owner and date:
+  - Joseph: scraper (c) (Nov 17–22, runs Nov 28); scraper (d) (Nov 22–25, runs Nov 28); the Essential runs (Nov 23); Test 7 with Claude (Nov 24); the CSV check (Nov 30); Cut-line 2 (Dec 1); then checking tables, the figure, report writing, the clean rerun, the final PDF, tagging by Dec 8 and submitting by Dec 10.
+  - Claude: the model-timing script; the experiment runner; the results CSV with log-based measures; the user-cost runner (pixel diff + SSIM, reading order, Lighthouse, axe-core) and the standard metrics; the related-work table; the honeypot false-positive check; then the final-tables script, the README and reproducibility manifest, and the clean rerun.
+  - Dropped unless (c) and (d) finish early: poisoning, (e), the tarpit.
+  - Small tidy-ups: "wwhen", the honeypot comments and `trapPath`, the (b) debug print, C20.
+- Answered the interrupted Turn 243 question in two lines (keep Ollama).
+- Logged Turns 243–244 (J243, J244).
+
+**Claude's answer (summary):** a remaining-work list split by Joseph and Claude, with dates and a count, plus the short answer on using Claude for (c).
+
+**Questions Claude asked:** none (still waiting for RAM and the Ollama output).
+
+**Direction and fit:** no new decision. Follows D66–D68 and the §7 decision points.
