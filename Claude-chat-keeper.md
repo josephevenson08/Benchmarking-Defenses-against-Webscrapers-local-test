@@ -319,6 +319,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J214 | 214 | Tell me what my bottom comments should say | Replacement comment block for (b), ready to paste (Turn 214) |
 | J215 | 215 | It's pushed, make the printout | `scraper-b-browser.docx` sent; "wwhen" typo on line 48 noted (Turn 215) |
 | J216 | 216 | Now do it for the defenses (honeypot and DOM shuffle) | `defenses-printout.docx` sent (Turn 216) |
+| J217 | 217 | Fix my "what will you accomplish next week" answer and check it against GitHub | Rewritten for Nov 17–23 from SCHEDULE.md; the Nov 12–16 early start did not happen (Turn 217) |
 
 ### Questions from Claude
 
@@ -8733,3 +8734,36 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 217 — 2026-11-16 00:12 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 2.	What will you accomplish in the following week?
+> a.	Nov 12-16
+> i.	The experiment runner starts the server on each condition and runs each scraper 3 times with unique run IDs. Honeypot hits and time per page are read from the request log and written to the results CSV.
+> b.	Nov 17
+> i.	Cut-line 1: (a), (b), shuffling and the honeypot must all be working. Already met (Tests 1, 3, 4 and 6 pass), so Ambitious work can start.
+> c.	Nov 18	
+> i.	Milestone 3 officially begins. Start live DOM poisoning (Ambitious): a same-format fake value for each field, the real values in a per-page JSON file, and a script that swaps them in after 2 s.
+> d.	End goal of next week is the runner and results CSV are ready, so the Essential runs ((a) and (b) × baseline, shuffled and honeypot × 3 runs, due Nov 23) can go ahead, and poisoning has started.
+>
+>
+> fix this to be correct and check it against what we have done in the github
+
+**What Claude did:**
+- Checked GitHub (`main`): since Nov 11 the only code commits are Joseph's comment updates to (a) (`7768ede`) and (b) (`ba0a7f1`), on Nov 15. There is no experiment runner, no results CSV and no poisoning file yet. The plan in the meeting doc (D65) to start Milestone 3 tooling early, Nov 12–16, did not happen; those days went to meeting and presentation materials and code comments.
+- Rewrote Joseph's "next week" answer to match `SCHEDULE.md` for Nov 17–23:
+  - Nov 17: Cut-line 1, already met;
+  - Nov 18–19: experiment runner, log-based honeypot hits and time per page, the results CSV, and the start of poisoning;
+  - Nov 20–21: the user-cost runner, Test 5, and the start of (d);
+  - Nov 22–23: (d), and the Essential runs, 18 runs, due Nov 23;
+  - who writes what is marked (Claude drafts the tooling; Joseph writes poisoning and (d)).
+- Listed what changed and why. Offered to update the meeting doc's "Next week" section to match.
+- Logged this turn (J217). Open items: the resume note still holds; Milestone 3 starts Nov 18 as scheduled.
+
+**Claude's answer (summary):** the corrected "following week" answer, Nov 17–23, ready to paste, and the corrections it makes: Nov 12–16 dropped (not done); the runner on Nov 18 and the CSV on Nov 19; the user-cost runner and (d) added; the Essential runs now fall inside the week.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The plan follows SCHEDULE.md (§7 Milestone 3).
