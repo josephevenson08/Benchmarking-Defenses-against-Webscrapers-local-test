@@ -323,6 +323,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J218 | 218 | Anything blocking my progress? | Nothing blocking; five things to watch; pasteable answer (Turn 218) |
 | J219 | 219 | Question 4: how are you prompting the AI agent, and verifying and testing its code? | Pasteable answer with current numbers (Turn 219) |
 | J220 | 220 | Walk me through a demo of what I've done, explaining after each step, then a complete step-by-step guide for the scrum meeting | Rehearsal started: Steps 0–1 given (Turn 220) |
+| J221 | 221 | (Step 1: page source of baseline Product 1) | Step 1 done; Step 2 given (Turn 221) |
 
 ### Questions from Claude
 
@@ -358,7 +359,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (after Milestone 2):** Demo rehearsal in progress (Turn 220: Steps 0–1 given; after Step 7, write the full reproducible guide). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (after Milestone 2):** Demo rehearsal in progress (Turn 221: Step 1 done, Step 2 given; after Step 7, write the full reproducible guide). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -8842,5 +8843,68 @@ Then Joseph's questions.
 **Claude's answer (summary):** the plan of the walkthrough, then Steps 0 and 1 with what to run, what to expect and what to paste back.
 
 **Questions Claude asked:** none (waiting for Joseph's Step 1 output).
+
+**Direction and fit:** no new decision.
+
+### Turn 221 — 2026-11-16 00:27 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> <!doctype html>
+> <html lang="en">
+> <head>
+>   <meta charset="utf-8">
+>   <meta name="viewport" content="width=device-width, initial-scale=1">
+>   <title>Product 1 · Demo Shop</title>
+>   <style>
+>     body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.5; color: #1f2328; background: #fff; }
+>     header, main, footer { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+>     header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; }
+>     .brand { font-weight: 700; color: inherit; text-decoration: none; }
+>     nav a { margin-left: 1rem; }
+>     a { color: #0969da; }
+>     .fields { display: flex; flex-direction: column; }
+>     .field { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #eaeef2; }
+>     .label { flex: 0 0 9rem; font-weight: 600; }
+>     .value { flex: 1; }
+>     footer { color: #57606a; font-size: 0.875rem; border-top: 1px solid #d0d7de; }
+>   </style>
+> </head>
+> <body>
+>   <header>
+>     <a class="brand" href="/">Demo Shop</a>
+>     <nav><a href="/">Home</a><a href="/products/">Products</a></nav>
+>   </header>
+>   <main>
+>     <h1>Product details</h1>
+>     <div class="fields">
+>       <div class="field"><span class="label">Name</span><span class="value">Larkfield Studio Headphones</span></div>
+>       <div class="field"><span class="label">Brand</span><span class="value">Larkfield</span></div>
+>       <div class="field"><span class="label">Category</span><span class="value">Headphones</span></div>
+>       <div class="field"><span class="label">Price</span><span class="value">$89.99</span></div>
+>       <div class="field"><span class="label">SKU</span><span class="value">LF-HP-2041</span></div>
+>       <div class="field"><span class="label">Rating</span><span class="value">4.5</span></div>
+>       <div class="field"><span class="label">Reviews</span><span class="value">1,284</span></div>
+>       <div class="field"><span class="label">Availability</span><span class="value">In stock</span></div>
+>       <div class="field"><span class="label">Release date</span><span class="value">2024-09-12</span></div>
+>       <div class="field"><span class="label">Description</span><span class="value">Closed-back over-ear headphones with 40 mm drivers and a detachable cable.</span></div>
+>     </div>
+>   </main>
+>   <footer>Synthetic test site for a local scraping study. All content is made up.</footer>
+> </body>
+> </html>
+>
+>
+>
+> http://127.0.0.1:3000/products/p1
+
+**What Claude did:**
+- Read Joseph's Step 1 result: the page source of baseline `/products/p1` from his laptop server. It matches the generator's baseline: 10 `.field` rows, each a label followed by its value, from Name "Larkfield Studio Headphones" to Description. So the site builds and serves.
+- Explained what Step 1 showed (the page structure the scrapers rely on, and the "before" picture for shuffling) and gave Step 2: run (a) on the baseline and score it.
+- Logged this turn (J221).
+
+**Claude's answer (summary):** Step 1 done; what it shows and what to say; Step 2 commands, the expected output, and what to paste back.
+
+**Questions Claude asked:** none (waiting for the Step 2 output).
 
 **Direction and fit:** no new decision.
