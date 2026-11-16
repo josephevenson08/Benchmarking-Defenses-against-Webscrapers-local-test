@@ -336,6 +336,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J231 | 231 | So (a) reads what the HTML says and (b) loads it in Playwright, lets the JS run, then scrapes it? | Yes, with "different page" clarified as a browser tab (Turn 231) |
 | J232 | 232 | ("How it loads" outline) Where is each of these in the project, by file path? | File paths for each part; trap hits and most user-cost measures not built yet (Turn 232) |
 | J233 | 233 | (revised "how it loads" outline with file paths) | Corrected outline: misplaced items moved, typos, trap-hit caveat (Turn 233) |
+| J234 | 234 | (completed-work table with a partly filled "Who did what" column) | Column filled from the log, with disclosed Claude-supplied lines named (Turn 234) |
 
 ### Questions from Claude
 
@@ -9275,3 +9276,37 @@ Then Joseph's questions.
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
 **Direction and fit:** no new decision.
+
+### Turn 234 — 2026-11-16 02:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> Date	Work	Result	Who did what
+> Oct 26	Data list, page generator, Express server and request logger	10-page site in each condition; every request logged with its run ID.	Agent
+> Oct 27	Scoring script; Test 2 (Check 1)	My hand-made fixture (63 correct, 4 wrong, 3 missing) scores 0.90 accuracy and a 2/70 fake-value rate, as expected.	Agent made script, Joseph rechecked values to ensure accuracy 
+> Oct 30	Scraper (a), raw HTTP; Check 2	70/70 in 3 runs, checked by a hand count. Milestone 1 complete.	Joseph
+> Nov 6	Scraper (b), Playwright	70/70, 0.036 s per page.	
+> Nov 7–9	DOM shuffling defense	(a) drops from 70/70 to 4/70 on the shuffled site; it looks the same on screen.	
+> Nov 9	Screenshot and pixel-diff tool	Playwright screenshots + pixelmatch; 4 unit tests.	Agent
+> Nov 10	Test 4 (shuffling)	Same seed gives byte-identical files. All 8 item pages are reordered in the source. 0.000% pixel difference, and 10/10 screenshot pairs match by eye.	
+> Nov 10	Honeypot defense + Test 6	A trap hit is logged for the right run, a normal page is not, and a request without a User-Agent logs as “unknown”. The trap link is hidden on 10/10 pages, with 0.000% pixel change. (a) and (b) each hit the trap once and still score 70/70.		
+> Nov 11	Test 3 (extraction rule)	(a) and (b) match the hand-worked answers exactly: baseline p2 10/10, shuffled p1 9/9.	
+> Nov 11	Test 1 (normal workflow)	Baseline, shuffled and honeypot each have 10 pages and 70 fields. (a) and (b) score 70/70 in all 3 runs. Milestone 2 complete.
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new) and the log for who did what in each row of Joseph's completed-work table:
+  - D2: Claude drafted the site and the scoring script;
+  - D43: Joseph's fixture came first, and he verified the script;
+  - D49: Joseph wrote (a); the disclosed help is in Turns 60–80 (fill-in guidance and a few replacement lines);
+  - D51: (b);
+  - D53/D54 and J146: Joseph's shuffle, with the value line supplied by Claude, and Claude's generator slot;
+  - J181: the corrected honeypot line, disclosed;
+  - D56–D64: Claude's test scripts, run by Joseph on his laptop, plus his by-eye checks and hand-worked answers.
+- Filled in the empty "Who did what" cells and tightened two of his. Each row names the AI's part, including the disclosed lines, and his part. His oldest-first order and wording are kept, and "Agent" is kept for Claude.
+- Logged this turn (J234).
+
+**Claude's answer (summary):** the completed table with an accurate "Who did what" column, plus notes on the cells that changed.
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision. Accurate attribution supports the §7 AI-use disclosure.
