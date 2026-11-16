@@ -333,6 +333,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J228 | 228 | So scraper (a) against both defenses, then scraper (b) against both? | Recommended (a) then (b) on each site version; six runs with commands (Turn 228) |
 | J229 | 229 | Is my understanding right? Shuffled: both 4/70 ((a) raw HTML, (b) after CSS loads); honeypot: both 70/70 with 11 pages | Mostly right; CSS doesn't change the HTML (b) reads; 1 trap hit per run (Turn 229) |
 | J230 | 230 | So what differs from (a) to (b)? | Differences, similarities and predicted results; why (b) matters (Turn 230) |
+| J231 | 231 | So (a) reads what the HTML says and (b) loads it in Playwright, lets the JS run, then scrapes it? | Yes, with "different page" clarified as a browser tab (Turn 231) |
 
 ### Questions from Claude
 
@@ -9158,6 +9159,24 @@ Then Joseph's questions.
 - Logged this turn (J230).
 
 **Claude's answer (summary):** a table of the differences and similarities, the predicted results, and why (b) matters to the research question, with a line to say at the meeting.
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 231 — 2026-11-16 02:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so pre much scraper a isjust reading what the html says and scraper b is loading it onto a different page from playwright, and then letting the js run then scraping it?
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Confirmed Joseph's summary with one wording fix. (b) doesn't load the page onto a different page: Playwright opens the same URL in a real Chromium tab (Playwright calls a tab a "page", which is why the code says `page.goto`). The browser runs the page's JavaScript up to the load event, with no extra waiting (§2), then (b) takes the resulting HTML (`page.content()`) and applies the same rule as (a).
+- Gave a one-line version to say.
+- Logged this turn (J231).
+
+**Claude's answer (summary):** yes, with the "different page" wording fixed and the no-extra-waiting detail added.
 
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
