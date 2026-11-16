@@ -9602,7 +9602,7 @@ Then Joseph's questions.
   - must-have: WebCloak (IEEE S&P 2026; LLM-scraper defense; recall and precision), "Beyond BeautifulSoup" (arXiv 2601.06301; LLM scraping benchmark, close to (c)), FreeDOM (arXiv 2010.10755; the SWDE page-level F1 protocol);
   - nice-to-have: Shy Guys (arXiv 2603.28546; detection at a false-positive rate), FP-Inconsistent (arXiv 2406.07647), and the SSIM paper (Wang et al., 2004).
   - Asked Joseph to attach the PDFs in the chat, or paste their evaluation sections, and not to commit them to the repo.
-- Pushed, so #33 now includes this; then Joseph merges.
+- Joseph merged #33 (`790c01c`) just before this push, so D69 arrived after the merge. Merged `main` into the branch (`7262df5`) and opened pull request #34 for the D69 change and this log entry: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/34
 - Logged this turn (J246).
 
 **Claude's answer (summary):** no reference tool, noted; the paper list with priorities, links, why each is needed, and the section to send if PDFs can't be attached.
