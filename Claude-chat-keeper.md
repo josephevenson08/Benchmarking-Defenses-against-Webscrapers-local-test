@@ -338,6 +338,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J233 | 233 | (revised "how it loads" outline with file paths) | Corrected outline: misplaced items moved, typos, trap-hit caveat (Turn 233) |
 | J234 | 234 | (completed-work table with a partly filled "Who did what" column) | Column filled from the log, with disclosed Claude-supplied lines named (Turn 234) |
 | J235 | 235 | Where are the correct values held? | `data/items.json`; read by the generator and the scorer, never by the scrapers (Turn 235) |
+| J236 | 236 | Can you make a small ASCII visual of how what I've done works together? | ASCII flow diagram given (Turn 236) |
 
 ### Questions from Claude
 
@@ -9327,6 +9328,29 @@ Then Joseph's questions.
 - Logged this turn (J235).
 
 **Claude's answer (summary):** the correct values are in `data/items.json`; who reads it (the generator and the scorer) and who never does (the scrapers); how the scorer looks values up.
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 236 — 2026-11-16 02:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you create me a small ascii visual that shows how what i have done works together?
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Drew a plain-ASCII diagram (74 characters wide, pure ASCII so it pastes into Word in a monospace font) of how the built parts fit together:
+  - `items.json` and `fields.json` → `generate.js` + defenses + `config.json` → `conditions/` (3 versions);
+  - `server.js` → pages to scrapers (a) and (b), which read only `fields.json`;
+  - requests (run ID) → `logs/requests.jsonl`;
+  - output JSON → `score.py` (with the answer key) → accuracy, fake values, time per page;
+  - the log → trap hits (`measurement/test6.py`).
+- Checked the alignment with a script that lists each connector's column.
+- Logged this turn (J236).
+
+**Claude's answer (summary):** the ASCII diagram, with a note on pasting it into Word (use a monospace font such as Consolas).
 
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
