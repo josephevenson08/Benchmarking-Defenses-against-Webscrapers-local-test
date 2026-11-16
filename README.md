@@ -251,10 +251,14 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 **Milestone 2 completed Nov 11, six days before Cut-line 1.**
 
 ### Milestone 3: Nov 18 – Dec 1
-- [ ] User-cost runner (pixel-diff, Lighthouse, axe-core, reading order)
+Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptive scraper (d), come next among the Ambitious work, and the metrics gain standard, comparable measures. See `SCHEDULE.md`.
+- [ ] Experiment runner and results CSV (honeypot hits and time per page from the request log)
+- [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order)
+- [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; relative reduction against baseline; honeypot false-positive check (plan: `docs/metrics-plan.md`)
 - [ ] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each
 - [ ] Test 7 for (a) and (b)
-- [ ] Stretch: poisoning and scraper (d) (Test 5); setup for (c) and (e)
+- [ ] Stretch: scraper (c) (Ollama, CPU), then scraper (d); a related-work table of published scores in the same units
+- [ ] Stretch, only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
 
 ### Milestone 4: Dec 2 – Dec 10
 - [ ] Remaining Ambitious runs (only if ready)

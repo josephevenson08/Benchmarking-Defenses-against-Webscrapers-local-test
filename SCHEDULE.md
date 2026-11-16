@@ -19,10 +19,11 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Wed Nov 11 (Turn 196 of the chat-keeper).*
+*Last updated: Mon Nov 16 (Turn 240 of the chat-keeper): Milestone 3 re-planned after the scrum meeting (D66, D67, D68).*
 
-> **▶ Resume here: ⭐ Milestone 2 complete (Wed Nov 11, six days before Cut-line 1).** Tests 1, 3, 4 and 6 passed; (b) 70/70 in 3 runs; shuffled 0.000% pixels; trap hits logged with run IDs.
-> - Next: Joseph's questions. Then the Cut-line 1 check (formally on Nov 17; already met) and an early start on Milestone 3 if Joseph wants it.
+> **▶ Resume here: Milestone 3 re-planned after the scrum meeting (Mon Nov 16).** The instructor asked for the LLM scraper (c) and the adaptive scraper (d) next, and for metrics that can be compared with published work. Joseph chose (c) first, then (d) (D67). The Essential experiment tooling (Claude) continues in parallel. Standard metrics and a table of published scores in the same units are added (D68).
+> - Next: Joseph installs Ollama and pulls 2–3 small models; Claude drafts the model-timing script.
+> - Poisoning, (e) and the tarpit now come after (c) and (d), so Cut-line 2 (Dec 1) will likely drop them unless (c) and (d) finish early.
 
 ---
 
@@ -89,16 +90,45 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 
 ---
 
-## Milestone 3 · Nov 18 – Dec 1 · Essential experiment and user cost
+## Milestone 3 · Nov 18 – Dec 1 · Essential experiment, user cost, then (c) and (d)
 
 ⭐ **Done when** (§7):
 - The results CSV has accuracy, honeypot hits and time per page for every cell, plus user-cost rows for each condition.
 - Test 7 passes for the (a) and (b) crawl loops.
 
-Thanksgiving week is light.
+Re-planned on Mon Nov 16 after the scrum meeting (D66, D67, D68). The instructor asked for the LLM scraper (c) and the adaptive scraper (d) next; Joseph chose (c) first. Both are Joseph's code (§2); Claude explains, shows standalone examples, reviews, and drafts the tooling around them. The Essential tooling stays on its dates. Thanksgiving week is light.
 
 | Day | Tasks | Who |
 |---|---|---|
+| **Tue Nov 17** | ⚠️ **Cut-line 1** (Milestone 2's last day): (a), (b), shuffling and the honeypot all work. ✅ Already met on Nov 11. | J |
+| | (A) Install Ollama on the laptop and pull 2–3 small models (CPU only: Intel Iris Xe). Check each model's license allows local research use (§2). | J |
+| | Model-timing script: time each pulled model on the text of 2–3 pages; record each model's name and digest. | C |
+| **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
+| | (A) Scraper (c), part 1: get each page's rendered text with (b)'s crawler; a first standalone call to Ollama. | J |
+| **Thu Nov 19** | Scoring: honeypot hits and time per page from the request log; write the results CSV. Count page requests only (a browser may also fetch `/favicon.ico`, and defenses may add script or style files). | C |
+| | (A) Time the models with the script and choose one for (c); record its name and digest. | J |
+| **Fri Nov 20** | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff and SSIM against baseline, reading-order mismatch rate. | C |
+| | Standard metrics in the scoring (D68): field-level precision, recall and F1, and relative reduction against baseline, next to accuracy and the fake-value rate. | C |
+| | (A) Scraper (c), part 2: one fixed prompt per page type listing the field names, temperature 0; parse the reply as JSON. | J |
+| **Sat Nov 21** | User-cost runner, part 2: Lighthouse 5 times per page (median) and axe-core violations. | C |
+| | (A) Scraper (c), part 3: require every expected key, convert price and rating to numbers; invalid JSON, a missing key or a timeout is a failure, with no retry. First baseline run. | J |
+| **Sun Nov 22** | (A) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. | J |
+| | (A) Start scraper (d): wait until the page has had no changes for 3 s, with a 10 s timeout. | J |
+| **Mon Nov 23** | **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs. Check the outputs. | J |
+| **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. | J + C |
+| | User-cost runs for each condition. | C |
+| | (A) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. | J |
+| **Wed Nov 25** | (A) The (d) part of Test 3; (d) baseline check (3 runs at ≥ 90%). | J |
+| | Related-work metrics table: what published studies measured and their scores, in the same units as ours, with the differences in setting stated (D68). | C drafts, J reviews |
+| **Thu Nov 26** | **Thanksgiving: off.** | — |
+| **Fri Nov 27** | Light day or off. | — |
+| **Sat Nov 28** | (A) Runs: (c) and (d) × baseline, shuffled and honeypot × 3 runs. | J |
+| **Sun Nov 29** | (A) The stub-model parts of Test 7 for (c). | J + C |
+| | Honeypot false-positive check: a human-like visitor that clicks only visible links should never hit the trap (D68). | C |
+| **Mon Nov 30** | Check that every Essential cell is in the results CSV and every condition has user-cost rows. | J |
+| **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. Poisoning, (e) and the tarpit start only if (c) and (d) finished early. | J |
+
+---|---|---|
 | **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
 | | (A) Start poisoning: a same-format fake value for each field, real values in a per-page JSON file, a script that swaps them in after 2 s, and the fake-values file. | J |
 | **Thu Nov 19** | Scoring script: honeypot hits and time per page from the request log; write the results CSV. Count page requests only: a browser may also fetch `/favicon.ico` (the full Chromium build does; the default headless shell on the laptop doesn't) and any script or style files a defense adds. | C |
@@ -128,7 +158,7 @@ Thanksgiving week is light.
 
 | Day | Tasks | Who |
 |---|---|---|
-| **Wed Dec 2** | (A) Remaining Ambitious runs (Dec 2–5): (c) and (e), plus any remaining poisoning and (d) runs. **Tarpit:** only if all three other defenses and all five scrapers ran by Dec 1; if so, build it Dec 2–4. | J |
+| **Wed Dec 2** | (A) Remaining Ambitious runs (Dec 2–5): any remaining (c) and (d) runs; poisoning and (e) only if they were running by Dec 1. **Tarpit:** only if all three other defenses and all five scrapers ran by Dec 1; if so, build it Dec 2–4. | J |
 | **Thu Dec 3** | Script for the final tables: accuracy and fake-value rate by defense and scraper; honeypot hits and time per page; user cost against baseline. | C |
 | | Check the tables against the raw outputs. Start the report. | J |
 | **Fri Dec 4** | Figure pairing accuracy drop with user cost. Compare the results with the predicted pattern cell by cell and list every mismatch (§4). | J + C |
