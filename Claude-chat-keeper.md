@@ -337,6 +337,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J232 | 232 | ("How it loads" outline) Where is each of these in the project, by file path? | File paths for each part; trap hits and most user-cost measures not built yet (Turn 232) |
 | J233 | 233 | (revised "how it loads" outline with file paths) | Corrected outline: misplaced items moved, typos, trap-hit caveat (Turn 233) |
 | J234 | 234 | (completed-work table with a partly filled "Who did what" column) | Column filled from the log, with disclosed Claude-supplied lines named (Turn 234) |
+| J235 | 235 | Where are the correct values held? | `data/items.json`; read by the generator and the scorer, never by the scrapers (Turn 235) |
 
 ### Questions from Claude
 
@@ -9310,3 +9311,23 @@ Then Joseph's questions.
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
 **Direction and fit:** no new decision. Accurate attribution supports the §7 AI-use disclosure.
+
+### Turn 235 — 2026-11-16 02:37 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> where is the correct values held?
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new) and `scoring/score.py`. The correct values, the answer key, are in `data/items.json`: `products` (6, keyed by `product_id`) and `articles` (2, keyed by `article_id`).
+  - `score.py` (`DataList`, around lines 93–118) loads `items.json` and `fields.json` and builds a table keyed by (item ID, field). Each record's page path (`/products/p1`) is matched to its item ID (`p1`).
+  - The generator builds the pages from the same file.
+  - Nothing a scraper can reach contains the file: it isn't served, since the server serves only `conditions/<condition>/`.
+- Showed an `items.json` entry (article `a1`) and the path → ID → field lookup.
+- Logged this turn (J235).
+
+**Claude's answer (summary):** the correct values are in `data/items.json`; who reads it (the generator and the scorer) and who never does (the scrapers); how the scorer looks values up.
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision.
