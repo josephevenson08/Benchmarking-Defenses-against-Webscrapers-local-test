@@ -8900,6 +8900,7 @@ Then Joseph's questions.
 
 **What Claude did:**
 - Read Joseph's Step 1 result: the page source of baseline `/products/p1` from his laptop server. It matches the generator's baseline: 10 `.field` rows, each a label followed by its value, from Name "Larkfield Studio Headphones" to Description. So the site builds and serves.
+- Joseph also sent, mid-turn, a screenshot of the same page in his browser (an image only, so the hook recorded no text): "Product details" with the 10 fields in order, Name to Description, and the footer. The screen and the source agree.
 - Explained what Step 1 showed (the page structure the scrapers rely on, and the "before" picture for shuffling) and gave Step 2: run (a) on the baseline and score it.
 - Logged this turn (J221).
 
