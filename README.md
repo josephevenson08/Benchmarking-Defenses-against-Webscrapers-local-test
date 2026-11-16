@@ -254,7 +254,7 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptive scraper (d), come next among the Ambitious work, and the metrics gain standard, comparable measures. See `SCHEDULE.md`.
 - [ ] Experiment runner and results CSV (honeypot hits and time per page from the request log)
 - [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order)
-- [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; relative reduction against baseline; honeypot false-positive check
+- [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; relative reduction against baseline; honeypot false-positive check (plan: `docs/metrics-plan.md`)
 - [ ] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each
 - [ ] Test 7 for (a) and (b)
 - [ ] Stretch: scraper (c) (Ollama, CPU), then scraper (d); a related-work table of published scores in the same units
