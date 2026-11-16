@@ -326,6 +326,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J221 | 221 | (Step 1: page source of baseline Product 1) | Step 1 done; Step 2 given (Turn 221) |
 | J222 | 222 | (Step 2 output: 10 pages, 70/70) Also explain this output | Output explained; Step 3 given (Turn 222) |
 | J223 | 223 | (Step 3 output: 66 records, 4/70) | Explained with field-level examples; Step 4 given (Turn 223) |
+| J224 | 224 | Just give me the steps to run through everything I've done, with a short blurb and the commands for each | Full demo guide given (Turn 224) |
 
 ### Questions from Claude
 
@@ -361,7 +362,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (after Milestone 2):** Demo rehearsal in progress (Turn 223: Steps 1–3 done, Step 4 given; after Step 7, write the full reproducible guide). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (after Milestone 2):** Demo guide done (Turn 224; rehearsal ran Steps 1–3 on the laptop). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -8985,5 +8986,33 @@ Then Joseph's questions.
 **Claude's answer (summary):** Step 3 done; why 66 records and 4/70, with real examples from p1; what to say; the Step 4 commands.
 
 **Questions Claude asked:** none (waiting for the Step 4 output).
+
+**Direction and fit:** no new decision.
+
+### Turn 224 — 2026-11-16 00:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok just give me the steps to run through everything ive done, and then a short blurb to explain each step, obviously put in the commands as well
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new; the result folders cited in the guide are all on `main`.
+- Ended the interactive rehearsal after Step 3 at Joseph's request. Steps 1–3 ran on his laptop with the expected results: baseline 70/70; shuffled 66 records and 4/70. The honeypot step was verified in the cloud in Turn 205.
+- Wrote the complete demo guide:
+  0. set-up;
+  1. the test site;
+  2. (a) with no defense;
+  3. shuffling, plus optional (b);
+  4. honeypot, with a fresh log;
+  5. his code;
+  6. the test reports;
+  7. the AI-use record;
+  plus wrap-up and troubleshooting. Each step has its commands, what to show, the expected result and a short blurb to say.
+- Updated the resume note: rehearsal finished, guide given.
+- Logged this turn (J224).
+
+**Claude's answer (summary):** the full step-by-step demo guide with commands and blurbs.
+
+**Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
