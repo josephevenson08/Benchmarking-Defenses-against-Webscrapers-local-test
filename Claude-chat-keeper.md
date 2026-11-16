@@ -99,6 +99,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D68 | 240 | **Metrics: keep Joseph's, add standard ones, and compare with published scores.** Keep accuracy (correct ÷ 70), fake-value rate, honeypot hits, time per page and the user-cost measures. Add: field-level precision, recall (= accuracy) and F1; relative reduction against baseline (1 − F1 with the defense ÷ F1 without); honeypot detection rate with a false-positive check from a human-like visitor; SSIM next to the pixel diff. Then a related-work table of what published studies measured and their scores in the same units (for example WebCloak's scraping recall 88.7% → 0%; SWDE extraction F1; bot-detection TPR at a given FPR), each with how its setting differs from this synthetic 70-field site. No single composite score: protection against user cost is shown as two axes. The scraper output format and the matching rules (`docs/scraper-output.md`, D31–D35) are unchanged. | Keep only the midterm's metrics; a single composite score | Joseph (Claude recommended; instructor's request) | §4 metrics (accuracy, fake-value rate, honeypot hits, time per page, user cost) and analysis (mean and min–max over 3 runs, "reduces"/"stops" rules), all kept. The instructor asked for metrics comparable with other work. | **Adds** |
 | D69 | 246 | **No reference scraping tool:** an existing open-source scraper will not be run on the testbed as a reference point. Comparison with other work goes through the three layers in `docs/metrics-plan.md` (relative reduction against our baseline, standard metrics and yardsticks, a related-work table). Papers to read for the related-work table, which Joseph shares with Claude in the chat and does not commit: WebCloak, Beyond BeautifulSoup, FreeDOM (SWDE F1 protocol); optional: Shy Guys, FP-Inconsistent, the SSIM paper. | Run one widely used open-source scraper on the testbed (Claude's optional idea) | Joseph | §1 scope (only the scrapers the midterm defines; no commercial AI agents); D68. | Follows |
 | D70 | 248 | **Metric set checked against the papers Joseph supplied** (Beyond BeautifulSoup, FreeDOM, Shy Guys, FP-Inconsistent, the SSIM paper, and WebCloak's project page). Two more standard measures are added: **extraction success rate** (ESR: share of runs fully correct; here 70/70), as in Beyond BeautifulSoup, and **evasion rate** (1 − detection rate), as in FP-Inconsistent. `docs/metrics-plan.md` now holds a related-work table with verified numbers, the main differences per study, and full references. WebCloak's definition of recall still needs the full paper (only the project page was supplied). | Keep D68's set without ESR and evasion rate | Claude (from the papers; within D68, which Joseph approved) | §4 metrics and analysis kept; D68. | Adds |
+| D71 | 249 | **From the full WebCloak paper:** its scraping recall is \|extracted ∩ target\| ÷ \|target\|, the same as our accuracy, and its precision is correct ÷ extracted. Following it, add **page weight** (HTML size per page against baseline) and, for (c), **prompt tokens per page** as overhead measures, and report Lighthouse as **changes** from baseline (score, FCP, LCP, TTI). Keep SSIM for visual similarity (WebCloak used JCD). Note that WebCloak has no accessibility measure, which our axe-core and reading-order measures add. Related-work row updated with verified details. | Keep D70's set | Claude (from the paper; within D68) | §4 user-cost metrics kept; D68, D70. | Adds |
+| D72 | 250 | **Plan checked and tightened** at Joseph's request, so the scrum suggestions are followed and the project finishes on time. `SCHEDULE.md`: Milestone 3 gets "Done when" items for (c) and (d) as narrowed by D66–D67; time limits: (c) until Nov 22 for its baseline check, otherwise "not usable" (§4); (d) until Nov 28 for its runs; the Essential work is never delayed for (c) or (d); the D70/D71 measures are placed on Nov 17, 20 and 21; the related-work table is filled Nov 25 and Dec 3; Milestone 4's tables, figure and report rows name the standard metrics, the related-work comparison and a scope-change section. README: status, metrics section (standard metrics), grid (12 cells × 3 = 36 runs as planned), roadmap, scope and references updated. | Leave the schedule without time limits | Claude (Joseph asked for a precise, on-time plan) | §7: decision points and "I never put the essential results at risk to finish stretch work"; §4 "not usable" rule; D66–D71. | Adds |
 
 ---
 
@@ -354,6 +356,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J246 | 246 | Let's not do the reference scraping tool; what papers do you need? I'll do this and the merge before logging off | D69; paper list with links (Turn 246) |
 | J247 | 247 | (attached five papers: SSIM, FP-Inconsistent, Shy Guys, FreeDOM, Beyond BeautifulSoup) | Read; metrics plan rewritten with verified numbers; D70 (Turn 247) |
 | J248 | 248 | (attached the WebCloak file mid-turn) | A project-page printout, not the paper; full paper requested (Turns 247–248) |
+| J249 | 249 | (attached the full WebCloak paper) | Read; metrics plan updated; D71 (Turn 249) |
+| J250 | 250 | Recheck everything follows the suggestions, make a precise on-time plan, and put it on GitHub | Plan checked and tightened; D72; schedule and README updated; pull request (Turn 250) |
 
 ### Questions from Claude
 
@@ -391,7 +395,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 240):** Milestone 3 re-planned (D66–D68; see `SCHEDULE.md`). Next: Joseph installs Ollama, reports his RAM and pulls 2–3 small models; Claude drafts the model-timing script (Nov 17), then the experiment runner (Nov 18). (c) is Joseph's code (§2): Claude explains, gives standalone examples and reviews. Open: the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 250):** plan checked and tightened (D66–D72; `SCHEDULE.md`, `docs/metrics-plan.md`). Tue Nov 17: Joseph installs Ollama, sends his RAM, pulls 2–3 models; Claude drafts the model-timing script with token counts. Time limits: (c) Nov 22, (d) Nov 28. Open: the honeypot `${page.trapPath}` tidy-up; the "wwhen" typo; the prompt-hook fix for subagent messages.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -9657,3 +9661,64 @@ Then Joseph's questions.
 **Questions Claude asked:** asked for the full WebCloak paper.
 
 **Direction and fit:** D70 (see Turn 247).
+
+### Turn 249 — 2026-11-16 22:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/262d915e-SP26_WebAgent.pdf"
+
+**What Claude did:**
+- Joseph attached the full WebCloak paper (SP26_WebAgent.pdf, 20 pages). Converted it to text (scratch folder; not committed) and read the metrics, the comparison with other defenses, the usability and overhead results, and the limitations:
+  - recall = |extracted ∩ target| ÷ |target| (the same as our accuracy); precision = correct ÷ extracted;
+  - full benchmark: recall 57.5% / 62.5% / 54.4% → 0.0% for Gemini-2.5-pro, Crawl4AI and Browser-Use; 88.7% → 0% on a 27-page hardest subset;
+  - structural baseline defenses (full-code obfuscation, dynamic JS loading, static tag renaming) are bypassed by agents working on the rendered DOM;
+  - text and audio targets on a small extra set: "preliminary";
+  - Lighthouse FCP/LCP/TTI and score: LCP +0.88 s (about 10%), score −0.3 to −5.5;
+  - visual similarity by JCD (< 0.01); a user study, N=35;
+  - HTML 0.69 → 0.83 MB, tokens +6.4%;
+  - no accessibility measure found.
+- Merged `main` (Joseph merged #34) into the branch.
+- Updated `docs/metrics-plan.md`:
+  - WebCloak's recall and precision definitions;
+  - Lighthouse reported as changes;
+  - new page-weight and token measures;
+  - SSIM kept, noting WebCloak's JCD;
+  - accessibility as something our study adds;
+  - (d) linked to WebCloak's rendered-DOM finding;
+  - a fuller WebCloak row.
+- Recorded D71 (Adds).
+
+**Claude's answer (summary):** given together with Turn 250 (what WebCloak measures, and how it changes the plan).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D71 (Adds).
+
+### Turn 250 — 2026-11-16 22:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok and after just recheck everything to make sure the suggestion way of going forward is being followed as well as we have a percise plan of getting this done on time with these new suggestions and make these changes to the github to reflect this as well
+
+**What Claude did:**
+- Checked the whole plan against the instructor's suggestions and D66–D71. Found these gaps:
+  - the README's status line, metrics section and 57-run grid predated today's changes;
+  - the README's references lacked the papers;
+  - `SCHEDULE.md` didn't place ESR, evasion rate, page weight or tokens;
+  - the Milestone 4 rows didn't name the standard metrics or the related-work comparison;
+  - there were no time limits protecting the deadline.
+- Fixed them:
+  - `SCHEDULE.md`: new resume note; Milestone 3 rewritten from Nov 17, with "Done when" items for (c) and (d), time limits ((c) Nov 22, (d) Nov 28) and every D70/D71 measure on a date; Milestone 4 Dec 3–5 rows updated (final tables with the standard metrics, the figure, the related-work comparison, a scope-change section).
+  - `README.md`: status; a standard-metrics table with sources; the grid as re-planned (36 runs); the roadmap with dates; scope change and comparability in "Scope and limitations"; references 9–14.
+  - `docs/metrics-plan.md`: status line with every date.
+- Checked feasibility day by day: on each day the scraper work is Joseph's and the tooling is Claude's; Thanksgiving is kept free; the Essential work keeps its dates; and there are two buffer days before the Dec 8 tag.
+- Recorded D72 (Adds).
+- Committed, pushed and opened a pull request.
+- Logged Turns 249–250 (J249, J250).
+
+**Claude's answer (summary):** what WebCloak changes; what was checked and fixed; the plan, day by day, with time limits; what's on GitHub.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D71, D72 (Adds). Follows §7's rule that Essential results are never put at risk.
