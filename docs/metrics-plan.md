@@ -1,6 +1,6 @@
 # Metrics plan: making the results comparable with other work
 
-Decision D68 (chat-keeper, Turn 240), after the Nov 16 scrum meeting. The instructor's point: a result such as "4/70" says little on its own. A reader can't tell whether it is good or bad, typical or unusual, until it is compared with something. This plan says what each number is compared with.
+Decisions D68 (chat-keeper, Turn 240) and D69 (Turn 246), after the Nov 16 scrum meeting. The instructor's point: a result such as "4/70" says little on its own. A reader can't tell whether it is good or bad, typical or unusual, until it is compared with something. This plan says what each number is compared with.
 
 Status: planned, not built yet. The scoring changes are scheduled for Fri Nov 20, the related-work table for Wed Nov 25 and the honeypot false-positive check for Sun Nov 29 (`SCHEDULE.md`). The scraper output format and the matching rules (`docs/scraper-output.md`, D31–D35) do not change.
 
@@ -29,7 +29,7 @@ Status: planned, not built yet. The scoring changes are scheduled for Fri Nov 20
 - **So we compare effects, not raw scores.** "Shuffling cut F1 by 94% for source-order scrapers" can be compared with "obfuscation cut recall from 88.7% to 0%" even though the sites differ.
 - **We say what kind of pages and scrapers these are.** The pages are product and article pages with labelled attribute fields, the same kind of page web-extraction benchmarks use. The scrapers form a ladder that maps onto the classes other studies test: (a) raw HTTP + parser, (b) headless browser, (c) LLM reading page text, (d) a browser that checks visibility and CSS order.
 - **Every comparison row states the differences**: the site, the number of pages, the models and the defense design.
-- **Optional, needs the instructor's agreement:** run one widely used open-source scraping tool on our testbed as a reference scraper, so one comparison point is on the same site.
+- **No reference scraping tool** (D69): every comparison with outside work goes through layers 1–3, not by running other people's tools on our site.
 
 ## Related-work table (to fill on Nov 25)
 
