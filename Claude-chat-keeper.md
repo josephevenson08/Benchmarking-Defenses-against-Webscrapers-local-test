@@ -329,6 +329,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J224 | 224 | Just give me the steps to run through everything I've done, with a short blurb and the commands for each | Full demo guide given (Turn 224) |
 | J225 | 225 | Put this in a Word doc named "scrum meeting demo 11-15"; I'll run it myself first | `scrum meeting demo 11-15.docx` sent (Turn 225) |
 | J226 | 226 | So we run the test site first, then scrapers (a) and (b), then the defenses (DOM shuffling and honeypot)? | Order clarified: the site version is switched for each defense, then the scraper reruns; optional (b) baseline command (Turn 226) |
+| J227 | 227 | So what am I showing: testbed, which scrapers and which defenses? | Testbed + (a) and (b) + shuffling and honeypot; poisoning, tarpit, (c)–(e) not built yet (Turn 227) |
 
 ### Questions from Claude
 
@@ -9062,5 +9063,26 @@ Then Joseph's questions.
 **Claude's answer (summary):** nearly; the defenses are site versions you switch to, each followed by a scraper run. A one-line flow, plus the optional (b) baseline command.
 
 **Questions Claude asked:** whether to add the optional (b) baseline run to the Word doc (open).
+
+**Direction and fit:** no new decision.
+
+### Turn 227 — 2026-11-16 02:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so what all am i showsing testbed, which scrapers and which defenses
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Summarized what the demo shows:
+  - the testbed: the local test site in three versions (baseline, shuffled, honeypot), its data list, the server and request log, and the scoring script;
+  - scrapers (a) and (b) ((b) optional in the guide);
+  - the two built defenses, DOM shuffling and the honeypot link.
+- Listed what is not shown because it isn't built yet: live DOM poisoning, the tarpit, scrapers (c), (d) and (e), and the user-cost measures (Lighthouse, axe-core; Milestone 3).
+- Logged this turn (J227).
+
+**Claude's answer (summary):** a short table of what's shown and what isn't, and why.
+
+**Questions Claude asked:** none (the Turn 226 offer to add (b) on baseline to the Word doc is still open).
 
 **Direction and fit:** no new decision.
