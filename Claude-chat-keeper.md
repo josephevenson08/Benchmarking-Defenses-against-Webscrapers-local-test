@@ -324,6 +324,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J219 | 219 | Question 4: how are you prompting the AI agent, and verifying and testing its code? | Pasteable answer with current numbers (Turn 219) |
 | J220 | 220 | Walk me through a demo of what I've done, explaining after each step, then a complete step-by-step guide for the scrum meeting | Rehearsal started: Steps 0–1 given (Turn 220) |
 | J221 | 221 | (Step 1: page source of baseline Product 1) | Step 1 done; Step 2 given (Turn 221) |
+| J222 | 222 | (Step 2 output: 10 pages, 70/70) Also explain this output | Output explained; Step 3 given (Turn 222) |
 
 ### Questions from Claude
 
@@ -359,7 +360,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (after Milestone 2):** Demo rehearsal in progress (Turn 221: Step 1 done, Step 2 given; after Step 7, write the full reproducible guide). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
+**▶ Resume here (after Milestone 2):** Demo rehearsal in progress (Turn 222: Steps 1–2 done, Step 3 given; after Step 7, write the full reproducible guide). ⭐ Milestone 2 complete on Nov 11 (D64): Tests 1, 3 (a/b), 4 and 6 pass. All results are on `main` (`ff9bf29`). Meeting prep done (D65): https://claude.ai/artifact/3mqufZSTSY9Pq4v9LDeoAa (Joseph to read and edit it before the meeting). Next: Joseph decides whether to start Milestone 3 early (the doc's next-week plan proposes the experiment runner and the log-based measures before Nov 18); Cut-line 1 (Nov 17) is already met. Optional: `${page.trapPath}` in `honeypot.js`. Still open: C20 (#1 page mapping, #6 tags as a list).
 
 **Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
 
@@ -8907,5 +8908,44 @@ Then Joseph's questions.
 **Claude's answer (summary):** Step 1 done; what it shows and what to say; Step 2 commands, the expected output, and what to paste back.
 
 **Questions Claude asked:** none (waiting for the Step 2 output).
+
+**Direction and fit:** no new decision.
+
+### Turn 222 — 2026-11-16 00:30 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 200 http://127.0.0.1:3000/
+> 200 http://127.0.0.1:3000/products/
+> 200 http://127.0.0.1:3000/articles/a1
+> 200 http://127.0.0.1:3000/articles/a2
+> 200 http://127.0.0.1:3000/products/p1
+> 200 http://127.0.0.1:3000/products/p2
+> 200 http://127.0.0.1:3000/products/p3
+> 200 http://127.0.0.1:3000/products/p4
+> 200 http://127.0.0.1:3000/products/p5
+> 200 http://127.0.0.1:3000/products/p6
+> 10 pages visited
+> 70 records written to results/dev/demo-a-baseline.json
+> run demo-a-baseline (scraper a, condition None, run None)
+> accuracy         70/70 = 1.000
+> fake-value rate  0/70 = 0.000
+> correct 70 | wrong 0 (fakes 0, malformed 0, conflicting 0, plain wrong 0) | missing 0
+> pages fetched 10 | seconds 0.099 | time per page 0.010 s | ignored records 0
+>
+> also explain this output
+
+**What Claude did:**
+- Read Joseph's Step 2 output from his laptop: (a) visited 10 pages in breadth-first order and wrote 70 records. The score is 70/70 = 1.000, with fake-value rate 0/70, 0 wrong, 0 missing, 10 pages, 0.099 s, 0.010 s per page and 0 ignored records.
+- Checked `scoring/score.py` to explain the output accurately:
+  - `condition None, run None`: `parse_run_id` only understands IDs shaped like `a-baseline-1` (scraper-condition-number), so the demo ID `demo-a-baseline` leaves them blank; the scraper letter comes from the output file's `scraper` field. This doesn't affect the score.
+  - Malformed: a value that can't be read as its field's type, for example a price that isn't a number.
+  - Ignored: records for a page or field that isn't in the answer key.
+- Explained the output line by line, said what Step 2 showed, and gave Step 3 (shuffling: rebuild, serve, view, source, run (a), score).
+- Logged this turn (J222).
+
+**Claude's answer (summary):** Step 2 done; the output explained line by line, including why condition and run show None; Step 3 commands and what to paste.
+
+**Questions Claude asked:** none (waiting for the Step 3 output).
 
 **Direction and fit:** no new decision.
