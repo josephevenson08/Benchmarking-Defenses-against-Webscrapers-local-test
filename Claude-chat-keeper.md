@@ -327,6 +327,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J222 | 222 | (Step 2 output: 10 pages, 70/70) Also explain this output | Output explained; Step 3 given (Turn 222) |
 | J223 | 223 | (Step 3 output: 66 records, 4/70) | Explained with field-level examples; Step 4 given (Turn 223) |
 | J224 | 224 | Just give me the steps to run through everything I've done, with a short blurb and the commands for each | Full demo guide given (Turn 224) |
+| J225 | 225 | Put this in a Word doc named "scrum meeting demo 11-15"; I'll run it myself first | `scrum meeting demo 11-15.docx` sent (Turn 225) |
 
 ### Questions from Claude
 
@@ -9012,6 +9013,33 @@ Then Joseph's questions.
 - Logged this turn (J224).
 
 **Claude's answer (summary):** the full step-by-step demo guide with commands and blurbs.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 225 — 2026-11-16 00:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> put this in a word doc and name it scrum meeting demo 11-15, ill run this by myself first to make sure it works as well
+
+**What Claude did:**
+- Put the Turn 224 demo guide into a Word file named as Joseph asked, `scrum meeting demo 11-15.docx`, and sent it to him. Same content and commands, laid out as:
+  - a title and subtitle;
+  - one heading per step;
+  - commands in shaded monospace boxes, labelled T1 or T2;
+  - "Show:" and "Expected:" lines;
+  - each blurb in a blue "Say:" box;
+  - a bulleted list of reports;
+  - the troubleshooting table;
+  - page numbers in the footer.
+- Built it with the docx library and rendered it to PDF to check: 3 pages; long commands wrap on screen only, so they copy as one line.
+- The file and its build script are in Claude's scratch folder, not the repo.
+- Joseph will run through the guide himself first.
+- Logged this turn (J225).
+
+**Claude's answer (summary):** here is the Word guide, with tips for the dry run.
 
 **Questions Claude asked:** none.
 
