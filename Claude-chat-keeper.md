@@ -9459,7 +9459,7 @@ Then Joseph's questions.
   Updated the Milestone 4 Dec 2 row, the header resume note, and the README's Milestone 3 checklist.
 - Checked current small Ollama models (one web search; third-party sources, so indicative only). Candidates for a CPU laptop: llama3.2:3b, qwen3 (1.7b/4b) and gemma3:1b; qwen3:4b may run out of memory on low-RAM machines. Ollama's `format` option can force JSON output, a choice for Joseph's (c) parsing rules.
 - Gave Joseph the first step for (c): install Ollama, check his RAM, pull 2–3 small models, check their licenses (§2), and paste the output.
-- Opened a pull request for the schedule and README changes.
+- Opened pull request #33 for the schedule and README changes: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/33
 - Logged this turn (J240).
 
 **Claude's answer (summary):** agreed with comparing against published scores as a related-work table, with caveats (same units, different settings; no composite score). Showed the new plan and the first step for (c).
