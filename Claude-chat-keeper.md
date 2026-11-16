@@ -316,6 +316,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J211 | 211 | (pasted scraper (a)) Give me this in a format to put in a Word doc to print out | `scraper-a-raw-html.docx` sent (Turn 211) |
 | J212 | 212 | Are these comments correct? (pasted scraper (b) with new comments and a closing note on BeautifulSoup vs the DOM) | Comments reviewed with fixes; closing note corrected against D51 (Turn 212) |
 | J213 | 213 | (pasted scraper (b) with updated comments) | 4 of 5 fixes in; "wwhen" typo; closing block still to replace (Turn 213) |
+| J214 | 214 | Tell me what my bottom comments should say | Replacement comment block for (b), ready to paste (Turn 214) |
 
 ### Questions from Claude
 
@@ -8656,6 +8657,27 @@ Then Joseph's questions.
 - No code changes. Logged this turn (J213).
 
 **Claude's answer (summary):** four of the five fixes are in. Fix the "wwhen" typo and replace the closing block (the one that matters); the rest is optional. Then commit, and Claude makes the (b) printout.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 214 — 2026-11-16 00:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> tell me what my bottom comments should say
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new.
+- Gave Joseph replacement text for the comment block at the bottom of `scrapers/b_browser_text.py`, ready to paste. It keeps his first three points (what a BeautifulSoup tree is, its hierarchy, its likeness to the DOM tree), fixes "beatifulsoup", and replaces the last two:
+  - the reason for the choice is D51: reuse (a)'s rule so (a) and (b) differ only in whether page scripts ran;
+  - the limitation: no CSS order or visibility, which is why shuffling and the honeypot work on (b), and (d) will use the live DOM;
+  - an accurate note on Claude's help.
+- Comment text only, disclosed here as Claude-written wording; no code changed. Joseph pastes and commits it himself.
+- Logged this turn (J214).
+
+**Claude's answer (summary):** the replacement comment block, what changed from his version, and where to paste it.
 
 **Questions Claude asked:** none.
 
