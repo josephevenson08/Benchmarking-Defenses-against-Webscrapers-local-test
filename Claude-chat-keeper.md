@@ -332,6 +332,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J227 | 227 | So what am I showing: testbed, which scrapers and which defenses? | Testbed + (a) and (b) + shuffling and honeypot; poisoning, tarpit, (c)–(e) not built yet (Turn 227) |
 | J228 | 228 | So scraper (a) against both defenses, then scraper (b) against both? | Recommended (a) then (b) on each site version; six runs with commands (Turn 228) |
 | J229 | 229 | Is my understanding right? Shuffled: both 4/70 ((a) raw HTML, (b) after CSS loads); honeypot: both 70/70 with 11 pages | Mostly right; CSS doesn't change the HTML (b) reads; 1 trap hit per run (Turn 229) |
+| J230 | 230 | So what differs from (a) to (b)? | Differences, similarities and predicted results; why (b) matters (Turn 230) |
 
 ### Questions from Claude
 
@@ -9134,6 +9135,29 @@ Then Joseph's questions.
 - Logged this turn (J229).
 
 **Claude's answer (summary):** mostly right; one correction for (b) on shuffling (CSS doesn't change the HTML) and two details on the honeypot (one hit per run; why the score is unchanged).
+
+**Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 230 — 2026-11-16 02:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so what differs from a to b?
+
+**What Claude did:**
+- Checked GitHub (`main` had nothing new) and re-read the midterm's scraper table (§2) and hypotheses 1–3 (§4) to answer accurately.
+- Explained what differs between (a) and (b):
+  - how each gets the page: `requests.get` vs Chromium via Playwright;
+  - what each reads: the server's raw HTML vs the HTML after the load event, with scripts run;
+  - speed: about 0.016 vs 0.03 s per page in Test 1, plus the browser's start-up, which isn't timed (D52);
+  - resource use.
+- Explained what is the same: inputs, crawl loop, field rule, link following, output. On every planned defense the midterm predicts the same result for both: both fooled by shuffling; both see the fakes under poisoning, because (b) reads right after load, before the 2 s swap; both caught by the honeypot.
+- Explained why (b) is still in the study: it isolates "a real browser that runs scripts". The prediction is that this alone isn't enough; it takes (d)'s extra abilities (waiting for the page to settle, computed styles, CSS order). (b) is also the base that (c) and (d) build on.
+- Logged this turn (J230).
+
+**Claude's answer (summary):** a table of the differences and similarities, the predicted results, and why (b) matters to the research question, with a line to say at the meeting.
 
 **Questions Claude asked:** none (the Turn 228 offer to update the Word doc is still open).
 
