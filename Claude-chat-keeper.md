@@ -9714,7 +9714,7 @@ Then Joseph's questions.
   - `docs/metrics-plan.md`: status line with every date.
 - Checked feasibility day by day: on each day the scraper work is Joseph's and the tooling is Claude's; Thanksgiving is kept free; the Essential work keeps its dates; and there are two buffer days before the Dec 8 tag.
 - Recorded D72 (Adds).
-- Committed, pushed and opened a pull request.
+- Committed, pushed and opened pull request #35: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/35
 - Logged Turns 249–250 (J249, J250).
 
 **Claude's answer (summary):** what WebCloak changes; what was checked and fixed; the plan, day by day, with time limits; what's on GitHub.
