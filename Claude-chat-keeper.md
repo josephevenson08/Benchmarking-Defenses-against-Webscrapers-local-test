@@ -97,6 +97,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D66 | 237 | **Ambitious order changed after the scrum meeting:** the instructor told Joseph to do the LLM scraper (c) and the adaptive scraper (d) next, before the other Ambitious work. Poisoning, (e) and the tarpit move after them. Claude recommends (d) before (c): (d) builds on (b) with no new install and can be tested on shuffled and honeypot at once, while (c) first needs Ollama and timing on a CPU-only laptop (Intel Iris Xe). Claude also recommends keeping the Essential experiment tooling (runner, results CSV, user-cost runner; Claude's tasks) going in parallel, so Milestone 3's "Done when" is not at risk. Which of (c)/(d) comes first, and whether poisoning is kept, are open (C26). | Midterm order: poisoning + (d), then (c) + (e), then tarpit | Instructor (relayed by Joseph); details open (C26) | §1 items 3–4 and §7 schedule put poisoning and (d) first, then (c) and (e). §7 Cut-line 2 (Dec 1) still applies: Ambitious items not running are dropped. | **Deviates** (order of Ambitious work, on the instructor's direction) |
 | D67 | 240 | **Order for Milestone 3's Ambitious work: scraper (c) first, then (d)** (Joseph's choice; Claude had recommended (d) first). The Essential tooling (experiment runner, results CSV, user-cost runner; Claude) stays on its dates in parallel. Poisoning, (e) and the tarpit come after (c) and (d) and start only if those finish early. Cut-line 2 (Dec 1) will likely drop them. `SCHEDULE.md` Milestone 3 rewritten and README checklist updated. | (d) first (Claude's recommendation); poisoning kept on its original dates | Joseph | D66 (instructor's direction). §2: (c) and (d) are Joseph's code, Ollama on the CPU, model chosen after timing on 2–3 pages with its name and digest recorded. §7 Milestone 3 "Done when" unchanged. | **Deviates** (order of Ambitious work, following D66) |
 | D68 | 240 | **Metrics: keep Joseph's, add standard ones, and compare with published scores.** Keep accuracy (correct ÷ 70), fake-value rate, honeypot hits, time per page and the user-cost measures. Add: field-level precision, recall (= accuracy) and F1; relative reduction against baseline (1 − F1 with the defense ÷ F1 without); honeypot detection rate with a false-positive check from a human-like visitor; SSIM next to the pixel diff. Then a related-work table of what published studies measured and their scores in the same units (for example WebCloak's scraping recall 88.7% → 0%; SWDE extraction F1; bot-detection TPR at a given FPR), each with how its setting differs from this synthetic 70-field site. No single composite score: protection against user cost is shown as two axes. The scraper output format and the matching rules (`docs/scraper-output.md`, D31–D35) are unchanged. | Keep only the midterm's metrics; a single composite score | Joseph (Claude recommended; instructor's request) | §4 metrics (accuracy, fake-value rate, honeypot hits, time per page, user cost) and analysis (mean and min–max over 3 runs, "reduces"/"stops" rules), all kept. The instructor asked for metrics comparable with other work. | **Adds** |
+| D69 | 246 | **No reference scraping tool:** an existing open-source scraper will not be run on the testbed as a reference point. Comparison with other work goes through the three layers in `docs/metrics-plan.md` (relative reduction against our baseline, standard metrics and yardsticks, a related-work table). Papers to read for the related-work table, which Joseph shares with Claude in the chat and does not commit: WebCloak, Beyond BeautifulSoup, FreeDOM (SWDE F1 protocol); optional: Shy Guys, FP-Inconsistent, the SSIM paper. | Run one widely used open-source scraper on the testbed (Claude's optional idea) | Joseph | §1 scope (only the scrapers the midterm defines; no commercial AI agents); D68. | Follows |
 
 ---
 
@@ -349,6 +350,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J243 | 243 | I have Claude; would that work for the LLM? | Interrupted; answered in Turn 244: keep Ollama (assignment, §1, §2) |
 | J244 | 244 | What do I have left based on these suggestions? | Remaining work by owner and date (Turn 244) |
 | J245 | 245 | Check the suggestions are implemented; explain how to do the metrics so results compare with others' work, and what that means for the testbed | Status checked; `docs/metrics-plan.md` written; explanation given (Turn 245) |
+| J246 | 246 | Let's not do the reference scraping tool; what papers do you need? I'll do this and the merge before logging off | D69; paper list with links (Turn 246) |
 
 ### Questions from Claude
 
@@ -9586,3 +9588,25 @@ Then Joseph's questions.
 **Questions Claude asked:** whether to ask the instructor about adding a widely used open-source scraper as a reference point (optional; in the answer).
 
 **Direction and fit:** no new decision. It details D68 (Adds). Midterm §1 (synthetic, local site) and §4 (metrics and analysis rules) are kept.
+
+### Turn 246 — 2026-11-16 22:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets not do the reference scraping tool, and then what papers do you need? ill do this first and the merge before i log off for today
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new; #33 is still open.
+- Recorded Joseph's choice: no reference scraping tool (D69, Follows). Replaced the optional bullet in `docs/metrics-plan.md` and noted D69 at its top.
+- Listed the papers needed for the related-work table and for checking the metric definitions, with links:
+  - must-have: WebCloak (IEEE S&P 2026; LLM-scraper defense; recall and precision), "Beyond BeautifulSoup" (arXiv 2601.06301; LLM scraping benchmark, close to (c)), FreeDOM (arXiv 2010.10755; the SWDE page-level F1 protocol);
+  - nice-to-have: Shy Guys (arXiv 2603.28546; detection at a false-positive rate), FP-Inconsistent (arXiv 2406.07647), and the SSIM paper (Wang et al., 2004).
+  - Asked Joseph to attach the PDFs in the chat, or paste their evaluation sections, and not to commit them to the repo.
+- Pushed, so #33 now includes this; then Joseph merges.
+- Logged this turn (J246).
+
+**Claude's answer (summary):** no reference tool, noted; the paper list with priorities, links, why each is needed, and the section to send if PDFs can't be attached.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D69 (Follows).
