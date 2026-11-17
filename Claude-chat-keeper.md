@@ -9953,6 +9953,7 @@ Then Joseph's questions.
 - Recorded Joseph's choice: `llama3.2:3b` for scraper (c) (D75, Follows §2), with its parameters, quantization, size, digest and Ollama version. Joseph confirmed all three licenses allow local research use. Closed C29.
 - Updated `SCHEDULE.md` (the Nov 17 licenses row; the Nov 19 timing row: chosen model and digest) and the README scraper table ((c)'s model).
 - Checked GitHub: `results/2026-11-17-model-timing/` is not on `main` yet; reminded Joseph to commit it.
+- Opened pull request #39 for the schedule and README changes: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/39
 - Logged this turn (J257).
 
 **Claude's answer (summary):** llama3.2:3b recorded; commit the timing results; tomorrow (c) part 1 on the Nov 18 plan.
