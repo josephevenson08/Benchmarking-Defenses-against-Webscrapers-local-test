@@ -109,7 +109,7 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | Day | Tasks | Who |
 |---|---|---|
 | **Tue Nov 17** | ⚠️ **Cut-line 1** (Milestone 2's last day): (a), (b), shuffling and the honeypot all work. ✅ Already met on Nov 11. | J |
-| | (A) Install Ollama on the laptop and pull 2–3 small models (CPU only: Intel Iris Xe; sizes chosen from the laptop's RAM). Check each model's license allows local research use (§2). Ollama 0.40.16 installed; `gemma3:1b` (806 MB) and `llama3.2:3b` (2.0 GB) pulled. RAM and licenses still to report. | J |
+| | (A) Install Ollama on the laptop and pull 2–3 small models (CPU only: Intel Iris Xe; sizes chosen from the laptop's RAM). Check each model's license allows local research use (§2). Ollama 0.40.16 installed; `gemma3:1b` (806 MB) and `llama3.2:3b` (2.0 GB) pulled; 16 GB RAM, so `qwen3:4b` too. Licenses still to check. | J |
 | | ✅ Model-timing script: time each pulled model on the text of 2–3 pages; record each model's name and digest, and the prompt tokens per page (D71). `measurement/time_models.py`, 6 tests, checked end to end against a stand-in for Ollama. Joseph runs it on the laptop. | C |
 | **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
 | | (A) Scraper (c), part 1: get each page's rendered text with (b)'s crawler; a first standalone call to Ollama. | J |

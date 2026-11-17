@@ -94,6 +94,12 @@ class OllamaApiTest(unittest.TestCase):
         self.assertEqual((m["total_s"], m["load_s"], m["prompt_tokens"], m["reply_tokens"]), (2.5, 0.5, 120, 30))
         self.assertEqual((m["reply_tokens_per_s"], m["values_found"], m["values_expected"]), (30.0, 1, 2))
 
+    def test_thinking_off_only_when_asked(self):
+        tm.generate(self.url, "tiny:1b", "prompt", 400, 10)
+        tm.generate(self.url, "tiny:1b", "prompt", 400, 10, think=False)
+        self.assertNotIn("think", self.seen[0])
+        self.assertIs(self.seen[1]["think"], False)
+
     def test_summary_averages_and_counts_errors(self):
         data, wall = tm.generate(self.url, "tiny:1b", "prompt", 400, 10)
         call = {"model": "tiny:1b", **tm.measurement(data, wall, {"Name": "Larkfield Studio Headphones"})}

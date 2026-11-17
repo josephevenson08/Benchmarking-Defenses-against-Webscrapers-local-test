@@ -105,15 +105,22 @@ def page_texts(page_paths, condition="baseline", conditions_dir=None, executable
     return texts
 
 
-def generate(base_url, model, prompt, num_predict, timeout):
-    """One non-streaming /api/generate call; returns Ollama's reply plus the wall-clock seconds."""
-    start = time.perf_counter()
-    reply = requests.post(f"{base_url}/api/generate", json={
+def generate(base_url, model, prompt, num_predict, timeout, think=None):
+    """One non-streaming /api/generate call; returns Ollama's reply plus the wall-clock seconds.
+
+    think=False asks a "thinking" model (such as Qwen3) to answer without writing out its reasoning first;
+    None leaves the model's default.
+    """
+    body = {
         "model": model,
         "prompt": prompt,
         "stream": False,
         "options": {"temperature": 0, "num_predict": num_predict},
-    }, timeout=timeout)
+    }
+    if think is not None:
+        body["think"] = think
+    start = time.perf_counter()
+    reply = requests.post(f"{base_url}/api/generate", json=body, timeout=timeout)
     wall = time.perf_counter() - start
     reply.raise_for_status()
     return reply.json(), wall
@@ -166,13 +173,13 @@ def write_report(out_dir, report):
         "",
         "## Models",
         "",
-        "| Model | Parameters | Quantization | Size | Digest | Load (s) |",
-        "|---|---|---|---|---|---|",
+        "| Model | Parameters | Quantization | Size | Digest | Thinking | Load (s) |",
+        "|---|---|---|---|---|---|---|",
     ]
     for m in report["models"]:
         size = f"{m['size_bytes'] / 1e9:.2f} GB" if m.get("size_bytes") else ""
         lines.append(f"| `{m['name']}` | {m.get('parameter_size') or ''} | {m.get('quantization') or ''} | {size} | "
-                     f"`{(m.get('digest') or '')[:12]}` | {m.get('load_s', '')} |")
+                     f"`{(m.get('digest') or '')[:12]}` | {m.get('thinking', 'model default')} | {m.get('load_s', '')} |")
     lines += [
         "",
         "## Averages per page (warm model)",
@@ -221,6 +228,8 @@ def main():
     parser.add_argument("--num-predict", type=int, default=400, help="cap on reply tokens (default 400)")
     parser.add_argument("--timeout", type=float, default=600, help="seconds to wait for one reply (default 600)")
     parser.add_argument("--ollama-url", default=OLLAMA_URL, help=f"Ollama address (default {OLLAMA_URL})")
+    parser.add_argument("--no-think", nargs="+", default=[], metavar="MODEL",
+                        help="models to run with thinking off (for thinking models such as qwen3:4b)")
     parser.add_argument("--out", help="results folder (default results/<today>-model-timing)")
     parser.add_argument("--executable-path", help="a Chromium binary to use instead of Playwright's own")
     args = parser.parse_args()
@@ -235,7 +244,7 @@ def main():
         raise SystemExit(f"Could not reach Ollama at {args.ollama_url} ({err}). Is the Ollama app running?")
     by_name = {m["name"]: m for m in available}
     names = args.models or [m["name"] for m in available]
-    missing = [n for n in names if n not in by_name]
+    missing = [n for n in names + args.no_think if n not in by_name]
     if missing:
         raise SystemExit(f"Not pulled: {', '.join(missing)}. Pulled: {', '.join(by_name) or 'none'}. Run: ollama pull <model>")
     if not names:
@@ -251,10 +260,12 @@ def main():
     models, calls = [], []
     for name in names:
         info = dict(by_name[name])
+        think = False if name in args.no_think else None
+        info["thinking"] = "off" if think is False else "model default"
         labels, expected = page_targets(args.pages[0], items, fields)
         print(f"{name}: warm-up call (loads the model) ...")
         try:
-            data, wall = generate(args.ollama_url, name, build_prompt(texts[args.pages[0]], labels), args.num_predict, args.timeout)
+            data, wall = generate(args.ollama_url, name, build_prompt(texts[args.pages[0]], labels), args.num_predict, args.timeout, think)
             info["load_s"] = round((data.get("load_duration") or 0) / NS, 3)
             info["warmup_wall_s"] = round(wall, 3)
         except requests.exceptions.RequestException as err:
@@ -267,7 +278,7 @@ def main():
                 print(f"  {name} {path} #{repeat} ...")
                 call = {"model": name, "page": path, "repeat": repeat}
                 try:
-                    data, wall = generate(args.ollama_url, name, prompt, args.num_predict, args.timeout)
+                    data, wall = generate(args.ollama_url, name, prompt, args.num_predict, args.timeout, think)
                     call.update(measurement(data, wall, expected))
                     reply_file = out_dir / "replies" / f"{name.replace(':', '_').replace('/', '_')}{path.replace('/', '_')}-{repeat}.txt"
                     reply_file.write_text(data.get("response", ""), encoding="utf-8")
