@@ -226,6 +226,7 @@ Settings shared by every part (port, page cap, delays, seed, number of runs, tra
 ```
 python measurement/time_models.py                      # every pulled model, pages p1, p2, a1, 2 timed calls each
 python measurement/time_models.py --models gemma3:1b llama3.2:3b --repeats 3
+python measurement/time_models.py --no-think qwen3:4b                 # thinking models (Qwen3): answer without writing out reasoning first
 ```
 
 It reads each page's visible text from the generated baseline site, sends it to Ollama with a fixed timing prompt (temperature 0, replies capped at 400 tokens), and writes `results/<date>-model-timing/`:
