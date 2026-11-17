@@ -9806,7 +9806,7 @@ Then Joseph's questions.
   - it wrote report.md, report.json and the replies;
   - it showed that "values found" is a rough count that can over-count (a brand contained in a product name).
 - Added README usage for the script. In `SCHEDULE.md`, ticked Claude's Nov 17 row and noted Joseph's progress on his.
-- Committed, pushed and opened a pull request.
+- Committed, pushed and opened pull request #37: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/37
 - Logged this turn (J254).
 
 **Claude's answer (summary):** both models are good to start with; send RAM (for `qwen3:4b`) and check the licenses; after merging, run `python measurement/time_models.py` (about 5–15 minutes on CPU) and paste the report; what each column means.
