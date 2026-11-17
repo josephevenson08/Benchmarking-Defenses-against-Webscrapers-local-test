@@ -136,57 +136,6 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. | J |
 | **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. Poisoning, (e) and the tarpit start only if (c) and (d) finished early. | J |
 
----|---|---|
-| **Tue Nov 17** | ⚠️ **Cut-line 1** (Milestone 2's last day): (a), (b), shuffling and the honeypot all work. ✅ Already met on Nov 11. | J |
-| | (A) Install Ollama on the laptop and pull 2–3 small models (CPU only: Intel Iris Xe). Check each model's license allows local research use (§2). | J |
-| | Model-timing script: time each pulled model on the text of 2–3 pages; record each model's name and digest. | C |
-| **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
-| | (A) Scraper (c), part 1: get each page's rendered text with (b)'s crawler; a first standalone call to Ollama. | J |
-| **Thu Nov 19** | Scoring: honeypot hits and time per page from the request log; write the results CSV. Count page requests only (a browser may also fetch `/favicon.ico`, and defenses may add script or style files). | C |
-| | (A) Time the models with the script and choose one for (c); record its name and digest. | J |
-| **Fri Nov 20** | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff and SSIM against baseline, reading-order mismatch rate. | C |
-| | Standard metrics in the scoring (D68): field-level precision, recall and F1, and relative reduction against baseline, next to accuracy and the fake-value rate. | C |
-| | (A) Scraper (c), part 2: one fixed prompt per page type listing the field names, temperature 0; parse the reply as JSON. | J |
-| **Sat Nov 21** | User-cost runner, part 2: Lighthouse 5 times per page (median) and axe-core violations. | C |
-| | (A) Scraper (c), part 3: require every expected key, convert price and rating to numbers; invalid JSON, a missing key or a timeout is a failure, with no retry. First baseline run. | J |
-| **Sun Nov 22** | (A) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. | J |
-| | (A) Start scraper (d): wait until the page has had no changes for 3 s, with a 10 s timeout. | J |
-| **Mon Nov 23** | **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs. Check the outputs. | J |
-| **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. | J + C |
-| | User-cost runs for each condition. | C |
-| | (A) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. | J |
-| **Wed Nov 25** | (A) The (d) part of Test 3; (d) baseline check (3 runs at ≥ 90%). | J |
-| | Related-work metrics table: what published studies measured and their scores, in the same units as ours, with the differences in setting stated (D68). | C drafts, J reviews |
-| **Thu Nov 26** | **Thanksgiving: off.** | — |
-| **Fri Nov 27** | Light day or off. | — |
-| **Sat Nov 28** | (A) Runs: (c) and (d) × baseline, shuffled and honeypot × 3 runs. | J |
-| **Sun Nov 29** | (A) The stub-model parts of Test 7 for (c). | J + C |
-| | Honeypot false-positive check: a human-like visitor that clicks only visible links should never hit the trap (D68). | C |
-| **Mon Nov 30** | Check that every Essential cell is in the results CSV and every condition has user-cost rows. | J |
-| **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. Poisoning, (e) and the tarpit start only if (c) and (d) finished early. | J |
-
----|---|---|
-| **Wed Nov 18** | Experiment runner: start the server on each condition, run each scraper 3 times with unique run IDs, save to a dated results folder. | C |
-| | (A) Start poisoning: a same-format fake value for each field, real values in a per-page JSON file, a script that swaps them in after 2 s, and the fake-values file. | J |
-| **Thu Nov 19** | Scoring script: honeypot hits and time per page from the request log; write the results CSV. Count page requests only: a browser may also fetch `/favicon.ico` (the full Chromium build does; the default headless shell on the laptop doesn't) and any script or style files a defense adds. | C |
-| | (A) Continue poisoning. | J |
-| **Fri Nov 20** | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff against baseline, reading-order mismatch rate. | C |
-| | (A) Test 5: no real value in the HTML; fakes shown at 0 s, real values at 3 s. | J + C |
-| **Sat Nov 21** | User-cost runner, part 2: Lighthouse 5 times per page (median) and axe-core violations. | C |
-| | (A) Start scraper (d): wait for 3 s with no DOM changes, with a 10 s timeout. | J |
-| **Sun Nov 22** | (A) Scraper (d): skip hidden elements using computed styles, sort by computed CSS order. The (d) and poisoned-page parts of Test 3. | J |
-| **Mon Nov 23** | **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs. Check the outputs. | J |
-| **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. | J + C |
-| | User-cost runs for each condition. | C |
-| **Wed Nov 25** | (A) Set up (c) and (e): install Ollama; time 2–3 small models on 2–3 pages; record each model's name and digest. | C |
-| | (A) Prompt, parsing and failure rules for (c) and (e). | J |
-| **Thu Nov 26** | **Thanksgiving: off.** | — |
-| **Fri Nov 27** | Light day or off. | — |
-| **Sat Nov 28** | (A) Poisoned-site runs for (a), (b) and (d); (d) on baseline, shuffled and honeypot. | J |
-| **Sun Nov 29** | (A) Baseline checks for (c) and (e): ≥ 90%, or reported as not usable. The stub-model parts of Test 7. | J + C |
-| **Mon Nov 30** | Check that every Essential cell is in the results CSV and every condition has user-cost rows. | J |
-| **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. | J |
-
 ---
 
 ## Milestone 4 · Dec 2 – Dec 10 · Final runs, analysis and packaging
