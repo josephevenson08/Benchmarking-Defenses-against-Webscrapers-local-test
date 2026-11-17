@@ -35,7 +35,7 @@ Which of four page-level defenses (DOM shuffling, honeypot links, live DOM poiso
 |---|---|---|
 | **(a) Raw HTML** | HTTP client and HTML parser. Crawls from the home page and takes the text after each label in source order. | Essential |
 | **(b) Browser text** | Playwright with headless Chromium. Reads the rendered text right after the load event. | Essential |
-| **(c) LLM** | Sends (b)'s rendered text to a local model through Ollama at temperature 0 and parses a JSON reply. | Ambitious |
+| **(c) LLM** | Sends (b)'s rendered text to a local model through Ollama at temperature 0 and parses a JSON reply. Model: `llama3.2:3b` (chosen Nov 17 after timing three models). | Ambitious |
 | **(d) Adaptive** | Playwright. Waits for 3 seconds without DOM changes (10-second timeout), ignores hidden elements, and sorts fields by computed CSS order. | Ambitious |
 | **(e) Vision** | Takes a screenshot of each listed page and sends it to a local vision model through Ollama. Follows no links. | Ambitious |
 

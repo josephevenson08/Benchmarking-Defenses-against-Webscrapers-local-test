@@ -103,6 +103,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D72 | 250 | **Plan checked and tightened** at Joseph's request, so the scrum suggestions are followed and the project finishes on time. `SCHEDULE.md`: Milestone 3 gets "Done when" items for (c) and (d) as narrowed by D66–D67; time limits: (c) until Nov 22 for its baseline check, otherwise "not usable" (§4); (d) until Nov 28 for its runs; the Essential work is never delayed for (c) or (d); the D70/D71 measures are placed on Nov 17, 20 and 21; the related-work table is filled Nov 25 and Dec 3; Milestone 4's tables, figure and report rows name the standard metrics, the related-work comparison and a scope-change section. README: status, metrics section (standard metrics), grid (12 cells × 3 = 36 runs as planned), roadmap, scope and references updated. | Leave the schedule without time limits | Claude (Joseph asked for a precise, on-time plan) | §7: decision points and "I never put the essential results at risk to finish stretch work"; §4 "not usable" rule; D66–D71. | Adds |
 | D73 | 254 | **Model-timing script** (`measurement/time_models.py`, Claude's Nov 17 task). For each pulled Ollama model and pages p1, p2 and a1 of the baseline site: the page's visible text (`innerText` of the generated file, read with Playwright); one unscored warm-up call (load time reported separately); 2 timed calls per page through `/api/generate` (non-streaming, temperature 0, replies capped at 400 tokens) with a fixed, generic timing prompt; and from Ollama's reply, the load, prompt and reply durations, token counts and wall time. It also records each model's name, digest, size and quantization from `/api/tags`, a rough "values found in reply" count (reads `items.json`; measurement tooling, not a scraper), and an estimate for (c)'s 90 page calls. Writes `results/<date>-model-timing/`. The timing prompt is not scraper (c)'s prompt; Joseph writes that one (§2). | Time models by hand in the terminal; use (c)'s own prompt (not written yet) | Claude (Joseph reviews and runs) | §2: Ollama for (c), CPU only, "choose one for each after timing them on 2–3 pages, and record each model's name and digest"; D71 (tokens). | Follows |
 | D74 | 255 | **Timing script: thinking can be turned off per model** (`--no-think MODEL ...`, sends `"think": false`). Qwen3 is a "thinking" model that writes out reasoning before answering, which would use up the 400-token reply cap and make its timing unfair. The report shows "Thinking: off / model default" per model. Whether scraper (c) itself runs with thinking off is Joseph's choice, as part of (c)'s request design (§2; C28). | Time Qwen3 with thinking on; leave Qwen3 out | Claude | §2: time 2–3 small models on 2–3 pages before choosing; D73. | Follows |
+| D75 | 257 | **Model for scraper (c): `llama3.2:3b`** (3.2B parameters, Q4_K_M, 2.02 GB, digest `a80c4f17acd5…`, Ollama 0.40.16). In the Nov 17 timing it found 50/50 values with short replies (89 tokens, under the 400 cap) at 6.8 s/page, about 10 min for (c)'s 90 page calls. Backup: `gemma3:1b`. Not chosen: `qwen3:4b` (36.7 s/page; hit the reply cap on every call). Joseph confirmed all three models' licenses allow local research use. | `gemma3:1b`, `qwen3:4b` | Joseph (Claude recommended) | §2: Ollama on CPU, small models, "choose one for each after timing them on 2–3 pages, and record each model's name and digest"; §2 data: check each model's license. | Follows |
 
 ---
 
@@ -366,6 +367,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J254 | 254 | (`ollama list`: gemma3:1b, llama3.2:3b; Ollama 0.40.16) | Model-timing script written (D73); pull request (Turn 254) |
 | J255 | 255 | (System → About screenshot) I have 16 GB of RAM | Pull qwen3:4b; timing script can turn thinking off (D74); pull request (Turn 255) |
 | J256 | 256 | (model-timing report from the laptop: 3 models) | Recommend llama3.2:3b; C29 open (Turn 256) |
+| J257 | 257 | Let's do your recommendation; all three allow local research | D75: llama3.2:3b (Turn 257) |
 
 ### Questions from Claude
 
@@ -399,7 +401,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C26 | 237 | After the scrum meeting: which first, (d) or (c)? Keep the Essential experiment tooling going in parallel? Keep poisoning (now after (c)/(d), at risk at Cut-line 2)? Claude recommends (d) first, tooling in parallel, poisoning kept if time allows. | Joseph: (c) first, then (d). Essential tooling continues in parallel (Claude's default, not objected to). Poisoning only if time allows. | Closed (Turn 240) → D67 |
 | C27 | 237 | Metrics: add standard, comparable metrics (field-level precision, recall, F1; relative reduction vs baseline; honeypot TPR/FPR with a human-like control visitor; SSIM next to pixel diff; Lighthouse and axe-core as planned), keeping accuracy and fake-value rate? Do a short literature review first (arxiv.org and the WebCloak paper could not be opened from this session). | Joseph: keep his metrics, add the ones others use, and show their scores alongside. Claude agreed, with caveats on comparability. | Closed (Turn 240) → D68 |
 | C28 | 255 | For scraper (c): if the chosen model is a thinking model (e.g. `qwen3:4b`), run it with thinking off? This is part of (c)'s request design, so Joseph decides once the timings are in. | — | **Open** |
-| C29 | 256 | Which model for scraper (c)? Options: `llama3.2:3b` (Recommended: 50/50 values found, short replies, 6.8 s/page, about 10 min for 90 calls), `gemma3:1b` (fastest, 5.7 s/page, 48/50, missed an article value), `qwen3:4b` (36.7 s/page, hit the reply cap every time, about 55 min). Joseph decides (§2). | — | **Open** |
+| C29 | 256 | Which model for scraper (c)? Options: `llama3.2:3b` (Recommended: 50/50 values found, short replies, 6.8 s/page, about 10 min for 90 calls), `gemma3:1b` (fastest, 5.7 s/page, 48/50, missed an article value), `qwen3:4b` (36.7 s/page, hit the reply cap every time, about 55 min). Joseph decides (§2). | `llama3.2:3b` (Claude's recommendation); all three licenses allow local research use. | Closed (Turn 257) → D75 |
 
 ---
 
@@ -9940,3 +9942,21 @@ Then Joseph's questions.
 **Questions Claude asked:** C29 (which model); whether the licenses are checked.
 
 **Direction and fit:** no decision until Joseph picks (C29).
+
+### Turn 257 — 2026-11-17 19:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets do your recommendation and all three allow for local reserach
+
+**What Claude did:**
+- Recorded Joseph's choice: `llama3.2:3b` for scraper (c) (D75, Follows §2), with its parameters, quantization, size, digest and Ollama version. Joseph confirmed all three licenses allow local research use. Closed C29.
+- Updated `SCHEDULE.md` (the Nov 17 licenses row; the Nov 19 timing row: chosen model and digest) and the README scraper table ((c)'s model).
+- Checked GitHub: `results/2026-11-17-model-timing/` is not on `main` yet; reminded Joseph to commit it.
+- Logged this turn (J257).
+
+**Claude's answer (summary):** llama3.2:3b recorded; commit the timing results; tomorrow (c) part 1 on the Nov 18 plan.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D75 (Follows).
