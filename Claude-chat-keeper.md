@@ -9833,7 +9833,7 @@ Then Joseph's questions.
 - Qwen3 writes out its reasoning before answering, which would use up the timing script's 400-token reply cap. Added `--no-think MODEL ...` to `measurement/time_models.py`; it sends `"think": false` for those models, and the report gains a "Thinking" column (D74). Added 1 test; 24 measurement tests pass. Reran end to end against the stand-in: `"think": false` was sent on all 4 calls.
 - README usage line added. `SCHEDULE.md` Nov 17 row updated (RAM, qwen3:4b, licenses still to check).
 - Opened C28: whether (c) itself runs Qwen3 with thinking off (Joseph's decision).
-- Committed, pushed and opened a pull request.
+- Committed, pushed and opened pull request #38: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/38
 - Logged this turn (J255).
 
 **Claude's answer (summary):** 16 GB is fine; pull `qwen3:4b`; check the 3 licenses; merge, then run the timing script with `--no-think qwen3:4b` (about 10–20 minutes); paste the report.
