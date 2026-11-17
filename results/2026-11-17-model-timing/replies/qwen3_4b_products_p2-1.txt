@@ -1,0 +1,56 @@
+We are given a web page text. We need to extract the values for the following fields: 
+ Name, Brand, Category, Price, SKU, Rating, Reviews, Availability, Release date, Description.
+
+ Let's go through the text and pick out the values:
+
+ The text:
+
+ Demo Shop
+ HomeProducts
+ Product details
+ Name
+ Corvane Desk Lamp
+ Brand
+ Corv: Wait, the text says "Corvane" but in the example it's written as "Corvane". Let me check the text.
+
+ Actually, the text says:
+   Name
+   Corvane Desk Lamp
+
+ So:
+   Name: "Corvane Desk Lamp"
+
+   Brand: "Corvane" (the text says "Brand" and then the next line is "Corvane")
+
+   Category: "Lighting"
+
+   Price: "$34.50"
+
+   SKU: "CV-LT-0317"
+
+   Rating: "4.2"
+
+   Reviews: "356"
+
+   Availability: "Low stock"
+
+   Release date: "2023-11-03"
+
+   Description: "Adjustable LED lamp with three color temperatures and a weighted base. Synthetic test site for a local scraping study. All content is made up."
+
+ However, note that the text has a line "Synthetic test site for a local scraping study. All content is made up." as part of the description.
+
+ Steps:
+   We'll create a JSON object with the keys as the field names and the values as the extracted strings.
+
+ Important: The problem says "For each of these fields, give the value shown on the page"
+
+ Let's write the JSON:
+
+ {
+   "Name": "Corvane Desk Lamp",
+   "Brand": "Corvane",
+   "Category": "Lighting",
+   "Price": "$34.50",
+   "SKU": "CV-LT-0317",
+   "

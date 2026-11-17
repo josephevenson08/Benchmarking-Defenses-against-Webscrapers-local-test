@@ -1,0 +1,51 @@
+Okay, let's tackle this problem. So, I need to extract specific fields from the given web page text and present them as a JSON object. Let me read through the text carefully.
+
+The web page is titled "Demo Shop" and has sections like HomeProducts, Product details. Then there's a list of fields with their values.
+
+First, I'll list out the fields I need to extract: Name, Brand, Category, Price, SKU, Rating, Reviews, Availability, Release date, Description.
+
+Let me go through each line of the text.
+
+Starting with "Name" – the next line says "Larkfield Studio Headphones". So Name is "Larkfield Studio Head: Wait, no, the text says "Name" followed by "Larkfield Studio Headphones". So Name: "Larkfield Studio Headphones".
+
+Next, "Brand" is "Larkfield".
+
+"Category" is "Headphones".
+
+"Price" is "$89.99".
+
+"SKU" is "LF-HP-2041".
+
+"Rating" is "4.5".
+
+"Reviews" is "1,284".
+
+"Availability" is "In stock".
+
+"Release date" is "2024-09-12".
+
+"Description" is "Closed-back over-ear headphones with 40 mm drivers and a detachable cable. Synthetic test site for a local scraping study. All content is made up."
+
+Wait, the description has two sentences. But the problem says to give the value shown on the page. So the description field is the entire text under "Description".
+
+Let me check again.
+
+The text structure:
+
+Demo Shop
+HomeProducts
+Product details
+Name
+Larkfield Studio Headphones
+Brand
+Larkfield
+Category
+Headphones
+Price
+$89.99
+SKU
+LF-HP-2041
+Rating
+4.5
+Reviews
+1,2

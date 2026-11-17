@@ -1,0 +1,14 @@
+```json
+{
+  "Name": "Corvane Desk Lamp",
+  "Brand": "Corvane",
+  "Category": "Lighting",
+  "Price": "$34.50",
+  "SKU": "CV-LT-0317",
+  "Rating": "4.2",
+  "Reviews": "356",
+  "Availability": "Low stock",
+  "Release date": "2023-11-03",
+  "Description": "Adjustable LED lamp with three color temperatures and a weighted base. Synthetic test site for a local scraping study. All content is made up."
+}
+```

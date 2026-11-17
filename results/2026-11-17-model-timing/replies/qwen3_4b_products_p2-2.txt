@@ -1,0 +1,30 @@
+Okay, let's tackle this problem. So, I need to extract specific fields from the given web page text and present them as a JSON object. Let me first read through the text carefully.
+
+The web page is titled "Demo Shop" and has sections like HomeProducts, Product details. Then there's a list of fields with their values. Let me list out each field and the corresponding value as per the text.
+
+Starting with "Name": The text says "Corvane Desk Lamp". So Name is "Corv: Wait, no, the text says "Corvane Desk Lamp". Wait, the product name is "Corvane Desk Lamp". Let me check again.
+
+Wait, the text says:
+
+Name
+Corvane Desk Lamp
+
+So the value for Name is "Corvane Desk Lamp".
+
+Next, Brand: The text says "Brand" followed by "Corvane". So Brand is "Corvane".
+
+Category: The text says "Category" followed by "Lighting". So Category is "Lighting".
+
+Price: The text shows "Price" and then "$34.50". So Price is "$34.50".
+
+SKU: The text says "SKU" followed by "CV-LT-0317". So SKU is "CV-LT-0317".
+
+Rating: The text says "Rating" and then "4.2". So Rating is "4.2".
+
+Reviews: The text says "Reviews" followed by "356". So Reviews is "356".
+
+Availability: The text says "Availability" followed by "Low stock". So Availability is "Low stock".
+
+Release date: The text says "Release date" followed by "2023-11-03". So Release date is "2023-11-03".
+
+Description: The text says "Description" followed by "Adjustable LED lamp with three color temperatures and a weighted

@@ -1,0 +1,36 @@
+We are given a web page text. We need to extract the following fields: Title, Author, Published, Tags, Summary.
+
+Let's break down the text:
+
+The text starts with:
+"Demo Shop
+HomeProducts
+Article
+Title
+Caring for Cast Iron Cookware
+Author
+Maya Okafor
+Published
+2025-05-14
+Tags
+cookware, cleaning, kitchen
+Summary
+How to clean, dry and re-season a cast iron pan so it lasts for decades.
+Synthetic test site for a local scraping study. All content is made up."
+
+We can see that the fields are listed in the text. We need to extract:
+
+- Title: The line after "Title" is "Caring for Cast Iron Cookware"
+- Author: The line after "Author" is "Maya O: Okafor" -> but note: the text says "Maya Okafor", so we have "Maya Okafor"
+- Published: The line after "Published" is "2025-05-14"
+- Tags: The line after "Tags" is "cookware, cleaning, kitchen" (note: the text says "cookware, cleaning, kitchen")
+- Summary: The line after "Summary" is "How to clean, dry and re-season a cast iron pan so it lasts for decades."
+
+However, note that the text also has a line: "Synthetic test site for a local scraping study. All content is made up." but that is not part of the fields we are to extract.
+
+Let's map:
+
+- Title: "Caring for Cast Iron Cookware"
+- Author: "Maya Okafor"
+- Published: "2025-05-14"
+- Tags: "cookware, cleaning, kitchen" (we'll take the string as is, but note: the problem says "Tags" and the value is
