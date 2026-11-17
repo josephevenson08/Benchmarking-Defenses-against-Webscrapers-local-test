@@ -221,6 +221,20 @@ Settings shared by every part (port, page cap, delays, seed, number of runs, tra
 {"timestamp":"2026-10-26T20:03:56.672Z","run_id":"a-baseline-1","path":"/products/p3","status":200,"response_ms":2.153,"honeypot_hit":false,"user_agent":"bench-scraper (run=a-baseline-1)"}
 ```
 
+**Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
+
+```
+python measurement/time_models.py                      # every pulled model, pages p1, p2, a1, 2 timed calls each
+python measurement/time_models.py --models gemma3:1b llama3.2:3b --repeats 3
+```
+
+It reads each page's visible text from the generated baseline site, sends it to Ollama with a fixed timing prompt (temperature 0, replies capped at 400 tokens), and writes `results/<date>-model-timing/`:
+- `report.md`: per model, the load time, seconds per page, prompt and reply tokens, the digest, a rough "values found in reply" count, and an estimate for scraper (c)'s 90 page calls;
+- `report.json`;
+- the raw replies.
+
+The timing prompt is only for comparing speed; scraper (c)'s own prompt is written separately.
+
 Steps to run the scrapers and measure user cost will be added as each part is built.
 
 ---

@@ -101,6 +101,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D70 | 248 | **Metric set checked against the papers Joseph supplied** (Beyond BeautifulSoup, FreeDOM, Shy Guys, FP-Inconsistent, the SSIM paper, and WebCloak's project page). Two more standard measures are added: **extraction success rate** (ESR: share of runs fully correct; here 70/70), as in Beyond BeautifulSoup, and **evasion rate** (1 − detection rate), as in FP-Inconsistent. `docs/metrics-plan.md` now holds a related-work table with verified numbers, the main differences per study, and full references. WebCloak's definition of recall still needs the full paper (only the project page was supplied). | Keep D68's set without ESR and evasion rate | Claude (from the papers; within D68, which Joseph approved) | §4 metrics and analysis kept; D68. | Adds |
 | D71 | 249 | **From the full WebCloak paper:** its scraping recall is \|extracted ∩ target\| ÷ \|target\|, the same as our accuracy, and its precision is correct ÷ extracted. Following it, add **page weight** (HTML size per page against baseline) and, for (c), **prompt tokens per page** as overhead measures, and report Lighthouse as **changes** from baseline (score, FCP, LCP, TTI). Keep SSIM for visual similarity (WebCloak used JCD). Note that WebCloak has no accessibility measure, which our axe-core and reading-order measures add. Related-work row updated with verified details. | Keep D70's set | Claude (from the paper; within D68) | §4 user-cost metrics kept; D68, D70. | Adds |
 | D72 | 250 | **Plan checked and tightened** at Joseph's request, so the scrum suggestions are followed and the project finishes on time. `SCHEDULE.md`: Milestone 3 gets "Done when" items for (c) and (d) as narrowed by D66–D67; time limits: (c) until Nov 22 for its baseline check, otherwise "not usable" (§4); (d) until Nov 28 for its runs; the Essential work is never delayed for (c) or (d); the D70/D71 measures are placed on Nov 17, 20 and 21; the related-work table is filled Nov 25 and Dec 3; Milestone 4's tables, figure and report rows name the standard metrics, the related-work comparison and a scope-change section. README: status, metrics section (standard metrics), grid (12 cells × 3 = 36 runs as planned), roadmap, scope and references updated. | Leave the schedule without time limits | Claude (Joseph asked for a precise, on-time plan) | §7: decision points and "I never put the essential results at risk to finish stretch work"; §4 "not usable" rule; D66–D71. | Adds |
+| D73 | 254 | **Model-timing script** (`measurement/time_models.py`, Claude's Nov 17 task). For each pulled Ollama model and pages p1, p2 and a1 of the baseline site: the page's visible text (`innerText` of the generated file, read with Playwright); one unscored warm-up call (load time reported separately); 2 timed calls per page through `/api/generate` (non-streaming, temperature 0, replies capped at 400 tokens) with a fixed, generic timing prompt; and from Ollama's reply, the load, prompt and reply durations, token counts and wall time. It also records each model's name, digest, size and quantization from `/api/tags`, a rough "values found in reply" count (reads `items.json`; measurement tooling, not a scraper), and an estimate for (c)'s 90 page calls. Writes `results/<date>-model-timing/`. The timing prompt is not scraper (c)'s prompt; Joseph writes that one (§2). | Time models by hand in the terminal; use (c)'s own prompt (not written yet) | Claude (Joseph reviews and runs) | §2: Ollama for (c), CPU only, "choose one for each after timing them on 2–3 pages, and record each model's name and digest"; D71 (tokens). | Follows |
 
 ---
 
@@ -361,6 +362,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J251 | 251 | I merged; anything else I need to do? | Pull on the laptop; nothing else tonight (Turn 251) |
 | J252 | 252 | See you tomorrow; my VS Code is up to date | Synced; tomorrow starts with Ollama (Turn 252) |
 | J253 | 253 | What do I have for today? | Today's tasks; schedule duplicate rows fixed (Turn 253) |
+| J254 | 254 | (`ollama list`: gemma3:1b, llama3.2:3b; Ollama 0.40.16) | Model-timing script written (D73); pull request (Turn 254) |
 
 ### Questions from Claude
 
@@ -9781,3 +9783,34 @@ Then Joseph's questions.
 **Questions Claude asked:** asked for Joseph's RAM and his `ollama --version` / `ollama list` output.
 
 **Direction and fit:** no new decision (a correction to D67/D72's schedule text).
+
+### Turn 254 — 2026-11-17 19:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> ollama list
+> NAME           ID              SIZE      MODIFIED           
+> gemma3:1b      97558784bdc9    806 MB    About a minute ago    
+> llama3.2:3b    a80c4f17acd5    2.0 GB    About a minute ago    
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> ollama --version
+> ollama version is 0.40.16
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop output: Ollama 0.40.16 installed; `gemma3:1b` (806 MB) and `llama3.2:3b` (2.0 GB) pulled. RAM and model licenses not reported yet.
+- Joseph had merged #36; fast-forwarded the branch to `main`.
+- Wrote `measurement/time_models.py` (D73) and `measurement/tests/test_time_models.py`. The 6 new tests use a stand-in HTTP server that answers like Ollama's `/api/version`, `/api/tags` and `/api/generate`, so no Ollama or model is needed. All 23 measurement tests pass.
+- Ran the script end to end against the stand-in (scratch output, not committed):
+  - it generated the baseline site and read the text of p1, p2 and a1 with Playwright;
+  - it made the warm-up call, then 3 timed calls;
+  - it wrote report.md, report.json and the replies;
+  - it showed that "values found" is a rough count that can over-count (a brand contained in a product name).
+- Added README usage for the script. In `SCHEDULE.md`, ticked Claude's Nov 17 row and noted Joseph's progress on his.
+- Committed, pushed and opened pull request #37: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/37
+- Logged this turn (J254).
+
+**Claude's answer (summary):** both models are good to start with; send RAM (for `qwen3:4b`) and check the licenses; after merging, run `python measurement/time_models.py` (about 5–15 minutes on CPU) and paste the report; what each column means.
+
+**Questions Claude asked:** Joseph's RAM; whether the licenses are checked.
+
+**Direction and fit:** D73 (Follows §2).
