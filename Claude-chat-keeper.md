@@ -368,6 +368,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J255 | 255 | (System → About screenshot) I have 16 GB of RAM | Pull qwen3:4b; timing script can turn thinking off (D74); pull request (Turn 255) |
 | J256 | 256 | (model-timing report from the laptop: 3 models) | Recommend llama3.2:3b; C29 open (Turn 256) |
 | J257 | 257 | Let's do your recommendation; all three allow local research | D75: llama3.2:3b (Turn 257) |
+| J258 | 258 | I merged and committed the results; see you tomorrow | Confirmed on `main`; Qwen3 reasoning noted (Turn 258) |
 
 ### Questions from Claude
 
@@ -400,14 +401,14 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C25 | 134 | What should the shuffle scramble on each item page? Options: "One container, full mix (Recommended)" or "Keep rows, mix inside". | One container, full mix. | Closed (Turn 134) → D54 |
 | C26 | 237 | After the scrum meeting: which first, (d) or (c)? Keep the Essential experiment tooling going in parallel? Keep poisoning (now after (c)/(d), at risk at Cut-line 2)? Claude recommends (d) first, tooling in parallel, poisoning kept if time allows. | Joseph: (c) first, then (d). Essential tooling continues in parallel (Claude's default, not objected to). Poisoning only if time allows. | Closed (Turn 240) → D67 |
 | C27 | 237 | Metrics: add standard, comparable metrics (field-level precision, recall, F1; relative reduction vs baseline; honeypot TPR/FPR with a human-like control visitor; SSIM next to pixel diff; Lighthouse and axe-core as planned), keeping accuracy and fake-value rate? Do a short literature review first (arxiv.org and the WebCloak paper could not be opened from this session). | Joseph: keep his metrics, add the ones others use, and show their scores alongside. Claude agreed, with caveats on comparability. | Closed (Turn 240) → D68 |
-| C28 | 255 | For scraper (c): if the chosen model is a thinking model (e.g. `qwen3:4b`), run it with thinking off? This is part of (c)'s request design, so Joseph decides once the timings are in. | — | **Open** |
+| C28 | 255 | For scraper (c): if the chosen model is a thinking model (e.g. `qwen3:4b`), run it with thinking off? This is part of (c)'s request design, so Joseph decides once the timings are in. | Not needed: the chosen model (`llama3.2:3b`, D75) is not a thinking model. Note: Qwen3 still wrote its reasoning despite `"think": false` (Turn 258). | Closed (Turn 258) |
 | C29 | 256 | Which model for scraper (c)? Options: `llama3.2:3b` (Recommended: 50/50 values found, short replies, 6.8 s/page, about 10 min for 90 calls), `gemma3:1b` (fastest, 5.7 s/page, 48/50, missed an article value), `qwen3:4b` (36.7 s/page, hit the reply cap every time, about 55 min). Joseph decides (§2). | `llama3.2:3b` (Claude's recommendation); all three licenses allow local research use. | Closed (Turn 257) → D75 |
 
 ---
 
 ## Open items
 
-**▶ Resume here (Turn 250):** plan checked and tightened (D66–D72; `SCHEDULE.md`, `docs/metrics-plan.md`). Tue Nov 17: Joseph installs Ollama, sends his RAM, pulls 2–3 models; Claude drafts the model-timing script with token counts. Time limits: (c) Nov 22, (d) Nov 28. Open: the honeypot `${page.trapPath}` tidy-up; the "wwhen" typo; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 258):** Nov 17 done. Ollama 0.40.16 with 3 models; (c) uses `llama3.2:3b` (D75); timing results on `main`. Wed Nov 18: Claude builds the experiment runner; Joseph does (c) part 1 (page text from (b)'s crawler and a first Ollama call), walked through step by step. Time limits: (c) Nov 22, (d) Nov 28. Open: the honeypot `${page.trapPath}` tidy-up; the "wwhen" typo; the prompt-hook fix for subagent messages.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -9961,3 +9962,23 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D75 (Follows).
+
+### Turn 258 — 2026-11-17 19:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i merged and commited the results as well se eyou tomorrow
+
+**What Claude did:**
+- Checked GitHub: Joseph committed `results/2026-11-17-model-timing/` (`c2473ef`: report.md, report.json, 18 replies) and merged #39 (`759be2e`). Fast-forwarded the branch.
+- Read two saved replies:
+  - `llama3.2:3b` on p1 is one clean JSON object with all 10 fields correct;
+  - `qwen3:4b` on p1 starts "Okay, let's tackle this problem…", written-out reasoning despite `"think": false`. So the D74 option was sent but did not stop Qwen3's reasoning with this model and Ollama 0.40.16, which explains the 400-token cap on every call.
+- Corrected the `SCHEDULE.md` note (it had said "thinking off"). This supports D75. C28 (thinking off for (c)) no longer matters, since the chosen model is not a thinking model.
+- Closed C28 as not needed. Logged this turn (J258). The branch is ahead of `main` only by this log and the one-line schedule correction; both go in tomorrow's pull request with the experiment runner (no merge needed tonight).
+
+**Claude's answer (summary):** all on GitHub; llama's reply is clean JSON; qwen still reasoned despite thinking-off; see you tomorrow; tomorrow's plan.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (a correction to the record behind D74/D75).
