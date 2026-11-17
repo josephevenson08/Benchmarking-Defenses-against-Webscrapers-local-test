@@ -9773,7 +9773,7 @@ Then Joseph's questions.
   - Cut-line 1, already met;
   - install Ollama, report RAM, pull 2–3 small models, check their licenses;
   - Claude drafts the model-timing script.
-- Committed, pushed and opened a pull request for the fix.
+- Committed, pushed and opened pull request #36 for the fix: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/36
 - Logged this turn (J253).
 
 **Claude's answer (summary):** today's three tasks with steps and time estimates; the schedule bug and its fix; merge needed.
