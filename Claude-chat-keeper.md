@@ -397,6 +397,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J276 | 276 | (`c-test-4`: 70 records; score 70/70; 6.1 s per page) | ⭐ (c) part 2 done early; 40mm check; part 3 outlined (Turn 276) |
 | J277 | 277 | It's 40 mm | Confirmed: both C32 fixes worked (Turn 277) |
 | J278 | 278 | Let's do it, let's continue | (c) part 3: D82, D83; Step 1 (failure handling) given (Turn 278) |
+| J279 | 279 | What should my entire file look like now? | Only the changed block, not the whole file (§2); interrupted (Turn 279) |
+| J280 | 280 | (his own Step 1 attempt: try/except around the Ollama call) | 4 problems; corrected block checked against 3 stand-ins; disclosed (Turn 280) |
 
 ### Questions from Claude
 
@@ -11672,3 +11674,216 @@ Then Joseph's questions.
 **Questions Claude asked:** C33, C34 (answered).
 
 **Direction and fit:** D82 (Follows), D83 (Adds).
+
+### Turn 279 — 2026-11-18 17:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what should my entire file look like now?
+
+**What Claude did:** Joseph asked for his entire `c_llm_text.py`. Claude explained that writing the whole file would mean writing scraper (c) for him (§2; CLAUDE.md), and that nothing outside the `if field_list:` block changes in Step 1, so it would show only that block. Claude started checking it against stand-in Ollama servers. Joseph interrupted with his own attempt (Turn 280), which this answer continues.
+
+**Claude's answer (summary):** interrupted; continued in Turn 280.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Keeps the §2 boundary (Joseph writes (c)).
+
+### Turn 280 — 2026-11-18 17:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> import json
+> from bs4 import BeautifulSoup
+> from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> #Playwright drives a real Chromium browser; the other imports are the same as (a)
+> import requests #everything including this and below is from scraper (a)
+> from urllib.parse import urljoin, urlparse
+> import argparse
+> from urllib.robotparser import RobotFileParser
+> import time
+> from datetime import datetime, timezone
+>
+> parser = argparse.ArgumentParser(description="Scraper (c): llm_text")
+> parser.add_argument("--start-url", default="http://127.0.0.1:3000/") #default url to scrape, can be changed with command line argument
+> parser.add_argument("--page-cap", type=int, default=15) #max pages to scrape
+> parser.add_argument("--robots", choices=["obey", "ignore"], default="obey") #two choices obey and ignore
+> parser.add_argument("--run-id", required=True) # run id is required, tells the server whos asking
+> parser.add_argument("--out", required=True)# output file is required, where the scraped data will be saved
+> args = parser.parse_args()
+>
+> start_url = args.start_url #where the crawl starts
+> page_cap = args.page_cap #max pages to scrape
+> user_agent = f"run={args.run_id}" #user agent is the run id, tells the server whos asking
+>
+> robots_url = urljoin(start_url, "/robots.txt")
+> rules = RobotFileParser()
+> try:
+>     robots_response = requests.get(robots_url, headers={"User-Agent": user_agent}, timeout=5)
+>     rules.parse(robots_response.text.splitlines())
+> except requests.exceptions.RequestException:
+>     print("could not read robots.txt; treating every page as allowed")
+>     rules.parse([])
+>
+> pages = [] #pages scraped
+> records = [] #holds the field values found, not the pages
+>
+> queue = [start_url] #list of urls to scrape
+> visited = set() #set of urls already scraped 
+>
+> labels = json.load(open("data/fields.json")) #opening fields json file to get the labels for the fields we want to scrape
+> all_fields = labels["product"] + labels["article"] #setting all_fields to be both product and article from json
+>
+> print(start_url, page_cap, user_agent, queue)
+>
+>
+> with sync_playwright() as p: #launching playwright to use a browser to scrape the page after js load
+>     browser = p.chromium.launch()
+>     page = browser.new_page(user_agent=user_agent)
+>     started_at = datetime.now(timezone.utc).isoformat() #wwhen the run started
+>
+>     start_time = time.time() #time start
+>
+>     while queue and len(visited) < page_cap: #while there are urls in the queue and we have not reached the page cap
+>         url = queue.pop(0) #get the first url in the queue
+>         if url in visited:
+>             continue
+>         visited.add(url)
+>         if args.robots == "obey" and not rules.can_fetch(user_agent, url):
+>             print("skipped (robots.txt):", url)
+>             continue
+>
+>         path = urlparse(url).path #get the path of the url
+>         try:
+>             response = page.goto(url, wait_until="load", timeout=5000) #load the page in the browser, wait for the load event, give up after 5000 ms (5 s)
+>         except PlaywrightTimeout:
+>             print("timeout", url)
+>             pages.append({"path": path, "status": None, "error": "timeout"}) #if timeout, add to pages with error
+>             continue
+>         except PlaywrightError:
+>             print("connection error", url)
+>             pages.append({"path": path, "status": None, "error": "connection_error"}) #any other browser error (e.g. the server is down): save it and move on
+>             continue
+>
+>         print(response.status, url)
+>         pages.append({"path": path, "status": response.status, "error": None}) #append the page to pages with status and no error
+>
+>         text = page.inner_text("main")   # the page's visible text
+>
+>         parts = path.strip("/").split("/")                  # NEW: "/products/p1" -> ["products", "p1"]
+>         if len(parts) == 2 and parts[0] == "products":      # NEW
+>             field_list = labels["product"]                  # NEW: a product page: 10 fields
+>         elif len(parts) == 2 and parts[0] == "articles":    # NEW
+>             field_list = labels["article"]                  # NEW: an article page: 5 fields
+>         else:                                               # NEW
+>             field_list = []                                 # NEW: home page, product list, anything else: no fields
+>         print(path, len(field_list))                        # NEW: check (removed later)
+>
+>         if field_list:
+>             field_names = ", ".join(f["label"] for f in field_list)
+>             prompt = (
+>                 "Extract the following fields from the text below. If a field is not present, return an empty string for that field, copy each value exactly as written on the page.\n"
+>                 + "Give me one JSON object whose keys are exactly these field names:\n"
+>                 + "Fields: " + field_names + "\n\n"
+>                 + "Text:\n" + text
+>             )
+>
+>             try:
+>             reply = requests.post(
+>                 "http://127.0.0.1:11434/api/generate",
+>                 json={
+>                     "model": "llama3.2:3b",
+>                     "prompt": prompt,
+>                     "stream": False,
+>                     "format": "json",
+>                     "options": {"temperature": 0},
+>                 },
+>                 timeout=120,
+>             )
+>             except requests.exceptions.TImeout = model_timeout
+>             except requests.exceptions.RequestException = model_error
+>             data = reply.json()
+>             print(data["response"])
+>             answer = json.loads(data["response"])   # the reply as a dict
+>             for field in field_list:
+>                 value = answer.get(field["label"], "")
+>                 records.append({"page": path, "field": field["key"], "value": value}) #save the field value to records
+>
+>
+>         soup = BeautifulSoup(page.content(), "html.parser") #build the tree after js load
+>         for a in soup.find_all("a"):                 # every link, hidden ones too
+>             link = urljoin(url, a.get("href", ""))
+>             same_site = urlparse(link).netloc == urlparse(start_url).netloc
+>             if same_site and link not in visited and link not in queue:
+>                 queue.append(link)                   # wait in line to be visited
+>     seconds = round(time.time() - start_time, 3) #how long the run took
+>     browser.close()
+>
+>
+> output = {
+>     "run": {
+>         "run_id": args.run_id,
+>         "scraper": "c",
+>         "start_url": start_url,
+>         "page_cap": page_cap,
+>         "obey_robots_txt": args.robots == "obey",
+>         "started_at": started_at,
+>         "seconds": seconds,
+>     },
+>     "pages": pages,
+>     "records": records,
+> }
+> with open(args.out, "w", encoding="utf-8") as f:
+>     json.dump(output, f, indent=2)
+> print(len(records), "records written to", args.out)
+>
+>
+> # A BeautifulSoup tree is a representation of the HTML structure of a webpage,
+> # allowing for easy navigation and extraction of data from the HTML elements.
+> #
+> # Its structure is hierarchical, with the root element at the top and child elements
+> # nested within parent elements.
+> #
+> # It is very similar to the browser's DOM tree, which is also a tree of the page's
+> # HTML elements. The difference: BeautifulSoup's tree is a static copy of the HTML
+> # text, while the browser's DOM is live. It knows the CSS, the layout and which
+> # elements are visible.
+> #
+> # Why I used BeautifulSoup on page.content() instead of the live DOM: it lets (b)
+> # reuse scraper (a)'s exact rule (find the label, take the next element). That way
+> # (a) and (b) differ in only one thing: in (b) the page's scripts have run. This
+> # keeps the comparison between them fair.
+> #
+> # The catch: BeautifulSoup only sees the HTML, not the CSS order or which elements
+> # are hidden. That's why DOM shuffling and the honeypot link still work against (b).
+> # Scraper (d) will use the live DOM to get around that.
+> #
+> # I worked out this design with Claude (decision D51 in Claude-chat-keeper.md):
+> # Claude recommended reusing (a)'s rule on the HTML after load, and I chose it over
+> # reading only the visible text.
+
+**What Claude did:**
+- Reviewed Joseph's own Step 1 attempt in `c_llm_text.py`. It had four problems:
+  1. the `try:` body wasn't indented, which is an IndentationError;
+  2. `except requests.exceptions.TImeout = model_timeout` is invalid syntax (needs `except …Timeout:` plus an indented body), and "TImeout" was mistyped;
+  3. the same for `RequestException`;
+  4. with no `answer = None`, a failed call would leave `reply` undefined (NameError), and records were built even after a failure.
+- Wrote the corrected block (his prompt unchanged):
+  - `answer = None`, then `try:` around `requests.post` + `reply.json()` + `print` + `json.loads`;
+  - `except requests.exceptions.Timeout:` → print, `pages[-1]["error"] = "model_timeout"`;
+  - `except requests.exceptions.RequestException:` → `"model_error"`;
+  - `if answer is not None:` around the records loop.
+- **Checked it in the cloud** on a copy of his committed (c) (`dc0096d`) with only this block swapped in, against three stand-ins (scratch files, not committed):
+  - an Ollama that answers → 10 pages, 70 records, no errors;
+  - one too slow for a 1 s timeout → 10 pages, 0 records, `model_timeout` × 8;
+  - none running → 10 pages, 0 records, `model_error` × 8.
+
+  The crawl finished in every case. (The BrokenPipe tracebacks came from the slow stand-in after the scraper hung up.)
+- **Disclosure:** Claude supplied the corrected Step 1 block of scraper (c) at Joseph's request, after his own attempt. It implements D83 and §2's timeout rule; the prompt and all design choices are his.
+- Logged Turns 279–280 (J279, J280).
+
+**Claude's answer (summary):** the four problems; the corrected block; the stand-in results; test it on the laptop (timeout 0.001, then quit Ollama); Step 2 next.
+
+**Questions Claude asked:** none (waiting for the laptop tests).
+
+**Direction and fit:** no new decision. Implements D83; disclosed (§2).
