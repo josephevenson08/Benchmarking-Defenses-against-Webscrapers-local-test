@@ -1,0 +1,12 @@
+http://127.0.0.1:3100/ 15 run=b-shuffled-2 ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+200 http://127.0.0.1:3100/products/
+200 http://127.0.0.1:3100/articles/a1
+200 http://127.0.0.1:3100/articles/a2
+200 http://127.0.0.1:3100/products/p1
+200 http://127.0.0.1:3100/products/p2
+200 http://127.0.0.1:3100/products/p3
+200 http://127.0.0.1:3100/products/p4
+200 http://127.0.0.1:3100/products/p5
+200 http://127.0.0.1:3100/products/p6
+66 records written to C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-18-experiment\runs\b-shuffled-2.json

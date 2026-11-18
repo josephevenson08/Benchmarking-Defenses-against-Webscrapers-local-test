@@ -1,0 +1,395 @@
+{
+  "run": {
+    "run_id": "b-shuffled-1",
+    "scraper": "b",
+    "start_url": "http://127.0.0.1:3100/",
+    "page_cap": 15,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-18T17:11:17.198834+00:00",
+    "seconds": 0.242
+  },
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a1",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a2",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p1",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p2",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p3",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p4",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p5",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p6",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/articles/a1",
+      "field": "title",
+      "value": "How to clean, dry and re-season a cast iron pan so it lasts for decades."
+    },
+    {
+      "page": "/articles/a1",
+      "field": "author",
+      "value": "cookware, cleaning, kitchen"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "publish_date",
+      "value": "Tags"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "summary",
+      "value": "Title"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "title",
+      "value": "Choosing a Daypack for Short Hikes"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "author",
+      "value": "Daniel Reyes"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "publish_date",
+      "value": "outdoor, hiking, buying guide"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "summary",
+      "value": "Tags"
+    },
+    {
+      "page": "/products/p1",
+      "field": "name",
+      "value": "$89.99"
+    },
+    {
+      "page": "/products/p1",
+      "field": "category",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "price",
+      "value": "2024-09-12"
+    },
+    {
+      "page": "/products/p1",
+      "field": "sku",
+      "value": "Reviews"
+    },
+    {
+      "page": "/products/p1",
+      "field": "rating",
+      "value": "Brand"
+    },
+    {
+      "page": "/products/p1",
+      "field": "review_count",
+      "value": "Description"
+    },
+    {
+      "page": "/products/p1",
+      "field": "availability",
+      "value": "4.5"
+    },
+    {
+      "page": "/products/p1",
+      "field": "release_date",
+      "value": "LF-HP-2041"
+    },
+    {
+      "page": "/products/p1",
+      "field": "description",
+      "value": "Larkfield"
+    },
+    {
+      "page": "/products/p2",
+      "field": "name",
+      "value": "Lighting"
+    },
+    {
+      "page": "/products/p2",
+      "field": "brand",
+      "value": "Release date"
+    },
+    {
+      "page": "/products/p2",
+      "field": "category",
+      "value": "Availability"
+    },
+    {
+      "page": "/products/p2",
+      "field": "price",
+      "value": "Name"
+    },
+    {
+      "page": "/products/p2",
+      "field": "sku",
+      "value": "2023-11-03"
+    },
+    {
+      "page": "/products/p2",
+      "field": "rating",
+      "value": "Adjustable LED lamp with three color temperatures and a weighted base."
+    },
+    {
+      "page": "/products/p2",
+      "field": "review_count",
+      "value": "$34.50"
+    },
+    {
+      "page": "/products/p2",
+      "field": "availability",
+      "value": "4.2"
+    },
+    {
+      "page": "/products/p2",
+      "field": "release_date",
+      "value": "Corvane Desk Lamp"
+    },
+    {
+      "page": "/products/p2",
+      "field": "description",
+      "value": "356"
+    },
+    {
+      "page": "/products/p3",
+      "field": "name",
+      "value": "Reviews"
+    },
+    {
+      "page": "/products/p3",
+      "field": "brand",
+      "value": "$47.00"
+    },
+    {
+      "page": "/products/p3",
+      "field": "category",
+      "value": "4.7"
+    },
+    {
+      "page": "/products/p3",
+      "field": "price",
+      "value": "2025-02-20"
+    },
+    {
+      "page": "/products/p3",
+      "field": "sku",
+      "value": "Availability"
+    },
+    {
+      "page": "/products/p3",
+      "field": "rating",
+      "value": "BV-KT-1180"
+    },
+    {
+      "page": "/products/p3",
+      "field": "review_count",
+      "value": "Brimvale"
+    },
+    {
+      "page": "/products/p3",
+      "field": "availability",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p3",
+      "field": "release_date",
+      "value": "Kitchen"
+    },
+    {
+      "page": "/products/p3",
+      "field": "description",
+      "value": "Name"
+    },
+    {
+      "page": "/products/p4",
+      "field": "name",
+      "value": "Brand"
+    },
+    {
+      "page": "/products/p4",
+      "field": "brand",
+      "value": "SKU"
+    },
+    {
+      "page": "/products/p4",
+      "field": "price",
+      "value": "Release date"
+    },
+    {
+      "page": "/products/p4",
+      "field": "sku",
+      "value": "4.4"
+    },
+    {
+      "page": "/products/p4",
+      "field": "rating",
+      "value": "Reviews"
+    },
+    {
+      "page": "/products/p4",
+      "field": "review_count",
+      "value": "Out of stock"
+    },
+    {
+      "page": "/products/p4",
+      "field": "availability",
+      "value": "28-liter daypack with a padded laptop sleeve and side water-bottle pockets."
+    },
+    {
+      "page": "/products/p4",
+      "field": "release_date",
+      "value": "Availability"
+    },
+    {
+      "page": "/products/p4",
+      "field": "description",
+      "value": "Category"
+    },
+    {
+      "page": "/products/p5",
+      "field": "name",
+      "value": "Price"
+    },
+    {
+      "page": "/products/p5",
+      "field": "brand",
+      "value": "Category"
+    },
+    {
+      "page": "/products/p5",
+      "field": "category",
+      "value": "3.9"
+    },
+    {
+      "page": "/products/p5",
+      "field": "price",
+      "value": "$24.99"
+    },
+    {
+      "page": "/products/p5",
+      "field": "sku",
+      "value": "Silent-click mouse with a USB-C receiver and up to 12 months of battery life."
+    },
+    {
+      "page": "/products/p5",
+      "field": "rating",
+      "value": "Mirelle Wireless Mouse"
+    },
+    {
+      "page": "/products/p5",
+      "field": "review_count",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p5",
+      "field": "availability",
+      "value": "Reviews"
+    },
+    {
+      "page": "/products/p5",
+      "field": "release_date",
+      "value": "SKU"
+    },
+    {
+      "page": "/products/p5",
+      "field": "description",
+      "value": "Rating"
+    },
+    {
+      "page": "/products/p6",
+      "field": "name",
+      "value": "Halden"
+    },
+    {
+      "page": "/products/p6",
+      "field": "brand",
+      "value": "9,412"
+    },
+    {
+      "page": "/products/p6",
+      "field": "category",
+      "value": "SKU"
+    },
+    {
+      "page": "/products/p6",
+      "field": "price",
+      "value": "Pre-seasoned 10-inch skillet that works on induction, gas and in the oven."
+    },
+    {
+      "page": "/products/p6",
+      "field": "sku",
+      "value": "Name"
+    },
+    {
+      "page": "/products/p6",
+      "field": "rating",
+      "value": "Availability"
+    },
+    {
+      "page": "/products/p6",
+      "field": "review_count",
+      "value": "Halden Cast Iron Skillet"
+    },
+    {
+      "page": "/products/p6",
+      "field": "availability",
+      "value": "Category"
+    },
+    {
+      "page": "/products/p6",
+      "field": "release_date",
+      "value": "Reviews"
+    },
+    {
+      "page": "/products/p6",
+      "field": "description",
+      "value": "2026-12-01"
+    }
+  ]
+}
