@@ -19,7 +19,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Mon Nov 16 (Turn 250 of the chat-keeper): Milestones 3 and 4 checked against the scrum feedback and decisions D66–D71, with time limits and fallbacks added.*
+*Last updated: Wed Nov 18 (Turn 289 of the chat-keeper): scraper (c) passed its baseline check four days early (D84). Earlier: Mon Nov 16 (Turn 250), Milestones 3 and 4 checked against the scrum feedback and decisions D66–D71, with time limits and fallbacks added.*
 
 > **▶ Resume here (Mon Nov 16 evening):** the plan follows the scrum feedback: (c) first, then (d) (D66, D67); metrics comparable with published work (D68, D70, D71; `docs/metrics-plan.md`). The related-work table is already drafted from the papers.
 > - **Tue Nov 17, first:** Joseph installs Ollama, sends his RAM, pulls 2–3 small models. Claude drafts the model-timing script.
@@ -119,8 +119,8 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | | User-cost runner, part 1: screenshots after a 3 s wait, pixel diff and SSIM against baseline, reading-order mismatch rate, HTML size per page against baseline (D71). | C |
 | | (A) ✅ (done early, Wed Nov 18) Scraper (c), part 2: one fixed prompt per page type listing the field names, temperature 0; parse the reply as JSON. The page type comes from the URL (D78); JSON mode (D79); main content only (D80); the prompt asks for exact copies (D81). First scored run `c-test-4` on baseline: 70/70, 6.1 s per page (61 s per run). | J |
 | **Sat Nov 21** | User-cost runner, part 2: Lighthouse 5 times per page (median; performance score, FCP, LCP, TTI as changes from baseline) and axe-core violations. | C |
-| | (A) Scraper (c), part 3: require every expected key, convert price and rating to numbers; invalid JSON, a missing key or a timeout is a failure, with no retry. First baseline run. | J |
-| **Sun Nov 22** | (A) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. **Time limit for (c).** | J |
+| | (A) ✅ (done early, Wed Nov 18) Scraper (c), part 3: require every expected key, convert price and rating to numbers; invalid JSON, a missing key or a timeout is a failure, with no retry. First baseline run. Failure rules D82, D83 (`model_timeout`, `invalid_json`, `missing_key`, `model_error`; each tested on the laptop); `c-test-5` 70/70 with price and rating as numbers. Commit `ba437ad`. | J |
+| **Sun Nov 22** | (A) ✅ (done early, Wed Nov 18) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. **Time limit for (c).** ⭐ Passed (D84): `c-baseline-1/2/3` all 70/70 (1.000), 5.3–5.7 s per page, 54–58 s per run, commit `ba437ad`, model `llama3.2:3b`. Results folder `results/2026-11-18-c-baseline/` to commit. | J |
 | | (A) Start scraper (d): wait until the page has had no changes for 3 s, with a 10 s timeout. | J |
 | **Mon Nov 23** | ✅ (done early, Wed Nov 18) **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs, with the runner. Check the outputs. ⭐ 18/18 runs on the laptop (commit `defff7a`): (a) and (b) 70/70 on baseline, 4/70 on shuffled, 70/70 on honeypot with 11 pages (the trap). Results folder `results/2026-11-18-experiment/` to commit. | J |
 | **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. | J + C |
