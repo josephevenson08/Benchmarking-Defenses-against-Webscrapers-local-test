@@ -4,7 +4,7 @@
 
 - **Author:** Joseph Evenson
 - **Track:** Blue Track (Research)
-- **Status:** In development. Milestones 1 and 2 done (Oct 30, Nov 11). Milestone 3 (Nov 17 – Dec 1) re-planned after the Nov 16 scrum meeting: scrapers (c) then (d), and metrics comparable with published work (see Roadmap). On Nov 18 the Essential runs finished (18/18) and scraper (c) passed its baseline check (70/70 in 3 of 3 runs), both ahead of schedule.
+- **Status:** In development. Milestones 1 and 2 done (Oct 30, Nov 11). Milestone 3 (Nov 17 – Dec 1) re-planned after the Nov 16 scrum meeting: scrapers (c) then (d), and metrics comparable with published work (see Roadmap). On Nov 18, all ahead of schedule: the Essential runs finished (18/18); scraper (c) passed its baseline check (70/70 in 3 of 3 runs) and ran on all three conditions (shuffling cut it to 48–49/70, against 4/70 for (a) and (b)).
 
 This project builds a small local test site and five scrapers of increasing capability, adds simple versions of four page-level defenses, and measures which defenses stop which scrapers and what each defense costs real users in speed, visual fidelity, and accessibility.
 
@@ -298,7 +298,7 @@ Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptiv
 - [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; extraction success rate; relative reduction against baseline; honeypot detection, evasion and false-positive rates; HTML size (plan: `docs/metrics-plan.md`)
 - [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
 - [ ] Test 7 for (a) and (b) (Nov 24)
-- [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22). Runs on the other conditions by Nov 28
+- [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22); runs on all three conditions done Nov 18 (planned Nov 28): shuffled 48–49/70, honeypot 70/70 with the trap visited
 - [ ] Scraper (d): Test 3 part and baseline check by Nov 25; runs by Nov 28
 - [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
 - [ ] Only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
