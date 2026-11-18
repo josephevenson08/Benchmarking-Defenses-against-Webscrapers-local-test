@@ -110,6 +110,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D79 | 268 | **Scraper (c) asks Ollama for JSON output** (`"format": "json"` in the request), so every reply is valid JSON. Failures then come from wrong or missing values, not broken syntax. (c) still requires every expected key, converts price and rating to numbers, and treats a missing key or a timeout as a failure with no retry. | Prompt only (parse whatever comes back) | Joseph (Claude recommended) | §2 (c): "Parse the reply as JSON, require every expected key… Invalid JSON, a missing key or a timeout, is a failure, with no retry". Forcing JSON is a request option, not a retry. | Interprets (invalid JSON becomes rare, so its failure rule seldom applies) |
 | D80 | 275 | **Scraper (c) sends only the page's main content** (`page.inner_text("main")` instead of `"body"`): the page header ("Demo Shop", the menu) and the footer are left out. In the first real run the model appended the footer to p6's description. It is still the rendered visible text, so hidden elements are still dropped and the HTML order is still kept. | `inner_text("body")` | Joseph (C32) | §2 (c): "Takes a page's rendered text"; the main content is the rendered text of the content area. | Interprets |
 | D81 | 275 | **(c)'s prompt asks the model to copy each value exactly as written on the page** (Joseph's wording, added to his instruction sentence). In the first real run the model wrote "40mm" for "40 mm". The prompt stays fixed from here on (§2). | Leave the prompt unchanged | Joseph (C32) | §2 (c): one fixed prompt per page type; the prompt is Joseph's. | Follows |
+| D82 | 278 | **Scraper (c): a price or rating that can't be converted to a number is kept as the model's text.** The scoring script counts a non-number price or rating as "malformed" (wrong), so it is still measured, and the rest of the page's fields are kept. | Fail the whole page | Joseph (Claude recommended) | §2 (c): "convert price and rating to numbers"; the listed failures are only invalid JSON, a missing key and a timeout. | Follows |
+| D83 | 278 | **Scraper (c): if Ollama can't be reached** (a connection error other than a timeout), the page gets `error: "model_error"`, no records, and the run continues, like (a)/(b) on a page that fails to load. Together with the midterm's failures, each page failure sets that page's `error` in `pages`, writes no records for it (so all its fields score as missing), is not retried, and does not stop the crawl or its link-following: `model_timeout`, `invalid_json` (unparseable or not a JSON object), `missing_key` (any expected field name absent), `model_error`. | Stop the run | Joseph (Claude recommended) | §2 (c) failure rules; §2 "record 404s and timeouts and keep going"; `docs/scraper-output.md` (`error` codes for (c): `invalid_json`, `missing_key`, `model_timeout`; "for example", so `model_error` is allowed). | Adds (`model_error`) |
 
 ---
 
@@ -394,6 +396,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J275 | 275 | (`c_llm_text.py` with both fixes and Step 3) | D80, D81; Step 3 bug (`.get` on the reply string) explained (Turn 275) |
 | J276 | 276 | (`c-test-4`: 70 records; score 70/70; 6.1 s per page) | ⭐ (c) part 2 done early; 40mm check; part 3 outlined (Turn 276) |
 | J277 | 277 | It's 40 mm | Confirmed: both C32 fixes worked (Turn 277) |
+| J278 | 278 | Let's do it, let's continue | (c) part 3: D82, D83; Step 1 (failure handling) given (Turn 278) |
 
 ### Questions from Claude
 
@@ -431,6 +434,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C30 | 268 | How should (c) decide a page's type? Options: "From the URL (Recommended)", "From the page text", "Ask about all 15 fields everywhere". | From the URL. | Closed (Turn 268) → D78 |
 | C31 | 268 | Should (c) force JSON output (Ollama `"format": "json"`)? Options: "Yes, force JSON (Recommended)", "No, prompt only". | Yes, force JSON. | Closed (Turn 268) → D79 |
 | C32 | 274 | Two of (c)'s 70 values were wrong in the first real run: p1 description ("40mm" for "40 mm") and p6 description (the page footer appended). Options, both Joseph's (c) design: (1) send only the page's main content (`inner_text("main")`, without the header and footer); (2) add a prompt sentence asking to copy each value exactly as written; both; neither. | Both: `inner_text("main")` and the copy-exactly sentence. | Closed (Turn 275) → D80, D81 |
+| C33 | 278 | If price or rating can't be converted to a number? Options: "Keep the text (Recommended)", "Fail the whole page". | Keep the text. | Closed (Turn 278) → D82 |
+| C34 | 278 | If Ollama can't be reached? Options: "Record and keep going (Recommended)", "Stop the run". | Record and keep going. | Closed (Turn 278) → D83 |
 
 ---
 
@@ -11646,3 +11651,24 @@ Then Joseph's questions.
 **Questions Claude asked:** part 3 now or stop (repeated from Turn 276).
 
 **Direction and fit:** no new decision. Confirms the results behind D80 and D81.
+
+### Turn 278 — 2026-11-18 17:36 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets do it, lets continue
+
+**What Claude did:**
+- Checked GitHub: Joseph committed `dc0096d` "Scraper (c) part 2: prompt and JSON". Merged `main` into the branch.
+- Read `docs/scraper-output.md`: the approved `pages[].error` field already names (c)'s failure codes `invalid_json`, `missing_key`, `model_timeout`, so part 3 needs no contract change.
+- Asked two part 3 questions with AskUserQuestion:
+  - C33, a price or rating that won't convert: keep the text → D82;
+  - C34, Ollama unreachable: record `model_error` and continue → D83.
+- Gave part 3, Step 1: put the Ollama call in try/except for `requests.exceptions.Timeout` (`model_timeout`) and `requests.exceptions.RequestException` (`model_error`). Set `pages[-1]["error"]` (the current page's entry, appended just before), and use `answer = None` instead of `continue`, so a failed page still gets its links followed. Showed how to test each case on purpose: a tiny timeout, and the Ollama app quit.
+- Logged this turn (J278).
+
+**Claude's answer (summary):** both decisions; the failure plan (4 codes, no records, keep crawling); Step 1 with the `answer = None` pattern and how to test it.
+
+**Questions Claude asked:** C33, C34 (answered).
+
+**Direction and fit:** D82 (Follows), D83 (Adds).
