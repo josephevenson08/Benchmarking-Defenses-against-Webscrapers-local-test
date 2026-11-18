@@ -13791,7 +13791,7 @@ Then Joseph's questions.
 - Rescored the three committed `c-baseline` outputs with `scoring/score.py`: 70/70 each, the same as the runner's summary. The manifest records commit `ba437ad`, Ollama 0.40.16 and the `llama3.2:3b` digest `a80c4f17acd5…`.
 - Found that the committed folder has no `logs/` or `conditions/`, and neither does `results/2026-11-18-experiment/`. Cause: `.gitignore`'s `logs/` and `conditions/` rules matched at any depth.
 - Changed them to `/logs/` and `/conditions/` (D85). Checked by running a 2-run experiment in the cloud (scraper (a), baseline and honeypot): its `logs/` and `conditions/` now appear in `git status`, and the root working folders are still ignored. The temporary folder was deleted. The 30 measurement tests pass. (The cloud container needed `pip install -r requirements.txt` first.)
-- Opened a pull request into `main` with the fix.
+- Opened [pull request #42](https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/42) into `main` with the fix.
 
 **Claude's answer (summary):** The results are on `main` and rescore to 70/70. But the request logs and seed manifests of both Nov 18 results folders were never committed, because `.gitignore` hid them. They are still on the laptop. Merge the fix, pull, then commit them; the results CSV needs the logs. Then run (c) on shuffled and honeypot.
 
