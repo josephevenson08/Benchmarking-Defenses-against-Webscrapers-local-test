@@ -73,23 +73,51 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
         print(response.status, url)
         pages.append({"path": path, "status": response.status, "error": None}) #append the page to pages with status and no error
 
-        text = page.inner_text("body")
+        text = page.inner_text("main")   # the page's visible text
 
-        print(text[:200])
+        parts = path.strip("/").split("/")                  # NEW: "/products/p1" -> ["products", "p1"]
+        if len(parts) == 2 and parts[0] == "products":      # NEW
+            field_list = labels["product"]                  # NEW: a product page: 10 fields
+        elif len(parts) == 2 and parts[0] == "articles":    # NEW
+            field_list = labels["article"]                  # NEW: an article page: 5 fields
+        else:                                               # NEW
+            field_list = []                                 # NEW: home page, product list, anything else: no fields
+        print(path, len(field_list))                        # NEW: check (removed later)
+
+        if field_list:
+            field_names = ", ".join(f["label"] for f in field_list)
+            prompt = (
+                "Extract the following fields from the text below. If a field is not present, return an empty string for that field, copy each value exactly as written on the page.\n"
+                + "Give me one JSON object whose keys are exactly these field names:\n"
+                + "Fields: " + field_names + "\n\n"
+                + "Text:\n" + text
+            )
+            reply = requests.post(
+                "http://127.0.0.1:11434/api/generate",
+                json={
+                    "model": "llama3.2:3b",
+                    "prompt": prompt,
+                    "stream": False,
+                    "format": "json",
+                    "options": {"temperature": 0},
+                },
+                timeout=120,
+            )
+            data = reply.json()
+            print(data["response"])
+            answer = json.loads(data["response"])   # the reply as a dict
+            for field in field_list:
+                value = answer.get(field["label"], "")
+                records.append({"page": path, "field": field["key"], "value": value}) #save the field value to records
+
 
         soup = BeautifulSoup(page.content(), "html.parser") #build the tree after js load
-        for field in all_fields:
-            label_element = soup.find(string=field["label"])
-            if label_element:
-                value_element = label_element.parent.find_next_sibling() #step to the next element (the value)
-                if value_element:
-                    records.append({"page": path, "field": field["key"], "value": value_element.get_text(strip=True)})
         for a in soup.find_all("a"):                 # every link, hidden ones too
-            link = urljoin(url, a.get("href", ""))   
+            link = urljoin(url, a.get("href", ""))
             same_site = urlparse(link).netloc == urlparse(start_url).netloc
             if same_site and link not in visited and link not in queue:
                 queue.append(link)                   # wait in line to be visited
-    seconds = round(time.time() - start_time, 3)
+    seconds = round(time.time() - start_time, 3) #how long the run took
     browser.close()
 
 
