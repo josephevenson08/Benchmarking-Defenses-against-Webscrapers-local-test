@@ -92,23 +92,54 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
                 + "Fields: " + field_names + "\n\n"
                 + "Text:\n" + text
             )
-            reply = requests.post(
-                "http://127.0.0.1:11434/api/generate",
-                json={
-                    "model": "llama3.2:3b",
-                    "prompt": prompt,
-                    "stream": False,
-                    "format": "json",
-                    "options": {"temperature": 0},
-                },
-                timeout=120,
-            )
-            data = reply.json()
-            print(data["response"])
-            answer = json.loads(data["response"])   # the reply as a dict
-            for field in field_list:
-                value = answer.get(field["label"], "")
-                records.append({"page": path, "field": field["key"], "value": value}) #save the field value to records
+
+            answer = None                                   # stays None if the model call fails
+            try:
+                reply = requests.post(
+                    "http://127.0.0.1:11434/api/generate",
+                    json={
+                        "model": "llama3.2:3b",
+                        "prompt": prompt,
+                        "stream": False,
+                        "format": "json",
+                        "options": {"temperature": 0},
+                    },
+                    timeout=120,
+                )
+                data = reply.json()
+                print(data["response"])
+                answer = json.loads(data["response"])       # the reply as a dict
+            except requests.exceptions.Timeout:
+                print("model timeout", url)
+                pages[-1]["error"] = "model_timeout"        # mark this page as failed
+            except json.JSONDecodeError:
+                print("invalid json", url)
+                pages[-1]["error"] = "invalid_json"
+            except requests.exceptions.RequestException:
+                print("model error", url)
+                pages[-1]["error"] = "model_error"
+
+            if answer is not None and not isinstance(answer, dict):
+                print("invalid json (not an object)", url)
+                pages[-1]["error"] = "invalid_json"
+                answer = None
+
+            if answer is not None:
+                missing = [f["label"] for f in field_list if f["label"] not in answer]
+                if missing:
+                    print("missing key(s)", missing, url)
+                    pages[-1]["error"] = "missing_key"
+                    answer = None
+
+            if answer is not None:                          # only pages where the model answered
+                for field in field_list:
+                    value = answer.get(field["label"], "")
+                    if field["key"] in ("price", "rating"):     # price and rating become numbers
+                        try:
+                            value = float(str(value).replace("$", "").replace(",", ""))
+                        except ValueError:
+                            pass                                # can't convert: keep the model's text (D82)
+                    records.append({"page": path, "field": field["key"], "value": value}) #save the field value to records    
 
 
         soup = BeautifulSoup(page.content(), "html.parser") #build the tree after js load
