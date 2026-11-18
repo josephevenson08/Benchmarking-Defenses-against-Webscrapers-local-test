@@ -411,6 +411,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J288 | 288 | (file with both records loops; `c-test-6.json` with 140 records) | Conversion works; delete the old loop (Turn 288) |
 | J289 | 289 | (runner output: `c-baseline-1/2/3` all 70/70 at 5.3–5.7 s per page, commit `ba437ad`) | ⭐ (c) passed its baseline check four days early (D84); schedule and README ticked; commit the results folder; next: (c) on shuffled and honeypot, then (d) |
 | J290 | 290 | ok i merged and commited the results | Checked `main`; found the request logs and seeds missing from both Nov 18 results folders; fixed `.gitignore` (D85); PR; Joseph commits the missing files |
+| J291 | 291 | ok running c against both defenses now without editing | Confirmed PR #42 merged and the Nov 18 logs and seeds committed; how to read (c)'s shuffled and honeypot results against the midterm's rules |
 
 ### Questions from Claude
 
@@ -455,7 +456,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 290):** Wed Nov 18. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check, 70/70 in 3 of 3 runs (D84), results on `main`. Waiting on the laptop: after the `.gitignore` fix (D85) is merged, Joseph commits `logs/` and `conditions/` of `results/2026-11-18-experiment/` and `results/2026-11-18-c-baseline/`; the results CSV needs those logs. Next for Joseph: (c) on shuffled and honeypot (planned Nov 28, can run now, no code changes first), then scraper (d) (planned to start Sun Nov 22). Next for Claude: the results CSV (Thu Nov 19), then the standard metrics and the user-cost runner (Nov 20–21). Open: the optional (c) tidy-up after its defended runs; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 291):** Wed Nov 18. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check, 70/70 in 3 of 3 runs (D84), results on `main`. The `.gitignore` fix (D85) is merged and both Nov 18 folders now have their logs and seeds on `main`. Running on the laptop (Turn 291): (c) on shuffled and honeypot, into `results/2026-11-18-c-defended/`, code unchanged. Next for Joseph: scraper (d) (planned to start Sun Nov 22). Next for Claude: the results CSV (Thu Nov 19), then the standard metrics and the user-cost runner (Nov 20–21). Open: the optional (c) tidy-up after its defended runs; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -13798,3 +13799,29 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D85 (Follows: §5 Reproducibility, results folders hold the logs and seeds).
+
+### Turn 291 — 2026-11-18 18:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok running c against both defenses now without editing
+
+**What Claude did:**
+- Fetched `main`: PR #42 is merged, and Joseph's `7d671e0` "request logs and seeds for Nov 18 runs" adds `logs/` and `conditions/` to `results/2026-11-18-experiment/` (3 logs, 3 manifests) and `results/2026-11-18-c-baseline/` (1 and 1). Both folders are now complete (§5 Reproducibility). Merged `main` into the branch.
+- Read the midterm's expectations and rules for these runs:
+  - §4 Hypothesis 1: for shuffling, "(c) is uncertain".
+  - §4 Hypothesis 3: honeypots don't change accuracy and are expected to log hits from (c).
+  - §4 item 5: "Stops" means accuracy below 10%; a honeypot works when it logs a hit.
+  - §4 Analysis: a defense "reduces" accuracy when the defended mean falls below the lowest baseline run by more than the baseline spread.
+
+**Claude's answer (summary):**
+- The logs and seeds are on `main` now, so the missing-files problem is fixed.
+- How to read the new runs:
+  - **Honeypot:** 70/70 with 11 pages means (c) followed the hidden trap link, as Hypothesis 3 expects.
+  - **Shuffled:** the midterm left this open, so this is its first answer. Under 7/70 means "stops". Because (c)'s baseline was 70/70 in all 3 runs (spread 0), any mean below 70/70 counts as "reduces".
+- If accuracy drops, the run logs show whether pages failed under (c)'s failure rules (`missing_key` etc.) or the model gave wrong values. The midterm keeps these apart (§5 "Defense vs model failure").
+- Commit the folder and paste the summary.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
