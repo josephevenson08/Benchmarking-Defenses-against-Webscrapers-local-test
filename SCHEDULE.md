@@ -122,7 +122,7 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | | (A) Scraper (c), part 3: require every expected key, convert price and rating to numbers; invalid JSON, a missing key or a timeout is a failure, with no retry. First baseline run. | J |
 | **Sun Nov 22** | (A) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. **Time limit for (c).** | J |
 | | (A) Start scraper (d): wait until the page has had no changes for 3 s, with a 10 s timeout. | J |
-| **Mon Nov 23** | **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs, with the runner. Check the outputs. | J |
+| **Mon Nov 23** | ✅ (done early, Wed Nov 18) **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs, with the runner. Check the outputs. ⭐ 18/18 runs on the laptop (commit `defff7a`): (a) and (b) 70/70 on baseline, 4/70 on shuffled, 70/70 on honeypot with 11 pages (the trap). Results folder `results/2026-11-18-experiment/` to commit. | J |
 | **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. | J + C |
 | | User-cost runs for each condition. | C |
 | | (A) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. | J |
