@@ -113,6 +113,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D82 | 278 | **Scraper (c): a price or rating that can't be converted to a number is kept as the model's text.** The scoring script counts a non-number price or rating as "malformed" (wrong), so it is still measured, and the rest of the page's fields are kept. | Fail the whole page | Joseph (Claude recommended) | §2 (c): "convert price and rating to numbers"; the listed failures are only invalid JSON, a missing key and a timeout. | Follows |
 | D83 | 278 | **Scraper (c): if Ollama can't be reached** (a connection error other than a timeout), the page gets `error: "model_error"`, no records, and the run continues, like (a)/(b) on a page that fails to load. Together with the midterm's failures, each page failure sets that page's `error` in `pages`, writes no records for it (so all its fields score as missing), is not retried, and does not stop the crawl or its link-following: `model_timeout`, `invalid_json` (unparseable or not a JSON object), `missing_key` (any expected field name absent), `model_error`. | Stop the run | Joseph (Claude recommended) | §2 (c) failure rules; §2 "record 404s and timeouts and keep going"; `docs/scraper-output.md` (`error` codes for (c): `invalid_json`, `missing_key`, `model_timeout`; "for example", so `model_error` is allowed). | Adds (`model_error`) |
 | D84 | 289 | **⭐ Scraper (c) passed its baseline check (Wed Nov 18; deadline Sun Nov 22).** On Joseph's laptop (commit `ba437ad`, `llama3.2:3b`, temperature 0, JSON mode), `measurement/run_experiment.py --scrapers c --conditions baseline` ran 3 runs: `c-baseline-1/2/3` all 70/70 (accuracy 1.000, min–max 1.000–1.000), 10 pages each, no page errors; time per page 5.68, 5.32 and 5.63 s (54–58 s per run), roughly 250 times (b)'s 0.020–0.024 s. So (c) is usable, not "not usable", and its defended runs count. Scrapers are fixed before defended runs, so (c)'s prompt and behaviour stay as in `ba437ad`; the tidy-up Joseph planned (comments, the `print(path, len(field_list))` check line, the unused `all_fields`) changes no behaviour. Results: `results/2026-11-18-c-baseline/` on the laptop, to commit. | — | Joseph (his scraper; ran it); Claude (runner; checked the commit on `main`) | §4 item 10: "baseline accuracy must reach 90% first"; §4 limitations, model variability: "If a small model cannot reach 90% on baseline, I report that scraper as not usable"; §5 "Defense vs scraper weakness"; §5 item 9 (3 runs per cell). | Follows |
+| D85 | 290 | **Results folders keep their request logs and condition manifests.** `.gitignore`'s `logs/` and `conditions/` matched folders at any depth, so `results/<date>/logs/` (each condition's request log) and `results/<date>/conditions/` (each condition's page manifest with its seeds) were never committed. Both Nov 18 folders on `main` have only `runs/`, `manifest.json` and `summary.md`. Changed to `/logs/` and `/conditions/`, so only the root working copies stay ignored. Checked in the cloud: a 2-run experiment's `logs/` and `conditions/` now show up in `git status`; the 30 measurement tests pass. Joseph commits the missing files for both Nov 18 folders from the laptop. | Keep ignoring them (the results CSV's honeypot hits and time per page, which come from the request log, could not be rebuilt from the repository) | Claude (found it; Joseph approves by merging) | §5 Reproducibility: "Each experiment writes to a dated results folder with outputs, logs, … and a manifest of versions, config and seeds"; the per-page seeds are "saved with the outputs"; §3 measurement row: the request log is an input for time per page and honeypot hits. | Follows |
 
 ---
 
@@ -409,6 +410,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J287 | 287 | This is my code, I haven't done Step 3 yet (pasted, then interrupted) | Answered with Turn 288 |
 | J288 | 288 | (file with both records loops; `c-test-6.json` with 140 records) | Conversion works; delete the old loop (Turn 288) |
 | J289 | 289 | (runner output: `c-baseline-1/2/3` all 70/70 at 5.3–5.7 s per page, commit `ba437ad`) | ⭐ (c) passed its baseline check four days early (D84); schedule and README ticked; commit the results folder; next: (c) on shuffled and honeypot, then (d) |
+| J290 | 290 | ok i merged and commited the results | Checked `main`; found the request logs and seeds missing from both Nov 18 results folders; fixed `.gitignore` (D85); PR; Joseph commits the missing files |
 
 ### Questions from Claude
 
@@ -453,7 +455,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 289):** Wed Nov 18. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check, 70/70 in 3 of 3 runs (D84). To commit on the laptop: `results/2026-11-18-c-baseline/`. Next for Joseph: (c) on shuffled and honeypot (planned Nov 28, can run now), then scraper (d) (planned to start Sun Nov 22). Next for Claude: the results CSV (Thu Nov 19), then the standard metrics and the user-cost runner (Nov 20–21). Open: the optional (c) tidy-up; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 290):** Wed Nov 18. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check, 70/70 in 3 of 3 runs (D84), results on `main`. Waiting on the laptop: after the `.gitignore` fix (D85) is merged, Joseph commits `logs/` and `conditions/` of `results/2026-11-18-experiment/` and `results/2026-11-18-c-baseline/`; the results CSV needs those logs. Next for Joseph: (c) on shuffled and honeypot (planned Nov 28, can run now, no code changes first), then scraper (d) (planned to start Sun Nov 22). Next for Claude: the results CSV (Thu Nov 19), then the standard metrics and the user-cost runner (Nov 20–21). Open: the optional (c) tidy-up after its defended runs; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -13777,3 +13779,22 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D84 (Follows: §4 item 10, §4 model variability, §5 "Defense vs scraper weakness").
+
+### Turn 290 — 2026-11-18 18:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i merged and commited the results
+
+**What Claude did:**
+- Fetched `main` (`e1725f1`): PR #41 merged and Joseph's "c baseline check" commit present. Merged `main` into the branch.
+- Rescored the three committed `c-baseline` outputs with `scoring/score.py`: 70/70 each, the same as the runner's summary. The manifest records commit `ba437ad`, Ollama 0.40.16 and the `llama3.2:3b` digest `a80c4f17acd5…`.
+- Found that the committed folder has no `logs/` or `conditions/`, and neither does `results/2026-11-18-experiment/`. Cause: `.gitignore`'s `logs/` and `conditions/` rules matched at any depth.
+- Changed them to `/logs/` and `/conditions/` (D85). Checked by running a 2-run experiment in the cloud (scraper (a), baseline and honeypot): its `logs/` and `conditions/` now appear in `git status`, and the root working folders are still ignored. The temporary folder was deleted. The 30 measurement tests pass. (The cloud container needed `pip install -r requirements.txt` first.)
+- Opened [pull request #42](https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/42) into `main` with the fix.
+
+**Claude's answer (summary):** The results are on `main` and rescore to 70/70. But the request logs and seed manifests of both Nov 18 results folders were never committed, because `.gitignore` hid them. They are still on the laptop. Merge the fix, pull, then commit them; the results CSV needs the logs. Then run (c) on shuffled and honeypot.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D85 (Follows: §5 Reproducibility, results folders hold the logs and seeds).
