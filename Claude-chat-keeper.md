@@ -369,6 +369,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J256 | 256 | (model-timing report from the laptop: 3 models) | Recommend llama3.2:3b; C29 open (Turn 256) |
 | J257 | 257 | Let's do your recommendation; all three allow local research | D75: llama3.2:3b (Turn 257) |
 | J258 | 258 | I merged and committed the results; see you tomorrow | Confirmed on `main`; Qwen3 reasoning noted (Turn 258) |
+| J259 | 259 | What's up for today? | (c) part 1 in three steps; Step 1 given; Claude builds the runner (Turn 259) |
 
 ### Questions from Claude
 
@@ -9982,3 +9983,25 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (a correction to the record behind D74/D75).
+
+### Turn 259 — 2026-11-18 16:43 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok whats up for today?
+
+**What Claude did:**
+- Checked GitHub: `main` had nothing new. Read today's rows in `SCHEDULE.md` (Wed Nov 18): Claude builds the experiment runner; Joseph does (c) part 1 (page text from (b)'s crawler, and a first standalone call to Ollama).
+- Planned (c) part 1 in three small steps, Joseph writing all of (c) himself (§2):
+  1. copy (b) into `scrapers/c_llm_text.py`;
+  2. get each page's visible text with Playwright's `inner_text`;
+  3. a first standalone Ollama call in a practice file outside the scraper.
+- Wrote and ran a standalone teaching example (scratch folder, not project code): `page.inner_text("body")` on a tiny made-up page. It showed that inner_text leaves out `display: none` text and keeps HTML source order, not CSS `order`. So (c) will see the shuffled site's text in scrambled order, and the hidden trap link's text won't appear, though the crawler still follows the link. This bears on hypothesis 1 ((c) "uncertain") and hypothesis 3.
+- Gave Step 1.
+- Logged this turn (J259).
+
+**Claude's answer (summary):** today's plan (Joseph: (c) part 1 in three steps; Claude: the experiment runner); Step 1 with the standalone example; what to paste back.
+
+**Questions Claude asked:** none (waiting for Step 1).
+
+**Direction and fit:** no new decision. Follows §2 ((b)'s crawler supplies (c)'s text; Joseph writes (c)).
