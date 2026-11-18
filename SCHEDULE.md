@@ -19,7 +19,7 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 | (A) | Ambitious work. Only happens if the Nov 17 cut-line passes. |
 | ✅ | Done. |
 
-*Last updated: Wed Nov 18 (Turn 289 of the chat-keeper): scraper (c) passed its baseline check four days early (D84). Earlier: Mon Nov 16 (Turn 250), Milestones 3 and 4 checked against the scrum feedback and decisions D66–D71, with time limits and fallbacks added.*
+*Last updated: Wed Nov 18 (Turn 293 of the chat-keeper): scraper (c) ran on all three conditions, ten days early (D88). Turn 289: (c) passed its baseline check four days early (D84). Earlier: Mon Nov 16 (Turn 250), Milestones 3 and 4 checked against the scrum feedback and decisions D66–D71, with time limits and fallbacks added.*
 
 > **▶ Resume here (Mon Nov 16 evening):** the plan follows the scrum feedback: (c) first, then (d) (D66, D67); metrics comparable with published work (D68, D70, D71; `docs/metrics-plan.md`). The related-work table is already drafted from the papers.
 > - **Tue Nov 17, first:** Joseph installs Ollama, sends his RAM, pulls 2–3 small models. Claude drafts the model-timing script.
@@ -130,7 +130,7 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | | Related-work table (`docs/metrics-plan.md`): the published side is already drafted from the papers; fill in our column with the Essential results ((a) and (b)). | C drafts, J reviews |
 | **Thu Nov 26** | **Thanksgiving: off.** | — |
 | **Fri Nov 27** | Light day or off. | — |
-| **Sat Nov 28** | (A) Runs: (c) (if usable) and (d) × baseline, shuffled and honeypot × 3 runs. **Time limit for (d).** | J |
+| **Sat Nov 28** | (A) Runs: (c) (if usable) and (d) × baseline, shuffled and honeypot × 3 runs. **Time limit for (d).** ✅ (c) part done early (Wed Nov 18, D88): 9/9 runs, commit `8e361f3`: baseline 70/70 × 3; shuffled 48, 49, 49/70 (0.686–0.700: reduces, does not stop); honeypot 70/70 × 3 with 11 pages (the trap). Results folder `results/2026-11-18-c-all/` to commit. The first attempt (`results/2026-11-18-c-defended/`) crashed on the trap page and led to the fix in `8e361f3` (D86, D87). (d) still to run. | J |
 | **Sun Nov 29** | (A) The stub-model parts of Test 7 for (c). | J + C |
 | | Honeypot false-positive check: a human-like visitor that clicks only visible links should never hit the trap (D68). | C |
 | **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. | J |
