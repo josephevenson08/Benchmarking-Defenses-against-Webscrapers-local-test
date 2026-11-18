@@ -404,6 +404,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J283 | 283 | (his own part 3 Step 2 block) | Crashed or missed 3 of 4 bad replies; corrected block passes all 4; disclosed (Turn 283) |
 | J284 | 284 | (file with the corrected Step 2 block) | Correct; Step 3 (numbers) given (Turn 284) |
 | J285 | 285 | (`c-test-5`: 70/70, 6.0 s per page) | Check that the price is numeric; commit (c); 3-run baseline check (Turn 285) |
+| J286 | 286 | I haven't done Step 3 yet | Records loop with the number conversion shown and checked; disclosed (Turn 286) |
 
 ### Questions from Claude
 
@@ -12526,3 +12527,21 @@ Then Joseph's questions.
 **Questions Claude asked:** asked Joseph to check the saved price value.
 
 **Direction and fit:** no new decision. Follows §4's baseline gate (90% in 3 runs) and D76 (the runner).
+
+### Turn 286 — 2026-11-18 18:01 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i havent done step 3 year
+
+**What Claude did:**
+- Joseph hasn't done Step 3 (price and rating as numbers) yet. Showed the records loop with the conversion added: for `field["key"] in ("price", "rating")`, `float(str(value).replace("$", "").replace(",", ""))` inside `try`, with `except ValueError: pass` (keep the text, D82).
+- Checked it in the cloud with the Step 2 block plus this loop on a copy of his committed (c) (scratch files, not committed). The four stand-in cases still pass (normal 70 records; broken JSON, a list → `invalid_json` × 8; a missing field → `missing_key` × 8). A stand-in whose rating is "N/A" gives p1 price `89.99` (a number), rating `'N/A'` (kept as text) and review_count `'1,284'` (text, as §2 converts only price and rating).
+- **Disclosure:** Claude supplied this 5-line addition to scraper (c)'s records loop at Joseph's request. It implements §2 ("convert price and rating to numbers") and D82.
+- Logged this turn (J286).
+
+**Claude's answer (summary):** the loop with Step 3; what each line does; the test results; run it, check the saved price, commit, then the baseline check.
+
+**Questions Claude asked:** none (waiting for the run).
+
+**Direction and fit:** no new decision. Implements §2 and D82; disclosed.
