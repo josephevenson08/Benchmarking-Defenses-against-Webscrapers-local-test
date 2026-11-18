@@ -73,7 +73,6 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
         print(response.status, url)
         pages.append({"path": path, "status": response.status, "error": None}) #append the page to pages with status and no error
 
-        text = page.inner_text("main")   # the page's visible text
 
         parts = path.strip("/").split("/")                  # NEW: "/products/p1" -> ["products", "p1"]
         if len(parts) == 2 and parts[0] == "products":      # NEW
@@ -85,6 +84,8 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
         print(path, len(field_list))                        # NEW: check (removed later)
 
         if field_list:
+            text = page.inner_text("main")   # the page's visible text
+
             field_names = ", ".join(f["label"] for f in field_list)
             prompt = (
                 "Extract the following fields from the text below. If a field is not present, return an empty string for that field, copy each value exactly as written on the page.\n"
