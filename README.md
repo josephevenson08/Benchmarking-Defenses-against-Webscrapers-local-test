@@ -221,6 +221,22 @@ Settings shared by every part (port, page cap, delays, seed, number of runs, tra
 {"timestamp":"2026-10-26T20:03:56.672Z","run_id":"a-baseline-1","path":"/products/p3","status":200,"response_ms":2.153,"honeypot_hit":false,"user_agent":"bench-scraper (run=a-baseline-1)"}
 ```
 
+**Experiment runner** (venv active; Ollama running if (c) is included):
+
+```
+python measurement/run_experiment.py                                   # (a) and (b) × baseline, shuffled, honeypot × 3 runs
+python measurement/run_experiment.py --scrapers a b c --out results/2026-11-28-experiment
+```
+
+For each condition it rebuilds the site, starts the server on port 3100 with a fresh request log, and runs each scraper 3 times with run IDs like `b-shuffled-2`. It writes `results/<date>-experiment/`:
+- `runs/`: each output and what each scraper printed;
+- `logs/<condition>.jsonl`;
+- `conditions/`: the page lists and seeds;
+- `manifest.json`: what ran, exit codes, times, commit, config, tool versions, and Ollama models with digests when (c) runs;
+- `summary.md`: a quick accuracy check.
+
+It won't write into a folder that already has files, so earlier runs never get mixed in.
+
 **Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
 
 ```
