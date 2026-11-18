@@ -114,6 +114,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D83 | 278 | **Scraper (c): if Ollama can't be reached** (a connection error other than a timeout), the page gets `error: "model_error"`, no records, and the run continues, like (a)/(b) on a page that fails to load. Together with the midterm's failures, each page failure sets that page's `error` in `pages`, writes no records for it (so all its fields score as missing), is not retried, and does not stop the crawl or its link-following: `model_timeout`, `invalid_json` (unparseable or not a JSON object), `missing_key` (any expected field name absent), `model_error`. | Stop the run | Joseph (Claude recommended) | §2 (c) failure rules; §2 "record 404s and timeouts and keep going"; `docs/scraper-output.md` (`error` codes for (c): `invalid_json`, `missing_key`, `model_timeout`; "for example", so `model_error` is allowed). | Adds (`model_error`) |
 | D84 | 289 | **⭐ Scraper (c) passed its baseline check (Wed Nov 18; deadline Sun Nov 22).** On Joseph's laptop (commit `ba437ad`, `llama3.2:3b`, temperature 0, JSON mode), `measurement/run_experiment.py --scrapers c --conditions baseline` ran 3 runs: `c-baseline-1/2/3` all 70/70 (accuracy 1.000, min–max 1.000–1.000), 10 pages each, no page errors; time per page 5.68, 5.32 and 5.63 s (54–58 s per run), roughly 250 times (b)'s 0.020–0.024 s. So (c) is usable, not "not usable", and its defended runs count. Scrapers are fixed before defended runs, so (c)'s prompt and behaviour stay as in `ba437ad`; the tidy-up Joseph planned (comments, the `print(path, len(field_list))` check line, the unused `all_fields`) changes no behaviour. Results: `results/2026-11-18-c-baseline/` on the laptop, to commit. | — | Joseph (his scraper; ran it); Claude (runner; checked the commit on `main`) | §4 item 10: "baseline accuracy must reach 90% first"; §4 limitations, model variability: "If a small model cannot reach 90% on baseline, I report that scraper as not usable"; §5 "Defense vs scraper weakness"; §5 item 9 (3 runs per cell). | Follows |
 | D85 | 290 | **Results folders keep their request logs and condition manifests.** `.gitignore`'s `logs/` and `conditions/` matched folders at any depth, so `results/<date>/logs/` (each condition's request log) and `results/<date>/conditions/` (each condition's page manifest with its seeds) were never committed. Both Nov 18 folders on `main` have only `runs/`, `manifest.json` and `summary.md`. Changed to `/logs/` and `/conditions/`, so only the root working copies stay ignored. Checked in the cloud: a 2-run experiment's `logs/` and `conditions/` now show up in `git status`; the 30 measurement tests pass. Joseph commits the missing files for both Nov 18 folders from the laptop. | Keep ignoring them (the results CSV's honeypot hits and time per page, which come from the request log, could not be rebuilt from the repository) | Claude (found it; Joseph approves by merging) | §5 Reproducibility: "Each experiment writes to a dated results folder with outputs, logs, … and a manifest of versions, config and seeds"; the per-page seeds are "saved with the outputs"; §3 measurement row: the request log is an input for time per page and honeypot hits. | Follows |
+| D86 | 292 | **Scraper (c) reads the page text only on item pages.** All 3 honeypot runs crashed (exit 1, no output file): the trap page `/trap` has no `<main>`, so `page.inner_text("main")`, run on every page, waited 30 s and raised a Playwright TimeoutError that nothing caught. The trap was still requested (the honeypot logged its hit). Fix (Joseph writes it): move the `text = page.inner_text("main")` line inside `if field_list:`, so pages with no fields (home, product list, trap) are never read, as D78 already gives them no model call. Claude reproduced the crash in the cloud with a stand-in for Ollama, then checked a scratch copy with the line moved: honeypot exit 0, 11 pages, 1 trap hit, 70 records; baseline records identical to the current code. | Fall back to the body text; record a page error (`no_main`) and keep going | Joseph (C35; Claude recommended) | §2 crawl rule: record failures and keep going (a page must not stop the run); §2 (c): the text is for one prompt per page type; D78. | Follows |
+| D87 | 292 | **Rerun (c) on all three conditions with the fixed code**, in one runner call (about 9 min), so every (c) result comes from one commit. The first folders stay as the first record: `results/2026-11-18-c-baseline/` (the passed check, D84) and `results/2026-11-18-c-defended/` (shuffled 47, 50, 50/70 = 0.671–0.714; honeypot 3 crashes). The fix changes nothing on pages that have a `<main>`, so the rerun should repeat the baseline and shuffled results within (c)'s run-to-run variation. | Rerun honeypot only and report the two commits | Joseph (C36; Claude recommended) | §4 item 10: "Scrapers are fixed before any defended runs"; §5 Reproducibility (each results folder records its commit). | Follows |
+| D88 | 293 | **⭐ Scraper (c) ran on all three conditions (Wed Nov 18; planned Sat Nov 28).** Joseph's laptop, commit `8e361f3` (D86's fix), `llama3.2:3b`, one runner call: 9/9 runs finished. Baseline 70/70 × 3 (D84 repeated on the fixed code). **Shuffled 48, 49, 49/70** (mean 0.695, min–max 0.686–0.700): shuffling **reduces** (c) (below the lowest baseline run, whose spread is 0) but does **not stop** it (above 10%); relative reduction about 0.30, against 0.94 for (a) and (b). This answers §4 Hypothesis 1's "(c) is uncertain". **Honeypot 70/70 × 3 with 11 pages** (the trap page, which has no model call): accuracy unchanged and the trap followed, as Hypothesis 3 expects; the hit count per run comes from the request log in the results CSV. Time per page 4.8–6.9 s. Breakdown of the first shuffled runs (`c-defended`, same model and prompt): fields with a distinctive form or derivable from the name (price, rating, SKU, brand, category) right in every run; fields with no distinctive form mixed up (review count 2/18, description 8/18, article summary 0/6, tags 0/6). No failure-rule lines in the run logs, so every lost field is a model error (wrong or empty value), not a failure (§5 "Defense vs model failure"). To confirm on `c-all` once committed. | — | Joseph (his scraper; ran it); Claude (runner; analysis) | §4 Hypothesis 1 and 3; §4 item 5 ("Stops" below 10%; a honeypot works when it logs a hit); §4 Analysis ("reduces" rule; mean and min–max over 3 runs); §5 "Defense vs model failure". | Follows |
 
 ---
 
@@ -411,6 +414,9 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J288 | 288 | (file with both records loops; `c-test-6.json` with 140 records) | Conversion works; delete the old loop (Turn 288) |
 | J289 | 289 | (runner output: `c-baseline-1/2/3` all 70/70 at 5.3–5.7 s per page, commit `ba437ad`) | ⭐ (c) passed its baseline check four days early (D84); schedule and README ticked; commit the results folder; next: (c) on shuffled and honeypot, then (d) |
 | J290 | 290 | ok i merged and commited the results | Checked `main`; found the request logs and seeds missing from both Nov 18 results folders; fixed `.gitignore` (D85); PR; Joseph commits the missing files |
+| J291 | 291 | ok running c against both defenses now without editing | Confirmed PR #42 merged and the Nov 18 logs and seeds committed; how to read (c)'s shuffled and honeypot results against the midterm's rules |
+| J292 | 292 | (runner output: (c) shuffled 47, 50, 50/70; honeypot exit 1 × 3) | Found and reproduced the crash (no `<main>` on `/trap`); asked C35, C36; Joseph moves one line (D86) and reruns all three conditions (D87) |
+| J293 | 293 | (runner output: (c) × 3 conditions × 3, 9/9, commit `8e361f3`) | ⭐ (c) done on all conditions ten days early (D88); what the shuffled result means and which fields fail; schedule and README ticked; PR; commit the folder |
 
 ### Questions from Claude
 
@@ -450,12 +456,16 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C32 | 274 | Two of (c)'s 70 values were wrong in the first real run: p1 description ("40mm" for "40 mm") and p6 description (the page footer appended). Options, both Joseph's (c) design: (1) send only the page's main content (`inner_text("main")`, without the header and footer); (2) add a prompt sentence asking to copy each value exactly as written; both; neither. | Both: `inner_text("main")` and the copy-exactly sentence. | Closed (Turn 275) → D80, D81 |
 | C33 | 278 | If price or rating can't be converted to a number? Options: "Keep the text (Recommended)", "Fail the whole page". | Keep the text. | Closed (Turn 278) → D82 |
 | C34 | 278 | If Ollama can't be reached? Options: "Record and keep going (Recommended)", "Stop the run". | Record and keep going. | Closed (Turn 278) → D83 |
+| C35 | 292 | Scraper (c) crashes on `/trap` (no `<main>`): how should it handle a page with no `<main>`? Options: "Read text only on item pages (Recommended)", "Fall back to the body text", "Record a page error, keep going". | Read text only on item pages. | Closed (Turn 292) → D86 |
+| C36 | 292 | The fix changes (c) after its baseline and shuffled runs: which runs use the fixed code? Options: "Rerun all three conditions (Recommended)", "Rerun honeypot only". | Rerun all three conditions. | Closed (Turn 292) → D87 |
 
 ---
 
 ## Open items
 
-**▶ Resume here (Turn 290):** Wed Nov 18. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check, 70/70 in 3 of 3 runs (D84), results on `main`. Waiting on the laptop: after the `.gitignore` fix (D85) is merged, Joseph commits `logs/` and `conditions/` of `results/2026-11-18-experiment/` and `results/2026-11-18-c-baseline/`; the results CSV needs those logs. Next for Joseph: (c) on shuffled and honeypot (planned Nov 28, can run now, no code changes first), then scraper (d) (planned to start Sun Nov 22). Next for Claude: the results CSV (Thu Nov 19), then the standard metrics and the user-cost runner (Nov 20–21). Open: the optional (c) tidy-up after its defended runs; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 293):** Wed Nov 18. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check (D84); results folders keep their logs and seeds (D85); (c)'s trap-page crash fixed (D86, D87); ⭐ (c) on all three conditions, 9/9 (D88: shuffled 48–49/70, honeypot 70/70). To commit on the laptop: `results/2026-11-18-c-all/`. Next for Joseph: scraper (d) (planned to start Sun Nov 22, can start now); optional (c) tidy-up (results are tied to `8e361f3`). Next for Claude: the results CSV (Thu Nov 19), then the standard metrics and the user-cost runner (Nov 20–21); (c)'s column in the related-work table (Thu Dec 3, can be earlier). Open: the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+
+**For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -13798,3 +13808,149 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D85 (Follows: §5 Reproducibility, results folders hold the logs and seeds).
+
+### Turn 291 — 2026-11-18 18:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok running c against both defenses now without editing
+
+**What Claude did:**
+- Fetched `main`: PR #42 is merged, and Joseph's `7d671e0` "request logs and seeds for Nov 18 runs" adds `logs/` and `conditions/` to `results/2026-11-18-experiment/` (3 logs, 3 manifests) and `results/2026-11-18-c-baseline/` (1 and 1). Both folders are now complete (§5 Reproducibility). Merged `main` into the branch.
+- Read the midterm's expectations and rules for these runs:
+  - §4 Hypothesis 1: for shuffling, "(c) is uncertain".
+  - §4 Hypothesis 3: honeypots don't change accuracy and are expected to log hits from (c).
+  - §4 item 5: "Stops" means accuracy below 10%; a honeypot works when it logs a hit.
+  - §4 Analysis: a defense "reduces" accuracy when the defended mean falls below the lowest baseline run by more than the baseline spread.
+
+**Claude's answer (summary):**
+- The logs and seeds are on `main` now, so the missing-files problem is fixed.
+- How to read the new runs:
+  - **Honeypot:** 70/70 with 11 pages means (c) followed the hidden trap link, as Hypothesis 3 expects.
+  - **Shuffled:** the midterm left this open, so this is its first answer. Under 7/70 means "stops". Because (c)'s baseline was 70/70 in all 3 runs (spread 0), any mean below 70/70 counts as "reduces".
+- If accuracy drops, the run logs show whether pages failed under (c)'s failure rules (`missing_key` etc.) or the model gave wrong values. The midterm keeps these apart (§5 "Defense vs model failure").
+- Commit the folder and paste the summary.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 292 — 2026-11-18 18:27 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers c --conditions shuffled honeypot --out results/2026-11-18-c-defended
+> 6 runs: 2 conditions × 1 scrapers × 3 runs
+>   c-shuffled-1 ... 47/70
+>   c-shuffled-2 ... 50/70
+>   c-shuffled-3 ... 50/70
+>   c-honeypot-1 ... exit 1
+>   c-honeypot-2 ... exit 1
+>   c-honeypot-3 ... exit 1
+>
+> # Experiment runs
+>
+> Run 2026-11-18T12:22:10 → 2026-11-18T12:26:53 · commit 7d671e0 · scrapers c · conditions shuffled, honeypot · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `c-shuffled-1` | 0 | 64.424 | 47/70 = 0.671 | 10 | 6.301 s |
+> | `c-shuffled-2` | 0 | 48.041 | 50/70 = 0.714 | 10 | 4.692 s |
+> | `c-shuffled-3` | 0 | 46.411 | 50/70 = 0.714 | 10 | 4.534 s |
+> | `c-honeypot-1` | 1 | 43.536 | — | — | — |
+> | `c-honeypot-2` | 1 | 38.975 | — | — | — |
+> | `c-honeypot-3` | 1 | 38.897 | — | — | — |
+>
+> **3 of 6 runs finished.** Failed: c-honeypot-1, c-honeypot-2, c-honeypot-3 (see `runs/<run-id>.log`).
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read the summary:
+  - shuffled: 47, 50 and 50/70 (0.671–0.714), 4.5–6.3 s per page;
+  - honeypot: exit 1 in all 3 runs, with no output.
+- Found the cause in Joseph's `scrapers/c_llm_text.py` and `site/server.js`:
+  - the trap route sends a page with no `<main>`;
+  - (c) runs `page.inner_text("main")` on every page before the page-type check, so on `/trap` it waits 30 s and raises an uncaught Playwright `TimeoutError`;
+  - the output is written only at the end, so there is no output file.
+- Reproduced it in the cloud, using a stand-in for Ollama on port 11434 (scratch script, not project code). The runner gave `c-honeypot-1` exit 1 after 32 s, with `Page.inner_text: Timeout 30000ms exceeded … waiting for locator("main")`. The request log shows `/trap` with `honeypot_hit: true`.
+- Asked C35 and C36.
+- Tested the chosen fix on a scratch copy of (c), with the line moved (not committed, and not given to Joseph as a file):
+  - honeypot: exit 0, 11 pages including `/trap`, 1 trap hit, 70 records;
+  - baseline: records identical to the current code.
+- Recorded D86 and D87.
+
+**Claude's answer (summary):**
+- **Shuffled:** shuffling **reduces** (c)'s accuracy (a mean of 0.700, against 1.000 on baseline) but does not **stop** it, since it stays above 10%. The relative reduction is about 0.30, against 0.94 for (a) and (b). This is the first answer to the midterm's "(c) is uncertain". The 47 vs 50 spread is the run-to-run variation the midterm expected from an LLM at temperature 0.
+- **Honeypot:** the honeypot did its job (the trap request was logged), but (c) crashed on the trap page. That is a bug in (c), not a defense effect.
+- **Fix (Joseph writes it):** move the `text = page.inner_text("main")` line inside `if field_list:`. Commit, then rerun (c) on all three conditions in one call. Commit today's `results/2026-11-18-c-defended/` as the first record.
+
+**Questions Claude asked:**
+- C35: how (c) should handle a page with no `<main>`. Answer: read the text only on item pages.
+- C36: which runs should use the fixed code. Answer: rerun all three conditions.
+
+**Direction and fit:**
+- D86: Follows (§2 keep going after a page failure; D78).
+- D87: Follows (§4 item 10; §5 Reproducibility).
+
+### Turn 293 — 2026-11-18 18:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Sainpython measurement/run_experiment.py --scrapers c --conditions baseline shuffled honeypot --out results/2026-11-18-c-all
+> 9 runs: 3 conditions × 1 scrapers × 3 runs
+>   c-baseline-1 ... 70/70
+>   c-baseline-2 ... 70/70
+>   c-baseline-3 ... 70/70
+>   c-shuffled-1 ... 48/70
+>   c-shuffled-2 ... 49/70
+>   c-shuffled-3 ... 49/70
+>   c-honeypot-1 ... 70/70
+>   c-honeypot-2 ... 70/70
+>   c-honeypot-3 ... 70/70
+>
+> # Experiment runs
+>
+> Run 2026-11-18T12:32:52 → 2026-11-18T12:41:38 · commit 8e361f3 · scrapers c · conditions baseline, shuffled, honeypot · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `c-baseline-1` | 0 | 69.934 | 70/70 = 1.000 | 10 | 6.878 s |
+> | `c-baseline-2` | 0 | 52.407 | 70/70 = 1.000 | 10 | 5.133 s |
+> | `c-baseline-3` | 0 | 53.338 | 70/70 = 1.000 | 10 | 5.227 s |
+> | `c-shuffled-1` | 0 | 65.35 | 48/70 = 0.686 | 10 | 6.417 s |
+> | `c-shuffled-2` | 0 | 49.224 | 49/70 = 0.700 | 10 | 4.813 s |
+> | `c-shuffled-3` | 0 | 52.284 | 49/70 = 0.700 | 10 | 5.122 s |
+> | `c-honeypot-1` | 0 | 62.29 | 70/70 = 1.000 | 11 | 5.559 s |
+> | `c-honeypot-2` | 0 | 55.553 | 70/70 = 1.000 | 11 | 4.951 s |
+> | `c-honeypot-3` | 0 | 62.192 | 70/70 = 1.000 | 11 | 5.557 s |
+>
+> **9 of 9 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Fetched `main`: Joseph's fix `8e361f3` "Scraper (c): read text only on item pages" (the `inner_text("main")` line is now inside `if field_list:`) and his `d2511ca` (the first defended folder, `results/2026-11-18-c-defended/`) are there; `c-all` is not committed yet. Merged `main` into the branch.
+- Read the summary: 9/9 runs; baseline 70/70 × 3; shuffled 48, 49, 49/70; honeypot 70/70 × 3 with 11 pages.
+- Broke down the first shuffled runs (`c-defended`, 3 runs, same model and prompt), using `score.py --records` in the scratchpad:
+  - correct 147, wrong 28, malformed 9, missing 26 (of 210);
+  - per field: price, rating, SKU, brand and category 18/18; release date 15/18; name and availability 12/18; description 8/18; review count 2/18; article title and author 3/6, publish date 2/6, summary and tags 0/6;
+  - no failure-rule lines in the run logs.
+- Printed the shuffled text (c) receives for `/articles/a1` and `/products/p1` (cloud copy of the site). The labels and values come out in HTML order, apart from each other, and (c) swapped values with no telling form (a1: title ↔ summary, author ↔ tags; p1: review count got "In stock").
+- Recorded D88. Ticked the Sat Nov 28 row in `SCHEDULE.md` ((c) part done early) and updated the README status and roadmap. Added an open item on the slower first run in each condition.
+- Opened [pull request #43](https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/43) into `main` with these updates.
+
+**Claude's answer (summary):**
+- ⭐ (c) is done on all three conditions, ten days early.
+- **Shuffling reduces (c) but does not stop it:** 48–49/70, against 4/70 for (a) and (b).
+- **Why:** on a shuffled page, (c) gets the labels and values out of order. It still gets right the values whose form gives them away (a price, a SKU, a rating), but swaps the ones that look alike (title and summary, author and tags, review count and availability).
+- **The honeypot** caught (c) every run without changing its accuracy, as the hypothesis predicted.
+- Commit `c-all` and merge the PR. Next: scraper (d), or Claude's results CSV.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D88 (Follows: §4 Hypotheses 1 and 3, §4 item 5, §4 Analysis, §5 "Defense vs model failure").
