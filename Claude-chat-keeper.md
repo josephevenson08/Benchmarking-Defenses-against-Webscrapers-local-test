@@ -393,6 +393,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J274 | 274 | (`c-test-3`: 8 JSON replies from llama3.2:3b) | Estimated 68/70; C32 open (two fixes); Step 3 given (Turn 274) |
 | J275 | 275 | (`c_llm_text.py` with both fixes and Step 3) | D80, D81; Step 3 bug (`.get` on the reply string) explained (Turn 275) |
 | J276 | 276 | (`c-test-4`: 70 records; score 70/70; 6.1 s per page) | ⭐ (c) part 2 done early; 40mm check; part 3 outlined (Turn 276) |
+| J277 | 277 | It's 40 mm | Confirmed: both C32 fixes worked (Turn 277) |
 
 ### Questions from Claude
 
@@ -11628,3 +11629,20 @@ Then Joseph's questions.
 **Questions Claude asked:** whether to continue with part 3 today or stop.
 
 **Direction and fit:** no new decision.
+
+### Turn 277 — 2026-11-18 17:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> its 40 mm
+
+**What Claude did:**
+- Joseph checked `results/dev/c-test-4.json`: p1's description is "40 mm". That confirms the 70/70 and shows the pasted "40mm" line came from the earlier run (`c-test-3`). Both C32 fixes worked: D80 (main content only) fixed p6, and D81 (copy exactly) fixed p1.
+- Checked GitHub: `main` had nothing new; Joseph's (c) part 2 work isn't committed yet.
+- Logged this turn (J277).
+
+**Claude's answer (summary):** confirmed; both fixes worked; commit (c) part 2; part 3 now or stop for today.
+
+**Questions Claude asked:** part 3 now or stop (repeated from Turn 276).
+
+**Direction and fit:** no new decision. Confirms the results behind D80 and D81.
