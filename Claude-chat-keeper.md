@@ -373,6 +373,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J260 | 260 | (pasted the first `c_llm_text.py`: a copy of (b) with the labels changed) | Copy correct; text lines still to add (Turn 260) |
 | J261 | 261 | What should these changes look like? | Two lines shown in place; disclosed as Claude-supplied (Turn 261) |
 | J262 | 262 | (Step 1 output: 10 pages with their text) | Step 1 done; Steps 2–3 given (Turn 262) |
+| J263 | 263 | (practice file with the Step 3 instruction pasted in as the prompt) | Clarified, with a filled-in practice example (Turn 263) |
 
 ### Questions from Claude
 
@@ -10389,3 +10390,36 @@ Then Joseph's questions.
 **Questions Claude asked:** none (waiting for the Step 2–3 output).
 
 **Direction and fit:** no new decision. Teaching example, not project code (§2).
+
+### Turn 263 — 2026-11-18 17:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> import requests
+>
+> reply = requests.post(
+>     "http://127.0.0.1:11434/api/generate",
+>     json={
+>         "model": "llama3.2:3b",
+>         "prompt": "copy the Product 1 text from your Step 1 output into a strin and i want the products name and price",
+>         "stream": False,
+>         "options": {"temperature": 0},
+>     },
+>     timeout=120,
+> )
+> data = reply.json()
+> print(data["response"])
+> print("seconds:", round(data["total_duration"] / 1e9, 2))
+
+**What Claude did:**
+- Read Joseph's practice file. He had pasted Claude's Step 3 instruction itself ("copy the Product 1 text from your Step 1 output into a strin and i want the products name and price") in as the prompt, and sent no output. Clarified: the prompt should be the page's actual text plus his own question.
+- Got the full visible text of baseline Product 1 (Playwright `inner_text`, scratch run) and showed a practice version (not project code): a `page_text` string holding that text, a `question` string, and `"prompt": page_text + "\n\n" + question`. Explained each line.
+- Asked him to run Step 2 (the colours example) first, then this.
+- Said the experiment runner comes in Claude's next reply, so that Joseph isn't kept waiting on the clarification. This changes Turn 262's "after your next message".
+- Logged this turn (J263).
+
+**Claude's answer (summary):** what went wrong; a filled-in practice example; what to expect; run Step 2, then Step 3, and paste both outputs.
+
+**Questions Claude asked:** none (waiting for the Step 2–3 output).
+
+**Direction and fit:** no new decision. Practice file, not project code (§2).
