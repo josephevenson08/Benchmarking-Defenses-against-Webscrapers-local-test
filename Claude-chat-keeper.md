@@ -400,6 +400,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J279 | 279 | What should my entire file look like now? | Only the changed block, not the whole file (§2); interrupted (Turn 279) |
 | J280 | 280 | (his own Step 1 attempt: try/except around the Ollama call) | 4 problems; corrected block checked against 3 stand-ins; disclosed (Turn 280) |
 | J281 | 281 | (laptop tests: normal 70/70, model_timeout, model_error) | Step 1 verified; copy-wrapping explained; Step 2 given (Turn 281) |
+| J282 | 282 | Open my Ollama for me, my search bar isn't working | Can't reach the laptop; `ollama serve` in a terminal (Turn 282) |
 
 ### Questions from Claude
 
@@ -12025,3 +12026,22 @@ Then Joseph's questions.
 **Questions Claude asked:** none (waiting for Step 2).
 
 **Direction and fit:** no new decision. Implements D83 and §2's failure rules.
+
+### Turn 282 — 2026-11-18 17:50 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> open my ollama for me my search bar isnt working
+
+**What Claude did:**
+- Joseph asked Claude to open Ollama on his laptop (his Windows search bar isn't working). Claude runs in a cloud container with no access to his desktop (no machine attached), so it can't start the app. Gave him ways to start Ollama himself without the search bar:
+  1. in a VS Code terminal, run `ollama serve` and leave that terminal open (uses the `ollama` command he already has on his PATH);
+  2. the Run box (Win+R) or the Start menu's app list under "O".
+  Then check with `ollama list` in another terminal.
+- Logged this turn (J282).
+
+**Claude's answer (summary):** I can't reach your desktop from here; start it with `ollama serve` in a terminal (or Win+R / the Start menu list), then check with `ollama list`.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
