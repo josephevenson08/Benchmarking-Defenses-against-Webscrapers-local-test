@@ -1,0 +1,36 @@
+http://127.0.0.1:3100/ 15 run=c-honeypot-3 ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+/ 0
+200 http://127.0.0.1:3100/products/
+/products/ 0
+200 http://127.0.0.1:3100/articles/a1
+/articles/a1 5
+{"Title": "Caring for Cast Iron Cookware", "Author": "Maya Okafor", "Published": "2025-05-14", "Tags": "cookware, cleaning, kitchen", "Summary": "How to clean, dry and re-season a cast iron pan so it lasts for decades."}
+200 http://127.0.0.1:3100/articles/a2
+/articles/a2 5
+{"Title": "Choosing a Daypack for Short Hikes", "Author": "Daniel Reyes", "Published": "2025-08-02", "Tags": "outdoor, hiking, buying guide", "Summary": "What to look for in size, fit and pockets when picking a pack for day trips."}
+200 http://127.0.0.1:3100/trap
+Traceback (most recent call last):
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\c_llm_text.py", line 76, in <module>
+    text = page.inner_text("main")   # the page's visible text
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\.venv\Lib\site-packages\playwright\sync_api\_generated.py", line 12008, in inner_text
+    self._sync(
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\.venv\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\.venv\Lib\site-packages\playwright\_impl\_page.py", line 1020, in inner_text
+    return await self._main_frame.inner_text(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\.venv\Lib\site-packages\playwright\_impl\_frame.py", line 744, in inner_text
+    return await self._channel.send(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.inner_text: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("main")
+
