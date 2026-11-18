@@ -106,6 +106,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D75 | 257 | **Model for scraper (c): `llama3.2:3b`** (3.2B parameters, Q4_K_M, 2.02 GB, digest `a80c4f17acd5…`, Ollama 0.40.16). In the Nov 17 timing it found 50/50 values with short replies (89 tokens, under the 400 cap) at 6.8 s/page, about 10 min for (c)'s 90 page calls. Backup: `gemma3:1b`. Not chosen: `qwen3:4b` (36.7 s/page; hit the reply cap on every call). Joseph confirmed all three models' licenses allow local research use. | `gemma3:1b`, `qwen3:4b` | Joseph (Claude recommended) | §2: Ollama on CPU, small models, "choose one for each after timing them on 2–3 pages, and record each model's name and digest"; §2 data: check each model's license. | Follows |
 | D76 | 264 | **Experiment runner** (`measurement/run_experiment.py`, Claude's Nov 18 task). For each condition in turn: rebuild the condition (same config seed); start the server on port 3100 with a fresh `logs/<condition>.jsonl`; run each scraper `--runs` times in order (scraper, then run number) with run IDs `<scraper>-<condition>-<n>` (the form `score.py` parses); stop the server. Scrapers are found by file name `scrapers/<letter>_*.py`, so (c) and (d) join once their files exist. A failed or timed-out run (default 1800 s) is recorded and the experiment continues. Writes `runs/` (outputs and what each scraper printed), `logs/`, `conditions/` (manifests with seeds), `manifest.json` (plan, exit codes, wall times, commit, config, Python/Node/Playwright/OS versions, and Ollama version and model digests when (c) or (e) runs) and `summary.md` (a quick accuracy check). It refuses a non-empty results folder. The results CSV (log-based measures, standard metrics) is a separate step (Nov 19–20). | One log for all conditions; score inside the runner | Claude (Joseph reviews and runs) | §5 experimental design: 3 runs per cell with unique run IDs; §5 manifest (versions, config, seeds); §7 Milestone 3 schedule. | Follows |
 | D77 | 267 | **⭐ Essential runs done (Wed Nov 18; scheduled Mon Nov 23).** On Joseph's laptop (commit `defff7a`), `measurement/run_experiment.py` ran (a) and (b) × baseline, shuffled and honeypot × 3: 18/18 runs finished in about 21 s. Accuracy: 70/70 on baseline and 4/70 on shuffled for both scrapers in every run; 70/70 on honeypot with 11 pages fetched (the trap request). Time per page: (a) 0.009–0.019 s, (b) 0.020–0.024 s. Identical across the 3 runs, as §5 expects for (a) and (b). This covers part of Milestone 3's "Done when": the remaining parts are the results CSV columns (honeypot hits and time per page from the log), user-cost rows and Test 7. | — | Joseph (ran it); Claude (runner) | §5 experimental design (3 runs per cell, unique run IDs, (a) and (b) should repeat exactly); §7 Milestone 3. | Follows |
+| D78 | 268 | **Scraper (c) decides the page type from the URL:** `/products/<id>` → the 10 product fields; `/articles/<id>` → the 5 article fields; any other page (home, the `/products/` list) → no model call. Links are still followed on every page. Defenses don't change URLs, so this works the same on every condition. | From the page text (the "Product details" / "Article" heading); all 15 fields on every page | Joseph (Claude recommended) | §2 (c): "One fixed prompt listing the field names for that page type". | Follows |
+| D79 | 268 | **Scraper (c) asks Ollama for JSON output** (`"format": "json"` in the request), so every reply is valid JSON. Failures then come from wrong or missing values, not broken syntax. (c) still requires every expected key, converts price and rating to numbers, and treats a missing key or a timeout as a failure with no retry. | Prompt only (parse whatever comes back) | Joseph (Claude recommended) | §2 (c): "Parse the reply as JSON, require every expected key… Invalid JSON, a missing key or a timeout, is a failure, with no retry". Forcing JSON is a request option, not a retry. | Interprets (invalid JSON becomes rare, so its failure rule seldom applies) |
 
 ---
 
@@ -380,6 +382,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J265 | 265 | Which files am I merging and what's its name? | #40 "Experiment runner": 5 files (already merged) (Turn 265) |
 | J266 | 266 | OK, I committed and synced | (c) part 1 on `main`; suggest removing `ollama_practice.py` (Turn 266) |
 | J267 | 267 | (Essential runs on the laptop: 18/18) | ⭐ Essential runs done early (D77) (Turn 267) |
+| J268 | 268 | Let's do more today! | (c) part 2 started early; D78 (page type from URL), D79 (force JSON) (Turn 268) |
 
 ### Questions from Claude
 
@@ -414,6 +417,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C27 | 237 | Metrics: add standard, comparable metrics (field-level precision, recall, F1; relative reduction vs baseline; honeypot TPR/FPR with a human-like control visitor; SSIM next to pixel diff; Lighthouse and axe-core as planned), keeping accuracy and fake-value rate? Do a short literature review first (arxiv.org and the WebCloak paper could not be opened from this session). | Joseph: keep his metrics, add the ones others use, and show their scores alongside. Claude agreed, with caveats on comparability. | Closed (Turn 240) → D68 |
 | C28 | 255 | For scraper (c): if the chosen model is a thinking model (e.g. `qwen3:4b`), run it with thinking off? This is part of (c)'s request design, so Joseph decides once the timings are in. | Not needed: the chosen model (`llama3.2:3b`, D75) is not a thinking model. Note: Qwen3 still wrote its reasoning despite `"think": false` (Turn 258). | Closed (Turn 258) |
 | C29 | 256 | Which model for scraper (c)? Options: `llama3.2:3b` (Recommended: 50/50 values found, short replies, 6.8 s/page, about 10 min for 90 calls), `gemma3:1b` (fastest, 5.7 s/page, 48/50, missed an article value), `qwen3:4b` (36.7 s/page, hit the reply cap every time, about 55 min). Joseph decides (§2). | `llama3.2:3b` (Claude's recommendation); all three licenses allow local research use. | Closed (Turn 257) → D75 |
+| C30 | 268 | How should (c) decide a page's type? Options: "From the URL (Recommended)", "From the page text", "Ask about all 15 fields everywhere". | From the URL. | Closed (Turn 268) → D78 |
+| C31 | 268 | Should (c) force JSON output (Ollama `"format": "json"`)? Options: "Yes, force JSON (Recommended)", "No, prompt only". | Yes, force JSON. | Closed (Turn 268) → D79 |
 
 ---
 
@@ -10565,3 +10570,25 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D77 (Follows).
+
+### Turn 268 — 2026-11-18 17:12 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets do more today!
+
+**What Claude did:**
+- Checked GitHub: Joseph committed `results/2026-11-18-experiment/` (`29097e6` "essential runs"). Merged `main` into the branch.
+- Joseph wants to do more today. Plan: Joseph starts (c) part 2 (scheduled Fri Nov 20); Claude builds the results CSV (scheduled Thu Nov 19).
+- Checked `docs/scraper-output.md` (the approved contract): `value` may be text, a number or null, and "Scraper (c) may give price and rating as numbers". `score.py` normalizes both, so no contract change is needed.
+- Asked Joseph two design questions with AskUserQuestion:
+  - C30, how (c) decides the page type: from the URL → D78;
+  - C31, whether to force JSON output: yes → D79.
+- Gave part 2, Step 1: work out each page's field list from its URL, and skip the model on pages without fields, while still following links.
+- Logged this turn (J268).
+
+**Claude's answer (summary):** the two decisions; Step 1 of part 2 (page type from the URL), with what to print and paste; Claude starts the results CSV now.
+
+**Questions Claude asked:** C30, C31 (answered).
+
+**Direction and fit:** D78 (Follows), D79 (Interprets).
