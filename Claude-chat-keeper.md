@@ -13770,7 +13770,7 @@ Then Joseph's questions.
 - Recorded D84 (baseline check passed) and J289.
 - `SCHEDULE.md`: ticked Sat Nov 21 (c) part 3 and Sun Nov 22 (c) baseline check as done early (Wed Nov 18), with the results; updated the "Last updated" line.
 - `README.md`: status line; roadmap ticks for the Essential runs and (c)'s baseline check; noted the runner as done (the results CSV still to come).
-- Opened a pull request into `main` with these updates.
+- Opened [pull request #41](https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/41) into `main` with these updates.
 
 **Claude's answer (summary):** ⭐ (c) passed its baseline check: 70/70 in all 3 runs, four days before its Sun Nov 22 deadline, so (c) counts as usable (§4) and its defended runs will count. (c) is about 5.5 s per page, roughly 250 times slower than (b). Commit the results folder. Recommended next: run (c) on shuffled and honeypot now, without changing the code first (scrapers are fixed before defended runs), and do the cosmetic tidy-up afterwards. Then start scraper (d). Claude's next task is the results CSV.
 
