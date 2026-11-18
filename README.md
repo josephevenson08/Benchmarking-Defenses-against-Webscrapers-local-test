@@ -35,7 +35,7 @@ Which of four page-level defenses (DOM shuffling, honeypot links, live DOM poiso
 |---|---|---|
 | **(a) Raw HTML** | HTTP client and HTML parser. Crawls from the home page and takes the text after each label in source order. | Essential |
 | **(b) Browser text** | Playwright with headless Chromium. Reads the rendered text right after the load event. | Essential |
-| **(c) LLM** | Sends (b)'s rendered text to a local model through Ollama at temperature 0 and parses a JSON reply. | Ambitious |
+| **(c) LLM** | Sends (b)'s rendered text to a local model through Ollama at temperature 0 and parses a JSON reply. Model: `llama3.2:3b` (chosen Nov 17 after timing three models). | Ambitious |
 | **(d) Adaptive** | Playwright. Waits for 3 seconds without DOM changes (10-second timeout), ignores hidden elements, and sorts fields by computed CSS order. | Ambitious |
 | **(e) Vision** | Takes a screenshot of each listed page and sends it to a local vision model through Ollama. Follows no links. | Ambitious |
 
@@ -220,6 +220,22 @@ Settings shared by every part (port, page cap, delays, seed, number of runs, tra
 ```json
 {"timestamp":"2026-10-26T20:03:56.672Z","run_id":"a-baseline-1","path":"/products/p3","status":200,"response_ms":2.153,"honeypot_hit":false,"user_agent":"bench-scraper (run=a-baseline-1)"}
 ```
+
+**Experiment runner** (venv active; Ollama running if (c) is included):
+
+```
+python measurement/run_experiment.py                                   # (a) and (b) × baseline, shuffled, honeypot × 3 runs
+python measurement/run_experiment.py --scrapers a b c --out results/2026-11-28-experiment
+```
+
+For each condition it rebuilds the site, starts the server on port 3100 with a fresh request log, and runs each scraper 3 times with run IDs like `b-shuffled-2`. It writes `results/<date>-experiment/`:
+- `runs/`: each output and what each scraper printed;
+- `logs/<condition>.jsonl`;
+- `conditions/`: the page lists and seeds;
+- `manifest.json`: what ran, exit codes, times, commit, config, tool versions, and Ollama models with digests when (c) runs;
+- `summary.md`: a quick accuracy check.
+
+It won't write into a folder that already has files, so earlier runs never get mixed in.
 
 **Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
 
