@@ -4,7 +4,7 @@
 
 - **Author:** Joseph Evenson
 - **Track:** Blue Track (Research)
-- **Status:** In development. Milestones 1 and 2 done (Oct 30, Nov 11). Milestone 3 (Nov 17 – Dec 1) re-planned after the Nov 16 scrum meeting: scrapers (c) then (d), and metrics comparable with published work (see Roadmap).
+- **Status:** In development. Milestones 1 and 2 done (Oct 30, Nov 11). Milestone 3 (Nov 17 – Dec 1) re-planned after the Nov 16 scrum meeting: scrapers (c) then (d), and metrics comparable with published work (see Roadmap). On Nov 18 the Essential runs finished (18/18) and scraper (c) passed its baseline check (70/70 in 3 of 3 runs), both ahead of schedule.
 
 This project builds a small local test site and five scrapers of increasing capability, adds simple versions of four page-level defenses, and measures which defenses stop which scrapers and what each defense costs real users in speed, visual fidelity, and accessibility.
 
@@ -293,12 +293,12 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 
 ### Milestone 3: Nov 18 – Dec 1
 Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptive scraper (d), come next among the Ambitious work, and the metrics gain standard, comparable measures. See `SCHEDULE.md`.
-- [ ] Experiment runner and results CSV (honeypot hits and time per page from the request log)
+- [ ] Experiment runner (done Nov 18: `measurement/run_experiment.py`) and results CSV (honeypot hits and time per page from the request log)
 - [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order)
 - [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; extraction success rate; relative reduction against baseline; honeypot detection, evasion and false-positive rates; HTML size (plan: `docs/metrics-plan.md`)
-- [ ] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (Nov 23)
+- [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
 - [ ] Test 7 for (a) and (b) (Nov 24)
-- [ ] Scraper (c) (Ollama, CPU): baseline check by Nov 22, or reported as not usable
+- [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22). Runs on the other conditions by Nov 28
 - [ ] Scraper (d): Test 3 part and baseline check by Nov 25; runs by Nov 28
 - [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
 - [ ] Only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
