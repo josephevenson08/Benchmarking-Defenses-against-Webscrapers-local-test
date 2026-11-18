@@ -10443,7 +10443,7 @@ Then Joseph's questions.
 - Built the experiment runner (D76): `measurement/run_experiment.py` and `measurement/tests/test_run_experiment.py`. The 6 tests use dummy scrapers and no server: scraper discovery, run IDs that `score.py` parses, the plan's order and size, saved output and printed text, a timeout stopped and recorded, and failed runs listed in the summary. All 30 measurement tests pass.
 - Ran the full Essential grid in the cloud (scratch folder, not committed): 18/18 runs in 16 s; (a) and (b): 70/70 baseline, 4/70 shuffled, 70/70 honeypot with 11 pages. Log lines: 66 baseline, 66 shuffled, 72 honeypot, with 6 `honeypot_hit` lines (one per honeypot run). Matches Tests 1, 4 and 6 and the demo runs.
 - README: runner usage. `SCHEDULE.md`: Nov 18 rows ticked for both. Open items: the Turn 131 note on repeated run IDs marked resolved.
-- Committed, pushed and opened a pull request.
+- Committed, pushed and opened pull request #40: https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/40
 - Logged this turn (J264).
 
 **Claude's answer (summary):** (c) part 1 done; the runner is built and checked (18/18 runs); what it writes; merge and pull; optionally run the Essential grid on the laptop now (a few seconds) and commit it, which finishes the Nov 23 task early; tomorrow's plan.
