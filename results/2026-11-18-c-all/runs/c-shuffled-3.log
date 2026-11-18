@@ -1,0 +1,30 @@
+http://127.0.0.1:3100/ 15 run=c-shuffled-3 ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+/ 0
+200 http://127.0.0.1:3100/products/
+/products/ 0
+200 http://127.0.0.1:3100/articles/a1
+/articles/a1 5
+{"Title": "How to clean, dry and re-season a cast iron pan so it lasts for decades.", "Author": "cookware, cleaning, kitchen", "Published": "", "Tags": "", "Summary": ""}
+200 http://127.0.0.1:3100/articles/a2
+/articles/a2 5
+{"Title": "Choosing a Daypack for Short Hikes", "Author": "Daniel Reyes", "Published": "outdoor, hiking, buying guide", "Tags": "", "Summary": ""}
+200 http://127.0.0.1:3100/products/p1
+/products/p1 10
+{"Name": "Larkfield Studio Headphones", "Brand": "Larkfield", "Category": "Headphones", "Price": "$89.99", "SKU": "LF-HP-2041", "Rating": "4.5", "Reviews": "In stock", "Availability": "2024-09-12", "Description": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable.", "Release date": ""}
+200 http://127.0.0.1:3100/products/p2
+/products/p2 10
+{"Name": "Lighting", "Brand": "Corvane", "Category": "Lighting", "Price": "$34.50", "SKU": "CV-LT-0317", "Rating": "4.2", "Reviews": "", "Availability": "Low stock", "Release date": "2023-11-03", "Description": "356"}
+200 http://127.0.0.1:3100/products/p3
+/products/p3 10
+{"Name": "Brimvale Pour-Over Kettle", "Brand": "Brimvale", "Category": "Kitchen", "Price": "$47.00", "SKU": "BV-KT-1180", "Rating": "4.7", "Reviews": "", "Availability": "In stock", "Release date": "2025-02-20", "Description": ""}
+200 http://127.0.0.1:3100/products/p4
+/products/p4 10
+{"Name": "Tessaro Trail Backpack", "Brand": "Tessaro", "Category": "Outdoor", "Price": "$112.95", "SKU": "TS-BP-0552", "Rating": "4.4", "Reviews": "Out of stock", "Availability": "Out of stock", "Release date": "2024-04-08", "Description": "28-liter daypack with a padded laptop sleeve and side water-bottle pockets."}
+200 http://127.0.0.1:3100/products/p5
+/products/p5 10
+{"Name": "Silent-click mouse with a USB-C receiver and up to 12 months of battery life.", "Brand": "Mirelle", "Category": "Computer Accessories", "Price": "$24.99", "SKU": "MR-MS-0903", "Rating": "3.9", "Reviews": "In stock", "Availability": "In stock", "Release date": "2025-06-30", "Description": "Mirelle Wireless Mouse"}
+200 http://127.0.0.1:3100/products/p6
+/products/p6 10
+{"Name": "Halden Cast Iron Skillet", "Brand": "Halden", "Category": "Cookware", "Price": "$58.75", "SKU": "HD-CI-1026", "Rating": "4.8", "Reviews": "9,412", "Availability": "", "Release date": "2026-12-01", "Description": "Pre-seasoned 10-inch skillet that works on induction, gas and in the oven."}
+70 records written to results\2026-11-18-c-all\runs\c-shuffled-3.json

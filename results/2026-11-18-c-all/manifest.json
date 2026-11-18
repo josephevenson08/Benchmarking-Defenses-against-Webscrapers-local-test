@@ -1,0 +1,218 @@
+{
+  "experiment": "scraper runs",
+  "started_at": "2026-11-18T12:32:52",
+  "commit": "8e361f3",
+  "scrapers": {
+    "c": "c_llm_text.py"
+  },
+  "conditions": [
+    "baseline",
+    "shuffled",
+    "honeypot"
+  ],
+  "runs_per_cell": 3,
+  "port": 3100,
+  "config": {
+    "port": 3000,
+    "page_cap": 15,
+    "runs_per_cell": 3,
+    "obey_robots_txt": true,
+    "request_timeout_seconds": 10,
+    "poison_swap_delay_seconds": 2,
+    "adaptive_quiet_seconds": 3,
+    "adaptive_timeout_seconds": 10,
+    "llm_temperature": 0,
+    "seed": 20261021,
+    "trap_path": "/trap"
+  },
+  "versions": {
+    "python": "3.11.9",
+    "os": "Windows-10-10.0.26300-SP0",
+    "node": "v24.13.1",
+    "playwright": "1.63.0",
+    "requests": "2.34.2",
+    "beautifulsoup4": "4.15.0"
+  },
+  "ollama": {
+    "version": "0.40.16",
+    "models": [
+      {
+        "name": "qwen3:4b",
+        "digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7"
+      },
+      {
+        "name": "gemma3:1b",
+        "digest": "97558784bdc9175075a72655bf360b15da17df6b3b9e5182af9f8c0c8e58ba7c"
+      },
+      {
+        "name": "llama3.2:3b",
+        "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "condition": "baseline",
+      "scraper": "c",
+      "n": 1,
+      "run_id": "c-baseline-1",
+      "exit_code": 0,
+      "wall_s": 69.934,
+      "output": "runs/c-baseline-1.json",
+      "printed": "runs/c-baseline-1.log",
+      "request_log": "logs/baseline.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 6.878400000000001
+      }
+    },
+    {
+      "condition": "baseline",
+      "scraper": "c",
+      "n": 2,
+      "run_id": "c-baseline-2",
+      "exit_code": 0,
+      "wall_s": 52.407,
+      "output": "runs/c-baseline-2.json",
+      "printed": "runs/c-baseline-2.log",
+      "request_log": "logs/baseline.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 5.1327
+      }
+    },
+    {
+      "condition": "baseline",
+      "scraper": "c",
+      "n": 3,
+      "run_id": "c-baseline-3",
+      "exit_code": 0,
+      "wall_s": 53.338,
+      "output": "runs/c-baseline-3.json",
+      "printed": "runs/c-baseline-3.log",
+      "request_log": "logs/baseline.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 5.227
+      }
+    },
+    {
+      "condition": "shuffled",
+      "scraper": "c",
+      "n": 1,
+      "run_id": "c-shuffled-1",
+      "exit_code": 0,
+      "wall_s": 65.35,
+      "output": "runs/c-shuffled-1.json",
+      "printed": "runs/c-shuffled-1.log",
+      "request_log": "logs/shuffled.jsonl",
+      "quick_score": {
+        "correct": 48,
+        "scored_fields": 70,
+        "accuracy": 0.6857142857142857,
+        "pages_fetched": 10,
+        "time_per_page": 6.4167000000000005
+      }
+    },
+    {
+      "condition": "shuffled",
+      "scraper": "c",
+      "n": 2,
+      "run_id": "c-shuffled-2",
+      "exit_code": 0,
+      "wall_s": 49.224,
+      "output": "runs/c-shuffled-2.json",
+      "printed": "runs/c-shuffled-2.log",
+      "request_log": "logs/shuffled.jsonl",
+      "quick_score": {
+        "correct": 49,
+        "scored_fields": 70,
+        "accuracy": 0.7,
+        "pages_fetched": 10,
+        "time_per_page": 4.8134999999999994
+      }
+    },
+    {
+      "condition": "shuffled",
+      "scraper": "c",
+      "n": 3,
+      "run_id": "c-shuffled-3",
+      "exit_code": 0,
+      "wall_s": 52.284,
+      "output": "runs/c-shuffled-3.json",
+      "printed": "runs/c-shuffled-3.log",
+      "request_log": "logs/shuffled.jsonl",
+      "quick_score": {
+        "correct": 49,
+        "scored_fields": 70,
+        "accuracy": 0.7,
+        "pages_fetched": 10,
+        "time_per_page": 5.122
+      }
+    },
+    {
+      "condition": "honeypot",
+      "scraper": "c",
+      "n": 1,
+      "run_id": "c-honeypot-1",
+      "exit_code": 0,
+      "wall_s": 62.29,
+      "output": "runs/c-honeypot-1.json",
+      "printed": "runs/c-honeypot-1.log",
+      "request_log": "logs/honeypot.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 11,
+        "time_per_page": 5.559454545454546
+      }
+    },
+    {
+      "condition": "honeypot",
+      "scraper": "c",
+      "n": 2,
+      "run_id": "c-honeypot-2",
+      "exit_code": 0,
+      "wall_s": 55.553,
+      "output": "runs/c-honeypot-2.json",
+      "printed": "runs/c-honeypot-2.log",
+      "request_log": "logs/honeypot.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 11,
+        "time_per_page": 4.951272727272727
+      }
+    },
+    {
+      "condition": "honeypot",
+      "scraper": "c",
+      "n": 3,
+      "run_id": "c-honeypot-3",
+      "exit_code": 0,
+      "wall_s": 62.192,
+      "output": "runs/c-honeypot-3.json",
+      "printed": "runs/c-honeypot-3.log",
+      "request_log": "logs/honeypot.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 11,
+        "time_per_page": 5.557454545454545
+      }
+    }
+  ],
+  "finished_at": "2026-11-18T12:41:38"
+}
