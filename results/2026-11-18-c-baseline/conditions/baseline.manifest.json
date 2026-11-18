@@ -1,0 +1,75 @@
+{
+  "condition": "baseline",
+  "seed": 20261021,
+  "scored_fields": 70,
+  "pages": [
+    {
+      "path": "/",
+      "file": "index.html",
+      "type": "home",
+      "seed": 1196145543
+    },
+    {
+      "path": "/products/",
+      "file": "products/index.html",
+      "type": "category",
+      "seed": 4012660176
+    },
+    {
+      "path": "/products/p1",
+      "file": "products/p1.html",
+      "type": "product",
+      "item_id": "p1",
+      "seed": 2520598275
+    },
+    {
+      "path": "/products/p2",
+      "file": "products/p2.html",
+      "type": "product",
+      "item_id": "p2",
+      "seed": 2537375894
+    },
+    {
+      "path": "/products/p3",
+      "file": "products/p3.html",
+      "type": "product",
+      "item_id": "p3",
+      "seed": 2554153513
+    },
+    {
+      "path": "/products/p4",
+      "file": "products/p4.html",
+      "type": "product",
+      "item_id": "p4",
+      "seed": 2570931132
+    },
+    {
+      "path": "/products/p5",
+      "file": "products/p5.html",
+      "type": "product",
+      "item_id": "p5",
+      "seed": 2587708751
+    },
+    {
+      "path": "/products/p6",
+      "file": "products/p6.html",
+      "type": "product",
+      "item_id": "p6",
+      "seed": 2604486370
+    },
+    {
+      "path": "/articles/a1",
+      "file": "articles/a1.html",
+      "type": "article",
+      "item_id": "a1",
+      "seed": 1754944011
+    },
+    {
+      "path": "/articles/a2",
+      "file": "articles/a2.html",
+      "type": "article",
+      "item_id": "a2",
+      "seed": 1771721630
+    }
+  ]
+}
