@@ -13942,7 +13942,7 @@ Then Joseph's questions.
   - no failure-rule lines in the run logs.
 - Printed the shuffled text (c) receives for `/articles/a1` and `/products/p1` (cloud copy of the site). The labels and values come out in HTML order, apart from each other, and (c) swapped values with no telling form (a1: title ↔ summary, author ↔ tags; p1: review count got "In stock").
 - Recorded D88. Ticked the Sat Nov 28 row in `SCHEDULE.md` ((c) part done early) and updated the README status and roadmap. Added an open item on the slower first run in each condition.
-- Opened a pull request into `main` with these updates.
+- Opened [pull request #43](https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/43) into `main` with these updates.
 
 **Claude's answer (summary):**
 - ⭐ (c) is done on all three conditions, ten days early.
