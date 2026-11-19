@@ -428,6 +428,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J301 | 301 | (uploaded 2601.06301v1.pdf) this is a paper i found, can you look at it and see if we can use these metrics for my project or not? | Same paper as reference [2], already in the plan; ESR and execution time fit, manual effort doesn't (D89); today's numbers in its metrics |
 | J302 | 302 | so what is the metric im using now to compare them that is sourced in another article/paper | Scraping recall from WebCloak §7.1 (the same formula as the midterm's accuracy), compared as before → after; the supporting metrics and their sources |
 | J303 | 303 | should i also generate graphs and tables/visuals at the end to show the differences? | Yes; already planned (§4 final outputs: 3 tables + 1 figure; schedule Dec 3–4); proposed one extra chart comparing with WebCloak, awaiting Joseph's answer |
+| J304 | 304 | if so, can you generate what i have now to see what they look like? | Built a preview page (private artifact) with Figure 2, Tables 1 and 2 and (c)'s per-field chart from the committed Nov 18 runs; Table 3 and Figure 1 await user-cost data |
 
 ### Questions from Claude
 
@@ -484,7 +485,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 **Before the next scrum meeting (Turn 300):** make a simplified version of the metrics explanation from Turns 296–299. One slide: "our metric = their metric" (accuracy = WebCloak's scraping recall), then the side-by-side numbers (shuffling: (a)/(b) 94% and (c) 31% reduction in recall, against WebCloak's 100%), one line on the limits, and the question for the instructor (is WebCloak the comparison he meant, or does he want one combined grade?). Use the official numbers if the scoring update (Fri Nov 20) is done by then.
 
-**Proposed, awaiting Joseph (Turn 303):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
+**Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -14247,3 +14248,31 @@ Then Joseph's questions.
 **Questions Claude asked:** whether to add the WebCloak comparison chart (asked in the reply; awaiting Joseph's answer).
 
 **Direction and fit:** no decision yet. The extra chart would be "Adds".
+
+### Turn 304 — 2026-11-19 20:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> if so, can you generate what i have now to see what they look like?
+
+**What Claude did:**
+- Computed the preview numbers from the committed runs: `results/2026-11-18-experiment/` for (a) and (b), and `results/2026-11-18-c-all/` for (c). Each run was scored with `scoring/score.py --json --records` in the scratchpad; trap hits come from each condition's request log.
+- Built a preview page and published it as a private artifact: "Scraper Defense Results", https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh. It is not in the repository.
+  - **Figure 2:** relative reduction in recall. WebCloak 100% (88.7% → 0%); shuffling 94.3% against (a) and (b), and 30.5% against (c). A line at 90% marks the midterm's "stops" threshold, and the differences in setting are stated under the chart.
+  - **Table 1:** correct per run, recall with min–max, precision, F1, ESR, reduction, and the midterm verdict: (a) and (b) "stops" on shuffled; (c) "reduces"; honeypot "no effect".
+  - **Table 2:** detection rate 1.00 (3/3) and evasion 0.00 for all three scrapers; 0 trap hits on the other sites; the false-positive rate is pending (Nov 29); time per page 0.012, 0.023 and 5.75 s; slowdown against (a) 1.0×, 1.9× and 479×.
+  - **Optional chart:** (c)'s share of correct values per field on the shuffled site.
+  - A list of what isn't measured yet: Table 3, Figure 1, the false-positive rate and (d).
+- Used the dataviz skill. Validated the two chart colors (this study and published) in light and dark mode: all checks pass. Took one look at desktop (light) and phone (dark) widths: no overflow and no script errors. Then switched the reductions to one decimal place.
+- **Correction:** the reduction for (c) is 30.5% (1 − 146/210). Turns 296–299 rounded it to 31%.
+
+**Claude's answer (summary):**
+- Link to the preview, and what each exhibit shows.
+- The numbers are a preview; the official ones come from the scoring update.
+- Table 3 and Figure 1 need the user-cost runner (Nov 20–21).
+- (c)'s reduction is 30.5%, not 31%.
+- Joseph's "if so" is taken as interest in Figure 2. It joins the plan as an "Adds" decision once he confirms after seeing it.
+
+**Questions Claude asked:** whether to keep Figure 2 (and the optional per-field chart) in the plan. Awaiting Joseph's answer.
+
+**Direction and fit:** no decision yet. Figure 2 would be "Adds".
