@@ -426,6 +426,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J299 | 299 | ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you, | Claude's view: the feedback asks for both, and the plan covers both; lead with WebCloak (same recall definition); the original metrics were standard ones without names or a reference point; offered a meeting slide |
 | J300 | 300 | ok well get this more simplied for my next meeting thank you! | Noted as an open item: a simplified metrics explanation (one slide: our metric = WebCloak's, then the numbers) before the next scrum meeting |
 | J301 | 301 | (uploaded 2601.06301v1.pdf) this is a paper i found, can you look at it and see if we can use these metrics for my project or not? | Same paper as reference [2], already in the plan; ESR and execution time fit, manual effort doesn't (D89); today's numbers in its metrics |
+| J302 | 302 | so what is the metric im using now to compare them that is sourced in another article/paper | Scraping recall from WebCloak §7.1 (the same formula as the midterm's accuracy), compared as before → after; the supporting metrics and their sources |
 
 ### Questions from Claude
 
@@ -14193,3 +14194,28 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D89 (Follows: D68; §5 item 9; §2 no retry; §4 item 10).
+
+### Turn 302 — 2026-11-19 20:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so what is the metric im using now to compare them that is sourced in another article/paper
+
+**What Claude did:** Looked up WebCloak's exact wording in the full paper (the scratchpad text of SP26_WebAgent.pdf), §7.1 "Metrics": "Defense Effectiveness … & Robustness …: Primarily measured by scraping recall [64], defined as the proportion of ground-truth target items successfully extracted (|C_extract ∩ C_target| / |C_target|). Recall is a key indicator of attacker success; a lower recall signifies better defense." The paper calls its metrics "standard in web scraping and information retrieval literature".
+
+**Claude's answer (summary):**
+- **The main comparison metric is scraping recall from WebCloak (IEEE S&P 2026, §7.1).** Its formula is the same as the midterm's accuracy: the 70 scored fields are the target items, and the correct values are the extracted ∩ target.
+- **It is compared as before → after the defense:**
+  - WebCloak: 88.7% → 0%;
+  - shuffling against (a) and (b): 100% → 5.7%;
+  - shuffling against (c): 100% → 69.5%.
+- **The supporting metrics, each with its source:**
+  - ESR and execution time: Beyond BeautifulSoup;
+  - F1: FreeDOM;
+  - detection rate: Shy Guys;
+  - SSIM: Wang et al. 2004;
+  - Lighthouse changes: WebCloak §7.4.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (D68, D70).
