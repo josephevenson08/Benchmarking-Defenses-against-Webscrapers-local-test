@@ -427,6 +427,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J300 | 300 | ok well get this more simplied for my next meeting thank you! | Noted as an open item: a simplified metrics explanation (one slide: our metric = WebCloak's, then the numbers) before the next scrum meeting |
 | J301 | 301 | (uploaded 2601.06301v1.pdf) this is a paper i found, can you look at it and see if we can use these metrics for my project or not? | Same paper as reference [2], already in the plan; ESR and execution time fit, manual effort doesn't (D89); today's numbers in its metrics |
 | J302 | 302 | so what is the metric im using now to compare them that is sourced in another article/paper | Scraping recall from WebCloak §7.1 (the same formula as the midterm's accuracy), compared as before → after; the supporting metrics and their sources |
+| J303 | 303 | should i also generate graphs and tables/visuals at the end to show the differences? | Yes; already planned (§4 final outputs: 3 tables + 1 figure; schedule Dec 3–4); proposed one extra chart comparing with WebCloak, awaiting Joseph's answer |
 
 ### Questions from Claude
 
@@ -482,6 +483,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 **For the user-cost runner (found Turn 299):** check whether the Lighthouse version used still reports TTI. Recent Lighthouse versions dropped TTI from the performance score, and it may be missing from the report. If so, report FCP, LCP and the score, and say why TTI is missing when comparing with WebCloak.
 
 **Before the next scrum meeting (Turn 300):** make a simplified version of the metrics explanation from Turns 296–299. One slide: "our metric = their metric" (accuracy = WebCloak's scraping recall), then the side-by-side numbers (shuffling: (a)/(b) 94% and (c) 31% reduction in recall, against WebCloak's 100%), one line on the limits, and the question for the instructor (is WebCloak the comparison he meant, or does he want one combined grade?). Use the official numbers if the scoring update (Fri Nov 20) is done by then.
+
+**Proposed, awaiting Joseph (Turn 303):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -14219,3 +14222,28 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (D68, D70).
+
+### Turn 303 — 2026-11-19 20:24 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> should i also generate graphs and tables/visuals at the end to show the differences?
+
+**What Claude did:** Checked the midterm and `SCHEDULE.md` for planned visuals.
+- **The midterm**, §4 Analysis: "Final outputs: a defense-by-scraper table of accuracy and fake-value rate; a table of honeypot hits and time per page; a user-cost table against baseline; and one pairing accuracy drop with user cost". §5 Analysis: "the tables and figure from Section 4". §7: Dec 2–10, "final tables and figure".
+- **`SCHEDULE.md`:**
+  - Thu Dec 3: Claude writes the script for the final tables, with the standard metrics;
+  - Fri Dec 4: the figure (protection against user cost, one point per defense and scraper), plus the comparison with the predicted pattern and with the related-work table (J + C).
+- Added the proposed extra chart to the open items.
+
+**Claude's answer (summary):**
+- **Yes, and most of it is already planned:** 3 tables (protection; honeypot and speed; user cost) and 1 figure (protection against user cost, two axes, no single combined score).
+- **They will be made by a script from the results files**, so a clean rerun reproduces them.
+- **Recommended addition for the scrum feedback:** one chart showing our relative reduction in recall next to WebCloak's.
+- **Optional:** (c)'s per-field breakdown on shuffled, which explains the partial drop.
+- **Suggested limit:** keep it small (about 3 tables and 2 figures) so each visual makes one point.
+- **When:** the tables script on Dec 3 (Claude can start it earlier, once the results CSV exists); the figures on Dec 4. Joseph checks them against the raw outputs.
+
+**Questions Claude asked:** whether to add the WebCloak comparison chart (asked in the reply; awaiting Joseph's answer).
+
+**Direction and fit:** no decision yet. The extra chart would be "Adds".
