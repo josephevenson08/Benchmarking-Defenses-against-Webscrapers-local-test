@@ -420,6 +420,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J294 | 294 | (`git pull`: already up to date) | Checked `main`: PR #43 merged and `c-all` committed; rescored all 9 runs; trap hits from the log; shuffled breakdown confirmed |
 | J295 | 295 | ok lets stop for today is everything up to date? | Checked the branch against `main`: only the log entries for Turns 294–295 were missing; opened a PR for them; end-of-day resume note |
 | J296 | 296 | so im not starting anything now but what are my new metrics and how are theyrelated to shat i had, | Explained each new metric against the midterm's (D68, D70, D71), with today's results worked out in them as a preview |
+| J297 | 297 | im talking in terms of the feedback i got in the scrum sorry, | Sent while Turn 296 was being answered; one answer covers both: the new metrics framed as the answer to the Nov 16 scrum feedback (D68's three layers), with today's results as the example |
 
 ### Questions from Claude
 
@@ -14038,3 +14039,30 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (explains D68, D70, D71).
+
+### Turn 297 — 2026-11-19 01:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> im talking in terms of the feedback i got in the scrum sorry,
+
+**What Claude did:** This message arrived while Turn 296 was being answered, so one reply covers both turns. It reframes the explanation around the instructor's Nov 16 feedback ("the metrics need some sort of algorithmic scale that can be compared against what someone else has done"; Turn 238) and the plan that answers it (`docs/metrics-plan.md`; D68–D71).
+
+**Claude's answer (summary):**
+- **What the feedback asked:** a number such as "4/70" can't be judged on its own, so each result needs a standard scale and a published number to sit next to.
+- **The plan answers it in three layers (D68):**
+  1. **Against our own baseline:** the relative reduction (0–1). It gives the size of an effect where the midterm's rule gave only yes/no, and it doesn't depend on how easy our site is.
+  2. **Standard definitions:**
+     - accuracy is exactly WebCloak's scraping recall;
+     - precision and F1, as used in the SWDE/FreeDOM line of work;
+     - ESR, from Beyond BeautifulSoup;
+     - honeypot hits become detection, evasion and false-positive rates, as in Shy Guys and FP-Inconsistent;
+     - pixel difference gains SSIM;
+     - Lighthouse is reported as change from baseline, and HTML size and tokens are added, as in WebCloak.
+  3. **Published results:** the related-work table.
+- **Example from today:** shuffling cut (a)/(b) recall from 100% to 5.7% (a 94% reduction) and (c) from 100% to 69.5% (a 31% reduction). WebCloak cut recall from 88.7% to 0% (a 100% reduction) on real pages against frontier-model agents.
+- **Still to come:** the standard metrics in the scoring (Fri Nov 20); SSIM, Lighthouse and HTML size (Nov 20–21); the false-positive rate (Sun Nov 29); our column in the related-work table (Nov 25 and Dec 3).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (explains D68–D71 against the scrum feedback).
