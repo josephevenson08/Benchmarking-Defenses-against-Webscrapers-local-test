@@ -429,6 +429,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J302 | 302 | so what is the metric im using now to compare them that is sourced in another article/paper | Scraping recall from WebCloak §7.1 (the same formula as the midterm's accuracy), compared as before → after; the supporting metrics and their sources |
 | J303 | 303 | should i also generate graphs and tables/visuals at the end to show the differences? | Yes; already planned (§4 final outputs: 3 tables + 1 figure; schedule Dec 3–4); proposed one extra chart comparing with WebCloak, awaiting Joseph's answer |
 | J304 | 304 | if so, can you generate what i have now to see what they look like? | Built a preview page (private artifact) with Figure 2, Tables 1 and 2 and (c)'s per-field chart from the committed Nov 18 runs; Table 3 and Figure 1 await user-cost data |
+| J305 | 305 | can you help me launch my project to show the different scrapers etc | Updated demo guide (Nov 15 version + scraper (c), Ollama checks, the 27-run results and the preview page); commands dry-run in the cloud |
 
 ### Questions from Claude
 
@@ -14276,3 +14277,36 @@ Then Joseph's questions.
 **Questions Claude asked:** whether to keep Figure 2 (and the optional per-field chart) in the plan. Awaiting Joseph's answer.
 
 **Direction and fit:** no decision yet. Figure 2 would be "Adds".
+
+### Turn 305 — 2026-11-19 21:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you help me launch my project to show the different scrapers etc
+
+**What Claude did:**
+- Read the Nov 15 demo guide (`scrum meeting demo 11-15`, Turns 224–225) and updated it for scraper (c):
+  - an Ollama check and model warm-up in Step 0;
+  - (c) on the shuffled site as the main new step;
+  - (c) optionally on the honeypot;
+  - the committed results summaries for all 27 runs, and the preview page;
+  - two troubleshooting rows for Ollama.
+- Dry-ran the new commands in the cloud on the shuffled site, with a stand-in for Ollama:
+  - `npm run serve -- shuffled` serves on port 3000;
+  - `a_raw_html.py` gives 66 records and 4/70;
+  - `c_llm_text.py` runs end to end with its default start URL and writes 70 records. The stand-in returns fixed values, so its score means nothing.
+  - The servers were stopped afterwards; nothing was committed apart from this log.
+
+**Claude's answer (summary):** A step-by-step demo for Joseph's laptop (PowerShell, two terminals), about 10 minutes:
+- the test site;
+- (a) on baseline;
+- shuffling against (a), (b) and (c): 4/70, 4/70 and about 48–49/70;
+- the honeypot catching (a), and optionally (c);
+- the committed results for all 27 runs and the preview page;
+- the code and the AI-use record.
+
+Each step has the command, what to expect and what to say. It also offered to update the Word version.
+
+**Questions Claude asked:** whether to turn it into an updated Word doc (offered).
+
+**Direction and fit:** no new decision.
