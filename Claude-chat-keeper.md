@@ -117,6 +117,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D86 | 292 | **Scraper (c) reads the page text only on item pages.** All 3 honeypot runs crashed (exit 1, no output file): the trap page `/trap` has no `<main>`, so `page.inner_text("main")`, run on every page, waited 30 s and raised a Playwright TimeoutError that nothing caught. The trap was still requested (the honeypot logged its hit). Fix (Joseph writes it): move the `text = page.inner_text("main")` line inside `if field_list:`, so pages with no fields (home, product list, trap) are never read, as D78 already gives them no model call. Claude reproduced the crash in the cloud with a stand-in for Ollama, then checked a scratch copy with the line moved: honeypot exit 0, 11 pages, 1 trap hit, 70 records; baseline records identical to the current code. | Fall back to the body text; record a page error (`no_main`) and keep going | Joseph (C35; Claude recommended) | §2 crawl rule: record failures and keep going (a page must not stop the run); §2 (c): the text is for one prompt per page type; D78. | Follows |
 | D87 | 292 | **Rerun (c) on all three conditions with the fixed code**, in one runner call (about 9 min), so every (c) result comes from one commit. The first folders stay as the first record: `results/2026-11-18-c-baseline/` (the passed check, D84) and `results/2026-11-18-c-defended/` (shuffled 47, 50, 50/70 = 0.671–0.714; honeypot 3 crashes). The fix changes nothing on pages that have a `<main>`, so the rerun should repeat the baseline and shuffled results within (c)'s run-to-run variation. | Rerun honeypot only and report the two commits | Joseph (C36; Claude recommended) | §4 item 10: "Scrapers are fixed before any defended runs"; §5 Reproducibility (each results folder records its commit). | Follows |
 | D88 | 293 | **⭐ Scraper (c) ran on all three conditions (Wed Nov 18; planned Sat Nov 28).** Joseph's laptop, commit `8e361f3` (D86's fix), `llama3.2:3b`, one runner call: 9/9 runs finished. Baseline 70/70 × 3 (D84 repeated on the fixed code). **Shuffled 48, 49, 49/70** (mean 0.695, min–max 0.686–0.700): shuffling **reduces** (c) (below the lowest baseline run, whose spread is 0) but does **not stop** it (above 10%); relative reduction about 0.30, against 0.94 for (a) and (b). This answers §4 Hypothesis 1's "(c) is uncertain". **Honeypot 70/70 × 3 with 11 pages** (the trap page, which has no model call): accuracy unchanged and the trap followed, as Hypothesis 3 expects; the hit count per run comes from the request log in the results CSV. Time per page 4.8–6.9 s. Breakdown of the first shuffled runs (`c-defended`, same model and prompt): fields with a distinctive form or derivable from the name (price, rating, SKU, brand, category) right in every run; fields with no distinctive form mixed up (review count 2/18, description 8/18, article summary 0/6, tags 0/6). No failure-rule lines in the run logs, so every lost field is a model error (wrong or empty value), not a failure (§5 "Defense vs model failure"). Confirmed on `c-all` (Turn 294): the same per-field pattern (publish date 1/6 instead of 2/6), no failure lines, and exactly 1 trap hit per honeypot run (0 on baseline and shuffled). | — | Joseph (his scraper; ran it); Claude (runner; analysis) | §4 Hypothesis 1 and 3; §4 item 5 ("Stops" below 10%; a honeypot works when it logs a hit); §4 Analysis ("reduces" rule; mean and min–max over 3 runs); §5 "Defense vs model failure". | Follows |
+| D89 | 301 | **From *Beyond BeautifulSoup* [2] (re-read, Turn 301): use 2 of its 3 metrics, not the third.** **Used:** (1) Extraction Success Rate (ESR), "% of scraping runs with complete and correct output", averaged over 3 trials, which here means the share of runs at 70/70; (2) Execution Time, "average runtime for a successful scrape": our wall seconds per successful run, next to time per page. Both were already planned (D68, D70). **Not used:** Manual Effort Required (Low/Medium/High by retries and setup work), because our scrapers are fixed before the runs and never retried (§2 "no retry"; §4 item 10), so it would be the same for every run and says nothing about a defense. **Borrowed for describing the testbed:** our site is their tier 1, "Simple HTML" (static, no login, no JavaScript needed); their 3 trials per site match our 3 runs per cell. **ESR's limit:** it is all-or-nothing per run, so (c) on shuffled scores ESR 0 although it got 69.5% of fields; recall is reported beside it. | Adopt MER as a developer-effort note | Claude (recommended; Joseph asked whether the metrics fit) | D68 layer 2 and 3 (`docs/metrics-plan.md`); §5 item 9 (3 runs per cell); §2 (c) no retry; §4 item 10. | Follows |
 
 ---
 
@@ -421,9 +422,10 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J295 | 295 | ok lets stop for today is everything up to date? | Checked the branch against `main`: only the log entries for Turns 294–295 were missing; opened a PR for them; end-of-day resume note |
 | J296 | 296 | so im not starting anything now but what are my new metrics and how are theyrelated to shat i had, | Explained each new metric against the midterm's (D68, D70, D71), with today's results worked out in them as a preview |
 | J297 | 297 | im talking in terms of the feedback i got in the scrum sorry, | Sent while Turn 296 was being answered; one answer covers both: the new metrics framed as the answer to the Nov 16 scrum feedback (D68's three layers), with today's results as the example |
-| J298 | 298 | ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you, | Claude's view: the feedback asks for both, and the plan covers both; lead with WebCloak (same recall definition); the original metrics were standard ones without names or a reference point; offered a meeting slide |
-| J299 | 299 | ok well get this more simplied for my next meeting thank you! | Noted as an open item: a simplified metrics explanation (one slide: our metric = WebCloak's, then the numbers) before the next scrum meeting |
 | J298 | 298 | ok, ill visit again on this before my next meeting but i need to be able to show that im not comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts | Claude's view: the feedback asks for both; universal scales come first, published numbers second; the midterm's own rules as grades on the 0–1 scale; no field-wide grading standard exists to claim; ask the instructor at the next meeting (open item) |
+| J299 | 299 | ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you, | Claude's view: the feedback asks for both, and the plan covers both; lead with WebCloak (same recall definition); the original metrics were standard ones without names or a reference point; offered a meeting slide |
+| J300 | 300 | ok well get this more simplied for my next meeting thank you! | Noted as an open item: a simplified metrics explanation (one slide: our metric = WebCloak's, then the numbers) before the next scrum meeting |
+| J301 | 301 | (uploaded 2601.06301v1.pdf) this is a paper i found, can you look at it and see if we can use these metrics for my project or not? | Same paper as reference [2], already in the plan; ESR and execution time fit, manual effort doesn't (D89); today's numbers in its metrics |
 
 ### Questions from Claude
 
@@ -470,15 +472,15 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 299, end of Wed Nov 18):** Stopped for the day. All results are on `main`. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check (D84); results folders keep their logs and seeds (D85); (c)'s trap-page crash fixed (D86, D87); ⭐ (c) on all three conditions, 9/9 (D88: shuffled 48–49/70, honeypot 70/70 with 1 trap hit per run). Next for Joseph: scraper (d) (planned to start Sun Nov 22, can start earlier); optional (c) tidy-up (results are tied to `8e361f3`). Next for Claude, Thu Nov 19: the results CSV (honeypot hits and time per page from the request logs; page requests only), then the standard metrics (Fri Nov 20) and the user-cost runner (Nov 20–21); (c)'s column in the related-work table (Thu Dec 3, can be earlier). Before the next scrum meeting: a simplified one-slide metrics explanation (open item below). Open: the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 300, end of Wed Nov 18):** Stopped for the day. All results are on `main`. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check (D84); results folders keep their logs and seeds (D85); (c)'s trap-page crash fixed (D86, D87); ⭐ (c) on all three conditions, 9/9 (D88: shuffled 48–49/70, honeypot 70/70 with 1 trap hit per run). Next for Joseph: scraper (d) (planned to start Sun Nov 22, can start earlier); optional (c) tidy-up (results are tied to `8e361f3`). Next for Claude, Thu Nov 19: the results CSV (honeypot hits and time per page from the request logs; page requests only), then the standard metrics (Fri Nov 20) and the user-cost runner (Nov 20–21); (c)'s column in the related-work table (Thu Dec 3, can be earlier). Before the next scrum meeting: a simplified one-slide metrics explanation (open item below). Open: the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
 **For the next scrum meeting (Turn 298):** Joseph isn't sure whether the Nov 16 feedback means comparing against studies that use the same metrics, or a more universal way to grade the results. Claude's view: both, with the universal scale first. The midterm's own verdicts can be stated on the 0–1 relative-reduction scale: no effect (within baseline noise), "reduces", and "stops" (accuracy below 10%, which is a reduction of about 0.9 or more from a 1.0 baseline). None of the papers read defines a standard grading scale for scraper defenses, so none should be claimed. Ask the instructor which was meant. Possible addition if the answer is a grade: named bands on the relative reduction (this would be an "Adds" decision, and Joseph's call).
 
-**For the user-cost runner (found Turn 298):** check whether the Lighthouse version used still reports TTI. Recent Lighthouse versions dropped TTI from the performance score, and it may be missing from the report. If so, report FCP, LCP and the score, and say why TTI is missing when comparing with WebCloak.
+**For the user-cost runner (found Turn 299):** check whether the Lighthouse version used still reports TTI. Recent Lighthouse versions dropped TTI from the performance score, and it may be missing from the report. If so, report FCP, LCP and the score, and say why TTI is missing when comparing with WebCloak.
 
-**Before the next scrum meeting (Turn 299):** make a simplified version of the metrics explanation from Turns 296–298. One slide: "our metric = their metric" (accuracy = WebCloak's scraping recall), then the side-by-side numbers (shuffling: (a)/(b) 94% and (c) 31% reduction in recall, against WebCloak's 100%), one line on the limits, and the question for the instructor (is WebCloak the comparison he meant, or does he want one combined grade?). Use the official numbers if the scoring update (Fri Nov 20) is done by then.
+**Before the next scrum meeting (Turn 300):** make a simplified version of the metrics explanation from Turns 296–299. One slide: "our metric = their metric" (accuracy = WebCloak's scraping recall), then the side-by-side numbers (shuffling: (a)/(b) 94% and (c) 31% reduction in recall, against WebCloak's 100%), one line on the limits, and the question for the instructor (is WebCloak the comparison he meant, or does he want one combined grade?). Use the official numbers if the scoring update (Fri Nov 20) is done by then.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -14147,10 +14149,47 @@ Then Joseph's questions.
 
 **What Claude did:**
 - Added an open item and a line in the resume note: a simplified, one-slide version of the metrics explanation before the next scrum meeting.
-- Committed and pushed. Pull request #45, which is still open, now carries Turns 296–299. (A first commit this turn went out with the entry still unfilled, because an edit script stopped on a check before writing; this commit fills it.)
+- Committed and pushed. Pull request #45, which is still open, now carries Turns 296–300. (A first commit this turn went out with the entry still unfilled, because an edit script stopped on a check before writing; this commit fills it.)
 
 **Claude's answer (summary):** Agreed. Next time: a short version for the meeting, with the official numbers if the scoring update is done. Merge #45 whenever convenient.
 
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 301 — 2026-11-19 19:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> @"/root/.claude/uploads/4a6bc384-5e77-5bf0-bfcb-bb27811c3cbe/e3c50e4e-2601.06301v1.pdf" this is a paper i found, can you look at it and see if we can use these metrics for my project or not?
+
+**What Claude did:**
+- Converted the upload to text in the scratchpad and compared it with the copy Joseph sent on Nov 16. It is the same paper and version: *Beyond BeautifulSoup* (arXiv:2601.06301v1, AAAI 2026 copyright line), already reference [2] in `docs/metrics-plan.md`. The files differ (different checksums), but the text differs only in how the "fi" and "fl" letter pairs were extracted.
+- Re-read its method and metrics:
+  - **ESR:** "% of scraping runs with complete and correct output", averaged over 3 trials.
+  - **Execution Time:** "average runtime for a successful scrape".
+  - **Manual Effort Required:** Low/Medium/High, by retries and setup work.
+  - Also its 5 difficulty tiers and its results: on simple HTML, ESR 0.93 (BeautifulSoup), 0.82 (Scrapy), 1.00 (Claude and Simular.ai); scripts under 2 s, agents 10–20 s.
+- Worked out our committed runs in its metrics (scratchpad):
+  - **ESR:** (a), (b) and (c) 1.00 on baseline and honeypot, 0.00 on shuffled.
+  - **Mean seconds per baseline run:** (a) 0.51, (b) 1.44, (c) 58.6 (10 pages, 5.1–6.9 s per page).
+- Recorded D89.
+- Fixed the turn numbering of Turns 298–300 in the log. One of Joseph's messages was captured twice (Turns 298 and 299), so the J rows, the resume note and two open items were one turn off.
+
+**Claude's answer (summary):**
+- **Yes, partly.** It is the paper already in the plan.
+- **Two of its three metrics fit, and both were already planned:**
+  - **ESR:** today, every scraper is 1.00 on baseline and honeypot and 0.00 on shuffled. Their simple-HTML results are 0.82–1.00.
+  - **Execution time:** (a) and (b) finish a run in under 2 s, like their scripts. (c) takes about 59 s for 10 pages, about 6 s per page, close to their agents' 10–20 s.
+- **The third, manual effort, doesn't fit.** Our scrapers are fixed and never retried, so it would be the same for every run and says nothing about a defense.
+- **Two things to borrow:**
+  - their tier label: our site is "Simple HTML";
+  - their 3 trials per site, which match our 3 runs.
+- **Limits:**
+  - ESR is all-or-nothing, so it hides (c)'s partial result on shuffled; that's why recall stays beside it.
+  - They test sites' own protections, not added defenses.
+  - Their runs are whole tasks, not 70 scored fields.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D89 (Follows: D68; §5 item 9; §2 no retry; §4 item 10).
