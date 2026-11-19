@@ -421,6 +421,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J295 | 295 | ok lets stop for today is everything up to date? | Checked the branch against `main`: only the log entries for Turns 294–295 were missing; opened a PR for them; end-of-day resume note |
 | J296 | 296 | so im not starting anything now but what are my new metrics and how are theyrelated to shat i had, | Explained each new metric against the midterm's (D68, D70, D71), with today's results worked out in them as a preview |
 | J297 | 297 | im talking in terms of the feedback i got in the scrum sorry, | Sent while Turn 296 was being answered; one answer covers both: the new metrics framed as the answer to the Nov 16 scrum feedback (D68's three layers), with today's results as the example |
+| J298 | 298 | ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you, | Claude's view: the feedback asks for both, and the plan covers both; lead with WebCloak (same recall definition); the original metrics were standard ones without names or a reference point; offered a meeting slide |
 | J298 | 298 | ok, ill visit again on this before my next meeting but i need to be able to show that im not comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts | Claude's view: the feedback asks for both; universal scales come first, published numbers second; the midterm's own rules as grades on the 0–1 scale; no field-wide grading standard exists to claim; ask the instructor at the next meeting (open item) |
 
 ### Questions from Claude
@@ -473,6 +474,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
 **For the next scrum meeting (Turn 298):** Joseph isn't sure whether the Nov 16 feedback means comparing against studies that use the same metrics, or a more universal way to grade the results. Claude's view: both, with the universal scale first. The midterm's own verdicts can be stated on the 0–1 relative-reduction scale: no effect (within baseline noise), "reduces", and "stops" (accuracy below 10%, which is a reduction of about 0.9 or more from a 1.0 baseline). None of the papers read defines a standard grading scale for scraper defenses, so none should be claimed. Ask the instructor which was meant. Possible addition if the answer is a grade: named bands on the relative reduction (this would be an "Adds" decision, and Joseph's call).
+
+**For the user-cost runner (found Turn 298):** check whether the Lighthouse version used still reports TTI. Recent Lighthouse versions dropped TTI from the performance score, and it may be missing from the report. If so, report FCP, LCP and the score, and say why TTI is missing when comparing with WebCloak.
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -14097,3 +14100,38 @@ Then Joseph's questions.
 **Questions Claude asked:** none (the open question is for the instructor).
 
 **Direction and fit:** no new decision. The possible grade bands would be an "Adds" decision, still open.
+
+### Turn 299 — 2026-11-19 02:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you,
+
+**What Claude did:**
+- Re-read the instructor's feedback as Joseph reported it in Turn 238: "its fine but if we could actually compare t in a sense of modern research and how they give a metric, look into other performance metrics and see what others did, the metrics need some sort of algorithmic scale that can be compared against what someone else has done".
+- Checked it against `docs/metrics-plan.md` (D68–D71).
+- Added an open item for the user-cost runner (Lighthouse TTI).
+
+**Claude's answer (summary):**
+- **Joseph's reading is right, and the feedback asks for both things:**
+  - the measures other researchers use, on their scales;
+  - a published number to compare against.
+  The plan covers both. The instructor also said the metrics themselves were fine.
+- **The midterm metrics weren't really made up.**
+  - Accuracy = correct ÷ total is field-level recall, the most common extraction measure.
+  - Lighthouse, pixel difference and axe-core are standard tools.
+  - What was missing was the standard names and a published reference point. So the fix is mostly in how results are reported, not a redesign.
+- **For the meeting, lead with one anchor study: WebCloak** (IEEE S&P 2026).
+  - It defines scraping recall exactly as the midterm defines accuracy.
+  - It asks the same question (defenses against LLM-driven scrapers).
+  - It measures user cost with Lighthouse, the same tool.
+- **Universal scales:**
+  - 0–1 measures: relative reduction, recall/F1, SSIM, detection rate;
+  - published thresholds: Google's "good" Web Vitals limits, WCAG levels, and the midterm's own 10% "stops" line.
+- **What can and can't be claimed:** compare effects (relative reduction), not raw scores, and state the differences (real pages, frontier models).
+- **Suggested check at the meeting:** ask the instructor whether comparing against WebCloak is what he meant, or whether he wants one combined grade. The midterm deliberately has none: protection and cost are plotted on two axes.
+- Offered a one-slide side-by-side for the meeting.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. This confirms D68–D71 against the scrum feedback.
