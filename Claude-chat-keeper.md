@@ -419,6 +419,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J293 | 293 | (runner output: (c) × 3 conditions × 3, 9/9, commit `8e361f3`) | ⭐ (c) done on all conditions ten days early (D88); what the shuffled result means and which fields fail; schedule and README ticked; PR; commit the folder |
 | J294 | 294 | (`git pull`: already up to date) | Checked `main`: PR #43 merged and `c-all` committed; rescored all 9 runs; trap hits from the log; shuffled breakdown confirmed |
 | J295 | 295 | ok lets stop for today is everything up to date? | Checked the branch against `main`: only the log entries for Turns 294–295 were missing; opened a PR for them; end-of-day resume note |
+| J296 | 296 | so im not starting anything now but what are my new metrics and how are theyrelated to shat i had, | Explained each new metric against the midterm's (D68, D70, D71), with today's results worked out in them as a preview |
 
 ### Questions from Claude
 
@@ -13998,3 +13999,42 @@ Then Joseph's questions.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 296 — 2026-11-19 01:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so im not starting anything now but what are my new metrics and how are theyrelated to shat i had,
+
+**What Claude did:**
+- Fetched `main`: PR #44 is merged. Merged `main` into the branch.
+- Worked out today's 27 runs ((a) and (b) from `results/2026-11-18-experiment/`, (c) from `results/2026-11-18-c-all/`) in the new metrics, as a preview in the scratchpad. Nothing was committed: the scoring changes are Claude's Fri Nov 20 task.
+  - "Returned" was taken as correct + wrong (malformed included), so missing fields count against recall but not precision.
+  - Mean over 3 runs:
+
+    | Scraper | Condition | Recall | Precision | F1 | ESR | Reduction (recall) | Caught by the trap |
+    |---|---|---|---|---|---|---|---|
+    | (a), (b) | Baseline | 1.000 | 1.000 | 1.000 | 3/3 | — | 0/3 |
+    | (a), (b) | Shuffled | 0.057 | 0.061 | 0.059 | 0/3 | 0.943 | 0/3 |
+    | (a), (b) | Honeypot | 1.000 | 1.000 | 1.000 | 3/3 | 0.000 | 3/3 |
+    | (c) | Baseline | 1.000 | 1.000 | 1.000 | 3/3 | — | 0/3 |
+    | (c) | Shuffled | 0.695 | 0.807 | 0.747 | 0/3 | 0.305 | 0/3 |
+    | (c) | Honeypot | 1.000 | 1.000 | 1.000 | 3/3 | 0.000 | 3/3 |
+
+  - Wrong and missing on shuffled: (a) and (b) 62 wrong and 4 missing in every run; (c) 11–13 wrong and 9–10 missing.
+  - Time per page on baseline: (a) 0.012 s, (b) 0.023 s, (c) 5.7 s.
+
+**Claude's answer (summary):**
+- **Nothing the midterm defined is replaced.** Accuracy, the fake-value rate, honeypot hits, time per page and the user-cost measures stay, and the "reduces"/"stops" rules still decide the verdicts.
+- **Each new metric relates to an existing one** in one of three ways:
+  - the same number under the name other papers use: accuracy = recall;
+  - computed from counts the scoring already makes: precision, F1, ESR, relative reduction, detection and evasion rates, slowdown;
+  - a small addition on the user-cost side: SSIM, Lighthouse changes from baseline, HTML size, prompt tokens.
+- **What the preview shows:**
+  - Precision separates "fooled" from "blocked". On shuffled pages, (a) and (b) fill almost every field with a wrong value (precision 0.06). When (c) does answer, it is right about 81% of the time, and it leaves some fields blank.
+  - The relative reduction (0.94 against 0.31) is the number that can sit next to WebCloak's before → after.
+  - The honeypot caught all 9 runs on its condition (detection rate 1.0). Its false-positive rate needs the human-like visitor (Sun Nov 29).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (explains D68, D70, D71).
