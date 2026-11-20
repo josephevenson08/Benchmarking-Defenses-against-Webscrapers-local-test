@@ -127,6 +127,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D96 | 317 | **Reading-order rule confirmed:** a field is out of reading order when its label or its value is at a different position in the HTML than on screen (as built in D91). Joseph specifies and reviews this check (§3), and chose it over counting label and value elements separately. | Count label/value elements separately | Joseph (C38; Claude recommended) | §5 "User cost": "the fraction of fields whose source position differs from their top-to-bottom position on screen"; §3 AI-assistance split. | Follows (resolves D91's Interprets) |
 | D97 | 317 | **`config.json` `request_timeout_seconds` set to 5,** to match what the scrapers have always done (`requests` timeout 5 s in (a); `page.goto` timeout 5000 ms in (b) and (c)). No code reads this setting. The manifests of the results folders written before this change copy the old value (10); it never applied. The report should state the timeout as 5 s. Generated pages don't depend on it. | Make (a)–(c) read the setting (10 s), which would mean changing scrapers after their runs | Joseph (C39; Claude recommended) | D16 (`config.json`); §5 Reproducibility ("one config file holds" the shared settings). | Follows |
 | D98 | 320 | **⭐ Scraper (d) part 1 done (Fri Nov 20; planned Sun Nov 22): the quiet-page wait.** Joseph's commit `2dc321c`. On baseline: every page quiet after 3002–3020 ms, no timeouts, 70/70, 3.043 s per page (30.4 s per run). **AI-use disclosure:** apart from the renaming (description and `"scraper": "d"`), the new code in this commit was supplied by Claude: the `WAIT_FOR_QUIET` MutationObserver function (15 lines, from Claude's standalone example of Turn 307), the three `config.json` lines, and the `page.evaluate` call with its two print lines (Turn 317). Joseph placed them, ran the example and the scraper, and checked the results. The midterm says Joseph implements (d)'s "three tricks and the timing rule" (§2), so this part of (d) does not follow that split. It is recorded here and must be stated in the report's AI-use disclosure. For part 2 (hidden elements, CSS order), Claude explains and gives standalone examples, and Joseph writes the (d) code. | Joseph rewrites the wait in his own code | Joseph (placed, ran, verified); Claude (supplied the lines) | §2 (d): "Wait until the page has had no changes for 3 seconds … with a 10-second timeout … I implement the three tricks and the timing rule"; §7 AI-agent plan and disclosure; CLAUDE.md AI-use boundaries. | Deviates (part 1 code supplied by Claude; disclosed) |
+| D99 | 322 | **Claude writes scraper (d)** (Joseph's request, Turn 322: "just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c"). Claude noted that (d) was in the midterm plan as Joseph's code (§2) and that this changes the plan's AI split. **Part 2** (commit `1a86361`): after the quiet wait, (d) reads the live page with one `page.evaluate`. For each label it takes the first visible leaf element whose text is the label, then the visible elements sharing its parent, sorted by computed CSS `order` (ties keep HTML order), and takes the next one as the value. "Visible" means computed `visibility` is `visible` and no element up to the root has `display: none`. Links are followed only if computed style shows them. BeautifulSoup is no longer used. **Cloud check:** 1 run each with the runner: baseline, shuffled and honeypot all 70/70; honeypot 10 pages, 0 trap hits; 3.03 s per page; Test 7's crawl part passes. This matches §4 Hypotheses 1 and 3 for (d). **Outline updated:** CLAUDE.md (Claude may draft (d); Joseph writes (a)–(c)), the README's AI-assistance statement and roadmap, and `SCHEDULE.md` (Tue Nov 24 (d) row: done, C). Still Joseph's: the (d) runs on the laptop, its baseline check, and the Test 3 part (Wed Nov 25). | Joseph writes part 2 with Claude's explanations (the plan) | Joseph (decided); Claude (wrote) | §2 (d) row; §2 AI assistance ("I will write … scrapers (a) through (d)"); §7 AI-agent plan and disclosure. | Deviates (disclosed; Joseph to tell the instructor) |
+| D100 | 322 | **Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py`** (an early version of the Dec 3–4 tables script and figure). It reads `cells.csv` (scoring/results.py), `cost.csv` (user_cost.py) and optionally (c)'s runs, and writes 5 PNG figures (200 dpi) and `tables.md`. Figures: recall by scraper and site (min–max, 10% line); the drop in recall next to WebCloak's published 100%; protection against user cost (the midterm's "one pairing accuracy drop with user cost"); honeypot detection; (c) field by field. Tables: (1) extraction quality, (2) honeypot and speed, (3) user cost, (4) our results next to published ones in the same metric (WebCloak, Beyond BeautifulSoup, Shy Guys, FP-Inconsistent; numbers as in `docs/metrics-plan.md`). Colours are the dataviz reference palette's first 3 slots (validated all-pairs for colour-blind separation). Bars carry value labels, because aqua is below 3:1 contrast. **Dependencies:** matplotlib 3.11.2 and numpy 2.4.6 with their dependencies, pinned in `requirements.txt` at versions that support Python 3.11 (the laptop's): contourpy 1.3.3, not 1.4.0, which needs 3.12. **Tests:** 2 new. Previewed in the cloud with (a)–(c) committed and (d) from the 1-run cloud check. | Wait for Dec 3; draw the figures by hand | Claude (tooling) | §4 "Final outputs"; §5 Analysis; D68, D70; scrum feedback (Nov 16). | Follows (early; Table 4 and Figure 2 are Adds from the scrum feedback, Turn 303) |
 
 ---
 
@@ -454,6 +456,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J318 | 318 | (laptop run of `d_adaptive.py` on baseline: every page quiet after 3002–3020 ms, 70 records) | ⭐ (d) part 1 works; asked for the score output (expect 70/70, about 3 s per page) and to commit (d); next: part 2 |
 | J319 | 319 | (PowerShell: score.py "unrecognized arguments: add scrapers/d_adaptive.py"; nothing staged; push rejected "fetch first") | Explained the three errors; gave the commands one per line, with `git pull` first |
 | J320 | 320 | (score: `d-test-1` 70/70, 3.043 s per page; (d) committed as `2dc321c` and pushed) | ⭐ (d) part 1 done (D98); reviewed the commit; disclosed that its new code came from Claude (Deviates) and recommended Joseph write part 2 himself; next: part 2 |
+| J321 | 321 | ok i merged lets get this scraper d done so we can get some matplotlibs graphs and tables made for monday with relation to the new metris that i can show the scrum meeting professor along with what we have done this week | Plan to Monday; (d) part 2 explained with a tested standalone `getComputedStyle` example; started the figures script |
+| J322 | 322 | just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c | Claude wrote (d) part 2 (D99, Deviates, disclosed), updated the outline, tested (d); figures and tables built (D100) |
 
 ### Questions from Claude
 
@@ -503,7 +507,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 320, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 is done and committed (D98, `2dc321c`; its code was supplied by Claude and is disclosed), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 322, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). Next for Joseph: run (d) 3 times on the 3 conditions on the laptop, then the results CSV and the figures; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14931,3 +14935,68 @@ Checked that the incoming commits change only `config.json` and the log, not `sc
 **Questions Claude asked:** none (the option to rewrite part 1 was offered, not asked).
 
 **Direction and fit:** D98 (Deviates: part 1 code supplied by Claude; disclosed).
+
+### Turn 321 — 2026-11-20 19:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i merged lets get this scraper d done so we can get some matplotlibs graphs and tables made for monday with relation to the new metris that i can show the scrum meeting professor along with what we have done this week
+
+**What Claude did:**
+- Gave the plan to Monday:
+  - Joseph: (d) part 2, then (d)'s runs.
+  - Claude: a matplotlib script for figures and tables, then a "this week" summary.
+- Wrote and ran a standalone example, `d-example/computed_style_demo.py` in the scratchpad (not project code). A toy flex box with CSS `order` and a hidden decoy and link: source order Large, Color, Size, Red, Decoy becomes screen order Color, Red, Size, Large, and only the visible link remains.
+- Explained (d) part 2 in words, for Joseph to write.
+- Started the figures script:
+  - checked matplotlib, numpy and contourpy versions and release dates for Python 3.11;
+  - validated the 3 chart colours with the dataviz skill's script.
+
+The rest of this work is recorded under Turn 322, because Joseph's next message changed who writes (d).
+
+**Claude's answer (summary):**
+- The plan to Monday.
+- The `getComputedStyle` example and its expected output.
+- (d) part 2 in words: for each label, its parent's visible children sorted by computed `order`; visible links only.
+- What to expect: 70/70 on all three sites, with 10 pages on the honeypot.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Superseded by D99 in Turn 322.
+
+### Turn 322 — 2026-11-20 19:24 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c
+
+**What Claude did:**
+- **Answered Joseph's request** to write (d). Noted that (d) was in the midterm plan as Joseph's code (§2). Since this changes the plan's AI split, it is recorded as a disclosed deviation and should be mentioned to the instructor.
+- **Wrote (d) part 2** on Joseph's part 1 file (D99). Committed `1a86361` together with the outline updates in CLAUDE.md, `README.md` and `SCHEDULE.md`.
+- **Tested (d):**
+  - runner, 1 run each: baseline, shuffled and honeypot all 70/70;
+  - `scoring/results.py`: no effect from either defense; honeypot detection 0.00, with 10 pages and no `/trap` request in the log;
+  - Test 7's crawl part passes.
+- **Built `measurement/figures.py` and `measurement/tests/test_figures.py`** (D100), and pinned matplotlib and its dependencies in `requirements.txt`. Checked that the set installs, has no broken requirements, and draws a figure in a clean virtual environment.
+- **Previewed the figures and tables in the cloud**, using the committed (a)–(c) results and (d)'s cloud runs. Looked at every figure and fixed a clipped title, a clipped footnote and an overlapping label, one round of edits per figure.
+- **Ran the test suites:** measurement (with 2 new tests) and scoring pass.
+- Updated `README.md` (usage) and `SCHEDULE.md` (Dec 3 row: first version built). Committed, pushed and opened a pull request.
+
+**Claude's answer (summary):**
+- (d) is written and works in the cloud: 70/70 on all three sites; it skips the trap and passes Test 7.
+- The outline now says Claude wrote (d). It's logged as a disclosed deviation, and Joseph should mention it on Monday.
+- The figures and tables are ready as a script.
+- **Joseph's steps:**
+  1. merge and pull;
+  2. `pip install -r requirements.txt`;
+  3. run (d) 3 times on the 3 sites with the runner (about 5 min);
+  4. build the results CSV over all three folders;
+  5. run the figures script;
+  6. commit.
+- **Offered:** a "this week" summary for the meeting (Word doc or slides).
+
+**Questions Claude asked:** which format for the weekly summary (offered).
+
+**Direction and fit:**
+- D99: Deviates (disclosed).
+- D100: Follows (early). Table 4 and Figure 2 are Adds from the scrum feedback.

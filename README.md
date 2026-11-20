@@ -279,6 +279,21 @@ It writes `results/<date>-user-cost/`:
 - `axe-<condition>.json` and `lighthouse-<condition>.json` with every run;
 - `report.md` and `manifest.json`.
 
+**Figures and tables** from the results (`pip install -r requirements.txt` adds matplotlib):
+
+```
+python scoring/results.py results/2026-11-18-experiment results/2026-11-18-c-all results/2026-11-20-d-all --out results/2026-11-20-results-all
+python measurement/figures.py --cells results/2026-11-20-results-all/cells.csv --cost results/2026-11-20-user-cost-full --fields results/2026-11-18-c-all
+```
+
+It writes `results/<date>-figures/`:
+- `fig1-recall.png`: recall by scraper and site;
+- `fig2-reduction.png`: the drop in recall next to WebCloak's published drop;
+- `fig3-protection-vs-cost.png`: protection against user cost;
+- `fig4-honeypot.png`: honeypot detection;
+- `fig5-fields.png`: (c) field by field on the shuffled site;
+- `tables.md`: Tables 1–4, including the comparison with published work.
+
 **Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
 
 ```
