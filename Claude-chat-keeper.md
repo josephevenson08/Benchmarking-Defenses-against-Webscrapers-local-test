@@ -430,6 +430,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J303 | 303 | should i also generate graphs and tables/visuals at the end to show the differences? | Yes; already planned (§4 final outputs: 3 tables + 1 figure; schedule Dec 3–4); proposed one extra chart comparing with WebCloak, awaiting Joseph's answer |
 | J304 | 304 | if so, can you generate what i have now to see what they look like? | Built a preview page (private artifact) with Figure 2, Tables 1 and 2 and (c)'s per-field chart from the committed Nov 18 runs; Table 3 and Figure 1 await user-cost data |
 | J305 | 305 | can you help me launch my project to show the different scrapers etc | Updated demo guide (Nov 15 version + scraper (c), Ollama checks, the 27-run results and the preview page); commands dry-run in the cloud |
+| J306 | 306 | ok whats next in the milestone | Milestone 3 status on Fri Nov 20: what's done, what's left by owner and date; Claude's results CSV is a day late; proposed: Claude builds the CSV and standard metrics now, Joseph starts (d) part 1 |
 
 ### Questions from Claude
 
@@ -476,7 +477,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 300, end of Wed Nov 18):** Stopped for the day. All results are on `main`. Done today, all ahead of schedule: the experiment runner (D76); the Essential runs, 18/18 (D77); scraper (c) parts 1–3 (D78–D83); ⭐ (c)'s baseline check (D84); results folders keep their logs and seeds (D85); (c)'s trap-page crash fixed (D86, D87); ⭐ (c) on all three conditions, 9/9 (D88: shuffled 48–49/70, honeypot 70/70 with 1 trap hit per run). Next for Joseph: scraper (d) (planned to start Sun Nov 22, can start earlier); optional (c) tidy-up (results are tied to `8e361f3`). Next for Claude, Thu Nov 19: the results CSV (honeypot hits and time per page from the request logs; page requests only), then the standard metrics (Fri Nov 20) and the user-cost runner (Nov 20–21); (c)'s column in the related-work table (Thu Dec 3, can be earlier). Before the next scrum meeting: a simplified one-slide metrics explanation (open item below). Open: the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 306, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). Claude is one day behind: the results CSV (Thu Nov 19) is not built. Next for Claude: the results CSV with the standard metrics (Nov 19–20, together), then the user-cost runner parts 1–2 (Nov 20–21), the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14308,5 +14309,29 @@ Then Joseph's questions.
 Each step has the command, what to expect and what to say. It also offered to update the Word version.
 
 **Questions Claude asked:** whether to turn it into an updated Word doc (offered).
+
+**Direction and fit:** no new decision.
+
+### Turn 306 — 2026-11-20 18:04 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok whats next in the milestone
+
+**What Claude did:**
+- Fetched `main` (PR #46 is not merged yet) and read Milestone 3 in `SCHEDULE.md` against what is done.
+- Rewrote the resume note with the status as of Fri Nov 20.
+
+**Claude's answer (summary):**
+- **Done, all early:** model timing; the runner; the Essential runs (18/18); (c) end to end, including all 9 runs on the three conditions (planned Nov 28).
+- **Behind:** Claude's results CSV (Thu Nov 19), one day late.
+- **Remaining, by owner and date:**
+  - **Claude:** the results CSV with the standard metrics; the user-cost runner (screenshots, pixel diff and SSIM, reading order, HTML size; then Lighthouse and axe-core); the user-cost runs; our column of the related-work table; the honeypot false-positive check.
+  - **Joseph:** scraper (d), in two parts, then the (d) part of Test 3, its baseline check and its runs (time limit Nov 28); Test 7 for (a) and (b) (with Claude); the stub-model parts of Test 7 for (c); the all-cells check (Nov 30).
+  - **Cut-line 2** on Dec 1.
+- **Proposed for today:** Claude builds the CSV and the standard metrics together, and Joseph starts (d) part 1 (the quiet-page wait).
+- Reminder: merge PR #46.
+
+**Questions Claude asked:** whether to start the results CSV now (offered).
 
 **Direction and fit:** no new decision.
