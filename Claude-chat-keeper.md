@@ -129,6 +129,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D98 | 320 | **⭐ Scraper (d) part 1 done (Fri Nov 20; planned Sun Nov 22): the quiet-page wait.** Joseph's commit `2dc321c`. On baseline: every page quiet after 3002–3020 ms, no timeouts, 70/70, 3.043 s per page (30.4 s per run). **AI-use disclosure:** apart from the renaming (description and `"scraper": "d"`), the new code in this commit was supplied by Claude: the `WAIT_FOR_QUIET` MutationObserver function (15 lines, from Claude's standalone example of Turn 307), the three `config.json` lines, and the `page.evaluate` call with its two print lines (Turn 317). Joseph placed them, ran the example and the scraper, and checked the results. The midterm says Joseph implements (d)'s "three tricks and the timing rule" (§2), so this part of (d) does not follow that split. It is recorded here and must be stated in the report's AI-use disclosure. For part 2 (hidden elements, CSS order), Claude explains and gives standalone examples, and Joseph writes the (d) code. | Joseph rewrites the wait in his own code | Joseph (placed, ran, verified); Claude (supplied the lines) | §2 (d): "Wait until the page has had no changes for 3 seconds … with a 10-second timeout … I implement the three tricks and the timing rule"; §7 AI-agent plan and disclosure; CLAUDE.md AI-use boundaries. | Deviates (part 1 code supplied by Claude; disclosed) |
 | D99 | 322 | **Claude writes scraper (d)** (Joseph's request, Turn 322: "just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c"). Claude noted that (d) was in the midterm plan as Joseph's code (§2) and that this changes the plan's AI split. **Part 2** (commit `1a86361`): after the quiet wait, (d) reads the live page with one `page.evaluate`. For each label it takes the first visible leaf element whose text is the label, then the visible elements sharing its parent, sorted by computed CSS `order` (ties keep HTML order), and takes the next one as the value. "Visible" means computed `visibility` is `visible` and no element up to the root has `display: none`. Links are followed only if computed style shows them. BeautifulSoup is no longer used. **Cloud check:** 1 run each with the runner: baseline, shuffled and honeypot all 70/70; honeypot 10 pages, 0 trap hits; 3.03 s per page; Test 7's crawl part passes. This matches §4 Hypotheses 1 and 3 for (d). **Outline updated:** CLAUDE.md (Claude may draft (d); Joseph writes (a)–(c)), the README's AI-assistance statement and roadmap, and `SCHEDULE.md` (Tue Nov 24 (d) row: done, C). Still Joseph's: the (d) runs on the laptop, its baseline check, and the Test 3 part (Wed Nov 25). | Joseph writes part 2 with Claude's explanations (the plan) | Joseph (decided); Claude (wrote) | §2 (d) row; §2 AI assistance ("I will write … scrapers (a) through (d)"); §7 AI-agent plan and disclosure. | Deviates (disclosed; Joseph to tell the instructor) |
 | D100 | 322 | **Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py`** (an early version of the Dec 3–4 tables script and figure). It reads `cells.csv` (scoring/results.py), `cost.csv` (user_cost.py) and optionally (c)'s runs, and writes 5 PNG figures (200 dpi) and `tables.md`. Figures: recall by scraper and site (min–max, 10% line); the drop in recall next to WebCloak's published 100%; protection against user cost (the midterm's "one pairing accuracy drop with user cost"); honeypot detection; (c) field by field. Tables: (1) extraction quality, (2) honeypot and speed, (3) user cost, (4) our results next to published ones in the same metric (WebCloak, Beyond BeautifulSoup, Shy Guys, FP-Inconsistent; numbers as in `docs/metrics-plan.md`). Colours are the dataviz reference palette's first 3 slots (validated all-pairs for colour-blind separation). Bars carry value labels, because aqua is below 3:1 contrast. **Dependencies:** matplotlib 3.11.2 and numpy 2.4.6 with their dependencies, pinned in `requirements.txt` at versions that support Python 3.11 (the laptop's): contourpy 1.3.3, not 1.4.0, which needs 3.12. **Tests:** 2 new. Previewed in the cloud with (a)–(c) committed and (d) from the 1-run cloud check. | Wait for Dec 3; draw the figures by hand | Claude (tooling) | §4 "Final outputs"; §5 Analysis; D68, D70; scrum feedback (Nov 16). | Follows (early; Table 4 and Figure 2 are Adds from the scrum feedback, Turn 303) |
+| D101 | 323 | **⭐ Scraper (d): baseline check passed and runs on all three conditions done (Fri Nov 20; planned Wed Nov 25 and Sat Nov 28).** Joseph's laptop, commit `2065190`, runner `--scrapers d`: 9/9 runs, 70/70 on baseline, shuffled and honeypot in every run, honeypot 10 pages each (no `/trap`), 3.03–3.04 s per page (31 s per run). `scoring/results.py` over the three folders (36 runs): (d) shuffled and honeypot "no effect", honeypot detection 0.00 (evasion 1.00). **Hypotheses (§4):** (1) shuffling lowers (a) and (b) ("stops", 94.3% drop); (d) is unaffected (0.0%); for (c), which the midterm left uncertain, it "reduces" (30.5%). (3) The honeypot leaves accuracy unchanged and catches (a), (b) and (c) in every run, and (d) in none. (4) Shuffling: pixel difference 0, reading order 70/70, axe-core unchanged. (5) "No single defense stops all five scrapers" holds so far: shuffling stops only (a) and (b). (2) Poisoning is not built, so it is untested. Figures and tables made on the laptop: `results/2026-11-20-figures/` (D100). Still open for (d): its part of Test 3. | — | Joseph (ran); Claude (scraper (d), D99; tooling) | §4 Hypotheses 1–5; §4 item 10 (baseline check); §5 item 9 (3 runs per cell); §7 Milestone 3 (Ambitious, as re-planned). | Follows |
+| D102 | 328 | **Cross-check of the results: `measurement/cross_check.py`** (Joseph's request: "do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense"). It recounts from the raw files without `scoring/score.py`, `scoring/results.py` or `user_cost.py`. **How:** the matching rules are written again from `docs/scraper-output.md`, and the independent counter is first run on the hand-counted Test 2 fixture (63 correct, 4 wrong of which 2 fake and 1 malformed, 3 missing: it agrees). Per run it recounts correct/wrong/missing, precision, F1, honeypot hits, page requests (output vs log), time per page, run ID and scraper label, and that every request carries the run ID. Per cell it recomputes mean/min/max recall, precision, F1, success rate, drop in recall, verdict and detection rate. It also checks that every log line belongs to a run of its condition, and that each condition's pages and seeds are identical in the 3 folders. For user cost it regenerates each condition for HTML size, compares screenshots pixel by pixel, reads reading order from the HTML's CSS `order`, and recomputes axe counts and Lighthouse medians and changes from every saved run. **Result** (36 runs, user cost): 541 of 541 checks agree, after allowing for the CSVs' 6-significant-digit rounding (5 values differed only in the 7th digit). Planted errors (an extra correct field, a false trap hit, a wrong verdict) are all caught. Also checked: no change to `site/` or `data/` between the result commits (only the unused timeout setting); no scraper changed after its runs. Report committed as `results/2026-11-20-cross-check/report.md`. 5 tests. | Trust the scoring scripts' own tests | Claude (tooling) | §5 Test 2 (metric calculation); §5 "I check the output JSON and saved stats"; §7 verification of AI-written code. | Adds (a second, independent check) |
 
 ---
 
@@ -458,6 +460,12 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J320 | 320 | (score: `d-test-1` 70/70, 3.043 s per page; (d) committed as `2dc321c` and pushed) | ⭐ (d) part 1 done (D98); reviewed the commit; disclosed that its new code came from Claude (Deviates) and recommended Joseph write part 2 himself; next: part 2 |
 | J321 | 321 | ok i merged lets get this scraper d done so we can get some matplotlibs graphs and tables made for monday with relation to the new metris that i can show the scrum meeting professor along with what we have done this week | Plan to Monday; (d) part 2 explained with a tested standalone `getComputedStyle` example; started the figures script |
 | J322 | 322 | just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c | Claude wrote (d) part 2 (D99, Deviates, disclosed), updated the outline, tested (d); figures and tables built (D100) |
+| J323 | 323 | (laptop: (d) 9/9 runs 70/70; results CSV over 36 runs; figures written) | ⭐ (d) done on all three conditions (D101); the hypotheses checked; commit the three folders; asked the format for the weekly summary |
+| J324 | 324 | (`git add` of the three folders, with "LF will be replaced by CRLF" warnings) | Explained the warnings (harmless: Git on Windows converts line endings in the working copy only); continue with commit and push |
+| J325 | 325 | (`git commit`: packing 955 objects, then "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)" repeated) | OneDrive locking Git's clean-up (as in Turn 164): Ctrl+C is safe, check the commit, push; ways to stop it recurring |
+| J326 | 326 | ok i pushed | Checked the three folders on `main` and the laptop's figures; asked the summary's format (C40); made the Word doc "scrum meeting 11-23" |
+| J327 | 327 | make it less wordy and barebones, i just want the graphs and tables, with each saying what they mean etc, what we have done this week, what the new metrics are, how they compare to published work, and then my results for them so far, or what do you think/? | Rebuilt the Word doc in 5 short sections, each table and figure with a "Meaning" line |
+| J328 | 328 | i also want you to do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense. | Independent cross-check of every run and metric (D102): 541/541 agree; planted errors caught |
 
 ### Questions from Claude
 
@@ -502,12 +510,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C37 | 307 | When (d)'s quiet-page wait reaches its 10 s timeout, what should (d) do? Options (Turn 317): "Read anyway, print it (Recommended)", "Read anyway, add a field", "Fail the page". | Read anyway, print it. | Closed (Turn 317) → D95 |
 | C38 | 308 | Reading-order rule (§3: Joseph specifies and reviews it). Options (Turn 317): "Label or value moved (Recommended)", "Count elements separately". | Label or value moved. | Closed (Turn 317) → D96 |
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
+| C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
 
 ---
 
 ## Open items
 
-**▶ Resume here (Turn 322, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). Next for Joseph: run (d) 3 times on the 3 conditions on the laptop, then the results CSV and the figures; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 328, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). (d) ran 9/9 on the laptop (D101; results CSV over 36 runs and figures made; three folders to commit). The Mon Nov 23 scrum summary is made (Word doc, barebones version Turn 327; not in the repository). All results cross-checked independently: 541/541 agree (D102). Next for Joseph: the (d) part of Test 3; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -525,7 +534,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 **Laptop hardware (Turn 255), for the reproducibility manifest (§5):** Intel Core i7-1165G7 @ 2.80 GHz; 16.0 GB RAM (3200 MT/s); Intel Iris Xe graphics (128 MB); 477 GB storage (110 GB free); Windows (version to record). Ollama 0.40.16.
 
-**Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
+**Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent. **Happened again in Turn 325:** after the commit of 955 new files, Git's automatic clean-up (`gc --auto`) packed the objects, then could not delete the loose-object folders (`.git/objects/00`, `01`, …) and asked "Should I try again? (y/n)" for each. Fix: Ctrl+C is safe at that point (the commit and the pack are already written). To prevent it, pause OneDrive while using Git, move the project out of OneDrive, or turn automatic clean-up off for this repository (`git config gc.auto 0`).
 
 **For the experiment runner (found Turn 131):** a failed or repeated run leaves extra request-log lines under the same run ID (e.g. `b-baseline-1` on Nov 6). Start each experiment with a fresh log, or make the log-based measures handle repeated run IDs. **Resolved (Turn 264, D76):** the runner gives each condition a fresh request log and refuses a results folder that already has files.
 
@@ -15000,3 +15009,246 @@ The rest of this work is recorded under Turn 322, because Joseph's next message 
 **Direction and fit:**
 - D99: Deviates (disclosed).
 - D100: Follows (early). Table 4 and Figure 2 are Adds from the scrum feedback.
+
+### Turn 323 — 2026-11-20 19:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers d --out results/2026-11-20-d-all
+> 9 runs: 3 conditions × 1 scrapers × 3 runs
+>   d-baseline-1 ... 70/70
+>   d-baseline-2 ... 70/70
+>   d-baseline-3 ... 70/70
+>   d-shuffled-1 ... 70/70
+>   d-shuffled-2 ... 70/70
+>   d-shuffled-3 ... 70/70
+>   d-honeypot-1 ... 70/70
+>   d-honeypot-2 ... 70/70
+>   d-honeypot-3 ... 70/70
+>
+> # Experiment runs
+>
+> Run 2026-11-20T13:34:05 → 2026-11-20T13:38:50 · commit 2065190 · scrapers d · conditions baseline, shuffled, honeypot · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `d-baseline-1` | 0 | 31.808 | 70/70 = 1.000 | 10 | 3.038 s |
+> | `d-baseline-2` | 0 | 31.412 | 70/70 = 1.000 | 10 | 3.035 s |
+> | `d-baseline-3` | 0 | 31.358 | 70/70 = 1.000 | 10 | 3.032 s |
+> | `d-shuffled-1` | 0 | 31.388 | 70/70 = 1.000 | 10 | 3.037 s |
+> | `d-shuffled-2` | 0 | 31.329 | 70/70 = 1.000 | 10 | 3.038 s |
+> | `d-shuffled-3` | 0 | 31.199 | 70/70 = 1.000 | 10 | 3.036 s |
+> | `d-honeypot-1` | 0 | 31.193 | 70/70 = 1.000 | 10 | 3.035 s |
+> | `d-honeypot-2` | 0 | 31.171 | 70/70 = 1.000 | 10 | 3.035 s |
+> | `d-honeypot-3` | 0 | 31.262 | 70/70 = 1.000 | 10 | 3.038 s |
+>
+> **9 of 9 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python scoring/results.py results/2026-11-18-experiment results/2026-11-18-c-all results/2026-11-20-d-all --out results/2026-11-20-results-all
+> # Results
+>
+> 36 runs from: `results/2026-11-18-experiment`, `results/2026-11-18-c-all`, `results/2026-11-20-d-all`.
+> Definitions: `scoring/results.py` and `docs/metrics-plan.md`.
+>
+> | Scraper | Condition | Correct per run | Recall (min–max) | Precision | F1 | ESR | Reduction | Verdict | Honeypot detection | Time per page |
+> |---|---|---|---|---|---|---|---|---|---|---|
+> | (a) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 0.012 s |
+> | (a) | shuffled | 4 4 4 | 5.7% | 0.061 | 0.059 | 0.00 | 94.3% | stops | 0.00 | 0.016 s |
+> | (a) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 0.017 s |
+> | (b) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 0.023 s |
+> | (b) | shuffled | 4 4 4 | 5.7% | 0.061 | 0.059 | 0.00 | 94.3% | stops | 0.00 | 0.022 s |
+> | (b) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 0.022 s |
+> | (c) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 5.746 s |
+> | (c) | shuffled | 48 49 49 | 69.5% (68.6%–70.0%) | 0.807 | 0.747 | 0.00 | 30.5% | reduces | 0.00 | 5.451 s |
+> | (c) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 5.356 s |
+> | (d) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 3.035 s |
+> | (d) | shuffled | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 0.00 | 3.037 s |
+> | (d) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 0.00 | 3.036 s |
+>
+> Failed runs (scored as finding nothing): none.
+> Runs whose request log shows a different page count from their output: none.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/figures.py --cells results/2026-11-20-results-all/cells.csv --cost results/2026-11-20-user-cost-full --fields results/2026-11-18-c-all --out results/2026-11-20-figures
+> Figures and tables written to results\2026-11-20-figures
+>   fig1-recall.png
+>   fig2-reduction.png
+>   fig3-protection-vs-cost.png
+>   fig4-honeypot.png
+>   fig5-fields.png
+>   tables.md
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Fetched `main`: PR #55 is merged (`2065190`). The three new results folders aren't committed yet. Merged `main` into the branch.
+- Read the laptop output:
+  - (d), 9/9 runs: 70/70 on every condition, 10 pages, 3.03–3.04 s per page;
+  - `scoring/results.py` over 36 runs: (a)–(c) the same as before; (d) "no effect" on shuffled and honeypot, detection 0.00;
+  - `measurement/figures.py`: 5 figures and `tables.md` written.
+- Checked the results against the midterm's hypotheses (D101).
+- `SCHEDULE.md`: ticked (d)'s baseline check (Wed Nov 25) and its runs (Sat Nov 28) as done early.
+- `README.md`: updated the roadmap.
+- Committed, pushed and opened a pull request.
+
+**Claude's answer (summary):**
+- ⭐ (d) is done on all three conditions, 8 days before its time limit, and its baseline check passed.
+- Every hypothesis that could be tested came out as predicted. For (c), which the midterm left open, shuffling only reduces it.
+- **Joseph's steps:** commit the three folders, then merge the PR.
+- **Asked:** Word doc or slides for the weekly summary.
+- What's left in Milestone 3: (d)'s Test 3 part, Test 7's stub part for (c), and the honeypot false-positive check.
+
+**Questions Claude asked:** the format for the weekly summary (Word doc or slides; open).
+
+**Direction and fit:** D101 (Follows).
+
+### Turn 324 — 2026-11-20 19:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git add results/2026-11-20-d-all results/2026-11-20-results-all results/2026-11-20-figures
+> warning: in the working copy of 'results/2026-11-20-d-all/conditions/baseline.manifest.json', LF will be replaced by CRLF the next time Git touches it
+> warning: in the working copy of 'results/2026-11-20-d-all/conditions/honeypot.manifest.json', LF will be replaced by CRLF the next time Git touches it
+> warning: in the working copy of 'results/2026-11-20-d-all/conditions/shuffled.manifest.json', LF will be replaced by CRLF the next time Git touches it
+> warning: in the working copy of 'results/2026-11-20-d-all/logs/baseline.jsonl', LF will be replaced by CRLF the next time Git touches it
+> warning: in the working copy of 'results/2026-11-20-d-all/logs/honeypot.jsonl', LF will be replaced by CRLF the next time Git touches it
+> warning: in the working copy of 'results/2026-11-20-d-all/logs/shuffled.jsonl', LF will be replaced by CRLF the next time Git touches it
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read the `git add` output. The warnings are Git on Windows (`core.autocrlf`) saying it will use Windows line endings (CRLF) in the working copy. The repository keeps the files as they are. JSON and JSONL read the same with either line ending: Turn 309 showed a laptop CSV identical to the cloud's apart from line endings. Nothing is wrong with the data.
+
+**Claude's answer (summary):**
+- The warnings are harmless and can be ignored.
+- Next commands, one at a time: `git commit -m "d runs, results CSV and figures"`, then `git push`.
+- Merge PR #56.
+- The weekly summary format (Word doc or slides) is still open.
+
+**Questions Claude asked:** the format for the weekly summary (still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 325 — 2026-11-20 19:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git commit -m "d runs, results CSV and figures"
+> Enumerating objects: 1050, done.
+> Counting objects: 100% (955/955), done.
+> Delta compression using up to 8 threads
+> Compressing objects: 100% (948/948), done.
+> Writing objects: 100% (955/955), done.
+> Total 955 (delta 663), reused 0 (delta 0), pack-reused 0 (from 0)
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/01' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/02' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/03' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/04' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/05' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/06' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/07' failed. Should I try again? (y/n)
+
+**What Claude did:** Recognised the OneDrive problem logged in Turn 164.
+- The commit added about 950 files, which made Git run its automatic clean-up (`gc --auto`): it packs loose objects into one file, then deletes the loose-object folders `.git/objects/00` … `ff`.
+- OneDrive, which syncs the project folder, keeps those folders locked, so Git asks whether to retry each of the 256.
+- The commit and the new pack are written before the deletion step, so stopping it loses nothing. The leftover loose objects are duplicates that a later clean-up removes.
+- Updated the open item.
+
+**Claude's answer (summary):**
+- Press Ctrl+C (safe), then check `git log --oneline -1` shows "d runs, results CSV and figures", then `git push`.
+- **To stop it recurring:** pause OneDrive while using Git, turn off automatic clean-up for this repository (`git config gc.auto 0`), or move the project out of OneDrive.
+
+**Questions Claude asked:** the weekly summary format (still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 326 — 2026-11-20 19:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i pushed
+
+**What Claude did:**
+- Fetched `main`. Joseph's `8e20c37` "d runs, results CSV and figures" adds `results/2026-11-20-d-all/` (26 files), `results/2026-11-20-results-all/` (3) and `results/2026-11-20-figures/` (6). Merged `main` into the branch.
+- Looked at the laptop's Figure 1: it matches the cloud preview. Checked that `tables.md` has (d)'s 3 runs per condition (70 70 70; detection 0.00; 3.035 s per page, 253× (a)).
+- Asked C40 (format).
+- **Made the Word document** `scrum meeting 11-23.docx` with the docx skill (docx-js script in the scratchpad `scrum-1123/make.js`; not committed). It has 4 pages, US Letter, Arial:
+  - In short;
+  - What I did since Nov 16 (a table by day);
+  - Results: 36 runs (a table with verdicts, and Figure 1);
+  - Comparison with published work (Figure 2 and a 4-row table: WebCloak, Beyond BeautifulSoup, Shy Guys);
+  - Figure 3 (honeypot detection);
+  - Cost to real visitors (table);
+  - Hypothesis check (table);
+  - Use of AI (Claude built the site and tools and, at Joseph's request, wrote scraper (d); a few Claude-suggested lines in Joseph's code are logged);
+  - Next, and three questions for the professor (the WebCloak comparison, Claude writing (d), poisoning next).
+
+  The figures come from Joseph's committed `results/2026-11-20-figures/`; every number comes from the committed results.
+- Rendered it to PDF and looked at every page. Fixed two tables that split across pages (kept each on one page).
+- Sent the file.
+
+**Claude's answer (summary):** The Word doc is ready to review and print. It keeps to simple charts and tables, and covers the work since the Nov 16 meeting.
+
+**Questions Claude asked:** C40 (format). Joseph answered with a Word doc, simple graphs and tables, and what was done since Monday.
+
+**Direction and fit:** no new decision. The summary reports D66–D101; its "Use of AI" section carries the D98 and D99 disclosure (§7).
+
+### Turn 327 — 2026-11-20 19:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> make it less wordy and barebones, i just want the graphs and tables, with each saying what they mean etc, what we have done this week, what the new metrics are, how they compare to published work, and then my results for them so far, or what do you think/?
+
+**What Claude did:** Agreed with the barebones plan and rebuilt `scrum meeting 11-23.docx` (scratchpad `scrum-1123/make.js`; the first version is kept as `make-v1.js`). It now has 5 sections:
+1. **This week:** a 4-row table.
+2. **New metrics:** each metric, what it means, and the paper that uses it; plus one line on the midterm metrics that were kept.
+3. **Results so far:** the recall grid, Figure 1, and the new metrics on the shuffled site, each with a "Meaning" line.
+4. **Compared with published work:** Figure 2, a table, and Figure 3 (honeypot detection).
+5. **Cost to real visitors:** a table.
+
+A one-line note says Claude wrote (d) at Joseph's request. The long introduction, the hypothesis table, the "Next" section and the questions were dropped. Rendered and checked: each table now stays on the same page as its "Meaning" line, which puts each section on its own page (4 pages). Every number was checked against `cells.csv` and `cost.csv`, and again by the cross-check (Turn 328).
+
+**Claude's answer (summary):** The barebones version is sent. The things dropped (the hypothesis check, the questions for the professor) can be raised out loud.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 328 — 2026-11-20 19:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i also want you to do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense.
+
+**What Claude did:**
+- **Checked what produced the results:**
+  - no change to `site/` or `data/` between the result commits `defff7a` and `2065190` (only `config.json`'s unused timeout);
+  - no scraper changed after its runs;
+  - every output's run ID and scraper match its file.
+- **Wrote `measurement/cross_check.py`** (D102) and `measurement/tests/test_cross_check.py` (5 tests).
+- **Ran it** on the 3 runner folders, `results-all` and `user-cost-full`:
+  - first pass: 536 of 541 agreed, and all 5 differences were the CSVs' 6-digit rounding;
+  - after allowing for that rounding: 541 of 541.
+- **Proved the check can fail:** a copy of the results with 3 planted errors was flagged on exactly those 3.
+- **Spot-checked by hand:**
+  - (a)'s 4 correct fields on shuffled were right by chance (for example p5's price);
+  - on shuffled, (c) put a1's summary text into its title and left the summary blank.
+- Wrote the report to `results/2026-11-20-cross-check/`.
+- Updated `README.md` (usage) and `SCHEDULE.md` (Mon Nov 30 row).
+- Committed, pushed and updated the pull request.
+
+**Claude's answer (summary):**
+- Every metric and every tally checks out: 541 of 541.
+- The tally for each scraper and defense, and how the check works.
+- It is independent: the rules were written again from the document, tested on Joseph's hand-counted fixture, and shown to catch planted errors.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D102 (Adds).

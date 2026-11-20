@@ -126,14 +126,14 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | **Tue Nov 24** | ✅ (done early, Fri Nov 20) Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. Harness built early (Fri Nov 20): `measurement/test7.py` (D93), 9 tests; cloud run passes for (a), (b) and (c) (24 s). ⭐ Laptop run passes for (a) and (b) (commit `86db946`). | J + C |
 | | User-cost runs for each condition. | C |
 | | (A) ✅ (done early, Fri Nov 20) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. **Written by Claude at Joseph's request** (D99, a change from the midterm's §2 split). Cloud check, 1 run each: 70/70 on baseline, shuffled and honeypot (10 pages, 0 trap hits); Test 7 crawl part passes. | C (D99) |
-| **Wed Nov 25** | (A) The (d) part of Test 3; (d) baseline check (3 runs at ≥ 90%). | J |
+| **Wed Nov 25** | (A) The (d) part of Test 3; ✅ (done early, Fri Nov 20) (d) baseline check (3 runs at ≥ 90%): `d-baseline-1/2/3` all 70/70 (D101). Still to do: the (d) part of Test 3. | J |
 | | Related-work table (`docs/metrics-plan.md`): the published side is already drafted from the papers; fill in our column with the Essential results ((a) and (b)). | C drafts, J reviews |
 | **Thu Nov 26** | **Thanksgiving: off.** | — |
 | **Fri Nov 27** | Light day or off. | — |
-| **Sat Nov 28** | (A) Runs: (c) (if usable) and (d) × baseline, shuffled and honeypot × 3 runs. **Time limit for (d).** ✅ (c) part done early (Wed Nov 18, D88): 9/9 runs, commit `8e361f3`: baseline 70/70 × 3; shuffled 48, 49, 49/70 (0.686–0.700: reduces, does not stop); honeypot 70/70 × 3 with 11 pages (the trap). Results folder `results/2026-11-18-c-all/` to commit. The first attempt (`results/2026-11-18-c-defended/`) crashed on the trap page and led to the fix in `8e361f3` (D86, D87). (d) still to run. | J |
+| **Sat Nov 28** | (A) Runs: (c) (if usable) and (d) × baseline, shuffled and honeypot × 3 runs. **Time limit for (d).** ✅ (c) part done early (Wed Nov 18, D88): 9/9 runs, commit `8e361f3`: baseline 70/70 × 3; shuffled 48, 49, 49/70 (0.686–0.700: reduces, does not stop); honeypot 70/70 × 3 with 11 pages (the trap). Results folder `results/2026-11-18-c-all/` to commit. The first attempt (`results/2026-11-18-c-defended/`) crashed on the trap page and led to the fix in `8e361f3` (D86, D87). ✅ (d) part done early (Fri Nov 20, D101): 9/9 runs, commit `2065190`: 70/70 on baseline, shuffled and honeypot in every run; honeypot 10 pages and no trap hit; 3.03–3.04 s per page. Results folder `results/2026-11-20-d-all/`. | J |
 | **Sun Nov 29** | (A) The stub-model parts of Test 7 for (c). | J + C |
 | | Honeypot false-positive check: a human-like visitor that clicks only visible links should never hit the trap (D68). | C |
-| **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. | J |
+| **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. (Helped by `measurement/cross_check.py`, D102: on Nov 20 it recounted all 36 runs and the user-cost measures from the raw files, and all 541 checks agreed.) | J |
 | **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. Poisoning, (e) and the tarpit start only if (c) and (d) finished early. | J |
 
 ---
