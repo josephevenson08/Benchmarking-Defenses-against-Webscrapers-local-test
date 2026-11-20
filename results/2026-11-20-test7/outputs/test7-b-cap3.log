@@ -1,0 +1,5 @@
+http://127.0.0.1:50659/ 3 run=test7-b-cap3 ['http://127.0.0.1:50659/']
+200 http://127.0.0.1:50659/
+200 http://127.0.0.1:50659/t7/a
+404 http://127.0.0.1:50659/t7/missing
+0 records written to C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-20-test7\outputs\test7-b-cap3.json

@@ -1,0 +1,29 @@
+{
+  "run": {
+    "run_id": "test7-a-cap3",
+    "scraper": "a",
+    "start_url": "http://127.0.0.1:50645/",
+    "page_cap": 3,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-20T19:10:49.470210+00:00",
+    "seconds": 0.044
+  },
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/t7/a",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/t7/missing",
+      "status": 404,
+      "error": null
+    }
+  ],
+  "records": []
+}

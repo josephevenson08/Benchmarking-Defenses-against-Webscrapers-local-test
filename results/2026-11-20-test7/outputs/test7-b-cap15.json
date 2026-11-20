@@ -1,0 +1,39 @@
+{
+  "run": {
+    "run_id": "test7-b-cap15",
+    "scraper": "b",
+    "start_url": "http://127.0.0.1:50659/",
+    "page_cap": 15,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-20T19:10:52.631949+00:00",
+    "seconds": 5.23
+  },
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/t7/a",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/t7/missing",
+      "status": 404,
+      "error": null
+    },
+    {
+      "path": "/t7/slow",
+      "status": null,
+      "error": "timeout"
+    },
+    {
+      "path": "/t7/b",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": []
+}

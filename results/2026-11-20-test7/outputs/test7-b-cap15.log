@@ -1,0 +1,7 @@
+http://127.0.0.1:50659/ 15 run=test7-b-cap15 ['http://127.0.0.1:50659/']
+200 http://127.0.0.1:50659/
+200 http://127.0.0.1:50659/t7/a
+404 http://127.0.0.1:50659/t7/missing
+timeout http://127.0.0.1:50659/t7/slow
+200 http://127.0.0.1:50659/t7/b
+0 records written to C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-20-test7\outputs\test7-b-cap15.json

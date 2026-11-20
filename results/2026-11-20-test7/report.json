@@ -1,0 +1,163 @@
+{
+  "test": "Test 7, crawl part",
+  "run_at": "2026-11-20T13:10:42",
+  "commit": "86db946",
+  "slow_seconds": 12,
+  "scrapers": [
+    "a",
+    "b"
+  ],
+  "results": [
+    {
+      "scraper": "a",
+      "run_id": "test7-a-cap15",
+      "page_cap": 15,
+      "exit_code": 0,
+      "wall_s": 6.7,
+      "pages": [
+        [
+          "/",
+          200,
+          null
+        ],
+        [
+          "/t7/a",
+          200,
+          null
+        ],
+        [
+          "/t7/missing",
+          404,
+          null
+        ],
+        [
+          "/t7/slow",
+          null,
+          "timeout"
+        ],
+        [
+          "/t7/b",
+          200,
+          null
+        ]
+      ],
+      "checks": {
+        "finished without crashing": true,
+        "every page visited": true,
+        "no page visited twice (no loop)": true,
+        "404 recorded": true,
+        "timeout recorded": true,
+        "kept going after the timeout": true,
+        "other pages loaded": true
+      },
+      "passed": true
+    },
+    {
+      "scraper": "a",
+      "run_id": "test7-a-cap3",
+      "page_cap": 3,
+      "exit_code": 0,
+      "wall_s": 0.38,
+      "pages": [
+        [
+          "/",
+          200,
+          null
+        ],
+        [
+          "/t7/a",
+          200,
+          null
+        ],
+        [
+          "/t7/missing",
+          404,
+          null
+        ]
+      ],
+      "checks": {
+        "finished without crashing": true,
+        "stopped at the page cap (3)": true,
+        "started at /": true,
+        "no page visited twice": true
+      },
+      "passed": true
+    },
+    {
+      "scraper": "b",
+      "run_id": "test7-b-cap15",
+      "page_cap": 15,
+      "exit_code": 0,
+      "wall_s": 8.05,
+      "pages": [
+        [
+          "/",
+          200,
+          null
+        ],
+        [
+          "/t7/a",
+          200,
+          null
+        ],
+        [
+          "/t7/missing",
+          404,
+          null
+        ],
+        [
+          "/t7/slow",
+          null,
+          "timeout"
+        ],
+        [
+          "/t7/b",
+          200,
+          null
+        ]
+      ],
+      "checks": {
+        "finished without crashing": true,
+        "every page visited": true,
+        "no page visited twice (no loop)": true,
+        "404 recorded": true,
+        "timeout recorded": true,
+        "kept going after the timeout": true,
+        "other pages loaded": true
+      },
+      "passed": true
+    },
+    {
+      "scraper": "b",
+      "run_id": "test7-b-cap3",
+      "page_cap": 3,
+      "exit_code": 0,
+      "wall_s": 1.18,
+      "pages": [
+        [
+          "/",
+          200,
+          null
+        ],
+        [
+          "/t7/a",
+          200,
+          null
+        ],
+        [
+          "/t7/missing",
+          404,
+          null
+        ]
+      ],
+      "checks": {
+        "finished without crashing": true,
+        "stopped at the page cap (3)": true,
+        "started at /": true,
+        "no page visited twice": true
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}
