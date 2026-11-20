@@ -167,7 +167,7 @@ npm test                       # checks for the generator and server
 
 ```bash
 python scoring/score.py <scraper output.json> [--fakes fakes.json] [--records records.csv] [--json]
-python -m unittest discover -s scoring/tests -t .   # 24 checks, including the hand-calculated Test 2
+python -m unittest discover -s scoring/tests -t .   # 34 checks, including the hand-calculated Test 2
 ```
 
 The scoring rules and the output format scrapers must write are in [`docs/scraper-output.md`](docs/scraper-output.md).
@@ -237,6 +237,19 @@ For each condition it rebuilds the site, starts the server on port 3100 with a f
 
 It won't write into a folder that already has files, so earlier runs never get mixed in.
 
+**Results CSV** with the standard metrics, from one or more runner folders (each run must come from only one folder):
+
+```
+python scoring/results.py results/2026-11-18-experiment results/2026-11-18-c-all --out results/2026-11-20-results
+```
+
+It scores every run with `scoring/score.py` and reads each condition's request log. It writes:
+- `results.csv`: one row per run. Accuracy (= recall), precision, F1, complete run, fake-value rate, time per page, page errors, plus page requests, honeypot hits and mean server response time from the log.
+- `cells.csv`: one row per scraper and condition. Mean and min–max, extraction success rate, relative reduction against that scraper's baseline, the midterm's verdict (stops, reduces or no effect), the baseline check, and honeypot detection and evasion rates.
+- `summary.md`: the cells as a table.
+
+The definitions are at the top of `scoring/results.py` and in [`docs/metrics-plan.md`](docs/metrics-plan.md). A run that crashed is scored as finding nothing and listed as failed.
+
 **Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
 
 ```
@@ -293,9 +306,9 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 
 ### Milestone 3: Nov 18 – Dec 1
 Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptive scraper (d), come next among the Ambitious work, and the metrics gain standard, comparable measures. See `SCHEDULE.md`.
-- [ ] Experiment runner (done Nov 18: `measurement/run_experiment.py`) and results CSV (honeypot hits and time per page from the request log)
+- [x] Experiment runner (Nov 18: `measurement/run_experiment.py`) and results CSV (Nov 20: `scoring/results.py`, honeypot hits and page requests from the request log)
 - [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order)
-- [ ] Standard metrics next to accuracy and fake-value rate: field-level precision, recall and F1; extraction success rate; relative reduction against baseline; honeypot detection, evasion and false-positive rates; HTML size (plan: `docs/metrics-plan.md`)
+- [ ] Standard metrics next to accuracy and fake-value rate (plan: `docs/metrics-plan.md`). Done Nov 20 in `scoring/results.py`: field-level precision, recall and F1, extraction success rate, relative reduction against baseline, honeypot detection and evasion rates. Still to come: the false-positive rate (Nov 29) and HTML size (user-cost runner)
 - [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
 - [ ] Test 7 for (a) and (b) (Nov 24)
 - [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22); runs on all three conditions done Nov 18 (planned Nov 28): shuffled 48–49/70, honeypot 70/70 with the trap visited
