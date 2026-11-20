@@ -73,8 +73,8 @@ def serve_site(slow_seconds):
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)
-            except (BrokenPipeError, ConnectionResetError):
-                pass  # the scraper gave up on the slow page; that is the point
+            except ConnectionError:
+                pass  # the scraper gave up on the slow page, which is the point (Windows reports it as ConnectionAbortedError)
 
         def log_message(self, *args):
             pass

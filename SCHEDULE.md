@@ -93,9 +93,9 @@ Day-by-day plan from **Mon Oct 26** to the **Dec 10** deadline. It is built from
 
 ## Milestone 3 · Nov 17 – Dec 1 · Essential experiment, user cost, then (c) and (d)
 
-⭐ **Done when** (§7, unchanged):
-- The results CSV has accuracy, honeypot hits and time per page for every cell, plus user-cost rows for each condition.
-- Test 7 passes for the (a) and (b) crawl loops.
+⭐ **Done when** (§7, unchanged), ✅ **met on Fri Nov 20** (D94):
+- The results CSV has accuracy, honeypot hits and time per page for every cell, plus user-cost rows for each condition. ✅ `results/2026-11-20-results/` and `results/2026-11-20-user-cost-full/`.
+- Test 7 passes for the (a) and (b) crawl loops. ✅ Laptop run, Fri Nov 20.
 
 **Done when, for the Ambitious work as re-planned** (§1 items 3 and 4, narrowed by D66–D67):
 - (c) passes its baseline check (3 runs at ≥ 90%) and runs 3 times on baseline, shuffled and honeypot, or is reported as "not usable".
@@ -123,7 +123,7 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | **Sun Nov 22** | (A) ✅ (done early, Wed Nov 18) Scraper (c) baseline check: 3 runs at ≥ 90%, or reported as not usable. **Time limit for (c).** ⭐ Passed (D84): `c-baseline-1/2/3` all 70/70 (1.000), 5.3–5.7 s per page, 54–58 s per run, commit `ba437ad`, model `llama3.2:3b`. Results folder `results/2026-11-18-c-baseline/` to commit. | J |
 | | (A) Start scraper (d): wait until the page has had no changes for 3 s, with a 10 s timeout. | J |
 | **Mon Nov 23** | ✅ (done early, Wed Nov 18) **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs, with the runner. Check the outputs. ⭐ 18/18 runs on the laptop (commit `defff7a`): (a) and (b) 70/70 on baseline, 4/70 on shuffled, 70/70 on honeypot with 11 pages (the trap). Results folder `results/2026-11-18-experiment/` to commit. | J |
-| **Tue Nov 24** | Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. Harness built early (Fri Nov 20): `measurement/test7.py` (D93), 9 tests; cloud run passes for (a), (b) and (c) (24 s). Joseph runs it on the laptop and reviews the report. | J + C |
+| **Tue Nov 24** | ✅ (done early, Fri Nov 20) Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. Harness built early (Fri Nov 20): `measurement/test7.py` (D93), 9 tests; cloud run passes for (a), (b) and (c) (24 s). ⭐ Laptop run passes for (a) and (b) (commit `86db946`). | J + C |
 | | User-cost runs for each condition. | C |
 | | (A) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. | J |
 | **Wed Nov 25** | (A) The (d) part of Test 3; (d) baseline check (3 runs at ≥ 90%). | J |
