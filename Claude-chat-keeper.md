@@ -471,6 +471,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J331 | 331 | ok i merged see you tomorrow | Checked that PR #57 is merged; end-of-day resume note |
 | J332 | 332 | can you list out what all is left in my project | Remaining work from `SCHEDULE.md`: Milestone 3 (4 items and Cut-line 2), the optional Ambitious items (poisoning, (e), tarpit), and Milestone 4 (Dec 2–10) |
 | J333 | 333 | so whats the point of comparing my benchmark against something like webcloak? | Why the comparison matters (reference scale, validity, effect size, agreement with a published finding, a cost they didn't measure) and its limits; how to phrase it in the report |
+| J334 | 334 | ok can you also include this on the report for the doc meeting on monday | Added a "Why compare with WebCloak" paragraph to Section 4, and tied Figure 1's takeaway to WebCloak's finding; still 2 pages |
+| J335 | 335 | i want a write up section that explains the new mettrics with this as well | Section 2 now has a short write-up of the new metrics before Table 1; still 2 pages, 11 pt |
 
 ### Questions from Claude
 
@@ -15383,3 +15385,45 @@ No files changed besides this log.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (explains D68–D71).
+
+### Turn 334 — 2026-11-20 20:06 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok can you also include this on the report for the doc meeting on monday
+
+**What Claude did:** Edited the report script (scratchpad `scrum-1123/report.js`; the previous version is kept as `report-v2.js`).
+- **Section 4:** a new opening paragraph, "Why compare with WebCloak": same question and same metric; what the comparison shows (an established metric, effect sizes in context, agreement with a published finding, a cost WebCloak didn't measure); and its limits (real sites, large models, image targets, so compare the size and direction of effects, not raw scores). The old one-line caption under Table 3 was folded into it.
+- **Figure 1's takeaway** now ends with: this matches WebCloak's finding that structural defenses fail against scrapers that read the rendered page.
+- **Fitting 2 pages** (the first render ran to 3 by one line): shortened the summary, the Table 2 caption and the new paragraph, and drew the figure at 610 instead of 640 px. The body text stays at 11 pt.
+
+**Claude's answer (summary):** answered together with Turn 335.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 335 — 2026-11-20 20:07 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i want a write up section that explains the new mettrics with this as well
+
+**What Claude did:**
+- Rebuilt Section 2 as "Setup and new metrics": one line of setup, then a write-up of the new metrics before Table 1. It covers:
+  - why: the Nov 16 feedback asked for a scale others use;
+  - recall is the original accuracy under WebCloak's name;
+  - precision separates fooled from blocked, and F1 combines the two;
+  - success rate is all-or-nothing;
+  - drop in recall compares across studies with different sites;
+  - detection rate grades the honeypot;
+  - SSIM and HTML size are added, and Lighthouse is reported as a change from the normal site.
+- Table 1's middle column is now "Formula", since the write-up explains each metric.
+- **Correction before sending:** the first draft said "I added … Lighthouse". Lighthouse was already in the midterm (§4 item 4), so the text now says it is reported as a change.
+- Rendered and looked at both pages: 2 pages. Sent the file. Fetched `main` and merged it into the branch.
+
+**Claude's answer (summary):** The report now explains the new metrics in words (Section 2) and why the results are compared with WebCloak (Section 4), with a takeaway after every table and the figure, still in 2 pages.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
