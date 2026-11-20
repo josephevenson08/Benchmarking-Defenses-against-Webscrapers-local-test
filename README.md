@@ -250,6 +250,27 @@ It scores every run with `scoring/score.py` and reads each condition's request l
 
 The definitions are at the top of `scoring/results.py` and in [`docs/metrics-plan.md`](docs/metrics-plan.md). A run that crashed is scored as finding nothing and listed as failed.
 
+**User cost, part 1** (venv active; no server needed). It compares each condition with the baseline:
+
+```
+python measurement/user_cost.py                       # shuffled and honeypot against baseline
+python measurement/user_cost.py --conditions shuffled --out results/dev/user-cost
+```
+
+It opens every page from its files, waits 3 s, and takes a full-page screenshot. It also records where each field's label and value sit on screen. Against the baseline it measures:
+- pixel difference;
+- SSIM (Wang et al. 2004; 1.0 = identical);
+- the reading-order mismatch rate: fields whose label or value is at a different position in the HTML than on screen;
+- HTML size per page.
+
+It writes `results/<date>-user-cost/`:
+- `cost.csv`: one row per condition;
+- `pages.csv`: one row per page;
+- the screenshots and pixel-diff images;
+- `report.md` and `manifest.json`.
+
+Lighthouse and axe-core come in part 2.
+
 **Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
 
 ```
@@ -307,7 +328,7 @@ Steps to run the scrapers and measure user cost will be added as each part is bu
 ### Milestone 3: Nov 18 – Dec 1
 Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptive scraper (d), come next among the Ambitious work, and the metrics gain standard, comparable measures. See `SCHEDULE.md`.
 - [x] Experiment runner (Nov 18: `measurement/run_experiment.py`) and results CSV (Nov 20: `scoring/results.py`, honeypot hits and page requests from the request log)
-- [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order)
+- [ ] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order). Part 1 done Nov 20 (`measurement/user_cost.py`: pixel diff, SSIM, reading order, HTML size); part 2 (Lighthouse, axe-core) next
 - [ ] Standard metrics next to accuracy and fake-value rate (plan: `docs/metrics-plan.md`). Done Nov 20 in `scoring/results.py`: field-level precision, recall and F1, extraction success rate, relative reduction against baseline, honeypot detection and evasion rates. Still to come: the false-positive rate (Nov 29) and HTML size (user-cost runner)
 - [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
 - [ ] Test 7 for (a) and (b) (Nov 24)
