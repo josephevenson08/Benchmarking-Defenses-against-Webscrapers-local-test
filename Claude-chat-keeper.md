@@ -461,6 +461,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J322 | 322 | just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c | Claude wrote (d) part 2 (D99, Deviates, disclosed), updated the outline, tested (d); figures and tables built (D100) |
 | J323 | 323 | (laptop: (d) 9/9 runs 70/70; results CSV over 36 runs; figures written) | ⭐ (d) done on all three conditions (D101); the hypotheses checked; commit the three folders; asked the format for the weekly summary |
 | J324 | 324 | (`git add` of the three folders, with "LF will be replaced by CRLF" warnings) | Explained the warnings (harmless: Git on Windows converts line endings in the working copy only); continue with commit and push |
+| J325 | 325 | (`git commit`: packing 955 objects, then "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)" repeated) | OneDrive locking Git's clean-up (as in Turn 164): Ctrl+C is safe, check the commit, push; ways to stop it recurring |
 
 ### Questions from Claude
 
@@ -528,7 +529,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 **Laptop hardware (Turn 255), for the reproducibility manifest (§5):** Intel Core i7-1165G7 @ 2.80 GHz; 16.0 GB RAM (3200 MT/s); Intel Iris Xe graphics (128 MB); 477 GB storage (110 GB free); Windows (version to record). Ollama 0.40.16.
 
-**Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent.
+**Laptop setup (found Turn 164):** the project folder is inside OneDrive. OneDrive can lock `.git` files while it syncs (Turn 164: git's clean-up couldn't delete `.git/objects/01`). Consider moving the project out of OneDrive (e.g. `C:\dev\`) or pausing OneDrive while working. Not urgent. **Happened again in Turn 325:** after the commit of 955 new files, Git's automatic clean-up (`gc --auto`) packed the objects, then could not delete the loose-object folders (`.git/objects/00`, `01`, …) and asked "Should I try again? (y/n)" for each. Fix: Ctrl+C is safe at that point (the commit and the pack are already written). To prevent it, pause OneDrive while using Git, move the project out of OneDrive, or turn automatic clean-up off for this repository (`git config gc.auto 0`).
 
 **For the experiment runner (found Turn 131):** a failed or repeated run leaves extra request-log lines under the same run ID (e.g. `b-baseline-1` on Nov 6). Start each experiment with a fresh log, or make the log-based measures handle repeated run IDs. **Resolved (Turn 264, D76):** the runner gives each condition a fresh request log and refuses a results folder that already has files.
 
@@ -15118,5 +15119,47 @@ The rest of this work is recorded under Turn 322, because Joseph's next message 
 - The weekly summary format (Word doc or slides) is still open.
 
 **Questions Claude asked:** the format for the weekly summary (still open).
+
+**Direction and fit:** no new decision.
+
+### Turn 325 — 2026-11-20 19:41 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git commit -m "d runs, results CSV and figures"
+> Enumerating objects: 1050, done.
+> Counting objects: 100% (955/955), done.
+> Delta compression using up to 8 threads
+> Compressing objects: 100% (948/948), done.
+> Writing objects: 100% (955/955), done.
+> Total 955 (delta 663), reused 0 (delta 0), pack-reused 0 (from 0)
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) y
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/01' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/02' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/03' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/04' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/05' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/06' failed. Should I try again? (y/n) n
+> Deletion of directory '.git/objects/07' failed. Should I try again? (y/n)
+
+**What Claude did:** Recognised the OneDrive problem logged in Turn 164.
+- The commit added about 950 files, which made Git run its automatic clean-up (`gc --auto`): it packs loose objects into one file, then deletes the loose-object folders `.git/objects/00` … `ff`.
+- OneDrive, which syncs the project folder, keeps those folders locked, so Git asks whether to retry each of the 256.
+- The commit and the new pack are written before the deletion step, so stopping it loses nothing. The leftover loose objects are duplicates that a later clean-up removes.
+- Updated the open item.
+
+**Claude's answer (summary):**
+- Press Ctrl+C (safe), then check `git log --oneline -1` shows "d runs, results CSV and figures", then `git push`.
+- **To stop it recurring:** pause OneDrive while using Git, turn off automatic clean-up for this repository (`git config gc.auto 0`), or move the project out of OneDrive.
+
+**Questions Claude asked:** the weekly summary format (still open).
 
 **Direction and fit:** no new decision.
