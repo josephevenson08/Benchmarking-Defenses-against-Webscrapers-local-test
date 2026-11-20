@@ -3,7 +3,7 @@
   "page_cap": 15,
   "runs_per_cell": 3,
   "obey_robots_txt": true,
-  "request_timeout_seconds": 10,
+  "request_timeout_seconds": 5,
   "poison_swap_delay_seconds": 2,
   "adaptive_quiet_seconds": 3,
   "adaptive_timeout_seconds": 10,
