@@ -122,6 +122,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D91 | 308 | **User-cost runner, part 1: `measurement/user_cost.py`, with SSIM added to `measurement/pixel_diff.mjs`.** **How it works:** for baseline and each condition it rebuilds the site and opens every page from its files in headless Chromium (1280×800, no server). It waits 3 s after load (§5), takes a full-page screenshot, and records each field label's and value's screen position. **SSIM** (D70): Wang et al. 2004 on luminance, 11×11 Gaussian window, σ 1.5, K1 0.01, K2 0.03, L 255, averaged over every window that fits. It matches scikit-image 0.26 to about 1e-13 on three pairs of different pages. **Reading order** (§5: "the fraction of fields whose source position differs from their top-to-bottom position on screen"): positions count the label and value elements of the fields block. Source position is the HTML order; screen position is sorted top to bottom, then left to right. A field is out of order when its label or its value is at a different position; labels are paired with values as on the baseline. Cross-checked: screen order equals the shuffle's CSS `order` on all 8 item pages. **HTML size** (D71): bytes per page file, and the change from baseline. **Outputs:** `cost.csv` (one row per condition, the CostMeasurement of Figure 2), `pages.csv`, screenshots, pixel-diff images, `report.md`, `manifest.json`. **Cloud result:** shuffled 0.000% pixels, SSIM 1.0000, 70/70 fields out of reading order, HTML +21.2%; honeypot 0.000%, 1.0000, 0/70, +2.8%; baseline 0/70. This matches §4 Hypothesis 4 (shuffling keeps pixel-diff near zero but raises the reading-order mismatch). **Laptop run (Turn 309):** commit `b3d1a05` on Windows, Python 3.11.9, Node 24.13.1; the same table, and `pages.csv` identical to the cloud's apart from line endings; committed as `results/2026-11-20-user-cost/`. **Tests:** 10 new Python, 3 new Node. | Count each label and value element separately; leave SSIM to a Python library (adds a dependency) | Claude (tooling); the reading-order rule awaits Joseph's review (§3: he specifies and reviews the reading-order check; C38) | §4 item 4 (user cost), §4 Hypothesis 4, §5 "User cost", Figure 2 CostMeasurement; D70, D71. | Follows (reading-order rule: Interprets, pending C38) |
 | D92 | 311 | **User-cost runner, part 2: axe-core and Lighthouse** (Claude's Sat Nov 21 task, done Fri Nov 20). **axe-core** 4.14.0: injected into each page after the 3 s wait, in the same browser pass as the screenshot. Violations are counted per page and condition, by impact and by WCAG level (A, AA, AAA, best practice), with new violations against the baseline (§5 "axe-core violations are counted per condition"; metrics plan: "0 new violations against baseline"). **Lighthouse** 13.6.0 (`measurement/lighthouse.mjs`, with chrome-launcher 1.2.3): each condition is served on port 3200 with its own request log in the results folder. There are 5 runs per page (§5), and the median of the performance score, FCP, LCP, TTI, TBT and CLS is kept. Reported as each condition's mean over the pages and its change from the baseline (D70). **Settings:** Lighthouse's defaults (mobile form factor, simulated throttling), performance category only; WebCloak does not state its settings. TTI is still reported by Lighthouse 13 (checked). It uses Playwright's Chromium, so no separate Chrome is needed. **Versions:** all pinned exactly and at least two weeks old; `package.json` engines raised to Node ≥ 22.19, as Lighthouse 13.6 requires. **Checks:** 4 new Python and 3 new Node tests. axe-core catches 8 rule violations on a deliberately broken page and 0 on the site; the hidden trap link is not visible and not flagged. Cloud run with 1 Lighthouse run per page (5 min 8 s): axe-core 0 violations on baseline, shuffled and honeypot. This matches §4 Hypothesis 4: axe-core does not see the reading-order problem that shuffling causes. Lighthouse changes are within ±3 ms and 0.1 points, apart from a 1-run TTI outlier on honeypot (−23 ms). **Laptop full run (Turn 314):** commit `7bc9d62`, 5 Lighthouse runs per page, 17 min 20 s. Visual, reading-order and HTML results are the same as the cloud's; axe-core 0 violations everywhere; Lighthouse score 100.0 on all three, FCP and LCP 607 ms on all three, TTI 648 ms (baseline), 669 ms (shuffled, +22 ms), 641 ms (honeypot, −7 ms). **Noise check (Turn 315, committed folder):** single baseline runs of the same page vary from about 604 to 876 ms in TTI (for example `/products/p3`: 607, 607, 607, 876, 607), and the mean over pages per run index ranges 649–681 ms; the +22 ms shuffled change is well inside the baseline's run-to-run range, so under §5 item 6 it is not an effect. | Lighthouse's desktop preset; real (devtools) throttling; axe-core through a Python package | Claude (tooling) | §3 tools (Lighthouse, axe-core); §5 "User cost"; §4 Hypothesis 4; D70; `docs/metrics-plan.md`. | Follows (Lighthouse settings: Interprets) |
 | D93 | 315 | **Test 7, crawl part: `measurement/test7.py`** (planned Tue Nov 24, J + C; built Fri Nov 20). **Test site** (served on a free port): `/` links to `/t7/a`, `/t7/missing` (404) and `/t7/slow`; `/t7/a` → `/t7/b` → back to `/t7/a` and `/` (a cycle). `/t7/slow` answers after 12 s, longer than the scrapers' 5 s timeout and the 10 s in `config.json`. **Checks:** each scraper crawls twice from `/`. With page cap 15 it must finish, visit every page exactly once, record the 404 (status 404) and the timeout (status null, error `timeout`), keep going after it, and load the other pages. With page cap 3 it must stop after 3 pages, start at `/` and not repeat a page (§5 Test 7: "record the 404 and timeout and continue, avoid loops, and stop at the cap"). **Results:** 9 unit tests, including that each rule fails on a looping, waiting, stopping or over-cap crawl. Cloud run: (a), (b) and (c) pass all checks (24 s). (c) can run the crawl part because the test pages make no model calls (D78, D86). The midterm's stub-model part for (c) stays on Sun Nov 29. | Hand-written expected visit lists (like Test 3's expected.json); a slow page at 7 s (wouldn't exceed a 10 s timeout) | Claude (test harness); Joseph runs it on the laptop and reviews the report (J + C) | §5 Test 7; §2 "Record 404s and timeouts and keep going"; `docs/scraper-output.md` `pages` errors. | Follows |
+| D94 | 316 | **⭐ Milestone 3's Essential "Done when" is met (Fri Nov 20; the milestone runs to Dec 1).** (1) "The results CSV has accuracy, honeypot hits and time per page for every cell, plus user-cost rows for each condition": `results/2026-11-20-results/` (D90; (a), (b), (c) × 3 conditions × 3 runs) and `results/2026-11-20-user-cost-full/` (D91, D92; one row per condition). (2) "Test 7 passes for the (a) and (b) crawl loops": Joseph's laptop run of `measurement/test7.py` (commit `86db946`) passes every check for (a) and (b) (D93). The laptop printed a server-side traceback (`ConnectionAbortedError`, WinError 10053) when the 12 s slow page tried to answer after the scraper had already given up. This was harmless, and is exactly the situation the test creates. The handler now ignores any `ConnectionError`; Linux had raised only the two subclasses it already caught. Still open in Milestone 3: (d); the stub-model part of Test 7 for (c); the honeypot false-positive check; the related-work column; Cut-line 2 on Dec 1. | — | Joseph (ran Test 7; reviews); Claude (tooling) | §7 Milestone 3 "Done when"; §5 Test 7. | Follows |
 
 ---
 
@@ -444,6 +445,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J313 | 313 | what should scraper d look like walk me through it | Design walkthrough of (d): (b) plus the midterm's three abilities, the flow per page, expected results, and schedule; no project code written |
 | J314 | 314 | (laptop output of the full `user_cost.py` run, 5 Lighthouse runs per page) | All measures match the cloud; TTI +22 ms on shuffled to be checked against the baseline spread once committed; fixed the "-0 ms" display; asked Joseph to commit `results/2026-11-20-user-cost-full/` |
 | J315 | 315 | ok i merged and commited, what do we do now | TTI +22 ms checked against the baseline's spread: not an effect; plan: Joseph on (d) part 1, Claude on Test 7 (built, D93), then the related-work column and the honeypot false-positive check; flagged C39 (request timeout 5 s in the scrapers vs 10 s in `config.json`) |
+| J316 | 316 | (laptop output of `measurement/test7.py`: (a) and (b) PASS, with a server-side traceback) | ⭐ Test 7 passes on the laptop; explained the traceback and silenced it; Milestone 3's Essential "Done when" met (D94); commit the Test 7 folder |
 
 ### Questions from Claude
 
@@ -493,7 +495,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 315, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part is built (D93; Joseph to run on the laptop). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 316, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14671,3 +14673,85 @@ Each step has the command, what to expect and what to say. It also offered to up
 **Questions Claude asked:** C39 (new); C37 and C38 (still open).
 
 **Direction and fit:** D93 (Follows).
+
+### Turn 316 — 2026-11-20 19:11 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> >> python measurement/test7.py
+> remote: Enumerating objects: 31, done.
+> remote: Counting objects: 100% (25/25), done.
+> remote: Compressing objects: 100% (9/9), done.
+> remote: Total 17 (delta 12), reused 11 (delta 8), pack-reused 0 (from 0)
+> Unpacking objects: 100% (17/17), 12.14 KiB | 82.00 KiB/s, done.
+> From https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test
+>    2d12214..86db946  main       -> origin/main
+>    fd4d449..04edec7  claude/quirky-curie-8j4nye -> origin/claude/quirky-curie-8j4nye
+> Updating 2d12214..86db946
+> Fast-forward
+>  Claude-chat-keeper.md           | 102 ++++++++++++++++++++-
+>  README.md                       |   7 ++
+>  SCHEDULE.md                     |   2 +-
+>  measurement/test7.py            | 192 ++++++++++++++++++++++++++++++++++++++++
+>  measurement/tests/test_test7.py |  73 +++++++++++++++
+>  measurement/user_cost.py        |   1 +
+>  6 files changed, 374 insertions(+), 3 deletions(-)
+>  create mode 100644 measurement/test7.py
+>  create mode 100644 measurement/tests/test_test7.py
+> (a) ...
+> (b) ...
+> ----------------------------------------
+> Exception occurred during processing of request from ('127.0.0.1', 50651)
+> Traceback (most recent call last):
+>   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\socketserver.py", line 691, in process_request_thread
+>     self.finish_request(request, client_address)
+>   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\socketserver.py", line 361, in finish_request
+>     self.RequestHandlerClass(request, client_address, self)
+>   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\socketserver.py", line 755, in __init__
+>     self.handle()
+>   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\server.py", line 436, in handle
+>     self.handle_one_request()
+>   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\http\server.py", line 424, in handle_one_request
+>     method()
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\measurement\test7.py", line 75, in do_GET
+>     self.wfile.write(body)
+>   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\socketserver.py", line 834, in write
+>     self._sock.sendall(b)
+> ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+> ----------------------------------------
+> # Test 7: failure handling (crawl part)
+>
+> Run 2026-11-20T13:10:42 · commit 86db946 · slow page answers after 12 s
+>
+> | Scraper | Page cap | Pages visited (path status error) | Checks | |
+> |---|---|---|---|---|
+> | (a) | 15 | `/ 200`<br>`/t7/a 200`<br>`/t7/missing 404`<br>`/t7/slow None timeout`<br>`/t7/b 200` | ✅ finished without crashing<br>✅ every page visited<br>✅ no page visited twice (no loop)<br>✅ 404 recorded<br>✅ timeout recorded<br>✅ kept going after the timeout<br>✅ other pages loaded | PASS |
+> | (a) | 3 | `/ 200`<br>`/t7/a 200`<br>`/t7/missing 404` | ✅ finished without crashing<br>✅ stopped at the page cap (3)<br>✅ started at /<br>✅ no page visited twice | PASS |
+> | (b) | 15 | `/ 200`<br>`/t7/a 200`<br>`/t7/missing 404`<br>`/t7/slow None timeout`<br>`/t7/b 200` | ✅ finished without crashing<br>✅ every page visited<br>✅ no page visited twice (no loop)<br>✅ 404 recorded<br>✅ timeout recorded<br>✅ kept going after the timeout<br>✅ other pages loaded | PASS |
+> | (b) | 3 | `/ 200`<br>`/t7/a 200`<br>`/t7/missing 404` | ✅ finished without crashing<br>✅ stopped at the page cap (3)<br>✅ started at /<br>✅ no page visited twice | PASS |
+>
+> **Test 7, crawl part ((a), (b)): PASS**
+>
+> The test site: `/` links to `/t7/a`, `/t7/missing` (404) and `/t7/slow` (answers after the timeout); `/t7/a` → `/t7/b` → back to `/t7/a` and `/` (a cycle). Outputs and what each scraper printed are in `outputs/`. The stub-model part for (c) is separate (Sun Nov 29).
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop run: `git pull` brought in PR #51 (`86db946`), and Test 7 passes every check for (a) and (b).
+- Explained the traceback. On Windows, writing to a connection the client has closed raises `ConnectionAbortedError` (WinError 10053). The handler only caught `BrokenPipeError` and `ConnectionResetError`, the two Linux raises, so Python's server printed the error. The test result was unaffected.
+- Changed the handler to catch `ConnectionError`, which covers all three. The 9 Test 7 unit tests pass.
+- `SCHEDULE.md`: ticked Tue Nov 24 (Test 7) as done early, and marked Milestone 3's Essential "Done when" as met.
+- `README.md`: status line and roadmap.
+- Recorded D94. Fetched `main`: the Test 7 results folder isn't committed yet.
+- Committed, pushed and opened a pull request.
+
+**Claude's answer (summary):**
+- ⭐ Test 7 passes on the laptop.
+- The traceback was the test server, not the scrapers. It tried to answer the slow page after the scraper had already given up, which is the case the test sets up. It's now silenced.
+- This completes Milestone 3's Essential "Done when", 11 days before Cut-line 2.
+- Commit `results/2026-11-20-test7/` and merge the PR.
+- Next for Joseph: (d) part 1, and the answers to C37–C39. Next for Claude: the related-work column and the false-positive check.
+
+**Questions Claude asked:** C37, C38, C39 (still open).
+
+**Direction and fit:** D94 (Follows).
