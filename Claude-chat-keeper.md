@@ -466,6 +466,8 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J326 | 326 | ok i pushed | Checked the three folders on `main` and the laptop's figures; asked the summary's format (C40); made the Word doc "scrum meeting 11-23" |
 | J327 | 327 | make it less wordy and barebones, i just want the graphs and tables, with each saying what they mean etc, what we have done this week, what the new metrics are, how they compare to published work, and then my results for them so far, or what do you think/? | Rebuilt the Word doc in 5 short sections, each table and figure with a "Meaning" line |
 | J328 | 328 | i also want you to do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense. | Independent cross-check of every run and metric (D102): 541/541 agree; planted errors caught |
+| J329 | 329 | can you make this word doc as if it was an actual report maximum 2 pages, and way less wordy, show graphs and tables as well | Rewrote it as a 2-page report: numbered sections, Tables 1–4, one two-panel Figure 1 |
+| J330 | 330 | add key takeaways after each plot and table to show what it means in terms of comparison | A "Key takeaway" after each of the 5 tables and the figure, comparing with baseline and with published work; still 2 pages |
 
 ### Questions from Claude
 
@@ -516,7 +518,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 328, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). (d) ran 9/9 on the laptop (D101; results CSV over 36 runs and figures made; three folders to commit). The Mon Nov 23 scrum summary is made (Word doc, barebones version Turn 327; not in the repository). All results cross-checked independently: 541/541 agree (D102). Next for Joseph: the (d) part of Test 3; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 330, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). (d) ran 9/9 on the laptop (D101; results CSV over 36 runs and figures made; three folders to commit). The Mon Nov 23 scrum document is a 2-page progress report with key takeaways (Word, Turns 329–330; not in the repository). All results cross-checked independently: 541/541 agree (D102). Next for Joseph: the (d) part of Test 3; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -15252,3 +15254,51 @@ A one-line note says Claude wrote (d) at Joseph's request. The long introduction
 **Questions Claude asked:** none.
 
 **Direction and fit:** D102 (Adds).
+
+### Turn 329 — 2026-11-20 19:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you make this word doc as if it was an actual report maximum 2 pages, and way less wordy, show graphs and tables as well
+
+**What Claude did:** Rewrote the summary as a report, `progress report 11-23.docx` (docx-js, scratchpad `scrum-1123/report.js`; not committed). US Letter, 0.75 in margins, Arial 10.5 pt body and 9.5 pt tables. Sections:
+- Summary;
+- 1. Work this week (table);
+- 2. Setup and metrics (Table 1: metric, definition, source);
+- 3. Results (Table 2: recall on baseline and shuffled, drop, precision, verdict, honeypot), then Figure 1;
+- 4. Comparison with published work (Table 3);
+- 5. Cost to visitors (Table 4);
+- 6. Conclusion, with a one-line AI-use note.
+
+To keep it to 2 pages without unreadable charts, Claude drew one two-panel figure for the page width (scratchpad `report_fig.py`, from the committed `cells.csv` with `measurement/figures.py`'s colours): (a) recall by scraper and site, and (b) the drop in recall from shuffling next to WebCloak. Fixed its overlapping tick labels and a clipped title over two redraws. Rendered: 2 pages.
+
+**Claude's answer (summary):** answered together with Turn 330.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 330 — 2026-11-20 19:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> add key takeaways after each plot and table to show what it means in terms of comparison
+
+**What Claude did:** Added a "Key takeaway" line (blue left bar) after each table and Figure 1. Each one compares with the baseline and with published work:
+- **Work table:** both pieces of feedback are done, and Milestone 3's required work finished 11 days early.
+- **Metrics:** the original accuracy is WebCloak's recall.
+- **Results:** each defense fails against the scraper built to beat it.
+- **Figure 1:** close to WebCloak against simple scrapers (94% vs 100%), weaker against an LLM (30%), no effect on the adaptive scraper.
+- **Published comparison:**
+  - the scrapers match the best tools on simple pages (1.00, Beyond BeautifulSoup);
+  - the honeypot catches every link-following scraper, where passive detection catches 68% of real bots (Shy Guys), but it misses an adaptive one;
+  - unlike WebCloak, the defenses add no load time.
+- **Cost:** WebCloak's LCP is +0.88 s; shuffling's only cost is reading order, which axe-core misses.
+
+The Table 4 caption was folded into its takeaway. Each figure was checked against the papers' numbers in `docs/metrics-plan.md` and the cross-checked results (D102). Rendered and looked at: still 2 pages. Sent the file. Fetched `main` (PR #56 merged) and merged it into the branch.
+
+**Claude's answer (summary):** The 2-page report with a key takeaway after every table and the figure.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
