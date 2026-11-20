@@ -129,6 +129,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D98 | 320 | **⭐ Scraper (d) part 1 done (Fri Nov 20; planned Sun Nov 22): the quiet-page wait.** Joseph's commit `2dc321c`. On baseline: every page quiet after 3002–3020 ms, no timeouts, 70/70, 3.043 s per page (30.4 s per run). **AI-use disclosure:** apart from the renaming (description and `"scraper": "d"`), the new code in this commit was supplied by Claude: the `WAIT_FOR_QUIET` MutationObserver function (15 lines, from Claude's standalone example of Turn 307), the three `config.json` lines, and the `page.evaluate` call with its two print lines (Turn 317). Joseph placed them, ran the example and the scraper, and checked the results. The midterm says Joseph implements (d)'s "three tricks and the timing rule" (§2), so this part of (d) does not follow that split. It is recorded here and must be stated in the report's AI-use disclosure. For part 2 (hidden elements, CSS order), Claude explains and gives standalone examples, and Joseph writes the (d) code. | Joseph rewrites the wait in his own code | Joseph (placed, ran, verified); Claude (supplied the lines) | §2 (d): "Wait until the page has had no changes for 3 seconds … with a 10-second timeout … I implement the three tricks and the timing rule"; §7 AI-agent plan and disclosure; CLAUDE.md AI-use boundaries. | Deviates (part 1 code supplied by Claude; disclosed) |
 | D99 | 322 | **Claude writes scraper (d)** (Joseph's request, Turn 322: "just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c"). Claude noted that (d) was in the midterm plan as Joseph's code (§2) and that this changes the plan's AI split. **Part 2** (commit `1a86361`): after the quiet wait, (d) reads the live page with one `page.evaluate`. For each label it takes the first visible leaf element whose text is the label, then the visible elements sharing its parent, sorted by computed CSS `order` (ties keep HTML order), and takes the next one as the value. "Visible" means computed `visibility` is `visible` and no element up to the root has `display: none`. Links are followed only if computed style shows them. BeautifulSoup is no longer used. **Cloud check:** 1 run each with the runner: baseline, shuffled and honeypot all 70/70; honeypot 10 pages, 0 trap hits; 3.03 s per page; Test 7's crawl part passes. This matches §4 Hypotheses 1 and 3 for (d). **Outline updated:** CLAUDE.md (Claude may draft (d); Joseph writes (a)–(c)), the README's AI-assistance statement and roadmap, and `SCHEDULE.md` (Tue Nov 24 (d) row: done, C). Still Joseph's: the (d) runs on the laptop, its baseline check, and the Test 3 part (Wed Nov 25). | Joseph writes part 2 with Claude's explanations (the plan) | Joseph (decided); Claude (wrote) | §2 (d) row; §2 AI assistance ("I will write … scrapers (a) through (d)"); §7 AI-agent plan and disclosure. | Deviates (disclosed; Joseph to tell the instructor) |
 | D100 | 322 | **Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py`** (an early version of the Dec 3–4 tables script and figure). It reads `cells.csv` (scoring/results.py), `cost.csv` (user_cost.py) and optionally (c)'s runs, and writes 5 PNG figures (200 dpi) and `tables.md`. Figures: recall by scraper and site (min–max, 10% line); the drop in recall next to WebCloak's published 100%; protection against user cost (the midterm's "one pairing accuracy drop with user cost"); honeypot detection; (c) field by field. Tables: (1) extraction quality, (2) honeypot and speed, (3) user cost, (4) our results next to published ones in the same metric (WebCloak, Beyond BeautifulSoup, Shy Guys, FP-Inconsistent; numbers as in `docs/metrics-plan.md`). Colours are the dataviz reference palette's first 3 slots (validated all-pairs for colour-blind separation). Bars carry value labels, because aqua is below 3:1 contrast. **Dependencies:** matplotlib 3.11.2 and numpy 2.4.6 with their dependencies, pinned in `requirements.txt` at versions that support Python 3.11 (the laptop's): contourpy 1.3.3, not 1.4.0, which needs 3.12. **Tests:** 2 new. Previewed in the cloud with (a)–(c) committed and (d) from the 1-run cloud check. | Wait for Dec 3; draw the figures by hand | Claude (tooling) | §4 "Final outputs"; §5 Analysis; D68, D70; scrum feedback (Nov 16). | Follows (early; Table 4 and Figure 2 are Adds from the scrum feedback, Turn 303) |
+| D101 | 323 | **⭐ Scraper (d): baseline check passed and runs on all three conditions done (Fri Nov 20; planned Wed Nov 25 and Sat Nov 28).** Joseph's laptop, commit `2065190`, runner `--scrapers d`: 9/9 runs, 70/70 on baseline, shuffled and honeypot in every run, honeypot 10 pages each (no `/trap`), 3.03–3.04 s per page (31 s per run). `scoring/results.py` over the three folders (36 runs): (d) shuffled and honeypot "no effect", honeypot detection 0.00 (evasion 1.00). **Hypotheses (§4):** (1) shuffling lowers (a) and (b) ("stops", 94.3% drop); (d) is unaffected (0.0%); for (c), which the midterm left uncertain, it "reduces" (30.5%). (3) The honeypot leaves accuracy unchanged and catches (a), (b) and (c) in every run, and (d) in none. (4) Shuffling: pixel difference 0, reading order 70/70, axe-core unchanged. (5) "No single defense stops all five scrapers" holds so far: shuffling stops only (a) and (b). (2) Poisoning is not built, so it is untested. Figures and tables made on the laptop: `results/2026-11-20-figures/` (D100). Still open for (d): its part of Test 3. | — | Joseph (ran); Claude (scraper (d), D99; tooling) | §4 Hypotheses 1–5; §4 item 10 (baseline check); §5 item 9 (3 runs per cell); §7 Milestone 3 (Ambitious, as re-planned). | Follows |
 
 ---
 
@@ -458,6 +459,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J320 | 320 | (score: `d-test-1` 70/70, 3.043 s per page; (d) committed as `2dc321c` and pushed) | ⭐ (d) part 1 done (D98); reviewed the commit; disclosed that its new code came from Claude (Deviates) and recommended Joseph write part 2 himself; next: part 2 |
 | J321 | 321 | ok i merged lets get this scraper d done so we can get some matplotlibs graphs and tables made for monday with relation to the new metris that i can show the scrum meeting professor along with what we have done this week | Plan to Monday; (d) part 2 explained with a tested standalone `getComputedStyle` example; started the figures script |
 | J322 | 322 | just give me scraper d since this wasnt planned, we can change the outline to reflect that you wrote scraper d and i did a - c | Claude wrote (d) part 2 (D99, Deviates, disclosed), updated the outline, tested (d); figures and tables built (D100) |
+| J323 | 323 | (laptop: (d) 9/9 runs 70/70; results CSV over 36 runs; figures written) | ⭐ (d) done on all three conditions (D101); the hypotheses checked; commit the three folders; asked the format for the weekly summary |
 
 ### Questions from Claude
 
@@ -507,7 +509,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 322, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). Next for Joseph: run (d) 3 times on the 3 conditions on the laptop, then the results CSV and the figures; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 323, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). (d) ran 9/9 on the laptop (D101; results CSV over 36 runs and figures made; three folders to commit). Next for Joseph: the weekly summary for Mon Nov 23 (format to choose), the (d) part of Test 3; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -15000,3 +15002,95 @@ The rest of this work is recorded under Turn 322, because Joseph's next message 
 **Direction and fit:**
 - D99: Deviates (disclosed).
 - D100: Follows (early). Table 4 and Figure 2 are Adds from the scrum feedback.
+
+### Turn 323 — 2026-11-20 19:39 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers d --out results/2026-11-20-d-all
+> 9 runs: 3 conditions × 1 scrapers × 3 runs
+>   d-baseline-1 ... 70/70
+>   d-baseline-2 ... 70/70
+>   d-baseline-3 ... 70/70
+>   d-shuffled-1 ... 70/70
+>   d-shuffled-2 ... 70/70
+>   d-shuffled-3 ... 70/70
+>   d-honeypot-1 ... 70/70
+>   d-honeypot-2 ... 70/70
+>   d-honeypot-3 ... 70/70
+>
+> # Experiment runs
+>
+> Run 2026-11-20T13:34:05 → 2026-11-20T13:38:50 · commit 2065190 · scrapers d · conditions baseline, shuffled, honeypot · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `d-baseline-1` | 0 | 31.808 | 70/70 = 1.000 | 10 | 3.038 s |
+> | `d-baseline-2` | 0 | 31.412 | 70/70 = 1.000 | 10 | 3.035 s |
+> | `d-baseline-3` | 0 | 31.358 | 70/70 = 1.000 | 10 | 3.032 s |
+> | `d-shuffled-1` | 0 | 31.388 | 70/70 = 1.000 | 10 | 3.037 s |
+> | `d-shuffled-2` | 0 | 31.329 | 70/70 = 1.000 | 10 | 3.038 s |
+> | `d-shuffled-3` | 0 | 31.199 | 70/70 = 1.000 | 10 | 3.036 s |
+> | `d-honeypot-1` | 0 | 31.193 | 70/70 = 1.000 | 10 | 3.035 s |
+> | `d-honeypot-2` | 0 | 31.171 | 70/70 = 1.000 | 10 | 3.035 s |
+> | `d-honeypot-3` | 0 | 31.262 | 70/70 = 1.000 | 10 | 3.038 s |
+>
+> **9 of 9 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python scoring/results.py results/2026-11-18-experiment results/2026-11-18-c-all results/2026-11-20-d-all --out results/2026-11-20-results-all
+> # Results
+>
+> 36 runs from: `results/2026-11-18-experiment`, `results/2026-11-18-c-all`, `results/2026-11-20-d-all`.
+> Definitions: `scoring/results.py` and `docs/metrics-plan.md`.
+>
+> | Scraper | Condition | Correct per run | Recall (min–max) | Precision | F1 | ESR | Reduction | Verdict | Honeypot detection | Time per page |
+> |---|---|---|---|---|---|---|---|---|---|---|
+> | (a) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 0.012 s |
+> | (a) | shuffled | 4 4 4 | 5.7% | 0.061 | 0.059 | 0.00 | 94.3% | stops | 0.00 | 0.016 s |
+> | (a) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 0.017 s |
+> | (b) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 0.023 s |
+> | (b) | shuffled | 4 4 4 | 5.7% | 0.061 | 0.059 | 0.00 | 94.3% | stops | 0.00 | 0.022 s |
+> | (b) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 0.022 s |
+> | (c) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 5.746 s |
+> | (c) | shuffled | 48 49 49 | 69.5% (68.6%–70.0%) | 0.807 | 0.747 | 0.00 | 30.5% | reduces | 0.00 | 5.451 s |
+> | (c) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 5.356 s |
+> | (d) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 3.035 s |
+> | (d) | shuffled | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 0.00 | 3.037 s |
+> | (d) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 0.00 | 3.036 s |
+>
+> Failed runs (scored as finding nothing): none.
+> Runs whose request log shows a different page count from their output: none.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/figures.py --cells results/2026-11-20-results-all/cells.csv --cost results/2026-11-20-user-cost-full --fields results/2026-11-18-c-all --out results/2026-11-20-figures
+> Figures and tables written to results\2026-11-20-figures
+>   fig1-recall.png
+>   fig2-reduction.png
+>   fig3-protection-vs-cost.png
+>   fig4-honeypot.png
+>   fig5-fields.png
+>   tables.md
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Fetched `main`: PR #55 is merged (`2065190`). The three new results folders aren't committed yet. Merged `main` into the branch.
+- Read the laptop output:
+  - (d), 9/9 runs: 70/70 on every condition, 10 pages, 3.03–3.04 s per page;
+  - `scoring/results.py` over 36 runs: (a)–(c) the same as before; (d) "no effect" on shuffled and honeypot, detection 0.00;
+  - `measurement/figures.py`: 5 figures and `tables.md` written.
+- Checked the results against the midterm's hypotheses (D101).
+- `SCHEDULE.md`: ticked (d)'s baseline check (Wed Nov 25) and its runs (Sat Nov 28) as done early.
+- `README.md`: updated the roadmap.
+- Committed, pushed and opened a pull request.
+
+**Claude's answer (summary):**
+- ⭐ (d) is done on all three conditions, 8 days before its time limit, and its baseline check passed.
+- Every hypothesis that could be tested came out as predicted. For (c), which the midterm left open, shuffling only reduces it.
+- **Joseph's steps:** commit the three folders, then merge the PR.
+- **Asked:** Word doc or slides for the weekly summary.
+- What's left in Milestone 3: (d)'s Test 3 part, Test 7's stub part for (c), and the honeypot false-positive check.
+
+**Questions Claude asked:** the format for the weekly summary (Word doc or slides; open).
+
+**Direction and fit:** D101 (Follows).

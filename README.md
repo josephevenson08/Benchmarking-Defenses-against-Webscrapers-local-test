@@ -356,7 +356,7 @@ Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptiv
 - [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
 - [x] Test 7 for (a) and (b) (crawl part passed Nov 20; planned Nov 24)
 - [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22); runs on all three conditions done Nov 18 (planned Nov 28): shuffled 48–49/70, honeypot 70/70 with the trap visited
-- [ ] Scraper (d): written Nov 20 (Claude, at Joseph's request, D99); 70/70 on baseline, shuffled and honeypot in a first cloud check, and Test 7 passes. Still to do: Test 3 part and baseline check by Nov 25; runs by Nov 28
+- [ ] Scraper (d): written Nov 20 (Claude, at Joseph's request, D99). Baseline check and the runs on all three conditions done Nov 20 (9/9 runs, 70/70 everywhere, the trap never hit); Test 7 passes. Still to do: the (d) part of Test 3 (Nov 25)
 - [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
 - [ ] Only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
 
