@@ -1,0 +1,202 @@
+{
+  "experiment": "scraper runs",
+  "started_at": "2026-11-20T13:34:05",
+  "commit": "2065190",
+  "scrapers": {
+    "d": "d_adaptive.py"
+  },
+  "conditions": [
+    "baseline",
+    "shuffled",
+    "honeypot"
+  ],
+  "runs_per_cell": 3,
+  "port": 3100,
+  "config": {
+    "port": 3000,
+    "page_cap": 15,
+    "runs_per_cell": 3,
+    "obey_robots_txt": true,
+    "request_timeout_seconds": 5,
+    "poison_swap_delay_seconds": 2,
+    "adaptive_quiet_seconds": 3,
+    "adaptive_timeout_seconds": 10,
+    "llm_temperature": 0,
+    "seed": 20261021,
+    "trap_path": "/trap"
+  },
+  "versions": {
+    "python": "3.11.9",
+    "os": "Windows-10-10.0.26300-SP0",
+    "node": "v24.13.1",
+    "playwright": "1.63.0",
+    "requests": "2.34.2",
+    "beautifulsoup4": "4.15.0"
+  },
+  "ollama": null,
+  "runs": [
+    {
+      "condition": "baseline",
+      "scraper": "d",
+      "n": 1,
+      "run_id": "d-baseline-1",
+      "exit_code": 0,
+      "wall_s": 31.808,
+      "output": "runs/d-baseline-1.json",
+      "printed": "runs/d-baseline-1.log",
+      "request_log": "logs/baseline.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0375
+      }
+    },
+    {
+      "condition": "baseline",
+      "scraper": "d",
+      "n": 2,
+      "run_id": "d-baseline-2",
+      "exit_code": 0,
+      "wall_s": 31.412,
+      "output": "runs/d-baseline-2.json",
+      "printed": "runs/d-baseline-2.log",
+      "request_log": "logs/baseline.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0346
+      }
+    },
+    {
+      "condition": "baseline",
+      "scraper": "d",
+      "n": 3,
+      "run_id": "d-baseline-3",
+      "exit_code": 0,
+      "wall_s": 31.358,
+      "output": "runs/d-baseline-3.json",
+      "printed": "runs/d-baseline-3.log",
+      "request_log": "logs/baseline.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.032
+      }
+    },
+    {
+      "condition": "shuffled",
+      "scraper": "d",
+      "n": 1,
+      "run_id": "d-shuffled-1",
+      "exit_code": 0,
+      "wall_s": 31.388,
+      "output": "runs/d-shuffled-1.json",
+      "printed": "runs/d-shuffled-1.log",
+      "request_log": "logs/shuffled.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.037
+      }
+    },
+    {
+      "condition": "shuffled",
+      "scraper": "d",
+      "n": 2,
+      "run_id": "d-shuffled-2",
+      "exit_code": 0,
+      "wall_s": 31.329,
+      "output": "runs/d-shuffled-2.json",
+      "printed": "runs/d-shuffled-2.log",
+      "request_log": "logs/shuffled.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0381
+      }
+    },
+    {
+      "condition": "shuffled",
+      "scraper": "d",
+      "n": 3,
+      "run_id": "d-shuffled-3",
+      "exit_code": 0,
+      "wall_s": 31.199,
+      "output": "runs/d-shuffled-3.json",
+      "printed": "runs/d-shuffled-3.log",
+      "request_log": "logs/shuffled.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0362999999999998
+      }
+    },
+    {
+      "condition": "honeypot",
+      "scraper": "d",
+      "n": 1,
+      "run_id": "d-honeypot-1",
+      "exit_code": 0,
+      "wall_s": 31.193,
+      "output": "runs/d-honeypot-1.json",
+      "printed": "runs/d-honeypot-1.log",
+      "request_log": "logs/honeypot.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0353000000000003
+      }
+    },
+    {
+      "condition": "honeypot",
+      "scraper": "d",
+      "n": 2,
+      "run_id": "d-honeypot-2",
+      "exit_code": 0,
+      "wall_s": 31.171,
+      "output": "runs/d-honeypot-2.json",
+      "printed": "runs/d-honeypot-2.log",
+      "request_log": "logs/honeypot.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0353000000000003
+      }
+    },
+    {
+      "condition": "honeypot",
+      "scraper": "d",
+      "n": 3,
+      "run_id": "d-honeypot-3",
+      "exit_code": 0,
+      "wall_s": 31.262,
+      "output": "runs/d-honeypot-3.json",
+      "printed": "runs/d-honeypot-3.log",
+      "request_log": "logs/honeypot.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "pages_fetched": 10,
+        "time_per_page": 3.0381
+      }
+    }
+  ],
+  "finished_at": "2026-11-20T13:38:50"
+}

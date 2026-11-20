@@ -1,0 +1,22 @@
+http://127.0.0.1:3100/ 15 run=d-shuffled-2 ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+page quiet after 3009 ms http://127.0.0.1:3100/
+200 http://127.0.0.1:3100/products/
+page quiet after 3001 ms http://127.0.0.1:3100/products/
+200 http://127.0.0.1:3100/articles/a1
+page quiet after 3005 ms http://127.0.0.1:3100/articles/a1
+200 http://127.0.0.1:3100/articles/a2
+page quiet after 3012 ms http://127.0.0.1:3100/articles/a2
+200 http://127.0.0.1:3100/products/p1
+page quiet after 3015 ms http://127.0.0.1:3100/products/p1
+200 http://127.0.0.1:3100/products/p2
+page quiet after 3014 ms http://127.0.0.1:3100/products/p2
+200 http://127.0.0.1:3100/products/p3
+page quiet after 3013 ms http://127.0.0.1:3100/products/p3
+200 http://127.0.0.1:3100/products/p4
+page quiet after 3010 ms http://127.0.0.1:3100/products/p4
+200 http://127.0.0.1:3100/products/p5
+page quiet after 3017 ms http://127.0.0.1:3100/products/p5
+200 http://127.0.0.1:3100/products/p6
+page quiet after 3016 ms http://127.0.0.1:3100/products/p6
+70 records written to results\2026-11-20-d-all\runs\d-shuffled-2.json
