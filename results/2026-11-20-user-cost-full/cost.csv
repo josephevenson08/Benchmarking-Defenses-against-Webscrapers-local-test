@@ -1,0 +1,4 @@
+condition,pages,pixel_diff_mean_percent,pixel_diff_max_percent,ssim_mean,ssim_min,fields,fields_out_of_order,reading_order_mismatch_rate,html_bytes,html_change_percent,html_change_max_page_percent,axe_violations,axe_new_vs_baseline,axe_critical,axe_serious,axe_moderate,axe_minor,axe_level_A,axe_level_AA,axe_level_AAA,axe_level_best-practice,lh_score_mean,lh_score_change_mean,lh_fcp_ms_mean,lh_fcp_ms_change_mean,lh_lcp_ms_mean,lh_lcp_ms_change_mean,lh_tti_ms_mean,lh_tti_ms_change_mean
+baseline,10,,,,,70,0,0,21380,0,0,0,0,0,0,0,0,0,0,0,0,100,0,606.913,0,606.913,0,647.739,0
+shuffled,10,0,0,1,1,70,70,1,25920,21.2348,21.7687,0,0,0,0,0,0,0,0,0,0,100,0,606.552,-0.36166,606.552,-0.36166,669.294,21.5546
+honeypot,10,0,0,1,1,70,0,0,21970,2.75959,3.77238,0,0,0,0,0,0,0,0,0,0,100,0,607.192,0.278925,607.192,0.278925,640.968,-6.77064
