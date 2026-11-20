@@ -81,5 +81,43 @@ class SizesAndRowsTest(unittest.TestCase):
         self.assertEqual((row["ssim_mean"], row["pixel_diff_max_percent"]), (0.99, 0.5))
 
 
+class AxeAndLighthouseTest(unittest.TestCase):
+    def test_wcag_level_from_axe_tags(self):
+        self.assertEqual(uc.wcag_level(["cat.color", "wcag2aa", "wcag143"]), "AA")
+        self.assertEqual(uc.wcag_level(["wcag2a", "wcag412"]), "A")
+        self.assertEqual(uc.wcag_level(["wcag21aa", "wcag2aaa"]), "AA")
+        self.assertEqual(uc.wcag_level(["cat.semantics", "best-practice"]), "best-practice")
+
+    def test_axe_counts_and_new_violations_against_baseline(self):
+        base_axe = {"/products/p1": [{"id": "region", "impact": "moderate", "tags": ["best-practice"], "nodes": 2}]}
+        axe = {"/products/p1": [{"id": "region", "impact": "moderate", "tags": ["best-practice"], "nodes": 3},
+                                {"id": "link-name", "impact": "serious", "tags": ["wcag2a", "wcag412"], "nodes": 1}]}
+        rows = uc.page_rows("honeypot", {"/products/p1": 300}, {"/products/p1": 250}, {"/products/p1": BASELINE},
+                            {"/products/p1": BASELINE}, None, axe=axe, base_axe=base_axe)
+        [row] = rows
+        self.assertEqual((row["axe_violations"], row["axe_new_vs_baseline"]), (4, 2))
+        self.assertEqual(row["axe_rules"], "link-name:1 region:3")
+        totals = uc.condition_row("honeypot", rows, None, 250)
+        self.assertEqual((totals["axe_serious"], totals["axe_moderate"], totals["axe_critical"]), (1, 3, 0))
+        self.assertEqual((totals["axe_level_A"], totals["axe_level_best-practice"]), (1, 3))
+
+    def test_lighthouse_medians_and_changes_from_baseline(self):
+        def report(score, fcp):
+            return {"pages": [{"path": "/", "median": {"score": score, "fcp_ms": fcp, "lcp_ms": fcp, "tti_ms": fcp + 10}},
+                              {"path": "/products/p1", "median": {"score": score - 2, "fcp_ms": fcp, "lcp_ms": fcp, "tti_ms": fcp}}]}
+        sizes = {"/": 100, "/products/p1": 200}
+        rows = uc.page_rows("shuffled", sizes, sizes, {}, {}, None, lh=report(97, 650), base_lh=report(100, 600))
+        p1 = next(r for r in rows if r["page"] == "/products/p1")
+        self.assertEqual((p1["lh_score"], p1["lh_score_change"], p1["lh_fcp_ms_change"]), (95, -3, 50))
+        totals = uc.condition_row("shuffled", rows, None, 300)
+        self.assertEqual((totals["lh_score_mean"], totals["lh_score_change_mean"]), (96, -3))
+        self.assertEqual(totals["lh_tti_ms_change_mean"], 50)
+
+    def test_without_axe_or_lighthouse_the_columns_stay_empty(self):
+        rows = uc.page_rows("shuffled", {"/": 100}, {"/": 100}, {}, {}, None)
+        self.assertNotIn("axe_violations", rows[0])
+        self.assertNotIn("lh_score_mean", uc.condition_row("shuffled", rows, None, 100))
+
+
 if __name__ == "__main__":
     unittest.main()

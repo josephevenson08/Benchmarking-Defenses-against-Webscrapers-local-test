@@ -120,6 +120,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D89 | 301 | **From *Beyond BeautifulSoup* [2] (re-read, Turn 301): use 2 of its 3 metrics, not the third.** **Used:** (1) Extraction Success Rate (ESR), "% of scraping runs with complete and correct output", averaged over 3 trials, which here means the share of runs at 70/70; (2) Execution Time, "average runtime for a successful scrape": our wall seconds per successful run, next to time per page. Both were already planned (D68, D70). **Not used:** Manual Effort Required (Low/Medium/High by retries and setup work), because our scrapers are fixed before the runs and never retried (§2 "no retry"; §4 item 10), so it would be the same for every run and says nothing about a defense. **Borrowed for describing the testbed:** our site is their tier 1, "Simple HTML" (static, no login, no JavaScript needed); their 3 trials per site match our 3 runs per cell. **ESR's limit:** it is all-or-nothing per run, so (c) on shuffled scores ESR 0 although it got 69.5% of fields; recall is reported beside it. | Adopt MER as a developer-effort note | Claude (recommended; Joseph asked whether the metrics fit) | D68 layer 2 and 3 (`docs/metrics-plan.md`); §5 item 9 (3 runs per cell); §2 (c) no retry; §4 item 10. | Follows |
 | D90 | 307 | **Results CSV with the standard metrics: `scoring/results.py`** (Claude's Thu Nov 19 and Fri Nov 20 tasks, built together). Input: one or more runner folders. A run ID found in two folders is refused, so each run comes from exactly one folder. Every field is scored by `scoring/score.py`, so the matching rules stay in one place (D31–D35 unchanged). **Outputs:** `results.csv` (one row per run), `cells.csv` (one per scraper and condition) and `summary.md`. **Definitions:** recall = accuracy = correct ÷ 70; precision = correct ÷ fields with a value (blank if none); F1 = 2PR/(P+R), 0 when nothing correct; ESR = runs with 70/70 ÷ runs; relative reduction = 1 − defended mean ÷ same scraper's baseline mean (recall and F1); verdict "stops" (mean recall < 10%), "reduces" (below the lowest baseline run by more than the baseline spread) or "no effect"; baseline check (every baseline run ≥ 90%); honeypot hits = trap-path requests with the run's ID; detection rate = runs with ≥ 1 hit ÷ runs; evasion = 1 − detection. **Interpretations:** time per page stays the midterm's (crawl seconds ÷ pages fetched, from the output). The log adds page requests (robots.txt and files with an extension other than .html are not pages; Turns 121 and 124), checked against pages fetched, and the mean server response time. A crashed run (no output file) is scored as finding nothing, like `score.py`'s empty-output rule, and is listed as failed with its exit code. **Checks:** 10 new tests (34 scoring tests pass, 30 measurement tests pass). On the 27 committed Nov 18 runs the result equals the Turn 304 preview; the page counts from the logs match the outputs for every run; `c-defended` shows its 3 crashed honeypot runs as failed. | Time per page from the log's first-to-last request; leave crashed runs out of the cells | Claude (midterm tooling, §2, §7) | §4 items 4–5 and Analysis; Figure 2 ("Accuracy, fake-value rate, time per page and honeypot hits are not stored columns. The scoring script calculates them"); D68, D70; `docs/metrics-plan.md`. | Follows (crashed-run and page-request rules: Interprets) |
 | D91 | 308 | **User-cost runner, part 1: `measurement/user_cost.py`, with SSIM added to `measurement/pixel_diff.mjs`.** **How it works:** for baseline and each condition it rebuilds the site and opens every page from its files in headless Chromium (1280×800, no server). It waits 3 s after load (§5), takes a full-page screenshot, and records each field label's and value's screen position. **SSIM** (D70): Wang et al. 2004 on luminance, 11×11 Gaussian window, σ 1.5, K1 0.01, K2 0.03, L 255, averaged over every window that fits. It matches scikit-image 0.26 to about 1e-13 on three pairs of different pages. **Reading order** (§5: "the fraction of fields whose source position differs from their top-to-bottom position on screen"): positions count the label and value elements of the fields block. Source position is the HTML order; screen position is sorted top to bottom, then left to right. A field is out of order when its label or its value is at a different position; labels are paired with values as on the baseline. Cross-checked: screen order equals the shuffle's CSS `order` on all 8 item pages. **HTML size** (D71): bytes per page file, and the change from baseline. **Outputs:** `cost.csv` (one row per condition, the CostMeasurement of Figure 2), `pages.csv`, screenshots, pixel-diff images, `report.md`, `manifest.json`. **Cloud result:** shuffled 0.000% pixels, SSIM 1.0000, 70/70 fields out of reading order, HTML +21.2%; honeypot 0.000%, 1.0000, 0/70, +2.8%; baseline 0/70. This matches §4 Hypothesis 4 (shuffling keeps pixel-diff near zero but raises the reading-order mismatch). **Laptop run (Turn 309):** commit `b3d1a05` on Windows, Python 3.11.9, Node 24.13.1; the same table, and `pages.csv` identical to the cloud's apart from line endings; committed as `results/2026-11-20-user-cost/`. **Tests:** 10 new Python, 3 new Node. | Count each label and value element separately; leave SSIM to a Python library (adds a dependency) | Claude (tooling); the reading-order rule awaits Joseph's review (§3: he specifies and reviews the reading-order check; C38) | §4 item 4 (user cost), §4 Hypothesis 4, §5 "User cost", Figure 2 CostMeasurement; D70, D71. | Follows (reading-order rule: Interprets, pending C38) |
+| D92 | 311 | **User-cost runner, part 2: axe-core and Lighthouse** (Claude's Sat Nov 21 task, done Fri Nov 20). **axe-core** 4.14.0: injected into each page after the 3 s wait, in the same browser pass as the screenshot. Violations are counted per page and condition, by impact and by WCAG level (A, AA, AAA, best practice), with new violations against the baseline (§5 "axe-core violations are counted per condition"; metrics plan: "0 new violations against baseline"). **Lighthouse** 13.6.0 (`measurement/lighthouse.mjs`, with chrome-launcher 1.2.3): each condition is served on port 3200 with its own request log in the results folder. There are 5 runs per page (§5), and the median of the performance score, FCP, LCP, TTI, TBT and CLS is kept. Reported as each condition's mean over the pages and its change from the baseline (D70). **Settings:** Lighthouse's defaults (mobile form factor, simulated throttling), performance category only; WebCloak does not state its settings. TTI is still reported by Lighthouse 13 (checked). It uses Playwright's Chromium, so no separate Chrome is needed. **Versions:** all pinned exactly and at least two weeks old; `package.json` engines raised to Node ≥ 22.19, as Lighthouse 13.6 requires. **Checks:** 4 new Python and 3 new Node tests. axe-core catches 8 rule violations on a deliberately broken page and 0 on the site; the hidden trap link is not visible and not flagged. Cloud run with 1 Lighthouse run per page (5 min 8 s): axe-core 0 violations on baseline, shuffled and honeypot. This matches §4 Hypothesis 4: axe-core does not see the reading-order problem that shuffling causes. Lighthouse changes are within ±3 ms and 0.1 points, apart from a 1-run TTI outlier on honeypot (−23 ms). | Lighthouse's desktop preset; real (devtools) throttling; axe-core through a Python package | Claude (tooling) | §3 tools (Lighthouse, axe-core); §5 "User cost"; §4 Hypothesis 4; D70; `docs/metrics-plan.md`. | Follows (Lighthouse settings: Interprets) |
 
 ---
 
@@ -436,6 +437,10 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J307 | 307 | lets continue with what we need to do | Built the results CSV with the standard metrics (D90) and its tests; README, metrics plan and schedule updated; PR; a tested standalone example for (d) part 1 (quiet-page wait) and the steps for Joseph; asked C37 |
 | J308 | 308 | (laptop output of `scoring/results.py`: the same table as the cloud) | Confirmed it matches the cloud exactly; PR #46 merged; asked Joseph to commit `results/2026-11-20-results/`; built the user-cost runner, part 1 (D91); asked C38 |
 | J309 | 309 | ok i merged and commited the results | Checked `main`: PR #47 merged; `2026-11-20-results` and `2026-11-20-user-cost` committed; the laptop's user-cost run matches the cloud's; schedule updated; C37 and C38 still open |
+| J310 | 310 | what do you recommend? | Do both in parallel, with Joseph on (d) part 1 first because (d) is the critical path (time limit Sat Nov 28; Thanksgiving Nov 26–27 off); Claude builds user cost part 2 meanwhile; accept the recommended answers to C37 and C38; the standalone quiet-wait example shown |
+| J311 | 311 | (laptop output of `quiet_wait_demo.py`: 4987 ms, then a timeout at 10007 ms) | Explained the output (matches the cloud); next: (d) part 1; Claude built user cost part 2 (D92) |
+| J312 | 312 | (the `WAIT_FOR_QUIET` block) this part i add? | Yes: where it goes in `scrapers/d_adaptive.py` and the call after `page.goto`; Claude-supplied lines to be disclosed; recording timeouts would need an optional new key in the approved output format (C37) |
+| J313 | 313 | what should scraper d look like walk me through it | Design walkthrough of (d): (b) plus the midterm's three abilities, the flow per page, expected results, and schedule; no project code written |
 
 ### Questions from Claude
 
@@ -484,7 +489,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 309, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed. Next for Claude: user cost part 2 (Lighthouse, axe-core; Sat Nov 21), the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 313, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20, laptop run pending (`npm install` first). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14449,3 +14454,122 @@ Each step has the command, what to expect and what to say. It also offered to up
 **Questions Claude asked:** C37 and C38 (still open); whether to start part 2 now.
 
 **Direction and fit:** no new decision (D90 and D91 confirmed on the laptop).
+
+### Turn 310 — 2026-11-20 18:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what do you recommend?
+
+**What Claude did:** Weighed the remaining Milestone 3 work against the schedule.
+- (d) is Joseph's code, has three steps (the quiet wait; hidden elements and CSS order; Test 3 and the baseline check) and a time limit of Sat Nov 28, with Nov 26–27 off. That leaves 5 working days. It is the only remaining item that can be dropped at Cut-line 2.
+- User cost part 2 is Claude's, can run in parallel, and only needs one `npm install` on the laptop afterwards.
+- Showed the standalone quiet-wait example (scratchpad `d-example/quiet_wait_demo.py`, run in Turn 307), which is not project code.
+
+**Claude's answer (summary):**
+- **Recommendation:** both at once. Joseph starts (d) part 1 now, because (d) is the critical path; Claude builds user cost part 2 meanwhile.
+- **C37 and C38:** answering "yes" to both recommendations unblocks (d)'s timeout handling and the reading-order rule.
+- Gave the example script and how to try it, and the 4 steps for (d) part 1. Any lines Joseph copies from the example into (d) will be disclosed in the log.
+
+**Questions Claude asked:** C37 and C38 (still open; recommended answers restated); whether to go ahead with part 2.
+
+**Direction and fit:** no new decision.
+
+### Turn 311 — 2026-11-20 18:31 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project> python quiet_wait_demo.py
+> right after load: first text
+> after waiting:    changed at 2 s {'timedOut': False, 'waitedMs': 4987}
+> busy page:        10 {'timedOut': True, 'waitedMs': 10007}
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project>
+
+**What Claude did:**
+- Compared Joseph's laptop run of the standalone example with the cloud run: 4987 ms against 4951 ms, and a timeout at 10007 ms against 10000 ms.
+- Gave the next step for (d) part 1.
+- Started user cost part 2 (this turn's work is recorded in D92, and the entries for Turns 312 and 313):
+  - installed and pinned `lighthouse` 13.6.0, `axe-core` 4.14.0 and `chrome-launcher` 1.2.3, and raised the `package.json` engines to Node ≥ 22.19;
+  - probed Lighthouse 13: it still reports TTI, and its defaults are mobile with simulated throttling;
+  - checked WebCloak's paper for its Lighthouse settings: none are stated;
+  - wrote `measurement/lighthouse.mjs` and `measurement/lighthouse.test.mjs`;
+  - extended `measurement/user_cost.py` with axe-core and Lighthouse, a report section for each, and a check that Playwright's Chromium is installed;
+  - added 4 tests to `measurement/tests/test_user_cost.py`;
+  - checked that axe-core flags a deliberately broken page;
+  - ran the full runner in the cloud with 1 Lighthouse run per page.
+- Updated `README.md`, `SCHEDULE.md` (Sat Nov 21 ticked as done early) and `docs/metrics-plan.md`.
+- Test suites: measurement 44, scoring 34, Node 26, all passing. Committed, pushed, and opened a pull request.
+
+**Claude's answer (summary):**
+- The example behaves the same on the laptop: one change, then 3 quiet seconds, gives about 5 s; a page that never settles stops at 10 s.
+- Next: (d) part 1 in the project.
+- User cost part 2 is built.
+  - axe-core finds no accessibility violations on any condition. It doesn't check reading order, as the midterm predicted, so only the reading-order measure shows what shuffling costs.
+  - Lighthouse shows no meaningful speed cost.
+- Joseph's steps: run `npm install`, then the full user-cost run, which takes about 20 minutes on the laptop.
+
+**Questions Claude asked:** C37 and C38 (still open).
+
+**Direction and fit:** D92 (Follows; the Lighthouse settings are Interprets).
+
+### Turn 312 — 2026-11-20 18:33 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> WAIT_FOR_QUIET = """
+> ([quietMs, timeoutMs]) => new Promise((resolve) => {
+>   const start = performance.now();
+>   let quiet = setTimeout(() => done(false), quietMs);            // fires after quietMs with no changes
+>   const observer = new MutationObserver(() => {                  // any change restarts the quiet timer
+>     clearTimeout(quiet);
+>     quiet = setTimeout(() => done(false), quietMs);
+>   });
+>   observer.observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+>   const limit = setTimeout(() => done(true), timeoutMs);         // never wait longer than timeoutMs
+>   function done(timedOut) {
+>     observer.disconnect(); clearTimeout(quiet); clearTimeout(limit);
+>     resolve({ timedOut: timedOut, waitedMs: Math.round(performance.now() - start) });
+>   }
+> })
+> """
+>
+> this part i add?
+
+**What Claude did:** Answered mid-turn, while building part 2. Checked `docs/scraper-output.md`: the `pages` entries have `path`, `status` and `error` only, so recording a quiet-wait timeout would need a new optional key, which is a change to an approved contract and needs Joseph's approval.
+
+**Claude's answer (summary):**
+- Yes, that block goes into `scrapers/d_adaptive.py`, near the top after the imports.
+- Read `adaptive_quiet_seconds` and `adaptive_timeout_seconds` from `config.json` and multiply by 1000.
+- After `page.goto(...)` and its error handling, and before anything reads the page, call `page.evaluate(WAIT_FOR_QUIET, [quiet_ms, timeout_ms])` and print the result.
+- On a timeout it reads the page anyway, which is the C37 recommendation.
+- **Disclosure:** the `WAIT_FOR_QUIET` function and these three suggested lines (reading the config, the call, the print) are Claude's. If they appear in (d), the log records them as Claude-supplied, as was done for (c).
+
+**Questions Claude asked:** none new (C37 restated, with the note that recording a timeout needs an output-format change).
+
+**Direction and fit:** no new decision.
+
+### Turn 313 — 2026-11-20 18:33 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what should scraper d look like walk me through it
+
+**What Claude did:** Read the midterm's (d) row (§2: "Wait until the page has had no changes for 3 seconds (longer than the 2-second poisoning delay), with a 10-second timeout. Ignore elements that computed style marks hidden, including hidden links. Sort field elements by computed CSS order, then apply the same label-plus-next-text rule"; "Playwright, plus in-page getComputedStyle and MutationObserver. I implement the three tricks and the timing rule"). Also read (b)'s loop. Then explained the design in words; no project code was written.
+
+**Claude's answer (summary):**
+- **(d) is (b) plus three abilities, each beating one defense:**
+  - the quiet wait beats poisoning;
+  - ignoring what computed style hides (hidden links included) beats the honeypot;
+  - sorting by computed CSS order, then label-plus-next, beats shuffling.
+- **The flow per page:**
+  1. goto;
+  2. the quiet wait;
+  3. reading the fields from the live page instead of a BeautifulSoup copy: for each label, take its parent's children, drop the hidden ones, sort by computed `order`, and take the element after the label;
+  4. following only visible links;
+  5. the same output as (b).
+- **Expected results:** baseline 70/70; shuffled 70/70 (the hypothesis says unaffected); honeypot 70/70 with 10 pages, so (d) evades the trap. If shuffled falls short, the midterm treats that as a finding too.
+- **Schedule:** part 1 now; part 2 on Tue Nov 24, with a standalone `getComputedStyle` example first; Test 3 and the baseline check on Wed Nov 25; runs by Sat Nov 28.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The design follows the midterm's (d) row (§2) and Hypotheses 1–3 (§4).
