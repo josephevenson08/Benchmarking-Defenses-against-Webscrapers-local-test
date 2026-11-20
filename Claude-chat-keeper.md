@@ -436,6 +436,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J307 | 307 | lets continue with what we need to do | Built the results CSV with the standard metrics (D90) and its tests; README, metrics plan and schedule updated; PR; a tested standalone example for (d) part 1 (quiet-page wait) and the steps for Joseph; asked C37 |
 | J308 | 308 | (laptop output of `scoring/results.py`: the same table as the cloud) | Confirmed it matches the cloud exactly; PR #46 merged; asked Joseph to commit `results/2026-11-20-results/`; built the user-cost runner, part 1 (D91); asked C38 |
 | J309 | 309 | ok i merged and commited the results | Checked `main`: PR #47 merged; `2026-11-20-results` and `2026-11-20-user-cost` committed; the laptop's user-cost run matches the cloud's; schedule updated; C37 and C38 still open |
+| J310 | 310 | what do you recommend? | Do both in parallel, with Joseph on (d) part 1 first because (d) is the critical path (time limit Sat Nov 28; Thanksgiving Nov 26–27 off); Claude builds user cost part 2 meanwhile; accept the recommended answers to C37 and C38; the standalone quiet-wait example shown |
 
 ### Questions from Claude
 
@@ -14449,3 +14450,23 @@ Each step has the command, what to expect and what to say. It also offered to up
 **Questions Claude asked:** C37 and C38 (still open); whether to start part 2 now.
 
 **Direction and fit:** no new decision (D90 and D91 confirmed on the laptop).
+
+### Turn 310 — 2026-11-20 18:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what do you recommend?
+
+**What Claude did:** Weighed the remaining Milestone 3 work against the schedule.
+- (d) is Joseph's code, has three steps (the quiet wait; hidden elements and CSS order; Test 3 and the baseline check) and a time limit of Sat Nov 28, with Nov 26–27 off. That leaves 5 working days. It is the only remaining item that can be dropped at Cut-line 2.
+- User cost part 2 is Claude's, can run in parallel, and only needs one `npm install` on the laptop afterwards.
+- Showed the standalone quiet-wait example (scratchpad `d-example/quiet_wait_demo.py`, run in Turn 307), which is not project code.
+
+**Claude's answer (summary):**
+- **Recommendation:** both at once. Joseph starts (d) part 1 now, because (d) is the critical path; Claude builds user cost part 2 meanwhile.
+- **C37 and C38:** answering "yes" to both recommendations unblocks (d)'s timeout handling and the reading-order rule.
+- Gave the example script and how to try it, and the 4 steps for (d) part 1. Any lines Joseph copies from the example into (d) will be disclosed in the log.
+
+**Questions Claude asked:** C37 and C38 (still open; recommended answers restated); whether to go ahead with part 2.
+
+**Direction and fit:** no new decision.
