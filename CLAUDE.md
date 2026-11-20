@@ -38,11 +38,12 @@ Joseph works on `main`, on his laptop in VS Code. Claude works on `claude/quirky
 - **Claude may draft:**
   - the test site (data list, page generator, Express server, request logger);
   - the measurement tooling (scoring script, experiment runner, user-cost runner);
-  - the setup for scraper (e) (model choice and request format).
+  - the setup for scraper (e) (model choice and request format);
+  - scraper (d): Joseph asked Claude to write it on Nov 20 (Turn 321, D99; part 1's lines were already Claude's, D98). This changes the midterm's §2 split and is disclosed as a deviation.
 - **Joseph writes, and Claude must not write:**
   - the page defenses (shuffling, honeypot, poisoning);
   - the tarpit route;
-  - scrapers (a)–(d);
+  - scrapers (a)–(c);
   - the prompt, parsing and failure rules for (e).
 
   Claude may explain concepts and show small standalone examples that are not project code.
