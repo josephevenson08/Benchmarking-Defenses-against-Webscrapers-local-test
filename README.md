@@ -189,6 +189,13 @@ python -m unittest discover -s measurement/tests -t .
 python measurement/test4.py
 ```
 
+**Test 7**, the crawl part, in one command. It serves a small test site on a free port: a 404 link, a link cycle, and a page that answers only after 12 s, longer than the scrapers' timeout. Each scraper crawls it twice: with page cap 15 it must record the 404 and the timeout, keep going, and visit every page once; with page cap 3 it must stop after 3 pages. It writes `results/<date>-test7/`:
+
+```bash
+python measurement/test7.py                      # (a) and (b)
+python measurement/test7.py --scrapers a b c     # (c) too (the test pages make no model calls)
+```
+
 **Test 6** in one command (starts its own server on port 3100 with a fresh log, sends a trap request and a normal request with run ID `test6` plus one without a User-Agent, and checks the honeypot pages: one hidden trap link each, pixel difference ≤ 1%; writes `results/<date>-test6/`):
 
 ```bash
