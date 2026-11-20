@@ -462,6 +462,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J323 | 323 | (laptop: (d) 9/9 runs 70/70; results CSV over 36 runs; figures written) | ⭐ (d) done on all three conditions (D101); the hypotheses checked; commit the three folders; asked the format for the weekly summary |
 | J324 | 324 | (`git add` of the three folders, with "LF will be replaced by CRLF" warnings) | Explained the warnings (harmless: Git on Windows converts line endings in the working copy only); continue with commit and push |
 | J325 | 325 | (`git commit`: packing 955 objects, then "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)" repeated) | OneDrive locking Git's clean-up (as in Turn 164): Ctrl+C is safe, check the commit, push; ways to stop it recurring |
+| J326 | 326 | ok i pushed | Checked the three folders on `main` and the laptop's figures; asked the summary's format (C40); made the Word doc "scrum meeting 11-23" |
 
 ### Questions from Claude
 
@@ -506,12 +507,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C37 | 307 | When (d)'s quiet-page wait reaches its 10 s timeout, what should (d) do? Options (Turn 317): "Read anyway, print it (Recommended)", "Read anyway, add a field", "Fail the page". | Read anyway, print it. | Closed (Turn 317) → D95 |
 | C38 | 308 | Reading-order rule (§3: Joseph specifies and reviews it). Options (Turn 317): "Label or value moved (Recommended)", "Count elements separately". | Label or value moved. | Closed (Turn 317) → D96 |
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
+| C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
 
 ---
 
 ## Open items
 
-**▶ Resume here (Turn 323, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). (d) ran 9/9 on the laptop (D101; results CSV over 36 runs and figures made; three folders to commit). Next for Joseph: the weekly summary for Mon Nov 23 (format to choose), the (d) part of Test 3; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 326, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20) and user cost part 1 (D91, Fri Nov 20), both run on the laptop and committed; user cost part 2 (D92, axe-core and Lighthouse) built Fri Nov 20 and run on the laptop (folder `results/2026-11-20-user-cost-full/` to commit). Test 7's crawl part passes on the laptop (D93); ⭐ Milestone 3's Essential "Done when" met (D94). Next for Claude: the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Scraper (d) is complete (part 1 D98; part 2 written by Claude at Joseph's request, D99). Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py` (D100). (d) ran 9/9 on the laptop (D101; results CSV over 36 runs and figures made; three folders to commit). The Mon Nov 23 scrum summary is made (Word doc, Turn 326; not in the repository). Next for Joseph: the (d) part of Test 3; part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -15163,3 +15165,34 @@ The rest of this work is recorded under Turn 322, because Joseph's next message 
 **Questions Claude asked:** the weekly summary format (still open).
 
 **Direction and fit:** no new decision.
+
+### Turn 326 — 2026-11-20 19:42 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i pushed
+
+**What Claude did:**
+- Fetched `main`. Joseph's `8e20c37` "d runs, results CSV and figures" adds `results/2026-11-20-d-all/` (26 files), `results/2026-11-20-results-all/` (3) and `results/2026-11-20-figures/` (6). Merged `main` into the branch.
+- Looked at the laptop's Figure 1: it matches the cloud preview. Checked that `tables.md` has (d)'s 3 runs per condition (70 70 70; detection 0.00; 3.035 s per page, 253× (a)).
+- Asked C40 (format).
+- **Made the Word document** `scrum meeting 11-23.docx` with the docx skill (docx-js script in the scratchpad `scrum-1123/make.js`; not committed). It has 4 pages, US Letter, Arial:
+  - In short;
+  - What I did since Nov 16 (a table by day);
+  - Results: 36 runs (a table with verdicts, and Figure 1);
+  - Comparison with published work (Figure 2 and a 4-row table: WebCloak, Beyond BeautifulSoup, Shy Guys);
+  - Figure 3 (honeypot detection);
+  - Cost to real visitors (table);
+  - Hypothesis check (table);
+  - Use of AI (Claude built the site and tools and, at Joseph's request, wrote scraper (d); a few Claude-suggested lines in Joseph's code are logged);
+  - Next, and three questions for the professor (the WebCloak comparison, Claude writing (d), poisoning next).
+
+  The figures come from Joseph's committed `results/2026-11-20-figures/`; every number comes from the committed results.
+- Rendered it to PDF and looked at every page. Fixed two tables that split across pages (kept each on one page).
+- Sent the file.
+
+**Claude's answer (summary):** The Word doc is ready to review and print. It keeps to simple charts and tables, and covers the work since the Nov 16 meeting.
+
+**Questions Claude asked:** C40 (format). Joseph answered with a Word doc, simple graphs and tables, and what was done since Monday.
+
+**Direction and fit:** no new decision. The summary reports D66–D101; its "Use of AI" section carries the D98 and D99 disclosure (§7).
