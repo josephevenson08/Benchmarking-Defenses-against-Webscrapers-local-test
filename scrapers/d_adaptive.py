@@ -9,7 +9,28 @@ from urllib.robotparser import RobotFileParser
 import time
 from datetime import datetime, timezone
 
-parser = argparse.ArgumentParser(description="Scraper (b): browser")
+WAIT_FOR_QUIET = """
+([quietMs, timeoutMs]) => new Promise((resolve) => {
+  const start = performance.now();
+  let quiet = setTimeout(() => done(false), quietMs);            // fires after quietMs with no changes
+  const observer = new MutationObserver(() => {                  // any change restarts the quiet timer
+    clearTimeout(quiet);
+    quiet = setTimeout(() => done(false), quietMs);
+  });
+  observer.observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+  const limit = setTimeout(() => done(true), timeoutMs);         // never wait longer than timeoutMs
+  function done(timedOut) {
+    observer.disconnect(); clearTimeout(quiet); clearTimeout(limit);
+    resolve({ timedOut: timedOut, waitedMs: Math.round(performance.now() - start) });
+  }
+})
+"""
+
+config = json.load(open("config.json"))
+quiet_ms = config["adaptive_quiet_seconds"] * 1000      # 3000
+timeout_ms = config["adaptive_timeout_seconds"] * 1000  # 10000
+
+parser = argparse.ArgumentParser(description="Scraper (d): adaptive")
 parser.add_argument("--start-url", default="http://127.0.0.1:3000/") #default url to scrape, can be changed with command line argument
 parser.add_argument("--page-cap", type=int, default=15) #max pages to scrape
 parser.add_argument("--robots", choices=["obey", "ignore"], default="obey") #two choices obey and ignore
@@ -61,7 +82,6 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
         path = urlparse(url).path #get the path of the url
         try:
             response = page.goto(url, wait_until="load", timeout=5000) #load the page in the browser, wait for the load event, give up after 5000 ms (5 s)
-            WAIT_FOR_QUIET();
         except PlaywrightTimeout:
             print("timeout", url)
             pages.append({"path": path, "status": None, "error": "timeout"}) #if timeout, add to pages with error
@@ -73,6 +93,14 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
 
         print(response.status, url)
         pages.append({"path": path, "status": response.status, "error": None}) #append the page to pages with status and no error
+
+
+        wait = page.evaluate(WAIT_FOR_QUIET, [quiet_ms, timeout_ms])
+        if wait["timedOut"]:
+            print("quiet wait timed out after", wait["waitedMs"], "ms, reading the page as it is", url)
+        else:
+            print("page quiet after", wait["waitedMs"], "ms", url)
+
 
         soup = BeautifulSoup(page.content(), "html.parser") #build the tree after js load
         for field in all_fields:
@@ -93,7 +121,7 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
 output = {
     "run": {
         "run_id": args.run_id,
-        "scraper": "b",
+        "scraper": "d",
         "start_url": start_url,
         "page_cap": page_cap,
         "obey_robots_txt": args.robots == "obey",
