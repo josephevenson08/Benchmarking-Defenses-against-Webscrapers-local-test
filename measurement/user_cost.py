@@ -309,6 +309,7 @@ def write_report(out_dir, manifest, cost):
                 mean, change = c.get(f"lh_{k}_mean"), c.get(f"lh_{k}_change_mean")
                 if c["condition"] == "baseline" or change is None:
                     return f"{f(mean, d)}{unit}"
+                change = round(change, int(d[1:-1])) + 0.0  # so a tiny negative change prints +0, not -0
                 return f"{f(mean, d)}{unit} ({f(change, '+' + d)}{unit})"
             lines.append(f"| {c['condition']} | {cell('score', '', '.1f')} | {cell('fcp_ms', ' ms', '.0f')} | "
                          f"{cell('lcp_ms', ' ms', '.0f')} | {cell('tti_ms', ' ms', '.0f')} |")
