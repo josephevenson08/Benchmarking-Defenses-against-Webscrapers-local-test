@@ -118,6 +118,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D87 | 292 | **Rerun (c) on all three conditions with the fixed code**, in one runner call (about 9 min), so every (c) result comes from one commit. The first folders stay as the first record: `results/2026-11-18-c-baseline/` (the passed check, D84) and `results/2026-11-18-c-defended/` (shuffled 47, 50, 50/70 = 0.671–0.714; honeypot 3 crashes). The fix changes nothing on pages that have a `<main>`, so the rerun should repeat the baseline and shuffled results within (c)'s run-to-run variation. | Rerun honeypot only and report the two commits | Joseph (C36; Claude recommended) | §4 item 10: "Scrapers are fixed before any defended runs"; §5 Reproducibility (each results folder records its commit). | Follows |
 | D88 | 293 | **⭐ Scraper (c) ran on all three conditions (Wed Nov 18; planned Sat Nov 28).** Joseph's laptop, commit `8e361f3` (D86's fix), `llama3.2:3b`, one runner call: 9/9 runs finished. Baseline 70/70 × 3 (D84 repeated on the fixed code). **Shuffled 48, 49, 49/70** (mean 0.695, min–max 0.686–0.700): shuffling **reduces** (c) (below the lowest baseline run, whose spread is 0) but does **not stop** it (above 10%); relative reduction about 0.30, against 0.94 for (a) and (b). This answers §4 Hypothesis 1's "(c) is uncertain". **Honeypot 70/70 × 3 with 11 pages** (the trap page, which has no model call): accuracy unchanged and the trap followed, as Hypothesis 3 expects; the hit count per run comes from the request log in the results CSV. Time per page 4.8–6.9 s. Breakdown of the first shuffled runs (`c-defended`, same model and prompt): fields with a distinctive form or derivable from the name (price, rating, SKU, brand, category) right in every run; fields with no distinctive form mixed up (review count 2/18, description 8/18, article summary 0/6, tags 0/6). No failure-rule lines in the run logs, so every lost field is a model error (wrong or empty value), not a failure (§5 "Defense vs model failure"). Confirmed on `c-all` (Turn 294): the same per-field pattern (publish date 1/6 instead of 2/6), no failure lines, and exactly 1 trap hit per honeypot run (0 on baseline and shuffled). | — | Joseph (his scraper; ran it); Claude (runner; analysis) | §4 Hypothesis 1 and 3; §4 item 5 ("Stops" below 10%; a honeypot works when it logs a hit); §4 Analysis ("reduces" rule; mean and min–max over 3 runs); §5 "Defense vs model failure". | Follows |
 | D89 | 301 | **From *Beyond BeautifulSoup* [2] (re-read, Turn 301): use 2 of its 3 metrics, not the third.** **Used:** (1) Extraction Success Rate (ESR), "% of scraping runs with complete and correct output", averaged over 3 trials, which here means the share of runs at 70/70; (2) Execution Time, "average runtime for a successful scrape": our wall seconds per successful run, next to time per page. Both were already planned (D68, D70). **Not used:** Manual Effort Required (Low/Medium/High by retries and setup work), because our scrapers are fixed before the runs and never retried (§2 "no retry"; §4 item 10), so it would be the same for every run and says nothing about a defense. **Borrowed for describing the testbed:** our site is their tier 1, "Simple HTML" (static, no login, no JavaScript needed); their 3 trials per site match our 3 runs per cell. **ESR's limit:** it is all-or-nothing per run, so (c) on shuffled scores ESR 0 although it got 69.5% of fields; recall is reported beside it. | Adopt MER as a developer-effort note | Claude (recommended; Joseph asked whether the metrics fit) | D68 layer 2 and 3 (`docs/metrics-plan.md`); §5 item 9 (3 runs per cell); §2 (c) no retry; §4 item 10. | Follows |
+| D90 | 307 | **Results CSV with the standard metrics: `scoring/results.py`** (Claude's Thu Nov 19 and Fri Nov 20 tasks, built together). Input: one or more runner folders. A run ID found in two folders is refused, so each run comes from exactly one folder. Every field is scored by `scoring/score.py`, so the matching rules stay in one place (D31–D35 unchanged). **Outputs:** `results.csv` (one row per run), `cells.csv` (one per scraper and condition) and `summary.md`. **Definitions:** recall = accuracy = correct ÷ 70; precision = correct ÷ fields with a value (blank if none); F1 = 2PR/(P+R), 0 when nothing correct; ESR = runs with 70/70 ÷ runs; relative reduction = 1 − defended mean ÷ same scraper's baseline mean (recall and F1); verdict "stops" (mean recall < 10%), "reduces" (below the lowest baseline run by more than the baseline spread) or "no effect"; baseline check (every baseline run ≥ 90%); honeypot hits = trap-path requests with the run's ID; detection rate = runs with ≥ 1 hit ÷ runs; evasion = 1 − detection. **Interpretations:** time per page stays the midterm's (crawl seconds ÷ pages fetched, from the output). The log adds page requests (robots.txt and files with an extension other than .html are not pages; Turns 121 and 124), checked against pages fetched, and the mean server response time. A crashed run (no output file) is scored as finding nothing, like `score.py`'s empty-output rule, and is listed as failed with its exit code. **Checks:** 10 new tests (34 scoring tests pass, 30 measurement tests pass). On the 27 committed Nov 18 runs the result equals the Turn 304 preview; the page counts from the logs match the outputs for every run; `c-defended` shows its 3 crashed honeypot runs as failed. | Time per page from the log's first-to-last request; leave crashed runs out of the cells | Claude (midterm tooling, §2, §7) | §4 items 4–5 and Analysis; Figure 2 ("Accuracy, fake-value rate, time per page and honeypot hits are not stored columns. The scoring script calculates them"); D68, D70; `docs/metrics-plan.md`. | Follows (crashed-run and page-request rules: Interprets) |
 
 ---
 
@@ -431,6 +432,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J304 | 304 | if so, can you generate what i have now to see what they look like? | Built a preview page (private artifact) with Figure 2, Tables 1 and 2 and (c)'s per-field chart from the committed Nov 18 runs; Table 3 and Figure 1 await user-cost data |
 | J305 | 305 | can you help me launch my project to show the different scrapers etc | Updated demo guide (Nov 15 version + scraper (c), Ollama checks, the 27-run results and the preview page); commands dry-run in the cloud |
 | J306 | 306 | ok whats next in the milestone | Milestone 3 status on Fri Nov 20: what's done, what's left by owner and date; Claude's results CSV is a day late; proposed: Claude builds the CSV and standard metrics now, Joseph starts (d) part 1 |
+| J307 | 307 | lets continue with what we need to do | Built the results CSV with the standard metrics (D90) and its tests; README, metrics plan and schedule updated; PR; a tested standalone example for (d) part 1 (quiet-page wait) and the steps for Joseph; asked C37 |
 
 ### Questions from Claude
 
@@ -472,12 +474,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C34 | 278 | If Ollama can't be reached? Options: "Record and keep going (Recommended)", "Stop the run". | Record and keep going. | Closed (Turn 278) → D83 |
 | C35 | 292 | Scraper (c) crashes on `/trap` (no `<main>`): how should it handle a page with no `<main>`? Options: "Read text only on item pages (Recommended)", "Fall back to the body text", "Record a page error, keep going". | Read text only on item pages. | Closed (Turn 292) → D86 |
 | C36 | 292 | The fix changes (c) after its baseline and shuffled runs: which runs use the fixed code? Options: "Rerun all three conditions (Recommended)", "Rerun honeypot only". | Rerun all three conditions. | Closed (Turn 292) → D87 |
+| C37 | 307 | When (d)'s quiet-page wait reaches its 10 s timeout, what should (d) do? Recommended: read the page as it is and record that the wait timed out; alternative: count the page as failed. | Open (asked in the reply) | Open |
 
 ---
 
 ## Open items
 
-**▶ Resume here (Turn 306, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). Claude is one day behind: the results CSV (Thu Nov 19) is not built. Next for Claude: the results CSV with the standard metrics (Nov 19–20, together), then the user-cost runner parts 1–2 (Nov 20–21), the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 307, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20; Joseph to run it on the laptop). Next for Claude: the user-cost runner parts 1–2 (Nov 20–21), the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14335,3 +14338,37 @@ Each step has the command, what to expect and what to say. It also offered to up
 **Questions Claude asked:** whether to start the results CSV now (offered).
 
 **Direction and fit:** no new decision.
+
+### Turn 307 — 2026-11-20 18:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> lets continue with what we need to do
+
+**What Claude did:**
+- **Built `scoring/results.py`**, the results CSV with the standard metrics (D90), and `scoring/tests/test_results.py` (10 tests).
+- **Checked it:**
+  - all 34 scoring tests and 30 measurement tests pass;
+  - on the committed `2026-11-18-experiment` and `2026-11-18-c-all` folders (27 runs), the table equals the Turn 304 preview, and the log page counts match the outputs;
+  - giving it `c-baseline` together with `c-all` is refused, because the runs are duplicated;
+  - `c-defended` lists its 3 crashed honeypot runs as failed, with 0 correct.
+- **Updated documents:**
+  - `README.md`: usage for the results CSV, the scoring test count (24 → 34), and the roadmap;
+  - `docs/metrics-plan.md`: status;
+  - `SCHEDULE.md`: Thu Nov 19 (one day late) and Fri Nov 20 part 1 ticked.
+- **For Joseph's (d) part 1,** wrote and ran a standalone example in the scratchpad (not project code). A MutationObserver resolves after 3 s with no changes, or gives up at 10 s. A page that changes at 2 s was read after 4.95 s with the final text; a page that never stops changing timed out at 10.0 s.
+- Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- The results CSV is done. Joseph runs one command on the laptop and commits the output folder.
+- (d) part 1 steps:
+  1. copy (b) to `scrapers/d_adaptive.py`;
+  2. after `page.goto`, wait for the page to be quiet, with the times from `config.json` (3 s and 10 s);
+  3. print what each wait did;
+  4. run on baseline, expecting 70/70 and about 3+ s per page.
+- The quiet-wait example is shown as a standalone script. Any lines Joseph copies from it into (d) will be disclosed in the log.
+- Asked C37: what (d) should do when the wait times out.
+
+**Questions Claude asked:** C37 (open).
+
+**Direction and fit:** D90 (Follows; the crashed-run and page-request rules are Interprets).
