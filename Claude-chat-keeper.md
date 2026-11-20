@@ -469,6 +469,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J329 | 329 | can you make this word doc as if it was an actual report maximum 2 pages, and way less wordy, show graphs and tables as well | Rewrote it as a 2-page report: numbered sections, Tables 1–4, one two-panel Figure 1 |
 | J330 | 330 | add key takeaways after each plot and table to show what it means in terms of comparison | A "Key takeaway" after each of the 5 tables and the figure, comparing with baseline and with published work; still 2 pages |
 | J331 | 331 | ok i merged see you tomorrow | Checked that PR #57 is merged; end-of-day resume note |
+| J332 | 332 | can you list out what all is left in my project | Remaining work from `SCHEDULE.md`: Milestone 3 (4 items and Cut-line 2), the optional Ambitious items (poisoning, (e), tarpit), and Milestone 4 (Dec 2–10) |
 
 ### Questions from Claude
 
@@ -15319,5 +15320,38 @@ The Table 4 caption was folded into its takeaway. Each figure was checked agains
 - What's left in Milestone 3.
 
 **Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 332 — 2026-11-20 20:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you list out what all is left in my project
+
+**What Claude did:** Read the remaining rows of `SCHEDULE.md` (Milestone 3 from Nov 25, and Milestone 4) against what is done (resume note, D94–D102).
+
+**Claude's answer (summary):**
+- **Milestone 3, by Dec 1:**
+  - (d)'s part of Test 3, with Joseph's hand-worked answers (Nov 25);
+  - Test 7's stub-model part for (c) (Nov 29);
+  - the honeypot false-positive check (Claude, Nov 29);
+  - our column of the related-work table (Claude drafts, Nov 25);
+  - the all-cells check (Nov 30, largely covered by the cross-check);
+  - Cut-line 2 (Dec 1).
+- **Optional, open because (c) and (d) finished early:**
+  - poisoning and Test 5, which tests the only untested hypothesis (recommended if any);
+  - scraper (e) and the tarpit, both likely dropped and reported.
+- **Milestone 4, Dec 2–10:**
+  - the final tables and figure (Claude), checked by Joseph;
+  - the result-vs-prediction comparison;
+  - the final README and reproducibility manifest (Claude);
+  - the report (Joseph), including the scope change and the AI-use disclosure for (d);
+  - a clean rerun on a fresh clone (Dec 7);
+  - the final PDF and tag (Dec 8);
+  - the deadline (Dec 10).
+- **Housekeeping:** the (c) comment tidy-up, the honeypot `${page.trapPath}` tidy-up, and `git config gc.auto 0`.
+
+**Questions Claude asked:** none (whether to build poisoning is for Monday's meeting).
 
 **Direction and fit:** no new decision.
