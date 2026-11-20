@@ -133,7 +133,7 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | **Sat Nov 28** | (A) Runs: (c) (if usable) and (d) × baseline, shuffled and honeypot × 3 runs. **Time limit for (d).** ✅ (c) part done early (Wed Nov 18, D88): 9/9 runs, commit `8e361f3`: baseline 70/70 × 3; shuffled 48, 49, 49/70 (0.686–0.700: reduces, does not stop); honeypot 70/70 × 3 with 11 pages (the trap). Results folder `results/2026-11-18-c-all/` to commit. The first attempt (`results/2026-11-18-c-defended/`) crashed on the trap page and led to the fix in `8e361f3` (D86, D87). ✅ (d) part done early (Fri Nov 20, D101): 9/9 runs, commit `2065190`: 70/70 on baseline, shuffled and honeypot in every run; honeypot 10 pages and no trap hit; 3.03–3.04 s per page. Results folder `results/2026-11-20-d-all/`. | J |
 | **Sun Nov 29** | (A) The stub-model parts of Test 7 for (c). | J + C |
 | | Honeypot false-positive check: a human-like visitor that clicks only visible links should never hit the trap (D68). | C |
-| **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. | J |
+| **Mon Nov 30** | Check that every cell is in the results CSV with the standard metrics, and every condition has user-cost rows. (Helped by `measurement/cross_check.py`, D102: on Nov 20 it recounted all 36 runs and the user-cost measures from the raw files, and all 541 checks agreed.) | J |
 | **Tue Dec 1** | ⚠️ **Cut-line 2.** Any Ambitious item that isn't running is dropped and reported as not done. Poisoning, (e) and the tarpit start only if (c) and (d) finished early. | J |
 
 ---

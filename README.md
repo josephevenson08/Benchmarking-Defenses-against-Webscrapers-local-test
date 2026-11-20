@@ -294,6 +294,14 @@ It writes `results/<date>-figures/`:
 - `fig5-fields.png`: (c) field by field on the shuffled site;
 - `tables.md`: Tables 1–4, including the comparison with published work.
 
+**Cross-check** of the results, recounted from the raw files without the scoring scripts (the matching rules are written again from `docs/scraper-output.md`, and checked first on the hand-counted Test 2 fixture):
+
+```
+python measurement/cross_check.py --runs results/2026-11-18-experiment results/2026-11-18-c-all results/2026-11-20-d-all --results results/2026-11-20-results-all --cost results/2026-11-20-user-cost-full
+```
+
+It writes `results/<date>-cross-check/report.md`: every check, and the tally for each scraper and defense.
+
 **Model timing for scraper (c)** (Ollama installed and running, at least one model pulled, venv active):
 
 ```
