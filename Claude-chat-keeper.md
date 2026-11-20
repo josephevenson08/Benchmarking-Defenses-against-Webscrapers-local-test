@@ -119,6 +119,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D88 | 293 | **⭐ Scraper (c) ran on all three conditions (Wed Nov 18; planned Sat Nov 28).** Joseph's laptop, commit `8e361f3` (D86's fix), `llama3.2:3b`, one runner call: 9/9 runs finished. Baseline 70/70 × 3 (D84 repeated on the fixed code). **Shuffled 48, 49, 49/70** (mean 0.695, min–max 0.686–0.700): shuffling **reduces** (c) (below the lowest baseline run, whose spread is 0) but does **not stop** it (above 10%); relative reduction about 0.30, against 0.94 for (a) and (b). This answers §4 Hypothesis 1's "(c) is uncertain". **Honeypot 70/70 × 3 with 11 pages** (the trap page, which has no model call): accuracy unchanged and the trap followed, as Hypothesis 3 expects; the hit count per run comes from the request log in the results CSV. Time per page 4.8–6.9 s. Breakdown of the first shuffled runs (`c-defended`, same model and prompt): fields with a distinctive form or derivable from the name (price, rating, SKU, brand, category) right in every run; fields with no distinctive form mixed up (review count 2/18, description 8/18, article summary 0/6, tags 0/6). No failure-rule lines in the run logs, so every lost field is a model error (wrong or empty value), not a failure (§5 "Defense vs model failure"). Confirmed on `c-all` (Turn 294): the same per-field pattern (publish date 1/6 instead of 2/6), no failure lines, and exactly 1 trap hit per honeypot run (0 on baseline and shuffled). | — | Joseph (his scraper; ran it); Claude (runner; analysis) | §4 Hypothesis 1 and 3; §4 item 5 ("Stops" below 10%; a honeypot works when it logs a hit); §4 Analysis ("reduces" rule; mean and min–max over 3 runs); §5 "Defense vs model failure". | Follows |
 | D89 | 301 | **From *Beyond BeautifulSoup* [2] (re-read, Turn 301): use 2 of its 3 metrics, not the third.** **Used:** (1) Extraction Success Rate (ESR), "% of scraping runs with complete and correct output", averaged over 3 trials, which here means the share of runs at 70/70; (2) Execution Time, "average runtime for a successful scrape": our wall seconds per successful run, next to time per page. Both were already planned (D68, D70). **Not used:** Manual Effort Required (Low/Medium/High by retries and setup work), because our scrapers are fixed before the runs and never retried (§2 "no retry"; §4 item 10), so it would be the same for every run and says nothing about a defense. **Borrowed for describing the testbed:** our site is their tier 1, "Simple HTML" (static, no login, no JavaScript needed); their 3 trials per site match our 3 runs per cell. **ESR's limit:** it is all-or-nothing per run, so (c) on shuffled scores ESR 0 although it got 69.5% of fields; recall is reported beside it. | Adopt MER as a developer-effort note | Claude (recommended; Joseph asked whether the metrics fit) | D68 layer 2 and 3 (`docs/metrics-plan.md`); §5 item 9 (3 runs per cell); §2 (c) no retry; §4 item 10. | Follows |
 | D90 | 307 | **Results CSV with the standard metrics: `scoring/results.py`** (Claude's Thu Nov 19 and Fri Nov 20 tasks, built together). Input: one or more runner folders. A run ID found in two folders is refused, so each run comes from exactly one folder. Every field is scored by `scoring/score.py`, so the matching rules stay in one place (D31–D35 unchanged). **Outputs:** `results.csv` (one row per run), `cells.csv` (one per scraper and condition) and `summary.md`. **Definitions:** recall = accuracy = correct ÷ 70; precision = correct ÷ fields with a value (blank if none); F1 = 2PR/(P+R), 0 when nothing correct; ESR = runs with 70/70 ÷ runs; relative reduction = 1 − defended mean ÷ same scraper's baseline mean (recall and F1); verdict "stops" (mean recall < 10%), "reduces" (below the lowest baseline run by more than the baseline spread) or "no effect"; baseline check (every baseline run ≥ 90%); honeypot hits = trap-path requests with the run's ID; detection rate = runs with ≥ 1 hit ÷ runs; evasion = 1 − detection. **Interpretations:** time per page stays the midterm's (crawl seconds ÷ pages fetched, from the output). The log adds page requests (robots.txt and files with an extension other than .html are not pages; Turns 121 and 124), checked against pages fetched, and the mean server response time. A crashed run (no output file) is scored as finding nothing, like `score.py`'s empty-output rule, and is listed as failed with its exit code. **Checks:** 10 new tests (34 scoring tests pass, 30 measurement tests pass). On the 27 committed Nov 18 runs the result equals the Turn 304 preview; the page counts from the logs match the outputs for every run; `c-defended` shows its 3 crashed honeypot runs as failed. | Time per page from the log's first-to-last request; leave crashed runs out of the cells | Claude (midterm tooling, §2, §7) | §4 items 4–5 and Analysis; Figure 2 ("Accuracy, fake-value rate, time per page and honeypot hits are not stored columns. The scoring script calculates them"); D68, D70; `docs/metrics-plan.md`. | Follows (crashed-run and page-request rules: Interprets) |
+| D91 | 308 | **User-cost runner, part 1: `measurement/user_cost.py`, with SSIM added to `measurement/pixel_diff.mjs`.** **How it works:** for baseline and each condition it rebuilds the site and opens every page from its files in headless Chromium (1280×800, no server). It waits 3 s after load (§5), takes a full-page screenshot, and records each field label's and value's screen position. **SSIM** (D70): Wang et al. 2004 on luminance, 11×11 Gaussian window, σ 1.5, K1 0.01, K2 0.03, L 255, averaged over every window that fits. It matches scikit-image 0.26 to about 1e-13 on three pairs of different pages. **Reading order** (§5: "the fraction of fields whose source position differs from their top-to-bottom position on screen"): positions count the label and value elements of the fields block. Source position is the HTML order; screen position is sorted top to bottom, then left to right. A field is out of order when its label or its value is at a different position; labels are paired with values as on the baseline. Cross-checked: screen order equals the shuffle's CSS `order` on all 8 item pages. **HTML size** (D71): bytes per page file, and the change from baseline. **Outputs:** `cost.csv` (one row per condition, the CostMeasurement of Figure 2), `pages.csv`, screenshots, pixel-diff images, `report.md`, `manifest.json`. **Cloud result:** shuffled 0.000% pixels, SSIM 1.0000, 70/70 fields out of reading order, HTML +21.2%; honeypot 0.000%, 1.0000, 0/70, +2.8%; baseline 0/70. This matches §4 Hypothesis 4 (shuffling keeps pixel-diff near zero but raises the reading-order mismatch). **Tests:** 10 new Python, 3 new Node. | Count each label and value element separately; leave SSIM to a Python library (adds a dependency) | Claude (tooling); the reading-order rule awaits Joseph's review (§3: he specifies and reviews the reading-order check; C38) | §4 item 4 (user cost), §4 Hypothesis 4, §5 "User cost", Figure 2 CostMeasurement; D70, D71. | Follows (reading-order rule: Interprets, pending C38) |
 
 ---
 
@@ -433,6 +434,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J305 | 305 | can you help me launch my project to show the different scrapers etc | Updated demo guide (Nov 15 version + scraper (c), Ollama checks, the 27-run results and the preview page); commands dry-run in the cloud |
 | J306 | 306 | ok whats next in the milestone | Milestone 3 status on Fri Nov 20: what's done, what's left by owner and date; Claude's results CSV is a day late; proposed: Claude builds the CSV and standard metrics now, Joseph starts (d) part 1 |
 | J307 | 307 | lets continue with what we need to do | Built the results CSV with the standard metrics (D90) and its tests; README, metrics plan and schedule updated; PR; a tested standalone example for (d) part 1 (quiet-page wait) and the steps for Joseph; asked C37 |
+| J308 | 308 | (laptop output of `scoring/results.py`: the same table as the cloud) | Confirmed it matches the cloud exactly; PR #46 merged; asked Joseph to commit `results/2026-11-20-results/`; built the user-cost runner, part 1 (D91); asked C38 |
 
 ### Questions from Claude
 
@@ -475,12 +477,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | C35 | 292 | Scraper (c) crashes on `/trap` (no `<main>`): how should it handle a page with no `<main>`? Options: "Read text only on item pages (Recommended)", "Fall back to the body text", "Record a page error, keep going". | Read text only on item pages. | Closed (Turn 292) → D86 |
 | C36 | 292 | The fix changes (c) after its baseline and shuffled runs: which runs use the fixed code? Options: "Rerun all three conditions (Recommended)", "Rerun honeypot only". | Rerun all three conditions. | Closed (Turn 292) → D87 |
 | C37 | 307 | When (d)'s quiet-page wait reaches its 10 s timeout, what should (d) do? Recommended: read the page as it is and record that the wait timed out; alternative: count the page as failed. | Open (asked in the reply) | Open |
+| C38 | 308 | Reading-order rule (§3: Joseph specifies and reviews it): is a field out of order when its label or its value is at a different position in the HTML than on screen (as built), or should each label and value element count on its own? | Open (asked in the reply) | Open |
 
 ---
 
 ## Open items
 
-**▶ Resume here (Turn 307, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20; Joseph to run it on the laptop). Next for Claude: the user-cost runner parts 1–2 (Nov 20–21), the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 308, Fri Nov 20):** Milestone 3 status. Done early: model timing and choice (D73–D75), the runner (D76), the Essential runs (D77), (c) parts 1–3 and all its runs (D78–D88). The results CSV and the standard metrics are done (D90, Fri Nov 20; laptop run matches; folder to commit), and user cost part 1 (D91, Fri Nov 20). Next for Claude: user cost part 2 (Lighthouse, axe-core; Sat Nov 21), the user-cost runs (Tue Nov 24), our column of the related-work table (Wed Nov 25), the honeypot false-positive check (Sun Nov 29). Next for Joseph: scraper (d) part 1 (quiet-page wait; planned Sun Nov 22, can start now), part 2 (hidden elements and CSS order, Tue Nov 24), the (d) part of Test 3 and its baseline check (Wed Nov 25), (d) runs (time limit Sat Nov 28); Test 7 for (a) and (b) (Tue Nov 24, with Claude); the stub-model parts of Test 7 for (c) (Sun Nov 29); the all-cells check (Mon Nov 30); Cut-line 2 (Tue Dec 1). Open: Figure 2 and the per-field chart (Turns 303–304, awaiting Joseph); the updated demo Word doc (offered Turn 305); the simplified metrics slide before the next scrum meeting; the honeypot `${page.trapPath}` tidy-up; the prompt-hook fix for subagent messages.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14372,3 +14375,54 @@ Each step has the command, what to expect and what to say. It also offered to up
 **Questions Claude asked:** C37 (open).
 
 **Direction and fit:** D90 (Follows; the crashed-run and page-request rules are Interprets).
+
+### Turn 308 — 2026-11-20 18:11 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> # Results
+>
+> 27 runs from: `results/2026-11-18-experiment`, `results/2026-11-18-c-all`.
+> Definitions: `scoring/results.py` and `docs/metrics-plan.md`.
+>
+> | Scraper | Condition | Correct per run | Recall (min–max) | Precision | F1| ESR | Reduction | Verdict | Honeypot detection | Time per page |
+> |---|---|---|---|---|---|---|---|---|---|---|
+> | (a) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 0.012 s |
+> | (a) | shuffled | 4 4 4 | 5.7% | 0.061 | 0.059 | 0.00 | 94.3% | stops | 0.00 | 0.016 s |
+> | (a) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 0.017 s |
+> | (b) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 0.023 s |
+> | (b) | shuffled | 4 4 4 | 5.7% | 0.061 | 0.059 | 0.00 | 94.3% | stops | 0.00 | 0.022 s |
+> | (b) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 0.022 s |
+> | (c) | baseline | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | — | baseline | 0.00 | 5.746 s |
+> | (c) | shuffled | 48 49 49 | 69.5% (68.6%–70.0%) | 0.807 | 0.747 | 0.00 | 30.5% | reduces | 0.00 | 5.451 s |
+> | (c) | honeypot | 70 70 70 | 100.0% | 1.000 | 1.000 | 1.00 | 0.0% | no effect | 1.00 | 5.356 s |
+>
+> Failed runs (scored as finding nothing): none.
+> Runs whose request log shows a different page count from their output: none.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Fetched `main`: PR #46 is merged (`81906e0`); `results/2026-11-20-results/` is not committed yet. Merged `main` into the branch.
+- Compared Joseph's laptop output of `scoring/results.py` with the cloud's: identical in every cell, with no failed runs and no page-count mismatches.
+- **Built the user-cost runner, part 1** (D91):
+  - added SSIM to `measurement/pixel_diff.mjs`, reported per page and as a mean and minimum, with 3 Node tests;
+  - wrote `measurement/user_cost.py` (screenshots, pixel diff and SSIM against baseline, reading order, HTML size) and `measurement/tests/test_user_cost.py` (10 tests).
+- **Checked it:**
+  - SSIM against scikit-image 0.26, installed only in the cloud: equal to about 1e-13 on products-p1 vs p2 (0.97937), a1 vs a2 (0.95904) and the home page vs the product list (0.95396);
+  - the screen order equals the CSS `order` values on all 8 shuffled item pages;
+  - a full run in the cloud took 1 min 44 s;
+  - test suites: Python measurement 40, scoring 34, Node 23, all passing.
+- Updated `README.md` (usage and roadmap), `SCHEDULE.md` (Fri Nov 20 user-cost part 1 ticked) and `docs/metrics-plan.md` (status).
+- Committed, pushed and opened a pull request.
+
+**Claude's answer (summary):**
+- **The laptop results CSV matches** the cloud exactly. Joseph should commit `results/2026-11-20-results/`.
+- **User cost part 1 is built.** In the cloud check, shuffling is invisible on screen (0% pixel difference, SSIM 1.0000) but puts every field out of reading order (70/70) and makes the HTML 21% bigger. The honeypot costs nothing measurable except 2.8% more HTML.
+- **Joseph's steps:** merge the PR, then run `python measurement/user_cost.py` on the laptop (about 2 minutes) and commit the folder.
+- **Review requested (C38):** the reading-order rule, which the midterm says Joseph specifies.
+- **Next:** part 2, Lighthouse and axe-core (Sat Nov 21). It needs two npm packages.
+
+**Questions Claude asked:** C38 (open); C37 still open.
+
+**Direction and fit:** D91 (Follows; the reading-order rule is Interprets until C38 is answered).

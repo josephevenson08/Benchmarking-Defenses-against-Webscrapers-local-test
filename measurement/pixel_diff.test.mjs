@@ -5,7 +5,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import pngjs from "pngjs";
-import { comparePngs, compareFolders } from "./pixel_diff.mjs";
+import { comparePngs, compareFolders, ssim } from "./pixel_diff.mjs";
 
 const { PNG } = pngjs;
 
@@ -60,3 +60,40 @@ test("folders are compared page by page, and missing pages are reported", () => 
   assert.equal(report.mean_percent, 1);
   assert.ok(fs.existsSync(path.join(diff, "products-p1.png")), "diff image written");
 });
+
+// A 40x40 grey image with a deterministic pattern, so SSIM has structure to compare.
+function pattern(seed = 1, size = 40) {
+  const png = new PNG({ width: size, height: size });
+  let state = seed;
+  for (let i = 0; i < size * size; i++) {
+    state = (state * 1103515245 + 12345) % 2147483648;
+    const v = 60 + (state % 140);
+    png.data.set([v, v, v, 255], i * 4);
+  }
+  return png;
+}
+
+test("SSIM is 1 for identical images and symmetric", () => {
+  assert.equal(ssim(pattern(), pattern()), 1);
+  const a = pattern(1);
+  const b = pattern(2);
+  assert.ok(Math.abs(ssim(a, b) - ssim(b, a)) < 1e-12);
+});
+
+test("SSIM drops as the image changes more", () => {
+  const a = pattern(1);
+  const slightly = pattern(1);
+  for (let x = 0; x < 40; x += 7) paint(slightly, x, 20, [0, 0, 0]);
+  const unrelated = pattern(7);
+  const small = ssim(a, slightly);
+  const large = ssim(a, unrelated);
+  assert.ok(small < 1 && small > 0.8, `small change gave ${small}`);
+  assert.ok(large < small, `unrelated image gave ${large}`);
+});
+
+test("SSIM needs at least one 11x11 window and is reported per page", () => {
+  assert.equal(ssim(image(10, 10), image(10, 10)), null);
+  const r = comparePngs(pattern(1), pattern(1));
+  assert.equal(r.ssim, 1);
+});
+
