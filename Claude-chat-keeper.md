@@ -15261,7 +15261,7 @@ A one-line note says Claude wrote (d) at Joseph's request. The long introduction
 
 > can you make this word doc as if it was an actual report maximum 2 pages, and way less wordy, show graphs and tables as well
 
-**What Claude did:** Rewrote the summary as a report, `progress report 11-23.docx` (docx-js, scratchpad `scrum-1123/report.js`; not committed). US Letter, 0.75 in margins, Arial 10.5 pt body and 9.5 pt tables. Sections:
+**What Claude did:** Rewrote the summary as a report, `progress report 11-23.docx` (docx-js, scratchpad `scrum-1123/report.js`; not committed). US Letter, 0.75 in margins, Arial 11 pt body and 9.5 pt tables (first rendered at 10.5 pt; raised to 11 pt in Turn 330 after checking it still fits 2 pages). Sections:
 - Summary;
 - 1. Work this week (table);
 - 2. Setup and metrics (Table 1: metric, definition, source);
