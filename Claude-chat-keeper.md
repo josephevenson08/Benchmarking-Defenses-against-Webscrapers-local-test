@@ -470,6 +470,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J330 | 330 | add key takeaways after each plot and table to show what it means in terms of comparison | A "Key takeaway" after each of the 5 tables and the figure, comparing with baseline and with published work; still 2 pages |
 | J331 | 331 | ok i merged see you tomorrow | Checked that PR #57 is merged; end-of-day resume note |
 | J332 | 332 | can you list out what all is left in my project | Remaining work from `SCHEDULE.md`: Milestone 3 (4 items and Cut-line 2), the optional Ambitious items (poisoning, (e), tarpit), and Milestone 4 (Dec 2–10) |
+| J333 | 333 | so whats the point of comparing my benchmark against something like webcloak? | Why the comparison matters (reference scale, validity, effect size, agreement with a published finding, a cost they didn't measure) and its limits; how to phrase it in the report |
 
 ### Questions from Claude
 
@@ -15355,3 +15356,30 @@ The Table 4 caption was folded into its takeaway. Each figure was checked agains
 **Questions Claude asked:** none (whether to build poisoning is for Monday's meeting).
 
 **Direction and fit:** no new decision.
+
+### Turn 333 — 2026-11-20 20:04 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> so whats the point of comparing my benchmark against something like webcloak?
+
+**What Claude did:** Answered from `docs/metrics-plan.md`, which was checked against the papers.
+- WebCloak's recall definition is the same as the midterm's accuracy.
+- It reports the drop from 88.7% to 0%.
+- It found that structural defenses (full-code obfuscation, dynamic JavaScript loading, static tag renaming) are bypassed by agents that work on the rendered DOM.
+- It reports no accessibility measure, and its LCP cost is +0.88 s.
+
+No files changed besides this log.
+
+**Claude's answer (summary):**
+- **Why compare:** the scrum feedback asked for numbers on a published scale. "4/70" alone has no reference point. WebCloak asks the same question with the same metric, at a top venue. The comparison gives four things:
+  1. **Validity:** the method uses an established metric.
+  2. **Effect size:** a cheap shuffle comes close to WebCloak against simple scrapers (94% vs 100%) but not against an LLM (30%), which shows where heavier defenses are needed.
+  3. **Agreement with a published finding:** structural changes fail against scrapers that read the rendered page, which (d) reproduces in a controlled setting.
+  4. **A new result they didn't measure:** reading-order cost, set against their +0.88 s load-time cost.
+- **Limits:** this isn't a head-to-head contest (real sites vs synthetic, large models vs small, images vs text fields), so compare effects and direction, not raw scores, and don't claim the defense is "as good as WebCloak".
+- Gave one example sentence for the report.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (explains D68–D71).
