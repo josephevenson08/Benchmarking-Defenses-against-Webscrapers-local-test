@@ -1,5 +1,11 @@
+# Scraper (d): adaptive. Same inputs, crawl and output as (b), plus the three abilities from the midterm (§2):
+#   1. wait until the page has had no changes for 3 s (10 s at most), which beats poisoning's 2 s swap;
+#   2. ignore everything computed style hides, hidden links included, which skips the honeypot's trap link;
+#   3. sort the field elements by their computed CSS order, then use the same label-plus-next rule as (a) and (b),
+#      which reads shuffled pages in on-screen order.
+# Written with Claude: Joseph copied (b) and added part 1 with lines Claude supplied (D98); at Joseph's request
+# Claude wrote part 2 (D99). Both are disclosed in Claude-chat-keeper.md.
 import json
-from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
 #Playwright drives a real Chromium browser; the other imports are the same as (a)
 import requests #everything including this and below is from scraper (a)
@@ -24,6 +30,35 @@ WAIT_FOR_QUIET = """
     resolve({ timedOut: timedOut, waitedMs: Math.round(performance.now() - start) });
   }
 })
+"""
+
+# Runs in the page after the wait. For each label: find the visible element whose text is exactly the label, take the
+# visible elements that share its parent, sort them by computed CSS order (ties keep their HTML order), and return the
+# text of the element right after the label. Also returns the href of every link that computed style shows.
+READ_VISIBLE_PAGE = """
+(labels) => {
+  const hidden = (el) => {
+    if (getComputedStyle(el).visibility !== "visible") return true;               // visibility: hidden (it is inherited)
+    for (let n = el; n; n = n.parentElement) {
+      if (getComputedStyle(n).display === "none") return true;                   // display: none on it or on a parent
+    }
+    return false;
+  };
+  const elements = Array.from(document.body.querySelectorAll("*"));
+  const fields = {};
+  for (const label of labels) {
+    const labelEl = elements.find((el) => el.children.length === 0 && el.textContent.trim() === label && !hidden(el));
+    if (!labelEl || !labelEl.parentElement) continue;
+    const onScreen = Array.from(labelEl.parentElement.children)
+      .filter((el) => !hidden(el))
+      .map((el, i) => ({ el: el, i: i, order: Number(getComputedStyle(el).order) || 0 }))
+      .sort((a, b) => a.order - b.order || a.i - b.i);
+    const at = onScreen.findIndex((x) => x.el === labelEl);
+    if (at >= 0 && at + 1 < onScreen.length) fields[label] = onScreen[at + 1].el.textContent.trim();
+  }
+  const links = Array.from(document.querySelectorAll("a[href]")).filter((a) => !hidden(a)).map((a) => a.getAttribute("href"));
+  return { fields: fields, links: links };
+}
 """
 
 config = json.load(open("config.json"))
@@ -102,15 +137,12 @@ with sync_playwright() as p: #launching playwright to use a browser to scrape th
             print("page quiet after", wait["waitedMs"], "ms", url)
 
 
-        soup = BeautifulSoup(page.content(), "html.parser") #build the tree after js load
+        seen = page.evaluate(READ_VISIBLE_PAGE, [field["label"] for field in all_fields]) #read the live page, as shown on screen
         for field in all_fields:
-            label_element = soup.find(string=field["label"])
-            if label_element:
-                value_element = label_element.parent.find_next_sibling() #step to the next element (the value)
-                if value_element:
-                    records.append({"page": path, "field": field["key"], "value": value_element.get_text(strip=True)})
-        for a in soup.find_all("a"):                 # every link, hidden ones too
-            link = urljoin(url, a.get("href", ""))   
+            if field["label"] in seen["fields"]:     # label found, and a visible element follows it in CSS order
+                records.append({"page": path, "field": field["key"], "value": seen["fields"][field["label"]]})
+        for href in seen["links"]:                   # visible links only, so a hidden trap link is never followed
+            link = urljoin(url, href)
             same_site = urlparse(link).netloc == urlparse(start_url).netloc
             if same_site and link not in visited and link not in queue:
                 queue.append(link)                   # wait in line to be visited
@@ -136,26 +168,8 @@ with open(args.out, "w", encoding="utf-8") as f:
 print(len(records), "records written to", args.out)
 
 
-# A BeautifulSoup tree is a representation of the HTML structure of a webpage,
-# allowing for easy navigation and extraction of data from the HTML elements.
-#
-# Its structure is hierarchical, with the root element at the top and child elements
-# nested within parent elements.
-#
-# It is very similar to the browser's DOM tree, which is also a tree of the page's
-# HTML elements. The difference: BeautifulSoup's tree is a static copy of the HTML
-# text, while the browser's DOM is live. It knows the CSS, the layout and which
-# elements are visible.
-#
-# Why I used BeautifulSoup on page.content() instead of the live DOM: it lets (b)
-# reuse scraper (a)'s exact rule (find the label, take the next element). That way
-# (a) and (b) differ in only one thing: in (b) the page's scripts have run. This
-# keeps the comparison between them fair.
-#
-# The catch: BeautifulSoup only sees the HTML, not the CSS order or which elements
-# are hidden. That's why DOM shuffling and the honeypot link still work against (b).
-# Scraper (d) will use the live DOM to get around that.
-#
-# I worked out this design with Claude (decision D51 in Claude-chat-keeper.md):
-# Claude recommended reusing (a)'s rule on the HTML after load, and I chose it over
-# reading only the visible text.
+# How (d) differs from (b): (b) reads page.content() with BeautifulSoup, a static copy of the HTML, so it sees the
+# source order and every element, hidden or not. (d) asks the live browser instead (getComputedStyle), so it sees
+# what a visitor sees: the CSS order and which elements are hidden. That is the capability the shuffling defense and
+# the honeypot target, so the midterm's hypothesis expects (d) to be unaffected by both, and by poisoning thanks to
+# the wait.

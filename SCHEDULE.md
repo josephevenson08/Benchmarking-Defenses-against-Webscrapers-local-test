@@ -125,7 +125,7 @@ Re-planned on Mon Nov 16 after the scrum meeting (D66–D71). The instructor ask
 | **Mon Nov 23** | ✅ (done early, Wed Nov 18) **Essential runs:** (a) and (b) × baseline, shuffled and honeypot × 3 runs, with the runner. Check the outputs. ⭐ 18/18 runs on the laptop (commit `defff7a`): (a) and (b) 70/70 on baseline, 4/70 on shuffled, 70/70 on honeypot with 11 pages (the trap). Results folder `results/2026-11-18-experiment/` to commit. | J |
 | **Tue Nov 24** | ✅ (done early, Fri Nov 20) Test 7 for (a) and (b): a 404 link, a link cycle, a slow response, page cap 3. Harness built early (Fri Nov 20): `measurement/test7.py` (D93), 9 tests; cloud run passes for (a), (b) and (c) (24 s). ⭐ Laptop run passes for (a) and (b) (commit `86db946`). | J + C |
 | | User-cost runs for each condition. | C |
-| | (A) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. | J |
+| | (A) ✅ (done early, Fri Nov 20) Scraper (d): skip elements that computed style hides (hidden links too); sort fields by computed CSS order, then the label-plus-next rule. **Written by Claude at Joseph's request** (D99, a change from the midterm's §2 split). Cloud check, 1 run each: 70/70 on baseline, shuffled and honeypot (10 pages, 0 trap hits); Test 7 crawl part passes. | C (D99) |
 | **Wed Nov 25** | (A) The (d) part of Test 3; (d) baseline check (3 runs at ≥ 90%). | J |
 | | Related-work table (`docs/metrics-plan.md`): the published side is already drafted from the papers; fill in our column with the Essential results ((a) and (b)). | C drafts, J reviews |
 | **Thu Nov 26** | **Thanksgiving: off.** | — |

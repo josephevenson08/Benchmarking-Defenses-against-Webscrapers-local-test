@@ -341,7 +341,7 @@ Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptiv
 - [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
 - [x] Test 7 for (a) and (b) (crawl part passed Nov 20; planned Nov 24)
 - [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22); runs on all three conditions done Nov 18 (planned Nov 28): shuffled 48–49/70, honeypot 70/70 with the trap visited
-- [ ] Scraper (d): Test 3 part and baseline check by Nov 25; runs by Nov 28
+- [ ] Scraper (d): written Nov 20 (Claude, at Joseph's request, D99); 70/70 on baseline, shuffled and honeypot in a first cloud check, and Test 7 passes. Still to do: Test 3 part and baseline check by Nov 25; runs by Nov 28
 - [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
 - [ ] Only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
 
@@ -369,7 +369,7 @@ The day-by-day plan is in [`SCHEDULE.md`](SCHEDULE.md).
 
 ## AI assistance
 
-This project uses AI assistance (Claude). The test site, the measurement tooling, and the setup of scraper (e) (model choice and request format) are drafted with AI assistance. The page defenses, the tarpit route, scrapers (a)–(d), and the prompt, parsing, and failure rules for (e) are written by the author. All AI-assisted code is reviewed, tested against the cases above, and explainable by the author.
+This project uses AI assistance (Claude). The test site, the measurement tooling, and the setup of scraper (e) (model choice and request format) are drafted with AI assistance. The page defenses, the tarpit route, scrapers (a)–(c), and the prompt, parsing, and failure rules for (e) are written by the author. Scraper (d) was written by Claude at the author's request on Nov 20, a change from the midterm's plan; its first part already used lines Claude supplied (chat-keeper D98, D99). All AI-assisted code is reviewed, tested against the cases above, and explainable by the author.
 
 Every prompt, question, and design decision made with AI assistance is logged in [`Claude-chat-keeper.md`](Claude-chat-keeper.md), with each decision checked against the midterm plan.
 
