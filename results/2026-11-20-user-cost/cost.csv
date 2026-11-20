@@ -1,0 +1,4 @@
+condition,pages,pixel_diff_mean_percent,pixel_diff_max_percent,ssim_mean,ssim_min,fields,fields_out_of_order,reading_order_mismatch_rate,html_bytes,html_change_percent,html_change_max_page_percent
+baseline,10,,,,,70,0,0,21380,0,0
+shuffled,10,0,0,1,1,70,70,1,25920,21.2348,21.7687
+honeypot,10,0,0,1,1,70,0,0,21970,2.75959,3.77238
