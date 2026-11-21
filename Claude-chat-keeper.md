@@ -474,6 +474,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J334 | 334 | ok can you also include this on the report for the doc meeting on monday | Added a "Why compare with WebCloak" paragraph to Section 4, and tied Figure 1's takeaway to WebCloak's finding; still 2 pages |
 | J335 | 335 | i want a write up section that explains the new mettrics with this as well | Section 2 now has a short write-up of the new metrics before Table 1; still 2 pages, 11 pt |
 | J336 | 336 | ok see you tomoorrow | End of session; checked whether PR #60 is merged; the resume note stands (Turn 331) |
+| J337 | 337 | i wan tyou to redo my scrum report, first lets walk through what ive done so far since the last meeting | Walkthrough by day since the Nov 16 meeting, saying who did each part (from D66–D102); asked what the redo should change |
 
 ### Questions from Claude
 
@@ -15440,5 +15441,32 @@ No files changed besides this log.
 **Claude's answer (summary):** See you tomorrow. What's next is in the resume note: the meeting, then (d)'s Test 3 part, Test 7's stub part, the honeypot false-positive check, the related-work column, and possibly poisoning.
 
 **Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 337 — 2026-11-21 23:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i wan tyou to redo my scrum report, first lets walk through what ive done so far since the last meeting
+
+**What Claude did:** Fetched `main` (up to date at `517bd2d`). Read the decision register from D66 to D102 to build a day-by-day account of the work since the Nov 16 scrum meeting, saying who did each part.
+
+**Claude's answer (summary):** A walkthrough by day:
+- **Nov 16:** feedback taken in; (c) first, as Joseph chose; the metrics plan built from 6 papers; no reference tool; re-plan with time limits.
+- **Nov 17:** Ollama set up and 3 models timed with Claude's script; llama3.2:3b chosen.
+- **Nov 18:** the runner (Claude); the Essential runs, 18/18 (Joseph); scraper (c) in 3 parts (Joseph, with some Claude-supplied blocks logged); its baseline check, 70/70 × 3; its trap-page crash fixed by Joseph and the 9 runs redone; the results folders made to keep their logs.
+- **Nov 19:** the metrics and the WebCloak comparison worked through; Beyond BeautifulSoup checked; a preview page.
+- **Nov 20:**
+  - the results CSV, the user-cost runner and Test 7 (Claude), each run on the laptop by Joseph;
+  - Milestone 3's required work met;
+  - Joseph's three decisions;
+  - scraper (d): part 1 with Claude-supplied lines, part 2 written by Claude at Joseph's request, then 9/9 runs by Joseph;
+  - the figures and the cross-check (541/541);
+  - the report drafted.
+
+A compact results table followed. Then Claude asked what the redo should change.
+
+**Questions Claude asked:** what to change in the report (open).
 
 **Direction and fit:** no new decision.
