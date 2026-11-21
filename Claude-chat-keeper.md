@@ -14144,7 +14144,7 @@ Then Joseph's questions.
 > ok, ill visit again on this before my next meeting but i need to be able to show that im not comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts
 
 **What Claude did:**
-- Reread the instructor's feedback as Joseph reported it (Turn 238): compare "in a sense of modern research and how they give a metric… some sort of algorithmic scale that can be compared against what someone else has done". Reread the "Outside yardstick" column of `docs/metrics-plan.md` and the midterm's "reduces" and "stops" rules (§4 item 5, §4 Analysis).
+- Reread the instructor's feedback as Joseph reported it (Turn 237): compare "in a sense of modern research and how they give a metric… some sort of algorithmic scale that can be compared against what someone else has done". Reread the "Outside yardstick" column of `docs/metrics-plan.md` and the midterm's "reduces" and "stops" rules (§4 item 5, §4 Analysis).
 - Added an open item for the next scrum meeting. No files besides this log changed.
 
 **Claude's answer (summary):**
