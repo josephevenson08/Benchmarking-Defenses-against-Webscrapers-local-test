@@ -292,6 +292,7 @@ It writes `results/<date>-figures/`:
 - `fig3-protection-vs-cost.png`: protection against user cost;
 - `fig4-honeypot.png`: honeypot detection;
 - `fig5-fields.png`: (c) field by field on the shuffled site;
+- `fig6-published.png`: your results next to published ones in the same metrics (drop in recall, success rate, detection rate, load-time cost);
 - `tables.md`: Tables 1–4, including the comparison with published work.
 
 **Cross-check** of the results, recounted from the raw files without the scoring scripts (the matching rules are written again from `docs/scraper-output.md`, and checked first on the hand-counted Test 2 fixture):

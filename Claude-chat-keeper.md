@@ -131,6 +131,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D100 | 322 | **Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py`** (an early version of the Dec 3–4 tables script and figure). It reads `cells.csv` (scoring/results.py), `cost.csv` (user_cost.py) and optionally (c)'s runs, and writes 5 PNG figures (200 dpi) and `tables.md`. Figures: recall by scraper and site (min–max, 10% line); the drop in recall next to WebCloak's published 100%; protection against user cost (the midterm's "one pairing accuracy drop with user cost"); honeypot detection; (c) field by field. Tables: (1) extraction quality, (2) honeypot and speed, (3) user cost, (4) our results next to published ones in the same metric (WebCloak, Beyond BeautifulSoup, Shy Guys, FP-Inconsistent; numbers as in `docs/metrics-plan.md`). Colours are the dataviz reference palette's first 3 slots (validated all-pairs for colour-blind separation). Bars carry value labels, because aqua is below 3:1 contrast. **Dependencies:** matplotlib 3.11.2 and numpy 2.4.6 with their dependencies, pinned in `requirements.txt` at versions that support Python 3.11 (the laptop's): contourpy 1.3.3, not 1.4.0, which needs 3.12. **Tests:** 2 new. Previewed in the cloud with (a)–(c) committed and (d) from the 1-run cloud check. | Wait for Dec 3; draw the figures by hand | Claude (tooling) | §4 "Final outputs"; §5 Analysis; D68, D70; scrum feedback (Nov 16). | Follows (early; Table 4 and Figure 2 are Adds from the scrum feedback, Turn 303) |
 | D101 | 323 | **⭐ Scraper (d): baseline check passed and runs on all three conditions done (Fri Nov 20; planned Wed Nov 25 and Sat Nov 28).** Joseph's laptop, commit `2065190`, runner `--scrapers d`: 9/9 runs, 70/70 on baseline, shuffled and honeypot in every run, honeypot 10 pages each (no `/trap`), 3.03–3.04 s per page (31 s per run). `scoring/results.py` over the three folders (36 runs): (d) shuffled and honeypot "no effect", honeypot detection 0.00 (evasion 1.00). **Hypotheses (§4):** (1) shuffling lowers (a) and (b) ("stops", 94.3% drop); (d) is unaffected (0.0%); for (c), which the midterm left uncertain, it "reduces" (30.5%). (3) The honeypot leaves accuracy unchanged and catches (a), (b) and (c) in every run, and (d) in none. (4) Shuffling: pixel difference 0, reading order 70/70, axe-core unchanged. (5) "No single defense stops all five scrapers" holds so far: shuffling stops only (a) and (b). (2) Poisoning is not built, so it is untested. Figures and tables made on the laptop: `results/2026-11-20-figures/` (D100). Still open for (d): its part of Test 3. | — | Joseph (ran); Claude (scraper (d), D99; tooling) | §4 Hypotheses 1–5; §4 item 10 (baseline check); §5 item 9 (3 runs per cell); §7 Milestone 3 (Ambitious, as re-planned). | Follows |
 | D102 | 328 | **Cross-check of the results: `measurement/cross_check.py`** (Joseph's request: "do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense"). It recounts from the raw files without `scoring/score.py`, `scoring/results.py` or `user_cost.py`. **How:** the matching rules are written again from `docs/scraper-output.md`, and the independent counter is first run on the hand-counted Test 2 fixture (63 correct, 4 wrong of which 2 fake and 1 malformed, 3 missing: it agrees). Per run it recounts correct/wrong/missing, precision, F1, honeypot hits, page requests (output vs log), time per page, run ID and scraper label, and that every request carries the run ID. Per cell it recomputes mean/min/max recall, precision, F1, success rate, drop in recall, verdict and detection rate. It also checks that every log line belongs to a run of its condition, and that each condition's pages and seeds are identical in the 3 folders. For user cost it regenerates each condition for HTML size, compares screenshots pixel by pixel, reads reading order from the HTML's CSS `order`, and recomputes axe counts and Lighthouse medians and changes from every saved run. **Result** (36 runs, user cost): 541 of 541 checks agree, after allowing for the CSVs' 6-significant-digit rounding (5 values differed only in the 7th digit). Planted errors (an extra correct field, a false trap hit, a wrong verdict) are all caught. Also checked: no change to `site/` or `data/` between the result commits (only the unused timeout setting); no scraper changed after its runs. Report committed as `results/2026-11-20-cross-check/report.md`. 5 tests. | Trust the scoring scripts' own tests | Claude (tooling) | §5 Test 2 (metric calculation); §5 "I check the output JSON and saved stats"; §7 verification of AI-written code. | Adds (a second, independent check) |
+| D103 | 340 | **Figure: our results next to published ones in the same metrics (`fig6-published.png`, `measurement/figures.py`).** Four panels, "This study" in blue and "Published" in orange. (a) Drop in recall: shuffling vs (a)–(d) (94.3, 94.3, 30.5, 0.0%) and WebCloak vs LLM agents (100%). (b) Success rate on simple pages: (a)–(d) 1.00, and Beyond BeautifulSoup's simple-HTML results (BeautifulSoup 0.93, Scrapy 0.82, Claude 1.00, Simular.ai 1.00). (c) Bot detection rate: the honeypot vs (a)–(d) (100, 100, 100, 0%), Shy Guys 67.6% at 3% false positives, and FP-Inconsistent's DataDome 55.44% and BotD 47.07%. (d) Load-time cost (LCP change): ours +0 ms for both defenses, WebCloak +880 ms. Published numbers are kept in `PUBLISHED_RESULTS`, as quoted in `docs/metrics-plan.md`. Ours come from `cells.csv` and `cost.csv`. A footnote names the sources and says to compare effects, not raw scores. Test added. | One chart per metric; a table only | Claude (tooling); Joseph asked for it | Scrum feedback (Nov 16, Turn 237); D68–D71; `docs/metrics-plan.md` related-work table. | Adds (from the scrum feedback, like Figure 2, Turn 303) |
 
 ---
 
@@ -477,6 +478,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J337 | 337 | i wan tyou to redo my scrum report, first lets walk through what ive done so far since the last meeting | Walkthrough by day since the Nov 16 meeting, saying who did each part (from D66–D102); asked what the redo should change |
 | J338 | 338 | simplefiy it down to just what i did each day and what got complete | A short day-by-day list of what was completed, marking the parts Claude built |
 | J339 | 339 | ok now lets talk about the new metrics from the feedback i was asked last scrum meeting, | The feedback quoted; the new metrics in one table (what each tells you, source, Joseph's result); what was kept; why they make results comparable |
+| J340 | 340 | ok now lets make a graph to represent the published ran findings with these new metrics that i can include on the doc | Four-panel figure of our results next to published ones in the same metrics (D103), added to `measurement/figures.py` |
 
 ### Questions from Claude
 
@@ -15513,3 +15515,29 @@ A compact results table followed. Then Claude asked what the redo should change.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (explains D68–D71 and D89 with results).
+
+### Turn 340 — 2026-11-21 23:11 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now lets make a graph to represent the published ran findings with these new metrics that i can include on the doc
+
+**What Claude did:**
+- Added `fig_published` and the `PUBLISHED_RESULTS` constants to `measurement/figures.py` (D103), so `figures.py` now also writes `fig6-published.png`. Added it to `measurement/tests/test_figures.py`.
+- Drew it from the committed `results/2026-11-20-results-all/cells.csv` and `results/2026-11-20-user-cost-full/cost.csv`. Fixed the clipped titles of panels (b) and (d) and the spacing under the main title, over three redraws, and checked each render.
+- Ran the measurement suite: passes.
+- Updated `README.md` (list of figures). Sent the PNG.
+
+The laptop's committed `results/2026-11-20-figures/` doesn't include this figure; rerunning `figures.py` there adds it.
+
+**Claude's answer (summary):** The figure has four panels, each comparing our result with a published one in the same metric:
+- drop in recall vs WebCloak;
+- success rate vs Beyond BeautifulSoup;
+- detection rate vs Shy Guys, DataDome and BotD;
+- load-time cost vs WebCloak.
+
+Claude explained how to read each panel and offered to assemble the new report: the day-by-day list, the metrics table, then this figure with takeaways.
+
+**Questions Claude asked:** whether to assemble the new report now (offered).
+
+**Direction and fit:** D103 (Adds, from the scrum feedback).

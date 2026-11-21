@@ -13,6 +13,8 @@ report) and tables.md (the same numbers as tables, plus the comparison with publ
                               defense and scraper: the midterm's "one pairing accuracy drop with user cost"
   fig4-honeypot.png           honeypot detection rate per scraper
   fig5-fields.png             (with --fields) scraper (c) on the shuffled site, share of correct values per field
+  fig6-published.png          our results next to published ones in the same metrics (drop in recall, success rate,
+                              detection rate, load-time cost)
   tables.md                   Tables 1-4
 
 Published numbers are quoted from the papers in docs/metrics-plan.md.
@@ -35,6 +37,12 @@ CONDITIONS = ["baseline", "shuffled", "honeypot"]
 COLORS = {"baseline": "#2a78d6", "shuffled": "#eb6834", "honeypot": "#1baf7a"}
 OURS, PUBLISHED = "#2a78d6", "#eb6834"
 INK, INK2, GRID, AXIS = "#0b0b0b", "#52514e", "#e1e0d9", "#c3c2b7"
+# Published results in the same metrics, as reported in the papers (docs/metrics-plan.md, related-work table).
+PUBLISHED_RESULTS = {
+    "success": [("BeautifulSoup script", 0.93), ("Scrapy script", 0.82), ("Claude agent", 1.00), ("Simular.ai agent", 1.00)],
+    "detection": [("Shy Guys (at 3% false positives)", 67.6), ("DataDome", 55.44), ("BotD", 47.07)],
+    "lcp_ms": [("WebCloak", 880.0)],
+}
 WEBCLOAK = {"before": 88.7, "after": 0.0,
             "source": "WebCloak (IEEE S&P 2026): LLM scrapers, 27 hardest pages, mean over agents"}
 
@@ -187,6 +195,47 @@ def fig_honeypot(plt, cells, scrapers, path):
     plt.close(fig)
 
 
+def fig_published(plt, cells, cost, scrapers, path):
+    """Our results next to published ones, one panel per metric (the scrum feedback, D68-D71)."""
+    def panel(ax, title, rows, unit, xmax, fmt):
+        rows = rows[::-1]
+        ax.barh(range(len(rows)), [max(r[1], 0) for r in rows], height=0.6, color=[r[2] for r in rows])
+        for i, r in enumerate(rows):
+            ax.text(max(r[1], 0) + xmax * 0.015, i, fmt(r[1]) + unit, va="center", fontsize=7.5, color=INK)
+        ax.set_yticks(range(len(rows)), [r[0] for r in rows], fontsize=7.5)
+        ax.set_xlim(0, xmax)
+        ax.tick_params(axis="x", labelsize=7.5)
+        ax.set_title(title, loc="left", fontsize=9.5)
+        ax.grid(axis="y", visible=False)
+
+    short = {"a": "(a) HTML", "b": "(b) browser", "c": "(c) LLM", "d": "(d) adaptive"}
+    fig, axes = plt.subplots(2, 2, figsize=(7.6, 5.4))
+    drop = [(f"Ours: shuffling vs {short[s]}", 100 * cells[(s, "shuffled")]["reduction_recall"], OURS)
+            for s in scrapers if (s, "shuffled") in cells]
+    drop.append(("WebCloak vs LLM agents", 100 * (1 - WEBCLOAK["after"] / WEBCLOAK["before"]), PUBLISHED))
+    panel(axes[0][0], "(a) Drop in recall from the defense", drop, "%", 125, lambda v: f"{v:.1f}")
+    success = [(f"Ours: {short[s]}", cells[(s, "baseline")]["esr"], OURS) for s in scrapers if (s, "baseline") in cells]
+    success += [(name, v, PUBLISHED) for name, v in PUBLISHED_RESULTS["success"]]
+    panel(axes[0][1], "(b) Success rate", success, "", 1.25, lambda v: f"{v:.2f}")
+    detection = [(f"Ours: honeypot vs {short[s]}", 100 * cells[(s, "honeypot")]["detection_rate"], OURS)
+                 for s in scrapers if (s, "honeypot") in cells]
+    detection += [(name, v, PUBLISHED) for name, v in PUBLISHED_RESULTS["detection"]]
+    panel(axes[1][0], "(c) Bot detection rate", detection, "%", 125, lambda v: f"{v:.1f}")
+    lcp = [(f"Ours: {cond}", cost[cond]["lh_lcp_ms_change_mean"] or 0.0, OURS) for cond in ("shuffled", "honeypot") if cond in cost]
+    lcp += [(name, v, PUBLISHED) for name, v in PUBLISHED_RESULTS["lcp_ms"]]
+    panel(axes[1][1], "(d) Load-time cost (LCP)", lcp, " ms", 1100, lambda v: f"{round(v) + 0:+d}")
+    from matplotlib.patches import Patch
+    fig.legend(handles=[Patch(color=OURS, label="This study"), Patch(color=PUBLISHED, label="Published")],
+               loc="upper right", ncols=2, fontsize=8.5, frameon=False)
+    fig.suptitle("Our results next to published results, same metrics", x=0.01, ha="left", fontsize=11, fontweight="bold", color=INK)
+    footnote(fig, "Published: (a), (d) WebCloak, IEEE S&P 2026; (b) Beyond BeautifulSoup, AAAI 2026 (simple HTML sites); "
+             "(c) Shy Guys, 2026, and FP-Inconsistent, 2025 (DataDome, BotD). Their sites are real and their tools larger, "
+             "so compare the size and direction of effects, not raw scores.")
+    fig.tight_layout(rect=(0, 0.07, 1, 0.97), h_pad=1.6, w_pad=1.6)
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+
+
 def fig_fields(plt, shares, path):
     fig, ax = plt.subplots(figsize=(7, 0.32 * len(shares) + 1.3))
     labels = [f"{label} ({kind.lower()})" for kind, label, _, _ in shares][::-1]
@@ -291,6 +340,7 @@ def main():
     fig_reduction(plt, cells, scrapers, out / "fig2-reduction.png")
     fig_protection_vs_cost(plt, cells, cost, scrapers, out / "fig3-protection-vs-cost.png")
     fig_honeypot(plt, cells, scrapers, out / "fig4-honeypot.png")
+    fig_published(plt, cells, cost, scrapers, out / "fig6-published.png")
     if args.fields:
         fig_fields(plt, field_shares(args.fields), out / "fig5-fields.png")
     (out / "tables.md").write_text(tables(cells, cost, scrapers), encoding="utf-8")
