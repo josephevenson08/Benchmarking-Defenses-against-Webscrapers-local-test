@@ -14116,7 +14116,7 @@ Then Joseph's questions.
 
 > im talking in terms of the feedback i got in the scrum sorry,
 
-**What Claude did:** This message arrived while Turn 296 was being answered, so one reply covers both turns. It reframes the explanation around the instructor's Nov 16 feedback ("the metrics need some sort of algorithmic scale that can be compared against what someone else has done"; Turn 238) and the plan that answers it (`docs/metrics-plan.md`; D68–D71).
+**What Claude did:** This message arrived while Turn 296 was being answered, so one reply covers both turns. It reframes the explanation around the instructor's Nov 16 feedback ("the metrics need some sort of algorithmic scale that can be compared against what someone else has done"; Turn 237) and the plan that answers it (`docs/metrics-plan.md`; D68–D71).
 
 **Claude's answer (summary):**
 - **What the feedback asked:** a number such as "4/70" can't be judged on its own, so each result needs a standard scale and a published number to sit next to.
@@ -14172,7 +14172,7 @@ Then Joseph's questions.
 > ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you,
 
 **What Claude did:**
-- Re-read the instructor's feedback as Joseph reported it in Turn 238: "its fine but if we could actually compare t in a sense of modern research and how they give a metric, look into other performance metrics and see what others did, the metrics need some sort of algorithmic scale that can be compared against what someone else has done".
+- Re-read the instructor's feedback as Joseph reported it in Turn 237: "its fine but if we could actually compare t in a sense of modern research and how they give a metric, look into other performance metrics and see what others did, the metrics need some sort of algorithmic scale that can be compared against what someone else has done".
 - Checked it against `docs/metrics-plan.md` (D68–D71).
 - Added an open item for the user-cost runner (Lighthouse TTI).
 
@@ -15493,7 +15493,7 @@ A compact results table followed. Then Claude asked what the redo should change.
 
 > ok now lets talk about the new metrics from the feedback i was asked last scrum meeting,
 
-**What Claude did:** Quoted the instructor's Nov 16 feedback as Joseph reported it in Turn 238. Gathered each new metric's definition and source (`docs/metrics-plan.md`, D68–D71, D89) and Joseph's values from the committed, cross-checked results (`results/2026-11-20-results-all/`, `results/2026-11-20-user-cost-full/`, D102).
+**What Claude did:** Quoted the instructor's Nov 16 feedback as Joseph reported it in Turn 237. Gathered each new metric's definition and source (`docs/metrics-plan.md`, D68–D71, D89) and Joseph's values from the committed, cross-checked results (`results/2026-11-20-results-all/`, `results/2026-11-20-user-cost-full/`, D102).
 
 **Claude's answer (summary):**
 - **What was asked:** an "algorithmic scale" that can be compared with what other researchers do.
