@@ -476,6 +476,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J336 | 336 | ok see you tomoorrow | End of session; checked whether PR #60 is merged; the resume note stands (Turn 331) |
 | J337 | 337 | i wan tyou to redo my scrum report, first lets walk through what ive done so far since the last meeting | Walkthrough by day since the Nov 16 meeting, saying who did each part (from D66–D102); asked what the redo should change |
 | J338 | 338 | simplefiy it down to just what i did each day and what got complete | A short day-by-day list of what was completed, marking the parts Claude built |
+| J339 | 339 | ok now lets talk about the new metrics from the feedback i was asked last scrum meeting, | The feedback quoted; the new metrics in one table (what each tells you, source, Joseph's result); what was kept; why they make results comparable |
 
 ### Questions from Claude
 
@@ -15485,3 +15486,30 @@ A compact results table followed. Then Claude asked what the redo should change.
 **Questions Claude asked:** whether this list should be the base of the redone report (open).
 
 **Direction and fit:** no new decision.
+
+### Turn 339 — 2026-11-21 23:07 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now lets talk about the new metrics from the feedback i was asked last scrum meeting,
+
+**What Claude did:** Quoted the instructor's Nov 16 feedback as Joseph reported it in Turn 238. Gathered each new metric's definition and source (`docs/metrics-plan.md`, D68–D71, D89) and Joseph's values from the committed, cross-checked results (`results/2026-11-20-results-all/`, `results/2026-11-20-user-cost-full/`, D102).
+
+**Claude's answer (summary):**
+- **What was asked:** an "algorithmic scale" that can be compared with what other researchers do.
+- **What was added, each on a published scale:**
+  - recall (WebCloak);
+  - precision and F1 (WebCloak, FreeDOM);
+  - success rate (Beyond BeautifulSoup);
+  - drop in recall (WebCloak);
+  - detection and evasion rates (Shy Guys, FP-Inconsistent);
+  - SSIM (Wang et al.);
+  - Lighthouse change and HTML size (WebCloak).
+- **Joseph's results for each.**
+- **What was kept:** accuracy, fake-value rate, honeypot hits, time per page, pixel difference, reading order, axe-core.
+- **Still to come:** the false-positive rate (Nov 29).
+- **Why they answer the feedback:** they share 0–1 scales with published work, and the drop in recall cancels out differences between test sites.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (explains D68–D71 and D89 with results).
