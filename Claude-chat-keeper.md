@@ -479,6 +479,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J338 | 338 | simplefiy it down to just what i did each day and what got complete | A short day-by-day list of what was completed, marking the parts Claude built |
 | J339 | 339 | ok now lets talk about the new metrics from the feedback i was asked last scrum meeting, | The feedback quoted; the new metrics in one table (what each tells you, source, Joseph's result); what was kept; why they make results comparable |
 | J340 | 340 | ok now lets make a graph to represent the published ran findings with these new metrics that i can include on the doc | Four-panel figure of our results next to published ones in the same metrics (D103), added to `measurement/figures.py` |
+| J341 | 341 | ok what else do i need to add | Recommended the rest of the report: the results table, the cost to visitors, a short hypothesis check, next steps, blockers and questions, and the AI-use line; what to leave out |
 
 ### Questions from Claude
 
@@ -15541,3 +15542,27 @@ Claude explained how to read each panel and offered to assemble the new report: 
 **Questions Claude asked:** whether to assemble the new report now (offered).
 
 **Direction and fit:** D103 (Adds, from the scrum feedback).
+
+### Turn 341 — 2026-11-22 01:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok what else do i need to add
+
+**What Claude did:** Fetched `main` and merged it into the branch. Compared the report's planned sections (day-by-day list, new metrics, published-comparison figure) with what a scrum update usually covers (done, next, blockers) and with the study's key results.
+
+**Claude's answer (summary):**
+- **Must add:**
+  - the 36-run results table (recall and verdict for each scraper and site);
+  - next steps to Dec 1 and Dec 10;
+  - blockers and questions for the professor: is the WebCloak comparison what he meant, Claude writing (d), whether to build poisoning;
+  - a one-line AI-use note.
+- **Worth adding if space allows:**
+  - the cost-to-visitors table, since reading order is the study's own finding;
+  - a 2–3 line hypothesis check.
+- **Leave out:** setup details, metric formulas (the metrics section covers them), and any figure beyond the published comparison.
+- Proposed an order that fits 2 pages.
+
+**Questions Claude asked:** whether to build the report in that order (offered).
+
+**Direction and fit:** no new decision.
