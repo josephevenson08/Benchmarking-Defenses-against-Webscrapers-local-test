@@ -532,6 +532,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J359 | 359 | (random characters and spaces, likely sent by accident) | No action; next step unchanged |
 | J360 | 360 | (random characters, likely sent by accident) | No action; next step unchanged |
 | J361 | 361 | (random characters, likely sent by accident) | No action; next step unchanged |
+| J362 | 362 | ok im back sorry my code still looks like i sent before | Walked through the four fixes line by line (interface lines and placeholder only), then the random price in five steps for Joseph to write |
 
 ### Questions from Claude
 
@@ -16175,6 +16176,26 @@ All numbers are from the cross-checked results (D102).
 **What Claude did:** Nothing for the project. Random characters again, which interrupted Claude's log update; Claude stopped and checked what had been saved.
 
 **Claude's answer (summary):** the messages look accidental, nothing in the project changed, and the next step is unchanged.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 362 — 2026-11-23 18:21 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok im back sorry my code still looks like i sent before
+
+**What Claude did:** No files changed apart from this log. Claude didn't write any of `poisoned.js`.
+
+**Claude's answer (summary):** walked Joseph through Turn 355's four fixes, one line at a time, as before → after:
+1. the first line, `function sound(animal) {` → `function fakeValue(row, rng) {`;
+2. the switch line, `switch (animal) {` → `switch (row.key) {`;
+3. the default, `"..."` → `"Fake " + row.value`;
+4. delete `case "tage"` and add `module.exports = { fakeValue };` at the bottom.
+
+The changed lines are the documented hook interface (`site/defenses/README.md`) and the placeholder, not the defense's logic. Then a check with `npm run generate -- poisoned`. Then the random price in five steps, which Joseph writes. PR #62 is still open; merge it before Test 5.
 
 **Questions Claude asked:** none.
 
