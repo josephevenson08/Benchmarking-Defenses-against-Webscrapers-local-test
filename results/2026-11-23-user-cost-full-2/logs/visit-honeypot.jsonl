@@ -1,0 +1,10 @@
+{"timestamp":"2026-11-23T20:00:08.718Z","run_id":"user-cost","path":"/","status":200,"response_ms":7.339,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:11.961Z","run_id":"user-cost","path":"/products/","status":200,"response_ms":1.667,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:15.163Z","run_id":"user-cost","path":"/products/p1","status":200,"response_ms":1.8,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:18.375Z","run_id":"user-cost","path":"/products/p2","status":200,"response_ms":1.846,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:21.594Z","run_id":"user-cost","path":"/products/p3","status":200,"response_ms":2.333,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:24.806Z","run_id":"user-cost","path":"/products/p4","status":200,"response_ms":1.639,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:28.009Z","run_id":"user-cost","path":"/products/p5","status":200,"response_ms":1.639,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:31.206Z","run_id":"user-cost","path":"/products/p6","status":200,"response_ms":1.543,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:34.406Z","run_id":"user-cost","path":"/articles/a1","status":200,"response_ms":1.759,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
+{"timestamp":"2026-11-23T20:00:37.604Z","run_id":"user-cost","path":"/articles/a2","status":200,"response_ms":1.684,"honeypot_hit":false,"user_agent":"bench-user-cost (run=user-cost)"}
