@@ -3,8 +3,12 @@
     python scoring/results.py <results folder> [<results folder> ...] --out <folder>
 
 Each input folder is what measurement/run_experiment.py writes: manifest.json, runs/<run-id>.json and
-logs/<condition>.jsonl. Every field is scored with scoring/score.py, so the matching rules stay in one place
-(docs/scraper-output.md, D31-D35).
+logs/<condition>.jsonl, plus conditions/<condition>.fakes.json for a poisoned condition. Every field is scored with
+scoring/score.py, so the matching rules stay in one place (docs/scraper-output.md, D31-D35); a value that equals its
+page's fake counts as a fake (and as wrong).
+
+A condition whose manifest names a fakes file (conditions/<condition>.manifest.json, "fakes_file") must have it, so
+poisoned runs are never scored without their fakes.
 
 Writes to --out:
   results.csv  one row per run: the midterm's measures (accuracy, fake-value rate, time per page, honeypot hits)
@@ -45,7 +49,7 @@ from statistics import mean
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from scoring.score import DataList, parse_run_id, score_run  # noqa: E402
+from scoring.score import DataList, load_fakes, parse_run_id, score_run  # noqa: E402
 
 CONDITION_ORDER = ["baseline", "shuffled", "honeypot", "poisoned", "tarpit"]
 STOPS_BELOW = 0.10
@@ -93,6 +97,19 @@ def read_log(path: Path, trap_path: str) -> dict:
     return per_run
 
 
+def condition_fakes(folder: Path, condition: str, data: DataList) -> dict:
+    """The condition's fakes ({(item_id, field): fake}) from conditions/<condition>.fakes.json; {} when it has none."""
+    fakes_file = folder / "conditions" / f"{condition}.fakes.json"
+    manifest_file = folder / "conditions" / f"{condition}.manifest.json"
+    named = manifest_file.exists() and json.loads(manifest_file.read_text(encoding="utf-8")).get("fakes_file")
+    if not fakes_file.exists():
+        if named:
+            raise ValueError(f"{manifest_file} names a fakes file, but {fakes_file} is missing. Copy it from "
+                             f"conditions/{named} or rerun the experiment.")
+        return {}
+    return load_fakes(json.loads(fakes_file.read_text(encoding="utf-8")), data)
+
+
 def precision_of(correct: int, answered: int):
     return correct / answered if answered else None
 
@@ -107,7 +124,7 @@ def run_rows(folders, data: DataList, trap_path: str) -> list[dict]:
     rows, seen = [], {}
     for folder in map(Path, folders):
         manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
-        logs = {}
+        logs, fakes = {}, {}
         for run in manifest["runs"]:
             rid = run["run_id"]
             if rid in seen:
@@ -116,11 +133,12 @@ def run_rows(folders, data: DataList, trap_path: str) -> list[dict]:
             scraper, condition, number = parse_run_id(rid)
             if condition not in logs:
                 logs[condition] = read_log(folder / "logs" / f"{condition}.jsonl", trap_path)
+                fakes[condition] = condition_fakes(folder, condition, data)
             out_file = folder / "runs" / f"{rid}.json"
             output = json.loads(out_file.read_text(encoding="utf-8") or "{}") if out_file.exists() else {}
             if not output.get("run"):
                 output.setdefault("run", {"run_id": rid})
-            s = score_run(output, data)
+            s = score_run(output, data, fakes[condition])
             answered = s.correct + s.wrong
             precision = precision_of(s.correct, answered)
             log = logs[condition].get(rid, {"pages": 0, "hits": 0, "ms": []})
@@ -229,6 +247,14 @@ def write_summary(path: Path, folders, rows: list, cells: list) -> None:
             f"{num(c['precision_mean'])} | {num(c['f1_mean'])} | {num(c['esr'], 2)} | {pct(c['reduction_recall'])} | "
             f"{c['verdict']} | {num(c['detection_rate'], 2)} | "
             f"{'—' if c['time_per_page_mean'] is None else num(c['time_per_page_mean']) + ' s'} |")
+    poisoned = [c for c in cells if c["condition"] == "poisoned"]
+    if poisoned:
+        lines += ["", "Poisoned site (a fake also counts as wrong): fakes and other wrong values per run.", "",
+                  "| Scraper | Fakes per run | Fake-value rate | Other wrong per run | Missing per run |", "|---|---|---|---|---|"]
+        for c in poisoned:
+            runs = [r for r in rows if r["scraper"] == c["scraper"] and r["condition"] == "poisoned"]
+            lines.append(f"| ({c['scraper']}) | {' '.join(str(r['fakes']) for r in runs)} | {pct(c['fake_value_rate_mean'])} | "
+                         f"{' '.join(str(r['wrong'] - r['fakes']) for r in runs)} | {' '.join(str(r['missing']) for r in runs)} |")
     failed = [r["run_id"] for r in rows if r["exit_code"] != 0 or r["output"] != "yes"]
     mismatched = [r["run_id"] for r in rows if r["output"] == "yes" and r["log_page_requests"] != r["pages_fetched"]]
     lines += ["", f"Failed runs (scored as finding nothing): {', '.join(failed) if failed else 'none'}.",

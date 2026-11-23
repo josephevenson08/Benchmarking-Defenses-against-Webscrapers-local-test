@@ -83,6 +83,7 @@ class FiguresTest(unittest.TestCase):
                                ("fig2.png", lambda p: fg.fig_reduction(plt, cells, ["a", "d"], p)),
                                ("fig3.png", lambda p: fg.fig_protection_vs_cost(plt, cells, cost, ["a", "d"], p)),
                                ("fig4.png", lambda p: fg.fig_honeypot(plt, cells, ["a", "d"], p)),
+                               ("fig6.png", lambda p: fg.fig_published(plt, cells, cost, ["a", "d"], p)),
                                ("fig5.png", lambda p: fg.fig_fields(plt, [("Product", "Price", 18, 18), ("Article", "Tags", 0, 6)], p))):
                 path = Path(tmp, name)
                 draw(path)

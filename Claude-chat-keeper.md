@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(None so far.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106.)* |
 
 ---
 
@@ -131,6 +131,38 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D100 | 322 | **Figures and tables for the Mon Nov 23 scrum meeting: `measurement/figures.py`** (an early version of the Dec 3–4 tables script and figure). It reads `cells.csv` (scoring/results.py), `cost.csv` (user_cost.py) and optionally (c)'s runs, and writes 5 PNG figures (200 dpi) and `tables.md`. Figures: recall by scraper and site (min–max, 10% line); the drop in recall next to WebCloak's published 100%; protection against user cost (the midterm's "one pairing accuracy drop with user cost"); honeypot detection; (c) field by field. Tables: (1) extraction quality, (2) honeypot and speed, (3) user cost, (4) our results next to published ones in the same metric (WebCloak, Beyond BeautifulSoup, Shy Guys, FP-Inconsistent; numbers as in `docs/metrics-plan.md`). Colours are the dataviz reference palette's first 3 slots (validated all-pairs for colour-blind separation). Bars carry value labels, because aqua is below 3:1 contrast. **Dependencies:** matplotlib 3.11.2 and numpy 2.4.6 with their dependencies, pinned in `requirements.txt` at versions that support Python 3.11 (the laptop's): contourpy 1.3.3, not 1.4.0, which needs 3.12. **Tests:** 2 new. Previewed in the cloud with (a)–(c) committed and (d) from the 1-run cloud check. | Wait for Dec 3; draw the figures by hand | Claude (tooling) | §4 "Final outputs"; §5 Analysis; D68, D70; scrum feedback (Nov 16). | Follows (early; Table 4 and Figure 2 are Adds from the scrum feedback, Turn 303) |
 | D101 | 323 | **⭐ Scraper (d): baseline check passed and runs on all three conditions done (Fri Nov 20; planned Wed Nov 25 and Sat Nov 28).** Joseph's laptop, commit `2065190`, runner `--scrapers d`: 9/9 runs, 70/70 on baseline, shuffled and honeypot in every run, honeypot 10 pages each (no `/trap`), 3.03–3.04 s per page (31 s per run). `scoring/results.py` over the three folders (36 runs): (d) shuffled and honeypot "no effect", honeypot detection 0.00 (evasion 1.00). **Hypotheses (§4):** (1) shuffling lowers (a) and (b) ("stops", 94.3% drop); (d) is unaffected (0.0%); for (c), which the midterm left uncertain, it "reduces" (30.5%). (3) The honeypot leaves accuracy unchanged and catches (a), (b) and (c) in every run, and (d) in none. (4) Shuffling: pixel difference 0, reading order 70/70, axe-core unchanged. (5) "No single defense stops all five scrapers" holds so far: shuffling stops only (a) and (b). (2) Poisoning is not built, so it is untested. Figures and tables made on the laptop: `results/2026-11-20-figures/` (D100). Still open for (d): its part of Test 3. | — | Joseph (ran); Claude (scraper (d), D99; tooling) | §4 Hypotheses 1–5; §4 item 10 (baseline check); §5 item 9 (3 runs per cell); §7 Milestone 3 (Ambitious, as re-planned). | Follows |
 | D102 | 328 | **Cross-check of the results: `measurement/cross_check.py`** (Joseph's request: "do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense"). It recounts from the raw files without `scoring/score.py`, `scoring/results.py` or `user_cost.py`. **How:** the matching rules are written again from `docs/scraper-output.md`, and the independent counter is first run on the hand-counted Test 2 fixture (63 correct, 4 wrong of which 2 fake and 1 malformed, 3 missing: it agrees). Per run it recounts correct/wrong/missing, precision, F1, honeypot hits, page requests (output vs log), time per page, run ID and scraper label, and that every request carries the run ID. Per cell it recomputes mean/min/max recall, precision, F1, success rate, drop in recall, verdict and detection rate. It also checks that every log line belongs to a run of its condition, and that each condition's pages and seeds are identical in the 3 folders. For user cost it regenerates each condition for HTML size, compares screenshots pixel by pixel, reads reading order from the HTML's CSS `order`, and recomputes axe counts and Lighthouse medians and changes from every saved run. **Result** (36 runs, user cost): 541 of 541 checks agree, after allowing for the CSVs' 6-significant-digit rounding (5 values differed only in the 7th digit). Planted errors (an extra correct field, a false trap hit, a wrong verdict) are all caught. Also checked: no change to `site/` or `data/` between the result commits (only the unused timeout setting); no scraper changed after its runs. Report committed as `results/2026-11-20-cross-check/report.md`. 5 tests. | Trust the scoring scripts' own tests | Claude (tooling) | §5 Test 2 (metric calculation); §5 "I check the output JSON and saved stats"; §7 verification of AI-written code. | Adds (a second, independent check) |
+| D103 | 340 | **Figure: our results next to published ones in the same metrics (`fig6-published.png`, `measurement/figures.py`).** Four panels, "This study" in blue and "Published" in orange. (a) Drop in recall: shuffling vs (a)–(d) (94.3, 94.3, 30.5, 0.0%) and WebCloak vs LLM agents (100%). (b) Success rate on simple pages: (a)–(d) 1.00, and Beyond BeautifulSoup's simple-HTML results (BeautifulSoup 0.93, Scrapy 0.82, Claude 1.00, Simular.ai 1.00). (c) Bot detection rate: the honeypot vs (a)–(d) (100, 100, 100, 0%), Shy Guys 67.6% at 3% false positives, and FP-Inconsistent's DataDome 55.44% and BotD 47.07%. (d) Load-time cost (LCP change): ours +0 ms for both defenses, WebCloak +880 ms. Published numbers are kept in `PUBLISHED_RESULTS`, as quoted in `docs/metrics-plan.md`. Ours come from `cells.csv` and `cost.csv`. A footnote names the sources and says to compare effects, not raw scores. Test added. | One chart per metric; a table only | Claude (tooling); Joseph asked for it | Scrum feedback (Nov 16, Turn 237); D68–D71; `docs/metrics-plan.md` related-work table. | Adds (from the scrum feedback, like Figure 2, Turn 303) |
+| D104 | 344 | **One graph per metric: `measurement/metric_graphs.py`** (Joseph's request: "help me set up to make a graph in matplot lib for each of the metrics"). A short, commented matplotlib script, meant to be read and changed, that writes 10 PNGs from `cells.csv` and `cost.csv`:
+- **Grouped by scraper (a)–(d), bars per site:** recall, precision, F1, success rate, drop in recall, detection rate.
+- **Per defended site:** SSIM, fields out of reading order, HTML size change, and Lighthouse FCP/LCP/TTI change (grey bars, so they are not confused with site colours).
+- **Published reference lines (dashed), where a study reports the same metric:** Beyond BeautifulSoup 0.82–1.00 (success rate), WebCloak 100% (drop in recall), Shy Guys 67.6% (detection), WebCloak LCP +880 ms.
+Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; the measurement suite passes. **Turn 345 (Joseph's list):** trimmed to exactly 8 graphs with plain titles: recall (accuracy), precision, success rate, drop in recall (accuracy), detection and evasion rate (one bar per scraper, split into caught and evaded), SSIM, Lighthouse change, HTML size change. F1 and reading order were removed from the script's output. The detection reference is only Shy Guys' 67.6%: FP-Inconsistent reports both a share of requests detected (DataDome 55.44%, BotD 47.07%) and an average evasion per bot service (52.93%, 44.56%), which don't add to 100%, so they were left out to avoid confusion. | Add more panels to `figures.py`; leave Joseph to write it alone | Claude (tooling; analysis code that Claude may draft) | Scrum feedback (Turn 237); D68–D71; §4 "Final outputs". | Adds (from the scrum feedback) |
+
+| D105 | 347 | **Poisoning: the site and scoring side (Claude).** Joseph writes `site/defenses/poisoned.js` (the fakes and the swap script); everything around it is ready:
+- **Generator (`site/generate.js`):** two new hooks. `fakeValue(row, rng)` returns the fake for one field; it gets the real value as plain text and one seeded random function per page, so the fakes are fixed per seed (§6). `script(page)` returns JavaScript placed in a `<script>` at the end of `<body>`, outside `<main>`; item pages get `page.valuesPath`.
+- **Outputs:** each item page's real values in `conditions/poisoned/values/<path>.json`, served by the existing static route, in field order with key, label and value. Every fake goes to `conditions/poisoned.fakes.json` in D35's format, outside the served folder. The manifest names the fakes file and each page's values path.
+- **Refusals:** the generator refuses an empty fake, a fake equal to the real value, and a script containing `<script>` tags.
+- **Unchanged:** baseline, shuffled and honeypot are byte-identical to the old generator's output (checked file by file).
+- **Scoring:**
+  - the runner copies the fakes file into the results and its quick score counts fakes;
+  - `scoring/results.py` scores fakes. It refuses a condition whose manifest names a fakes file that is missing, and adds a poisoned table with fakes, other wrong values and missing values per run. The "other wrong" column is the midterm's Ambitious "Done when": every fake in an output matches its page's fake;
+  - `measurement/cross_check.py` recounts fakes on its own and orders poisoned and tarpit cells.
+  Rebuilding the Nov 20 results gives identical CSVs, and the cross-check still agrees 541/541.
+- **Test 5 (`measurement/test5.py`):**
+  1. the fakes file: each fake is checked with `score.py`'s `load_fakes` on its own, so every bad fake is listed;
+  2. no real value in any page's served HTML: all 70 values on all 10 pages, matched only when standing alone, so "4.5" inside "$64.50" is not a leak;
+  3. every field shows its fake right after load;
+  4. every field shows its real value 3 s after load.
+  It also records when each page's values last changed (the "seconds fake values stay visible") and whether each page fetched its JSON.
+  It was checked against two throwaway stand-ins in the scratchpad, never committed and not shown to Joseph: one with fakes only, which failed the 3 s check, and one that wrongly writes the real values into the page, which failed the HTML check and swapped at 2.00 s. Unit tests cover the matching rules.
+- **Tests:** Node 30/30; scoring 35; measurement 67. | (1) `fieldRows` writes the fakes and the generator reads them back out of the HTML; (2) a `fakeValue` hook, so the generator knows every fake (chosen); the script in `mainEnd` or in its own hook (own hook chosen, so text read from `<main>` holds no JavaScript) | Claude (site and tooling); Joseph's request | §2 test-site row ("serves robots.txt and the real values JSON"); §3 Architecture item 2 ("A page generator … writes the fake-values file"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); Figure 2 FakeValue (unique per item and field, differs from the real value); §4 metrics (fake-value rate); §5 Test 5; §1 item 3 "Done when". | Follows (the split and the outputs); Interprets (the hook shapes, the JSON's place and format, and Test 5's stand-alone match rule) |
+| D106 | 347 | **Start the tarpit now, alongside poisoning (Joseph's choice: "i would like to have 4 defenses").** The midterm's gate (§7 Stretch plan): "I start it only if the other three defenses and all five scrapers already run by Dec 1, and build it Dec 2 – 4." Neither condition holds yet: poisoning hasn't run, and (e) is likely dropped. Order kept: poisoning first (Test 5, then 12 runs), then the tarpit. The Dec 1 cut-line still applies, and the tarpit is its own condition, so the existing results are untouched. | Wait for the gate (Turn 346's recommendation); start now | Joseph | §1 item 5 (If Time Permits); §7 Stretch plan (the gate and "never put the essential results at risk"); Cut-line 2 (Dec 1). | **Deviates** (the start gate; Joseph's decision, to be reported) |
+| D107 | 347 | **Tarpit: the slot (Claude), with the route left to Joseph.**
+- **Generator:** `footer(page, rng)` adds HTML at the end of `<footer>`, for the entrance link; `disallow` (a list of paths) becomes robots.txt's `Disallow:` lines.
+- **Server:** loads the condition's defense file. If it exports `maze(req, res)`, the server answers `GET /maze/:hash` with it, and adds any `res.locals.log` fields to that request's log line (they never replace the standard ones). Without the export, `/maze/...` stays a 404.
+- **Joseph writes `site/defenses/tarpit.js`:** the footer link, `Disallow: /maze/`, the maze page (seeded from the hash, about 5 links to other maze paths, a fixed delay) and the log fields.
+- **Tests and docs:** 2 Node tests with stand-ins that only exercise the slot; the defense README documents all five new hooks.
+- **Still to do once the route exists:** the runner's robots.txt setting for (a), (b) and (d); the maze measures (pages loaded, seconds trapped, server time per request); Test 6's maze part. | Claude writes the whole route; Joseph writes the route and the server mounts it (chosen) | §3 Architecture item 2 ("An Express server serves … the optional /maze/<hash> route"); §2 Tarpit route row (Joseph: "the generation rules and the logging"); §1 item 5 "Done when"; §5 Test 6; CLAUDE.md (Joseph writes the tarpit route). | Interprets (the server's mount point; the route itself is Joseph's) |
 
 ---
 
@@ -473,6 +505,18 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J333 | 333 | so whats the point of comparing my benchmark against something like webcloak? | Why the comparison matters (reference scale, validity, effect size, agreement with a published finding, a cost they didn't measure) and its limits; how to phrase it in the report |
 | J334 | 334 | ok can you also include this on the report for the doc meeting on monday | Added a "Why compare with WebCloak" paragraph to Section 4, and tied Figure 1's takeaway to WebCloak's finding; still 2 pages |
 | J335 | 335 | i want a write up section that explains the new mettrics with this as well | Section 2 now has a short write-up of the new metrics before Table 1; still 2 pages, 11 pt |
+| J336 | 336 | ok see you tomoorrow | End of session; checked whether PR #60 is merged; the resume note stands (Turn 331) |
+| J337 | 337 | i wan tyou to redo my scrum report, first lets walk through what ive done so far since the last meeting | Walkthrough by day since the Nov 16 meeting, saying who did each part (from D66–D102); asked what the redo should change |
+| J338 | 338 | simplefiy it down to just what i did each day and what got complete | A short day-by-day list of what was completed, marking the parts Claude built |
+| J339 | 339 | ok now lets talk about the new metrics from the feedback i was asked last scrum meeting, | The feedback quoted; the new metrics in one table (what each tells you, source, Joseph's result); what was kept; why they make results comparable |
+| J340 | 340 | ok now lets make a graph to represent the published ran findings with these new metrics that i can include on the doc | Four-panel figure of our results next to published ones in the same metrics (D103), added to `measurement/figures.py` |
+| J341 | 341 | ok what else do i need to add | Recommended the rest of the report: the results table, the cost to visitors, a short hypothesis check, next steps, blockers and questions, and the AI-use line; what to leave out |
+| J342 | 342 | (Joseph's current doc: the day-by-day list, the new-metrics table, the published-comparison table, and "plus the graph at the moment is on the page") | Pointed out the "your" → "my" wording and the 31% vs 30.5% mismatch; built a full Word version (3 pages), which Joseph interrupted |
+| J343 | 343 | just paste it out here dont build a page | The full scrum update as text in the chat, ready to paste into Joseph's own doc |
+| J344 | 344 | can you help me set up to make a graph in matplot lib for each of the metrics? | `measurement/metric_graphs.py` (D104): 10 graphs, one per metric, with published reference lines; command to run it on the laptop |
+| J345 | 345 | do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple, | The 8 requested graphs (D104 updated) and how the detection and evasion rates are calculated |
+| J346 | 346 | and what other defenses do i still need to add, and what else if left for this project based on my project outline | Checked the midterm's 5 scope items: 2 of 4 defenses built (poisoning and tarpit left), 4 of 5 scrapers (e left); the remaining Milestone 3 and 4 work; recommended poisoning only |
+| J347 | 347 | ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses | Poisoning's site and scoring side and Test 5 built (D105); Joseph writes `poisoned.js` next. Tarpit started at Joseph's choice, before the midterm's gate (D106, Deviates); its slot is ready for Joseph's `tarpit.js` (D107) |
 
 ### Questions from Claude
 
@@ -523,7 +567,13 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 
 ## Open items
 
-**▶ Resume here (Turn 331, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 347, Mon Nov 23):** Poisoning and the tarpit started. Poisoning's site and scoring side is ready (D105): the generator's `fakeValue` and `script` hooks, the real-values JSON, the fakes file, fakes in the runner, results and cross-check, and Test 5 (`measurement/test5.py`). **Next, Joseph:** write `site/defenses/poisoned.js` (fakes, then the swap), `npm run generate -- poisoned`, `python measurement/test5.py` until all 4 checks pass, then (a)–(d) on `poisoned` × 3 and `scoring/results.py` over all folders. **Next, Claude:** serve pages in the user-cost runner, so poisoned pages can fetch their JSON, and add the seconds fakes stay visible; add `poisoned` to the graphs. Tarpit (D106, Deviates, Joseph's choice): the slot is ready (D107); after poisoning, Joseph writes `site/defenses/tarpit.js`, then Claude adds the runner's robots.txt setting, the maze measures and Test 6's maze part. Still open in Milestone 3: the (d) part of Test 3; Test 7's stub-model part for (c); the honeypot false-positive check; our column of the related-work table; Cut-line 2 (Tue Dec 1). Open from before: Figure 2 and the per-field chart (D100); the honeypot `${page.trapPath}` tidy-up; OneDrive (`git config gc.auto 0`); the prompt-hook fix.
+
+**Earlier resume note (Turn 336, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330, with the metrics write-up and the WebCloak rationale added in Turns 334–335); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
+
+**For poisoning's user cost (found Turn 347):** `measurement/user_cost.py` opens each page from its file (`file://`), so a poisoned page's script can't fetch `/values/...` and its screenshot would keep the fakes. Before measuring `poisoned`, serve the pages through `site/server.js` (with a log kept apart from scraper logs, as for Lighthouse) and add the seconds fake values stay visible (§4 item 4; Test 5 already measures it). Check that the other conditions' numbers don't change.
+
+**For the tarpit (Turn 347, D107):** once Joseph's `tarpit.js` exists, add: the runner's `--robots ignore` setting for (a), (b) and (d) (the scrapers already take `--robots obey|ignore`); maze pages loaded, seconds trapped and server time per maze request in `scoring/results.py`; Test 6's maze part (a scraper that obeys robots.txt never requests `/maze/`); `tarpit` in the graphs.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -14112,7 +14162,7 @@ Then Joseph's questions.
 
 > im talking in terms of the feedback i got in the scrum sorry,
 
-**What Claude did:** This message arrived while Turn 296 was being answered, so one reply covers both turns. It reframes the explanation around the instructor's Nov 16 feedback ("the metrics need some sort of algorithmic scale that can be compared against what someone else has done"; Turn 238) and the plan that answers it (`docs/metrics-plan.md`; D68–D71).
+**What Claude did:** This message arrived while Turn 296 was being answered, so one reply covers both turns. It reframes the explanation around the instructor's Nov 16 feedback ("the metrics need some sort of algorithmic scale that can be compared against what someone else has done"; Turn 237) and the plan that answers it (`docs/metrics-plan.md`; D68–D71).
 
 **Claude's answer (summary):**
 - **What the feedback asked:** a number such as "4/70" can't be judged on its own, so each result needs a standard scale and a published number to sit next to.
@@ -14140,7 +14190,7 @@ Then Joseph's questions.
 > ok, ill visit again on this before my next meeting but i need to be able to show that im not comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts
 
 **What Claude did:**
-- Reread the instructor's feedback as Joseph reported it (Turn 238): compare "in a sense of modern research and how they give a metric… some sort of algorithmic scale that can be compared against what someone else has done". Reread the "Outside yardstick" column of `docs/metrics-plan.md` and the midterm's "reduces" and "stops" rules (§4 item 5, §4 Analysis).
+- Reread the instructor's feedback as Joseph reported it (Turn 237): compare "in a sense of modern research and how they give a metric… some sort of algorithmic scale that can be compared against what someone else has done". Reread the "Outside yardstick" column of `docs/metrics-plan.md` and the midterm's "reduces" and "stops" rules (§4 item 5, §4 Analysis).
 - Added an open item for the next scrum meeting. No files besides this log changed.
 
 **Claude's answer (summary):**
@@ -14168,7 +14218,7 @@ Then Joseph's questions.
 > ok, ill visit again on this before my next meeting but i need to be able to show that im comparing against another study that used the same metrics is what i understood as the feedback, or a more universal way to grade them etc idk what are your thoughts. because i just made up my metrics to begin with with you,
 
 **What Claude did:**
-- Re-read the instructor's feedback as Joseph reported it in Turn 238: "its fine but if we could actually compare t in a sense of modern research and how they give a metric, look into other performance metrics and see what others did, the metrics need some sort of algorithmic scale that can be compared against what someone else has done".
+- Re-read the instructor's feedback as Joseph reported it in Turn 237: "its fine but if we could actually compare t in a sense of modern research and how they give a metric, look into other performance metrics and see what others did, the metrics need some sort of algorithmic scale that can be compared against what someone else has done".
 - Checked it against `docs/metrics-plan.md` (D68–D71).
 - Added an open item for the user-cost runner (Lighthouse TTI).
 
@@ -15427,3 +15477,327 @@ No files changed besides this log.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 336 — 2026-11-20 20:10 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok see you tomoorrow
+
+**What Claude did:** Fetched `main` and merged it into the branch. Updated the resume note's line about Monday's report. Committed and pushed. This entry is the only change not on `main`; it goes in with the next pull request, or Joseph can merge PR #60 if it is still open.
+
+**Claude's answer (summary):** See you tomorrow. What's next is in the resume note: the meeting, then (d)'s Test 3 part, Test 7's stub part, the honeypot false-positive check, the related-work column, and possibly poisoning.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 337 — 2026-11-21 23:05 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i wan tyou to redo my scrum report, first lets walk through what ive done so far since the last meeting
+
+**What Claude did:** Fetched `main` (up to date at `517bd2d`). Read the decision register from D66 to D102 to build a day-by-day account of the work since the Nov 16 scrum meeting, saying who did each part.
+
+**Claude's answer (summary):** A walkthrough by day:
+- **Nov 16:** feedback taken in; (c) first, as Joseph chose; the metrics plan built from 6 papers; no reference tool; re-plan with time limits.
+- **Nov 17:** Ollama set up and 3 models timed with Claude's script; llama3.2:3b chosen.
+- **Nov 18:** the runner (Claude); the Essential runs, 18/18 (Joseph); scraper (c) in 3 parts (Joseph, with some Claude-supplied blocks logged); its baseline check, 70/70 × 3; its trap-page crash fixed by Joseph and the 9 runs redone; the results folders made to keep their logs.
+- **Nov 19:** the metrics and the WebCloak comparison worked through; Beyond BeautifulSoup checked; a preview page.
+- **Nov 20:**
+  - the results CSV, the user-cost runner and Test 7 (Claude), each run on the laptop by Joseph;
+  - Milestone 3's required work met;
+  - Joseph's three decisions;
+  - scraper (d): part 1 with Claude-supplied lines, part 2 written by Claude at Joseph's request, then 9/9 runs by Joseph;
+  - the figures and the cross-check (541/541);
+  - the report drafted.
+
+A compact results table followed. Then Claude asked what the redo should change.
+
+**Questions Claude asked:** what to change in the report (open).
+
+**Direction and fit:** no new decision.
+
+### Turn 338 — 2026-11-21 23:06 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> simplefiy it down to just what i did each day and what got complete
+
+**What Claude did:** Shortened Turn 337's walkthrough to one short list per day, Mon Nov 16 to Fri Nov 20, using the same facts (D66–D102). The parts Claude built are tagged "(Claude)", so the list stays accurate about who did what.
+
+**Claude's answer (summary):** The simplified list. Asked whether to use it as the report's main content.
+
+**Questions Claude asked:** whether this list should be the base of the redone report (open).
+
+**Direction and fit:** no new decision.
+
+### Turn 339 — 2026-11-21 23:07 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now lets talk about the new metrics from the feedback i was asked last scrum meeting,
+
+**What Claude did:** Quoted the instructor's Nov 16 feedback as Joseph reported it in Turn 237. Gathered each new metric's definition and source (`docs/metrics-plan.md`, D68–D71, D89) and Joseph's values from the committed, cross-checked results (`results/2026-11-20-results-all/`, `results/2026-11-20-user-cost-full/`, D102).
+
+**Claude's answer (summary):**
+- **What was asked:** an "algorithmic scale" that can be compared with what other researchers do.
+- **What was added, each on a published scale:**
+  - recall (WebCloak);
+  - precision and F1 (WebCloak, FreeDOM);
+  - success rate (Beyond BeautifulSoup);
+  - drop in recall (WebCloak);
+  - detection and evasion rates (Shy Guys, FP-Inconsistent);
+  - SSIM (Wang et al.);
+  - Lighthouse change and HTML size (WebCloak).
+- **Joseph's results for each.**
+- **What was kept:** accuracy, fake-value rate, honeypot hits, time per page, pixel difference, reading order, axe-core.
+- **Still to come:** the false-positive rate (Nov 29).
+- **Why they answer the feedback:** they share 0–1 scales with published work, and the drop in recall cancels out differences between test sites.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (explains D68–D71 and D89 with results).
+
+### Turn 340 — 2026-11-21 23:11 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok now lets make a graph to represent the published ran findings with these new metrics that i can include on the doc
+
+**What Claude did:**
+- Added `fig_published` and the `PUBLISHED_RESULTS` constants to `measurement/figures.py` (D103), so `figures.py` now also writes `fig6-published.png`. Added it to `measurement/tests/test_figures.py`.
+- Drew it from the committed `results/2026-11-20-results-all/cells.csv` and `results/2026-11-20-user-cost-full/cost.csv`. Fixed the clipped titles of panels (b) and (d) and the spacing under the main title, over three redraws, and checked each render.
+- Ran the measurement suite: passes.
+- Updated `README.md` (list of figures). Sent the PNG.
+
+The laptop's committed `results/2026-11-20-figures/` doesn't include this figure; rerunning `figures.py` there adds it.
+
+**Claude's answer (summary):** The figure has four panels, each comparing our result with a published one in the same metric:
+- drop in recall vs WebCloak;
+- success rate vs Beyond BeautifulSoup;
+- detection rate vs Shy Guys, DataDome and BotD;
+- load-time cost vs WebCloak.
+
+Claude explained how to read each panel and offered to assemble the new report: the day-by-day list, the metrics table, then this figure with takeaways.
+
+**Questions Claude asked:** whether to assemble the new report now (offered).
+
+**Direction and fit:** D103 (Adds, from the scrum feedback).
+
+### Turn 341 — 2026-11-22 01:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok what else do i need to add
+
+**What Claude did:** Fetched `main` and merged it into the branch. Compared the report's planned sections (day-by-day list, new metrics, published-comparison figure) with what a scrum update usually covers (done, next, blockers) and with the study's key results.
+
+**Claude's answer (summary):**
+- **Must add:**
+  - the 36-run results table (recall and verdict for each scraper and site);
+  - next steps to Dec 1 and Dec 10;
+  - blockers and questions for the professor: is the WebCloak comparison what he meant, Claude writing (d), whether to build poisoning;
+  - a one-line AI-use note.
+- **Worth adding if space allows:**
+  - the cost-to-visitors table, since reading order is the study's own finding;
+  - a 2–3 line hypothesis check.
+- **Leave out:** setup details, metric formulas (the metrics section covers them), and any figure beyond the published comparison.
+- Proposed an order that fits 2 pages.
+
+**Questions Claude asked:** whether to build the report in that order (offered).
+
+**Direction and fit:** no new decision.
+
+### Turn 342 — 2026-11-22 01:48 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok What I’ve done since the last meeting:
+> Mon Nov 16
+> •	Plan updated from the scrum feedback: (c) first, then (d)
+> •	Metrics matched to 6 published papers (Claude)
+> Tue Nov 17
+> •	Ollama installed and 3 models downloaded
+> •	Model chosen for (c): llama3.2:3b (timing script by Claude)
+> Wed Nov 18
+> •	Experiment runner (Claude)
+> •	Required runs done: (a) and (b), 18 of 18
+> •	Scraper (c) built, passed its baseline check (70/70 × 3), and ran on all 3 sites (9 of 9)
+> Thu Nov 19
+> •	New metrics checked against the papers (WebCloak, Beyond BeautifulSoup)
+> Fri Nov 20
+> •	Results table with the new metrics, user-cost measurements and Test 7 (Claude), each run on your laptop
+> •	Test 7 passed: Milestone 3’s required work complete
+> •	Scraper (d) finished (Claude, at your request) and ran on all 3 sites (9 of 9, 70/70)
+> •	Figures and tables, and a full recount of the results: 541/541 agree (Claude)
+>
+>
+> Based on the feedback, these new metrics were added:
+> New metric	What it tells you	Where it comes from	Your results
+> Recall	Share of the 70 fields a scraper got right. It’s your accuracy, under the standard name	WebCloak (IEEE S&P 2026)	Shuffled: (a), (b) 0.06 · (c) 0.70 · (d) 1.00. Everyone else: 1.00
+> Precision	Of the fields a scraper filled in, how many were right. Shows fooled (wrong values) vs blocked (empty)	WebCloak	Shuffled: (a), (b) 0.06 · (c) 0.81 · (d) 1.00
+> F1	Recall and precision combined into one score	FreeDOM (KDD 2020)	Shuffled: (a), (b) 0.06 · (c) 0.75 · (d) 1.00
+> Success rate	Share of runs that got all 70 fields	Beyond BeautifulSoup (AAAI 2026)	Baseline 1.00 for all; shuffled 0 except (d) 1.00
+> Drop in recall	How much a defense lowers recall compared with the normal site (0% = no effect, 100% = fully stopped)	WebCloak’s before → after	Shuffling: (a), (b) 94.3% · (c) 30.5% · (d) 0%
+> Detection / evasion rate	Share of a scraper’s runs the honeypot caught, or missed	Shy Guys (2026), FP-Inconsistent (2025)	Caught: (a), (b), (c) 100% · (d) 0% (evades every time)
+> SSIM	How similar the defended page looks to the normal one (1 = identical)	Wang et al. (2004)	1.000 for both defenses
+> Lighthouse change	Change in page-speed score and load times	WebCloak	No change for either defense
+> HTML size change	How much heavier the page gets	WebCloak	Shuffled +21%, honeypot +3%
+>
+>
+>   
+>
+> Panel	Your result	Published	What it shows
+> (a) Drop in recall	Shuffling: 94% vs (a) and (b), 31% vs (c), 0% vs (d)	WebCloak: 100%	Against simple scrapers, your cheap defense comes close to a top published one. Against smarter scrapers it falls off
+> (b) Success rate	1.00 for all 4 scrapers	0.82–1.00 (Beyond BeautifulSoup)	Your scrapers work as well as the best published tools on simple pages, so your baseline is sound
+> (c) Bot detection rate	Honeypot: 100% for (a), (b), (c); 0% for (d)	47–68% (Shy Guys, DataDome, BotD)	It catches link-following scrapers better than these detectors catch real bots, but an adaptive scraper avoids it completely. The settings differ, so this shows the pattern, not a head-to-head score
+> (d) Load-time cost	+0 ms for both defenses	+880 ms (WebCloak)	Your defenses cost visitors no speed; WebCloak’s does
+>
+> plus the graph at the moment is on the page
+
+**What Claude did:** Read Joseph's pasted content: the day-by-day list, the new-metrics table, and the table under the published-comparison graph.
+- **Found two problems:**
+  - the text came from Claude's replies, so it says "your" (your laptop, your request, your accuracy, your results) where Joseph's doc needs "my";
+  - the graph table gives (c)'s drop as 31%, while everywhere else it is 30.5%.
+- **Built a Word version** (scratchpad `scrum-1123/scrum2.js`, `scrum update 11-23.docx`). It has Joseph's sections in the first person, plus the results table, cost to visitors, next steps, questions for the professor and the AI-use line. It came to 3 pages even after Section 5 was condensed and the graph made smaller.
+- Sent the file. Joseph interrupted and asked for the text in the chat instead (Turn 343).
+
+**Claude's answer (summary):** The two fixes, and the 3-page Word version, noting that removing the graph's table (which repeats the graph) would bring it to 2 pages.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 343 — 2026-11-22 01:49 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> just paste it out here dont build a page
+
+**What Claude did:** Wrote the full scrum update as text in the chat, with no file, for Joseph to paste into his own Word doc. It keeps his sections, in the first person and with 30.5% for (c). It adds:
+- the results table;
+- the cost to visitors, in two sentences;
+- next steps;
+- three questions for the professor;
+- the AI-use line;
+- a takeaway under each part.
+
+All numbers are from the cross-checked results (D102).
+
+**Claude's answer (summary):** The paste-ready text.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 344 — 2026-11-23 17:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you help me set up to make a graph in matplot lib for each of the metrics?
+
+**What Claude did:**
+- Wrote `measurement/metric_graphs.py` (D104) and `measurement/tests/test_metric_graphs.py` (2 tests).
+- Ran it on the committed `results/2026-11-20-results-all/cells.csv` and `results/2026-11-20-user-cost-full/cost.csv`, and looked at all 10 graphs tiled together. Fixed the Lighthouse graph's colours (they reused the site colours) and the "-0" labels, then redrew and checked it.
+- Measurement suite passes.
+- Added the usage to `README.md`. Fetched `main` and merged it into the branch.
+- Committed, pushed and opened a pull request. Sent the 10 PNGs.
+
+**Claude's answer (summary):**
+- What each of the 10 graphs shows, and where the published reference lines are.
+- The command to run it on the laptop.
+- How to add or change a graph: copy one call in `main()` and change the column and labels.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D104 (Adds, from the scrum feedback).
+
+### Turn 345 — 2026-11-23 17:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple,
+
+**What Claude did:**
+- Changed `measurement/metric_graphs.py` (D104) to draw exactly Joseph's 8 graphs, with simple titles:
+  - added `detection_graph`, a stacked bar per scraper: caught (green) and evaded (grey) add up to 100%;
+  - removed F1 and reading order from the output.
+- Checked FP-Inconsistent's text: it gives both detection over all requests (55.44%, 47.07%) and average evasion per bot service (52.93%, 44.56%). These don't add to 100%, so only Shy Guys' 67.6% is used as the reference line.
+- Updated the test (8 graphs); the suite passes. Updated `README.md`.
+- Drew the graphs from the committed results and looked at all 8 tiled.
+- Committed, pushed and updated the pull request. Sent the 8 PNGs.
+
+**Claude's answer (summary):**
+- **The 8 graphs.**
+- **How the rates are calculated:**
+  - detection rate = honeypot runs that requested `/trap` at least once (counted in the server's request log by the run ID) ÷ the scraper's honeypot runs;
+  - evasion rate = 1 − detection rate;
+  - worked for (a), at 3/3 = 100% caught, and for (d), at 0/3 = 100% evaded;
+  - how the published rate differs.
+- The command to run the script on the laptop.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D104 updated (Adds).
+
+### Turn 346 — 2026-11-23 17:24 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> and what other defenses do i still need to add, and what else if left for this project based on my project outline
+
+**What Claude did:** Read the midterm's "Features and completion criteria" (§1, items 1–5) and its poisoning design.
+- §2 Measurement: a JavaScript swap after 2 s, with the server serving "robots.txt and the real values JSON".
+- §5 Test 5: no real value in the poisoned HTML; the fake is shown at 0 s and the real value at 3 s.
+- Checked what exists: `site/defenses/` has `shuffled.js` and `honeypot.js`; there is no poisoned defense and no real-values route in `site/server.js`.
+
+**Claude's answer (summary):**
+- **Defenses:**
+  - shuffling and honeypot are done (Essential);
+  - **poisoning is left** (Ambitious, item 3): the only untested hypothesis. It needs Joseph's `poisoned.js`, a real-values route on the server and a fake-values file (Claude's site and tooling side), Test 5, and 12 runs;
+  - the **tarpit is left** (If time permits, item 5); it's only allowed if everything else ran by Dec 1, so it's likely dropped.
+- **Scrapers:** (a)–(d) done; **(e) vision is left** (item 4). It's likely dropped: a vision model on a CPU-only laptop is slow.
+- **Other work:**
+  - Milestone 3: (d)'s Test 3 part, Test 7's stub part for (c), the honeypot false-positive check, the related-work table, Cut-line 2 on Dec 1;
+  - Milestone 4: final tables and figures, README and manifest, clean rerun, the report (with the scope-change and AI-use sections), the tag on Dec 8, the deadline on Dec 10.
+- **Recommendation:** build poisoning only, this week, because Nov 26–27 is Thanksgiving. Report (e) and the tarpit as not done, with the reason.
+
+**Questions Claude asked:** none (whether to build poisoning is for the professor and Joseph).
+
+**Direction and fit:** no new decision.
+
+### Turn 347 — 2026-11-23 17:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses
+
+**What Claude did:** Merged nothing (`origin/main` had nothing new). Read the midterm's poisoning design (§2, §3, Figure 2, §4 metrics, §5 Test 5, §6) and its tarpit text (§1 item 5, §2 Tarpit row, §5 Test 6, §7 gate). Built the site and scoring side for both, without writing either defense (D105, D107):
+- **`site/generate.js`:** the hooks `fakeValue`, `script`, `footer` and `disallow`. It writes each item page's real-values JSON (`conditions/poisoned/values/`) and the fakes file (`conditions/poisoned.fakes.json`). It refuses empty fakes, real-value fakes and `<script>` tags. Baseline, shuffled and honeypot are byte-identical to before.
+- **`site/server.js`:** loads the condition's defense file, answers `/maze/<hash>` with its `maze` export, and adds `res.locals.log` fields to the log line.
+- **Scoring:** the runner copies the fakes file and its quick score counts fakes. `scoring/results.py` scores fakes and adds a poisoned table. `measurement/cross_check.py` recounts fakes. The Nov 20 results rebuild identically, and the cross-check still agrees 541/541.
+- **`measurement/test5.py`:** Test 5, checked against two throwaway stand-ins in the scratchpad (deleted, never committed): fakes only fails at 3 s; real values written into the page fails the HTML check.
+- **Tests:** 7 Node tests and 6 Python tests added. Node 30/30, scoring 35, measurement 67 pass.
+- **Docs:** `site/defenses/README.md` documents the new hooks, the JSON format and how to check with Test 5. `README.md` has the Test 5 command and the Milestone 3 status.
+- Logged D105–D107. Committed, pushed, and updated the pull request into `main`.
+
+**Claude's answer (summary):**
+- **Poisoning is ready for Joseph's part.** He writes `site/defenses/poisoned.js` with two exports:
+  - `fakeValue(row, rng)`: one same-format fake per field;
+  - `script(page)`: the swap. Wait 2 s, fetch `page.valuesPath`, and put each real value in place of its fake with `textContent`.
+- **What Claude gave him:**
+  - the format rules for each field;
+  - a standalone toy example of `setTimeout` + `fetch` + `textContent` (a temperature page, not project code);
+  - the order of work: generate → look at `p1.html` and the fakes file → Test 5 → 12 runs → results.
+- **The tarpit is started, but it skips the midterm's gate** (D106, Deviates, Joseph's call; to be reported). Its slot is ready for `tarpit.js`. Poisoning goes first.
+- **What Claude still has to do:** the user-cost runner opens pages from files, so a poisoned page couldn't fetch its JSON. It has to be served, with a "seconds fakes visible" column, before poisoning's user cost is measured. The tarpit's runner setting, measures and Test 6 part come after Joseph's route.
+- ⚠️ Merge needed (the pull request link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:**
+- D105: Follows / Interprets.
+- D106: **Deviates** (Joseph's decision).
+- D107: Interprets.

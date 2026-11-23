@@ -17,7 +17,7 @@ Writes to the results folder:
   runs/<run-id>.json     each scraper's output
   runs/<run-id>.log      what each scraper printed
   logs/<condition>.jsonl the request log for each condition
-  conditions/            the manifest (page list and seeds) of each condition
+  conditions/            the manifest (page list and seeds) of each condition, and a poisoned condition's fakes file
   manifest.json          what ran, in what order, with exit codes and times, plus the commit, config and tool versions
   summary.md             a quick accuracy check per run (the full results CSV is built separately)
 """
@@ -102,13 +102,14 @@ def ollama_info(base_url=OLLAMA_URL):
         return {"version": None, "models": [], "note": "Ollama not reachable"}
 
 
-def quick_score(out_file):
+def quick_score(out_file, fakes_file=None):
     """Accuracy from scoring/score.py, as a check (the results CSV comes from the full scoring step)."""
-    done = subprocess.run([sys.executable, "scoring/score.py", "--json", str(out_file)], cwd=ROOT, capture_output=True, text=True)
+    cmd = [sys.executable, "scoring/score.py", "--json", str(out_file)] + (["--fakes", str(fakes_file)] if fakes_file else [])
+    done = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
     if done.returncode != 0:
         return None
     s = json.loads(done.stdout)
-    return {"correct": s["correct"], "scored_fields": s["scored_fields"], "accuracy": s["accuracy"],
+    return {"correct": s["correct"], "scored_fields": s["scored_fields"], "accuracy": s["accuracy"], "fakes": s["fakes"],
             "pages_fetched": s["pages_fetched"], "time_per_page": s["time_per_page"]}
 
 
@@ -182,6 +183,10 @@ def main():
     for condition in args.conditions:
         generate(condition)
         shutil.copy(ROOT / "conditions" / f"{condition}.manifest.json", out_dir / "conditions" / f"{condition}.manifest.json")
+        fakes_file = ROOT / "conditions" / f"{condition}.fakes.json"
+        fakes_file = fakes_file if fakes_file.exists() else None
+        if fakes_file:
+            shutil.copy(fakes_file, out_dir / "conditions" / fakes_file.name)
         log_file = out_dir / "logs" / f"{condition}.jsonl"
         server = start_server(condition, args.port, log_file)
         try:
@@ -194,10 +199,11 @@ def main():
                          "output": f"runs/{r['run_id']}.json" if out_file.exists() else None,
                          "printed": f"runs/{r['run_id']}.log", "request_log": f"logs/{condition}.jsonl"}
                 if not args.no_score and code == 0 and out_file.exists():
-                    entry["quick_score"] = quick_score(out_file)
+                    entry["quick_score"] = quick_score(out_file, fakes_file)
                 manifest["runs"].append(entry)
                 q = entry.get("quick_score")
-                print("timeout" if code is None else (f"{q['correct']}/{q['scored_fields']}" if q else f"exit {code}"))
+                fooled = f", {q['fakes']} fakes" if q and fakes_file else ""
+                print("timeout" if code is None else (f"{q['correct']}/{q['scored_fields']}{fooled}" if q else f"exit {code}"))
         finally:
             server.terminate()
             server.wait(timeout=10)

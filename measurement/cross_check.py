@@ -172,7 +172,10 @@ def check_runs(folders, results_dir, checks, trap):
             page_items = {clean_path(p["path"]): p["item_id"] for p in
                           json.loads((folder / "conditions" / f"{condition}.manifest.json").read_text(encoding="utf-8"))["pages"]
                           if p.get("item_id")}
-            t = recount(output, truth, page_items)
+            fakes_file = folder / "conditions" / f"{condition}.fakes.json"
+            fakes = {(f["item_id"], f["field"]): f["fake_value"] for f in json.loads(fakes_file.read_text(encoding="utf-8"))} \
+                if fakes_file.exists() else {}
+            t = recount(output, truth, page_items, fakes)
             mine = [x for x in logs[condition] if x.get("run_id") == rid]
             hits = sum(1 for x in mine if x.get("path") == trap)
             log_pages = sum(1 for x in mine if is_page(x.get("path", "")))
@@ -196,6 +199,8 @@ def check_runs(folders, results_dir, checks, trap):
             checks.close(f"{rid}: precision", precision, number(rep["precision"]))
             checks.close(f"{rid}: F1", f1, number(rep["f1"]))
             checks.add(f"{rid}: honeypot hits", hits == int(rep["honeypot_hits"]), f"recounted {hits}, reported {rep['honeypot_hits']}")
+            if fakes:
+                checks.add(f"{rid}: fakes", t["fakes"] == int(rep["fakes"]), f"recounted {t['fakes']}, reported {rep['fakes']}")
             checks.add(f"{rid}: pages in output = page requests in log", pages == log_pages == int(rep["log_page_requests"]),
                        f"output {pages}, log {log_pages}, reported {rep['log_page_requests']}")
             checks.add(f"{rid}: every request carries the run ID", agents_ok and bool(mine), f"{len(mine)} requests")
@@ -208,7 +213,8 @@ def check_runs(folders, results_dir, checks, trap):
     for r in runs:
         cells[(r["scraper"], r["condition"])].append(r)
     tally = []
-    for (scraper, condition), rs in sorted(cells.items(), key=lambda kv: (kv[0][0], ["baseline", "shuffled", "honeypot"].index(kv[0][1]))):
+    order = ["baseline", "shuffled", "honeypot", "poisoned", "tarpit"]
+    for (scraper, condition), rs in sorted(cells.items(), key=lambda kv: (kv[0][0], order.index(kv[0][1]) if kv[0][1] in order else 99, kv[0][1])):
         rs.sort(key=lambda r: r["n"])
         recalls = [r["recall"] for r in rs]
         base = [r["recall"] for r in cells.get((scraper, "baseline"), [])]
@@ -236,6 +242,7 @@ def check_runs(folders, results_dir, checks, trap):
             checks.add(f"{name}: verdict", verdict == rep["verdict"], f"recounted {verdict}, reported {rep['verdict']}")
             checks.close(f"{name}: detection rate", detection, number(rep["detection_rate"]))
         tally.append({"cell": name, "per_run": [r["correct"] for r in rs], "wrong": [r["wrong"] for r in rs],
+                      "fakes": [r["fakes"] for r in rs],
                       "missing": [r["missing"] for r in rs], "hits": [r["hits"] for r in rs], "verdict": verdict,
                       "drop": drop, "detection": detection})
     return tally
@@ -337,11 +344,12 @@ def write_report(out_dir, checks, tally, args):
              f"**{len(checks.items) - len(failed)} of {len(checks.items)} checks agree.**" +
              ("" if not failed else f" **{len(failed)} disagree** (listed first)."), "",
              "## Tally for each scraper and defense (recounted from the raw outputs and logs)", "",
-             "| Scraper and site | Correct per run (of 70) | Wrong | Missing | Trap hits | Drop in recall | Verdict | Detection |",
-             "|---|---|---|---|---|---|---|---|"]
+             "| Scraper and site | Correct per run (of 70) | Wrong | of which fakes | Missing | Trap hits | Drop in recall | Verdict | Detection |",
+             "|---|---|---|---|---|---|---|---|---|"]
     for t in tally:
         drop = "—" if t["drop"] is None else f"{100 * t['drop']:.1f}%"
         lines.append(f"| {t['cell']} | {' '.join(map(str, t['per_run']))} | {' '.join(map(str, t['wrong']))} | "
+                     f"{' '.join(map(str, t['fakes']))} | "
                      f"{' '.join(map(str, t['missing']))} | {' '.join(map(str, t['hits']))} | {drop} | {t['verdict']} | {t['detection']:.2f} |")
     lines += ["", "## Every check", "", "| Check | Agrees | Detail |", "|---|---|---|"]
     for name, ok, detail in sorted(checks.items, key=lambda c: c[1]):

@@ -142,6 +142,26 @@ class FoldersTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 rs.run_rows([one, two], DATA, "/trap")
 
+    def test_poisoned_runs_count_fakes_from_the_fakes_file(self):
+        keys = list(DATA.truth)
+        fakes = [{"item_id": item, "field": f, "fake_value": f"Fake {i}"} for i, (item, f) in enumerate(keys) if f == "name"]
+        fooled = output("a-poisoned-1", correct=0)
+        fooled["records"] = [{"page": PAGE_OF[x["item_id"]], "field": "name", "value": x["fake_value"]} for x in fakes]
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = make_folder(tmp, "exp", {"a-poisoned-1": (fooled, 0)}, {"poisoned": log_lines("a-poisoned-1")})
+            (folder / "conditions").mkdir()
+            (folder / "conditions" / "poisoned.manifest.json").write_text(json.dumps({"fakes_file": "poisoned.fakes.json"}))
+            with self.assertRaisesRegex(ValueError, "fakes file, but .* is missing"):
+                rs.run_rows([folder], DATA, "/trap")
+            (folder / "conditions" / "poisoned.fakes.json").write_text(json.dumps(fakes))
+            [row] = rs.run_rows([folder], DATA, "/trap")
+            summary_file = Path(tmp, "summary.md")
+            rs.write_summary(summary_file, [folder], [row], rs.cell_rows([row]))
+            summary = summary_file.read_text(encoding="utf-8")
+        self.assertEqual((row["fakes"], row["wrong"], row["correct"]), (6, 6, 0))
+        self.assertAlmostEqual(row["fake_value_rate"], 6 / 70)
+        self.assertIn("| (a) | 6 | 8.6% | 0 | 64 |", summary)
+
     def test_main_writes_the_three_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = self.build(tmp)
