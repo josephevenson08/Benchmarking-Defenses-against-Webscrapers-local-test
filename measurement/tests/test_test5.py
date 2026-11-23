@@ -29,6 +29,12 @@ class LeakTest(unittest.TestCase):
         found = test5.leaks({"/products/p1": "<span>Larkfield Pro</span><span>$64.50</span>"}, truth)
         self.assertEqual([(f["page"], f["item_id"], f["field"]) for f in found], [("/products/p1", "p1", "brand")])
 
+    def test_an_item_page_is_searched_for_its_own_values_only(self):
+        truth = {("p1", "availability"): "In stock", ("p2", "availability"): "Low stock"}
+        pages = {"/products/p1": "<span>Low stock</span>", "/products/p2": "<span>In stock</span>", "/": "<p>Low stock</p>"}
+        found = test5.leaks(pages, truth, {"/products/p1": "p1", "/products/p2": "p2"})
+        self.assertEqual([(f["page"], f["item_id"]) for f in found], [("/", "p2")])
+
 
 class CompareTest(unittest.TestCase):
     def test_fields_are_matched_by_label_and_compared_as_trimmed_text(self):

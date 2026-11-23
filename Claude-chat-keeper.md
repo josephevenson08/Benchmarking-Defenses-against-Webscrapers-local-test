@@ -164,6 +164,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 - **Tests and docs:** 2 Node tests with stand-ins that only exercise the slot; the defense README documents all five new hooks.
 - **Still to do once the route exists:** the runner's robots.txt setting for (a), (b) and (d); the maze measures (pages loaded, seconds trapped, server time per request); Test 6's maze part. | Claude writes the whole route; Joseph writes the route and the server mounts it (chosen) | §3 Architecture item 2 ("An Express server serves … the optional /maze/<hash> route"); §2 Tarpit route row (Joseph: "the generation rules and the logging"); §1 item 5 "Done when"; §5 Test 6; CLAUDE.md (Joseph writes the tarpit route). | Interprets (the server's mount point; the route itself is Joseph's) |
 
+| D108 | 352 | **Test 5's HTML check searches each item page for its own real values only** (the other 2 pages are still searched for all 70). Found while preparing Joseph's walkthrough: availability has only four values (In stock, Low stock, Out of stock, Pre-order), so any fake availability is another product's real one. Ratings (3.9–4.8) and categories collide the same way. The old rule (all 70 values on every page) would have failed a correct defense. A fake that happens to equal another item's real value reveals nothing about this page, and scoring marks fakes per page and field (Figure 2). Same-page leaks are still caught, for example the real brand inside a fake name. Unit test added; the measurement suite passes. | Keep searching all 70 values on every page; per page (chosen) | Claude (tooling) | §5 Test 5 ("I search each poisoned page's HTML for every real value"); Figure 2 FakeValue (per item and field). | Interprets (which real values count for each page; narrows D105's rule) |
 ---
 
 ## Questions register
@@ -517,6 +518,11 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J345 | 345 | do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple, | The 8 requested graphs (D104 updated) and how the detection and evasion rates are calculated |
 | J346 | 346 | and what other defenses do i still need to add, and what else if left for this project based on my project outline | Checked the midterm's 5 scope items: 2 of 4 defenses built (poisoning and tarpit left), 4 of 5 scrapers (e left); the remaining Milestone 3 and 4 work; recommended poisoning only |
 | J347 | 347 | ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses | Poisoning's site and scoring side and Test 5 built (D105); Joseph writes `poisoned.js` next. Tarpit started at Joseph's choice, before the midterm's gate (D106, Deviates); its slot is ready for Joseph's `tarpit.js` (D107) |
+| J348 | 348 | (`git pull` output ending in "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)") | OneDrive lock on Git's clean-up: answer n; the pull is done; `git config gc.auto 0` stops it |
+| J349 | 349 | (`git log --oneline -1` output: `8e20c37 (HEAD -> main) d runs, results CSV and figures`) | The pull stopped before merging (31 commits behind); `git config gc.auto 0`, then pull again |
+| J350 | 350 | same thing happened | Turn off Git's auto maintenance; fetch and merge as two steps so the OneDrive prompt can't stop the merge |
+| J351 | 351 | (`git fetch origin` and `git merge origin/main` output: fast-forward `8e20c37..4dfeb12`, 19 files) | Laptop up to date; `npm test`, then `poisoned.js` in small steps checked with Test 5 |
+| J352 | 352 | ok all 30 passed walk me through the poisoned then lets continue | Walkthrough of `poisoned.js` (concepts, standalone snippets, field rules, order of work); Test 5's HTML check fixed to search each page for its own values (D108) |
 
 ### Questions from Claude
 
@@ -15801,3 +15807,170 @@ All numbers are from the cross-checked results (D102).
 - D105: Follows / Interprets.
 - D106: **Deviates** (Joseph's decision).
 - D107: Interprets.
+
+### Turn 348 — 2026-11-23 17:54 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git pull
+> Enumerating objects: 1014, done.
+> Counting objects: 100% (1/1), done.
+> Writing objects: 100% (1/1), done.
+> Total 1 (delta 0), reused 1 (delta 0), pack-reused 0 (from 0)
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)
+
+**What Claude did:** Checked PR #61 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/61): Joseph merged it at 17:53 UTC (merge commit `4dfeb12`). Merged `origin/main` into the branch.
+
+**Claude's answer (summary):**
+- **The prompt is OneDrive again** (Turns 164 and 323). After the pull, Git tidies its object folder, and OneDrive is holding `.git/objects/00` open.
+- **Answer `n`, and Ctrl+C if it asks again.** Nothing is lost: the pull already finished, and only the clean-up is skipped.
+- **Check the pull:** `git log --oneline -1` should show `4dfeb12 Merge pull request #61`, and `site/defenses/README.md` should have the `fakeValue` section.
+- **To stop the prompt:** run `git config gc.auto 0` once in the project folder, or pause OneDrive syncing while using Git. Moving the project out of OneDrive (e.g. to `C:\dev\`) fixes it for good.
+- **Next:** `poisoned.js` (Turn 347's steps).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 349 — 2026-11-23 17:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git log --oneline -1
+> 8e20c37 (HEAD -> main) d runs, results CSV and figures
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Looked up `8e20c37` in `main`'s history: it is Joseph's own commit from Nov 20 ("d runs, results CSV and figures"). His laptop's `main` is 31 commits behind `origin/main` (`4dfeb12`).
+
+**Claude's answer (summary):**
+- **The pull stopped before it merged.** Git runs its clean-up between fetching and merging, so answering the OneDrive prompt ended the pull early, and nothing new reached his files. Nothing was lost.
+- **Fix:**
+  1. `git config gc.auto 0`, so the clean-up doesn't run;
+  2. `git pull` again;
+  3. `git log --oneline -1` should then show `4dfeb12`.
+- **If the prompt still appears:** pause OneDrive syncing, then pull again.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 350 — 2026-11-23 17:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> same thing happened
+
+**What Claude did:** No files changed. Worked out why `gc.auto 0` wasn't enough: newer Git versions run their own automatic maintenance after a fetch, which `gc.auto` doesn't switch off.
+
+**Claude's answer (summary):**
+- **Split the pull in two,** so the clean-up can't stop the merge:
+  1. `git config maintenance.auto false`, which turns off Git's automatic maintenance;
+  2. `git fetch origin`. If the prompt appears, answer `n`; the download is already saved by then;
+  3. `git merge origin/main`. If the prompt appears after it, `n` is harmless, because the merge is already done;
+  4. `git log --oneline -1` should show `4dfeb12`.
+- **If it still won't merge:** pause OneDrive first.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 351 — 2026-11-23 17:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git fetch origin
+> remote: Enumerating objects: 3, done.
+> remote: Counting objects: 100% (3/3), done.
+> remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0 (from 0)
+> Unpacking objects: 100% (3/3), 1.12 KiB | 31.00 KiB/s, done.
+> From https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test
+>    7640064..49863d8  claude/quirky-curie-8j4nye -> origin/claude/quirky-curie-8j4nye
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git merge origin/main
+> Updating 8e20c37..4dfeb12
+> Fast-forward
+>  Claude-chat-keeper.md                    | 813 ++++++++++++++++++++++++++++++-
+>  README.md                                |  27 +-
+>  SCHEDULE.md                              |   6 +-
+>  measurement/cross_check.py               | 384 +++++++++++++++
+>  measurement/figures.py                   |  50 ++
+>  measurement/metric_graphs.py             | 167 +++++++
+>  measurement/run_experiment.py            |  18 +-
+>  measurement/test5.py                     | 291 +++++++++++
+>  measurement/tests/test_cross_check.py    |  64 +++
+>  measurement/tests/test_figures.py        |   1 +
+>  measurement/tests/test_metric_graphs.py  |  33 ++
+>  measurement/tests/test_test5.py          |  60 +++
+>  results/2026-11-20-cross-check/report.md | 568 +++++++++++++++++++++
+>  scoring/results.py                       |  36 +-
+>  scoring/tests/test_results.py            |  20 +
+>  site/defenses/README.md                  |  85 +++-
+>  site/generate.js                         | 195 ++++++--
+>  site/server.js                           |  24 +-
+>  site/test/site.test.js                   | 125 +++++
+>  19 files changed, 2906 insertions(+), 61 deletions(-)
+>  create mode 100644 measurement/cross_check.py
+>  create mode 100644 measurement/metric_graphs.py
+>  create mode 100644 measurement/test5.py
+>  create mode 100644 measurement/tests/test_cross_check.py
+>  create mode 100644 measurement/tests/test_metric_graphs.py
+>  create mode 100644 measurement/tests/test_test5.py
+>  create mode 100644 results/2026-11-20-cross-check/report.md
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git log --oneline -1
+
+**What Claude did:** Read Joseph's output. The fetch and merge worked: a fast-forward `8e20c37..4dfeb12`, 19 files, including `measurement/test5.py`, the new `site/generate.js` and `site/defenses/README.md`. No OneDrive prompt this time.
+
+**Claude's answer (summary):**
+- **The laptop is up to date with `main`.**
+- **Check:** `npm test` should report 30 passing.
+- **Then start `site/defenses/poisoned.js` in small steps:**
+  1. a `fakeValue` that handles a couple of fields;
+  2. `npm run generate -- poisoned`, and look at `conditions/poisoned/products/p1.html` and `conditions/poisoned.fakes.json`;
+  3. the remaining fields;
+  4. `script`;
+  5. `python measurement/test5.py`, which names every field that's off.
+- **Keep pulling in two steps** (`git fetch origin`, then `git merge origin/main`).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 352 — 2026-11-23 17:58 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok all 30 passed walk me through the poisoned then lets continue
+
+**What Claude did:**
+- Looked at every real value's format (`data/items.json`, as the test site's author) and at `score.py`'s matching rules, to write the walkthrough.
+- Found that Test 5's HTML check would fail a correct defense, so changed it (D108, Interprets): each item page is now searched only for its own real values.
+- Reran the fakes-only stand-in from the scratchpad, then deleted it again; the report reads right. Unit test added; measurement tests pass.
+- Updated the README line. Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):** a walkthrough of `site/defenses/poisoned.js`, without writing it:
+- **The picture:**
+  - the generator calls `fakeValue` 70 times while building the pages, in Node, so the HTML shows fakes;
+  - the generator writes the real values to JSON;
+  - `script(page)` returns text that runs later in the browser: wait 2 s, fetch the JSON, swap the values.
+- **Part 1, `fakeValue`:** one branch per `row.key`, with generic tools shown as standalone snippets:
+  - a whole number in a range, from `rng()`;
+  - picking from a list without the real value;
+  - `toFixed(2)`, `toLocaleString("en-US")` and `padStart`.
+  A table gives the rule for each field.
+- **Pitfalls:**
+  - Test 5 compares under the scoring rules: `$89.990`, `4.50` and tags in another order all count as the real value;
+  - don't reuse the same page's real words in other fields;
+  - always `rng()`, never `Math.random()`.
+- **Part 2, `script(page)`:** Node builds the text and the browser runs it. Put `page.valuesPath` and the delay from `config.json` into the string; return `""` without a `valuesPath`; match rows to the JSON by label; set `textContent`.
+- **Order of work:**
+  1. Part 1 for a few fields;
+  2. `npm run generate -- poisoned`;
+  3. look at `p1.html` and the fakes file;
+  4. the rest of the fields;
+  5. Part 2;
+  6. Test 5, after merging the new pull request.
+- **Meanwhile, Claude:** the user-cost runner change.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D108 (Interprets).
