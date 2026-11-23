@@ -197,9 +197,9 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **(d):** 70/70 in each run. Time per page 4.65 s against 3.03 s on baseline: it waits out the 2 s swap and then its 3 s quiet.
 - **Hypothesis 2** ("poisoning lowers accuracy for (a), (b), (c) and (e)") holds for (a)–(c); (e) isn't built. Capability matching holds: only (d), which waits, recovers.
 - **"Done when"** ("every fake value in any scraper's output matches the fake-values file for its page, and (d) runs 3 times on baseline, shuffled, honeypot and poisoned"): both parts met.
+- **Test 5 on the laptop (Turn 376):** PASS 4/4 at the same commit `910ee22`: 70/70 valid fakes, 0 real values in the HTML, 70/70 fakes at 0 s, 70/70 real values at 3 s, the swap at 2.01–2.02 s after load, and every page fetched its JSON (200). It ran after the 12 runs, at the same commit, so the runs used the file that passes.
 - **Still to do:**
   - `scoring/results.py` and the cross-check over all four folders, once the folder is pushed;
-  - Joseph's laptop Test 5 report;
   - poisoning's user cost (the user-cost runner change);
   - `poisoned` in the tables and graphs. | — | Joseph (runs); Claude (reading) | §1 item 3 "Done when"; §4 metrics (accuracy, fake-value rate, the "stops" threshold); hypothesis 2; §7 Stretch plan (poisoning Nov 18 – Dec 1, with Test 5 as the completion check). | Follows |
 ---
@@ -583,6 +583,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J373 | 373 | what file is this in (Get-Content site/defenses/poisoned.js).Count Select-String -Path site/defenses/poisoned.js -Pattern "function script" | Not a file: two commands for the PowerShell terminal; what each should print |
 | J374 | 374 | (check output: 124 lines; `function script(page)` on line 108) | Matches the Turn 370 file; next: generate, Test 5, commit, rerun |
 | J375 | 375 | (runner output: 12 poisoned runs; (a)–(c) 0/70 with 70 fakes, (d) 70/70 at 4.65 s per page; first folder deleted) | ⭐ Poisoning runs done; Ambitious item 3 met on the runner's scores (D112); push the results and the Test 5 report |
+| J376 | 376 | (laptop Test 5 output: PASS 4/4 at commit `910ee22`, the swap at 2.01–2.02 s) | Poisoning complete and checked; push the runs and the Test 5 folder, merge PR #63 |
 
 ### Questions from Claude
 
@@ -16899,3 +16900,65 @@ Two behaviour notes:
 **Questions Claude asked:** whether Test 5 was run on the laptop (in the reply).
 
 **Direction and fit:** D112 (Follows).
+
+### Turn 376 — 2026-11-23 19:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> npm run generate -- poisoned
+> >> python measurement/test5.py
+>
+> > benchmarking-defenses-against-webscrapers@0.1.0 generate
+> > node site/generate.js poisoned
+>
+> Wrote 10 pages and robots.txt to conditions\poisoned/ (70 scored fields)
+> Poisoned: 70 fakes in conditions\poisoned.fakes.json, real values in conditions\poisoned/values/
+> Generating poisoned ...
+> Wrote 10 pages and robots.txt to conditions\poisoned/ (70 scored fields)
+> Poisoned: 70 fakes in conditions\poisoned.fakes.json, real values in conditions\poisoned/values/
+> Serving poisoned on port 3100; reading the HTML and each item page at 0 s and 3 s ...
+>
+> # Test 5: poisoning hides real values
+>
+> Run 2026-11-23T13:13:59 · commit 910ee22 · condition `poisoned` · read at 0 s (right after load) and 3 s after load
+>
+> **PASS**
+>
+> | Check | Result | |
+> |---|---|---|
+> | 1. Fakes file: one valid fake per field, each different from the real value | 70 of 70 fakes| PASS |
+> | 2. No real value in any page's HTML | 0 real values found (each item page searched for its own values, the other 2 pages for all 70) | PASS |
+> | 3. Every field shows its fake at 0 s | 70 of 70 | PASS |
+> | 4. Every field shows its real value at 3 s | 70 of 70 | PASS |
+>
+>
+> ## Each item page
+>
+> | Page | Fakes at 0 s | Real at 3 s | Values last changed | Fetched its real values | Fields not as expected |
+> |---|---|---|---|---|---|
+> | /products/p1 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p2 | 10/10 | 10/10 | 2.02 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p3 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p4 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p5 | 10/10 | 10/10 | 2.02 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p6 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /articles/a1 | 5/5 | 5/5 | 2.03 s after start (2.02 s after load) | yes (200) | — |
+> | /articles/a2 | 5/5 | 5/5 | 2.02 s after start (2.01 s after load) | yes (200) | — |
+>
+> Fakes stay on screen until 2.03 s after the page starts loading (mean 2.03 s; config `poison_swap_delay_seconds` = 2).
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read Joseph's laptop Test 5 report: PASS 4/4 at commit `910ee22`, the commit the 12 runs used. Every page swapped 2.01–2.02 s after load and fetched its real values (200). Added it to D112 and updated the README. No other project files changed.
+
+**Claude's answer (summary):**
+- **Test 5 passes** on the laptop, at the same commit as the runs, so poisoning is complete and checked.
+- **Fakes stay on screen** about 2.0 s, as designed. That number goes into poisoning's user cost.
+- **Next, Joseph:**
+  1. commit and push `results/2026-11-23-poisoned-2` and the Test 5 folder (`results/2026-11-23-test5`);
+  2. merge PR #63.
+- **Then Claude:** the results tables over all four folders, the cross-check, the graphs, and the user-cost runner.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (adds to D112).
