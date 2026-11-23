@@ -221,6 +221,13 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
   - poisoned: 0% pixel difference, SSIM 1.000, 0/70 fields out of reading order, 0 axe violations, HTML +17.5% (the swap script), fakes on screen 2.02 s mean and 2.03 s max;
   - cross-check 722/722.
 - **Still to do:** the full run with Lighthouse on the laptop. | Keep opening files and inject the real values; serve the pages (chosen) | Claude (tooling) | §5 User cost ("screenshots taken after a 3-second wait so poisoned pages show their real values"); §4 item 4 ("for poisoning, the seconds fake values stay visible (2 by design)"); §2 test site (the server serves the real-values JSON). | Follows (the measures); Interprets (served pages, how the seconds are measured) |
+| D115 | 378 | **Joseph's first full user-cost run with poisoned doesn't count for poisoned's visual numbers; rerun after merging PR #64.** The run is `results/2026-11-23-user-cost-full`, about 24 min on the laptop.
+- **The cause:** it used commit `32e3f77`, before PR #64, so the old runner opened the pages from their files. The poisoned pages couldn't fetch their real values and kept the fakes. The report has no "Fakes on screen" section, which confirms the old runner.
+- **The result:** poisoned's pixel difference (0.329% mean, 0.687% max), SSIM (0.985 mean, 0.962 min) and reading order (70/70) come from fakes that never swapped. The new runner in the cloud gave 0%, 1.000 and 0/70.
+- **Still valid:**
+  - shuffled and honeypot, the same as on Nov 20;
+  - every Lighthouse number, which always used the server. Poisoned: score +0.2, FCP and LCP +2 ms, TTI −15 ms, all within the baseline's noise.
+- **Steps:** merge PR #64, fetch and merge on the laptop, check the runner, rerun the full run into `results/2026-11-23-user-cost-full-2`, and delete the first folder (not committed). | Merge the Lighthouse numbers from this run with a rerun of the rest; rerun everything in one folder (chosen) | Claude (recommendation) | §5 User cost ("screenshots taken after a 3-second wait so poisoned pages show their real values"); §4 item 4; D114. | Follows |
 ---
 
 ## Questions register
@@ -604,6 +611,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J375 | 375 | (runner output: 12 poisoned runs; (a)–(c) 0/70 with 70 fakes, (d) 70/70 at 4.65 s per page; first folder deleted) | ⭐ Poisoning runs done; Ambitious item 3 met on the runner's scores (D112); push the results and the Test 5 report |
 | J376 | 376 | (laptop Test 5 output: PASS 4/4 at commit `910ee22`, the swap at 2.01–2.02 s) | Poisoning complete and checked; push the runs and the Test 5 folder, merge PR #63 |
 | J377 | 377 | ok i pushed and merged | Results over 48 runs and cross-check 707/707 (D113); poisoned added to the graphs; user-cost runner serves pages and measures fakes on screen (D114); laptop user-cost run next |
+| J378 | 378 | (laptop user-cost output: commit `32e3f77`, poisoned 0.329% pixel difference, SSIM 0.985, 70/70 out of order) | The old runner ran (PR #64 not merged); poisoned's visual numbers come from unswapped fakes (D115); merge, check, rerun into a new folder |
 
 ### Questions from Claude
 
@@ -17011,3 +17019,76 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** D113 (Follows), D114 (Follows / Interprets).
+
+### Turn 378 — 2026-11-23 19:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/user_cost.py --conditions shuffled honeypot poisoned --out results/2026-11-23-user-cost-full
+> baseline: generating, screenshots, field positions, axe-core ...
+> baseline: Lighthouse, 5 runs on each of 10 pages ...
+> shuffled: generating, screenshots, field positions, axe-core ...
+> shuffled: Lighthouse, 5 runs on each of 10 pages ...
+> honeypot: generating, screenshots, field positions, axe-core ...
+> honeypot: Lighthouse, 5 runs on each of 10 pages ...
+> poisoned: generating, screenshots, field positions, axe-core ...
+> poisoned: Lighthouse, 5 runs on each of 10 pages ...
+> shuffled: pixel difference and SSIM against baseline ...
+> honeypot: pixel difference and SSIM against baseline ...
+> poisoned: pixel difference and SSIM against baseline ...
+>
+> # User cost
+>
+> Run 2026-11-23T13:23:23 → 2026-11-23T13:47:00 · commit 32e3f77 · viewport 1280x800 · screenshots 3.0 s after load
+>
+> ## Visual, reading order and page weight
+>
+> | Condition | Pixel diff (mean / max) | SSIM (mean / min) | Reading-order mismatch | HTML sizechange |
+> |---|---|---|---|---|
+> | baseline | reference | reference | 0/70 fields = 0.000 | 21380 bytes (reference) |
+> | shuffled | 0.000% / 0.000% | 1.0000 / 1.0000 | 70/70 fields = 1.000 | +21.2% (max page +21.8%) |
+> | honeypot | 0.000% / 0.000% | 1.0000 / 1.0000 | 0/70 fields = 0.000 | +2.8% (max page +3.8%) |
+> | poisoned | 0.329% / 0.687% | 0.9854 / 0.9617 | 70/70 fields = 1.000 | +17.5% (max page +25.0%) |
+>
+> ## Accessibility (axe-core, all 10 pages)
+>
+> | Condition | Violations | New vs baseline | Critical / serious / moderate / minor | WCAG A / AA / AAA / best practice |
+> |---|---|---|---|---|
+> | baseline | 0 | reference | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
+> | shuffled | 0 | 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
+> | honeypot | 0 | 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
+> | poisoned | 0 | 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |
+>
+> ## Speed (Lighthouse 13.6.0, {'formFactor': 'mobile', 'throttlingMethod': 'simulate'}, median of 5 runs per page, mean over the 10 pages)
+>
+> | Condition | Score | FCP | LCP | TTI |
+> |---|---|---|---|---|
+> | baseline | 99.8 | 606 ms | 606 ms | 678 ms |
+> | shuffled | 100.0 (+0.2) | 606 ms (+0 ms) | 606 ms (+0 ms) | 654 ms (-24 ms) |
+> | honeypot | 100.0 (+0.2) | 606 ms (+0 ms) | 606 ms (+0 ms) | 654 ms (-24 ms) |
+> | poisoned | 100.0 (+0.2) | 608 ms (+2 ms) | 608 ms (+2 ms) | 663 ms (-15 ms) |
+>
+> Per page: `pages.csv`. Definitions: `measurement/user_cost.py`.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop user-cost output. Checked `main`: PR #64 isn't merged, and the run used commit `32e3f77`, the old runner.
+- Compared poisoned's numbers with the cloud run of the new runner, and logged D115.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Poisoned's visual numbers aren't real:** the 0.33% pixel difference, the SSIM of 0.96–0.99 and the 70/70 reading order come from pages opened as files, where the fakes never swap.
+- **Still valid:** shuffled, honeypot and all the Lighthouse numbers. Poisoned's load times show no change beyond noise.
+- **Steps:**
+  1. merge PR #64;
+  2. `git fetch origin` and `git merge origin/main`;
+  3. check that the runner is the new one: `Select-String` on `fakes_visible` in `measurement/user_cost.py`;
+  4. rerun into `results/2026-11-23-user-cost-full-2` (about 24 min);
+  5. delete the first folder;
+  6. commit and push.
+- **Expected:** poisoned at 0% pixel difference, SSIM 1.000, 0/70 out of order, about 2 s of fakes on screen.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D115 (Follows).
