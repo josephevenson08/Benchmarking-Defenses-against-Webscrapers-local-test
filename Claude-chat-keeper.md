@@ -630,6 +630,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J378 | 378 | (laptop user-cost output: commit `32e3f77`, poisoned 0.329% pixel difference, SSIM 0.985, 70/70 out of order) | The old runner ran (PR #64 not merged); poisoned's visual numbers come from unswapped fakes (D115); merge, check, rerun into a new folder |
 | J379 | 379 | (laptop user-cost output, commit `f2414b1`: poisoned 0% pixel difference, SSIM 1.000, 0/70 out of order, fakes 2.02 s) | Correct; poisoning's user cost recorded (D116); push the folder for the graphs and cross-check |
 | J380 | 380 | its pushed | Cross-check 734/734 with the laptop's user cost; graphs 6–8, Table 3 and fig3 with poisoned (D117); what's left |
+| J381 | 381 | ok i merged, can you give me here, my scrum meeting report i have later today (with his current report pasted) | The full report updated with poisoning, as text in the chat: daily list, metrics, 48-run results, published comparison, cost, next steps, AI-use line |
 
 ### Questions from Claude
 
@@ -17216,3 +17217,120 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** D117 (Follows).
+
+### Turn 381 — 2026-11-23 20:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i merged, can you give me here, my scrum meeting report i have later today
+>
+> this is what i tlooks like now:
+>
+> Joseph Evenson · Benchmarking Defenses Against Web Scrapers · Mon Nov 23, 2026
+> What I’ve done since the last meeting
+> Mon Nov 16
+> •	Plan updated from the scrum feedback: (c) first, then (d)
+> •	Metrics matched to 6 published papers (Claude)
+> Tue Nov 17
+> •	Ollama installed and 3 models downloaded
+> •	Model chosen for (c): llama3.2:3b (timing script by Claude)
+> Wed Nov 18
+> •	Experiment runner (Claude)
+> •	Required runs done: (a) and (b), 18 of 18
+> •	Scraper (c) built, passed its baseline check (70/70 × 3), and ran on all 3 sites (9 of 9)
+> Thu Nov 19
+> •	New metrics checked against the papers (WebCloak, Beyond BeautifulSoup)
+> Fri Nov 20
+> •	Results table with the new metrics, user-cost measurements and Test 7 (Claude), each run on my laptop
+> •	Test 7 passed: Milestone 3’s required work complete
+> •	Scraper (d) finished (Claude, at my request) and ran on all 3 sites (9 of 9, 70/70)
+> •	Figures and tables, and a full recount of the results: 541/541 agree (Claude)
+>
+>
+> New metrics
+> New metric	What it tells you	Where it comes from	My results
+> Recall	Share of the 70 fields a scraper got right; my accuracy under the standard name	WebCloak (IEEE S&P 2026)	Shuffled: 
+> (a), (b) 0.06 
+> (c) 0.70
+> (d) 1.00. 
+> All others: 1.00
+> Precision	Of the fields a scraper filled in, how many were right: fooled (wrong values) vs blocked (empty)	WebCloak	Shuffled: 
+> (a), (b) 0.06 
+> (c) 0.81 
+> (d) 1.00
+> F1	Recall and precision combined into one score	FreeDOM (KDD 2020)	Shuffled: 
+> (a), (b) 0.06
+> (c) 0.75 
+> (d) 1.00
+> Success rate	Share of runs that got all 70 fields	Beyond BeautifulSoup (AAAI 2026)	Baseline 1.00 for all; shuffled 0 except (d) 1.00
+> Drop in recall	How much a defense lowers recall vs the normal site (0% = no effect, 100% = fully stopped)	WebCloak (before → after)	Shuffling: 
+> (a), (b) 94.3% 
+> (c) 30.5%
+> (d) 0%
+> Detection / evasion rate	Share of a scraper’s runs the honeypot caught, or missed	Shy Guys (2026), FP-Inconsistent (2025)	Caught: 
+> (a), (b), (c) 100% 
+> (d) 0% (evades every time)
+> SSIM	How similar the defended page looks to the normal one (1 = identical)	Wang et al. (2004)	1.000 for both defenses
+> Lighthouse change	Change in page-speed score and load times	WebCloak	No change for either defense
+> HTML size change	How much heavier the page gets	WebCloak	Shuffled +21%, honeypot +3%
+>
+> Key takeaway: every result can now be read on the same scale as a published study.
+>
+> Results (36 runs: 4 scrapers × 3 sites × 3 runs)
+> Scraper	Baseline	Shuffled	Honeypot
+> (a) raw HTML	100%	5.7% (stops)	100%, caught
+> (b) browser	100%	5.7% (stops)	100%, caught
+> (c) LLM on page text	100%	69.5% (reduces)	100%, caught
+> (d) adaptive	100%	100% (no effect)	100%, not caught
+>
+> Key takeaway: each defense fails against the scraper built to beat it. Shuffling stops scrapers that read the HTML in order, but not (d), which reads the page as shown. The honeypot catches every scraper that follows hidden links, but not (d)
+> Something to note:
+> The page complexity is something that has to be taken into account, obviously with the comparison of scores from the studies that these metrics are from, the compared environment is not the same and shouldn’t be taken at raw value of score.
+>
+>  
+>
+> Panel	My result	Published	What it shows
+> (a) Drop in recall	Shuffling: 94.3% vs (a) and (b), 30.5% vs (c), 0% vs (d)	WebCloak: 100%	Against simple scrapers, my cheap defense comes close to a top published one; against smarter scrapers it falls off
+> (b) Success rate	1.00 for all 4 scrapers	0.82–1.00 (Beyond BeautifulSoup)	My scrapers work as well as the best published tools on simple pages, so my baseline is sound
+> (c) Bot detection rate	Honeypot: 100% for (a), (b), (c); 0% for (d)	47–68% (Shy Guys, DataDome, BotD)	It catches link-following scrapers better than these detectors catch real bots, but an adaptive scraper avoids it. Settings differ, so this shows the pattern, not a head-to-head score
+> (d) Load-time cost	+0 ms for both defenses	+880 ms (WebCloak)	My defenses cost visitors no speed; WebCloak’s does
+>
+> Key takeaway: my defenses reach published strength only against simple scrapers, at no speed cost. Smarter scrapers need a stronger defense.
+>
+> Cost to visitors:
+> Neither defense changes how pages look (SSIM 1.000) or how fast they load (no Lighthouse change), and neither adds accessibility violations (axe-core: 0). Shuffling adds 21% to the HTML and puts all 70 fields out of reading order, so a screen reader reads them scrambled. The honeypot adds 3% to the HTML and nothing else.
+> Key takeaway: shuffling’s only cost is reading order, which the standard accessibility checker misses. None of the published studies I compared with measured this.
+>
+>
+> Next step: 
+> Changed outline: 4 scrapers 3 defenses
+> 1.	Raw html
+> 2.	Page load
+> 3.	Llm
+> 4.	Adaptive
+>
+> 1.	Honeypot
+> 2.	Dom shuffling
+> 3.	Live dom poisoning ()
+> 4.	Tarpit (still to do)
+>
+> Dropped: vision (e), reading a screenshot with a image model, scraper
+> Final report and github clean up
+
+**What Claude did:**
+- Fetched and merged `main` (PR #65 merged).
+- Rewrote Joseph's scrum report for Mon Nov 23 from the numbers in `results/2026-11-23-figures/tables.md` and `results/2026-11-23-results-all`. It's in the chat, as text to paste, as Joseph asked in Turn 343; it isn't a file or a page.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** the full report, in Joseph's layout and first person:
+- **The daily list:** adds Sat Nov 21 (the published-comparison figure) and Mon Nov 23 (one graph per metric; poisoning built by Claude at Joseph's request around his price rule; Test 5 4/4; 12 poisoned runs; user cost; 734/734; the tarpit started).
+- **The metrics table:** poisoned results in every row, plus a fake-value rate row (the midterm's own metric).
+- **The results table:** 48 runs, with a Poisoned column.
+- **The published comparison:** poisoning beside WebCloak, and poisoned's +2 ms. Joseph should paste the new `fig6-published.png`.
+- **Cost to visitors:** poisoning's 2.0 s of fakes and +18% HTML.
+- **Takeaways:** after every table.
+- **Next steps:** corrected to "4 scrapers, 4 defenses", with the tarpit marked as started early by Joseph's choice (D106), and one line on AI use: (d) and poisoning written by Claude at his request (D99, D110).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The report draws on D99, D106, D110 and D112–D117.
