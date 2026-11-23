@@ -156,6 +156,8 @@ def fig_reduction(plt, cells, scrapers, path):
 
 def fig_protection_vs_cost(plt, cells, cost, scrapers, path):
     fig, ax = plt.subplots(figsize=(7.2, 4.6))
+    from matplotlib.transforms import offset_copy
+    points = defaultdict(list)  # (x, drop) -> [(defense, scrapers)], so defenses at the same spot sit side by side
     for cond in DEFENSES:
         if cond not in cost:
             continue
@@ -166,18 +168,28 @@ def fig_protection_vs_cost(plt, cells, cost, scrapers, path):
             if c and c["reduction_recall"] is not None:
                 groups[round(100 * c["reduction_recall"], 1)].append(s)
         for red, ss in groups.items():
-            ax.scatter([100 * x], [red], s=70, color=COLORS[cond], edgecolor="white", linewidth=1.5, zorder=3,
-                       label=cond if red == max(groups) else None)
-            ax.annotate(", ".join(f"({s})" for s in ss) + f"  {red:.1f}%", (100 * x, red), xytext=(8, 0),
-                        textcoords="offset points", va="center", fontsize=8.5, color=INK)
+            points[(100 * x, red)].append((cond, ss))
+    labelled = set()
+    for (xp, red), entries in points.items():
+        for k, (cond, ss) in enumerate(entries):
+            ax.scatter([xp], [red], s=70, color=COLORS[cond], edgecolor="white", linewidth=1.5, zorder=3,
+                       transform=offset_copy(ax.transData, fig=fig, x=9 * k, y=0, units="points"),
+                       label=None if cond in labelled else cond)
+            labelled.add(cond)
+        text = "\n".join((f"{DEFENSE_NAMES[c]}: " if len(entries) > 1 else "") + ", ".join(f"({s})" for s in ss)
+                         + f"  {red:.1f}%" for c, ss in entries)
+        ax.annotate(text, (xp, red), xytext=(8 + 9 * (len(entries) - 1), 0), textcoords="offset points", va="center",
+                    fontsize=8.5, color=INK)
     ax.set_xlim(-8, 115)
     ax.set_ylim(-8, 110)
     ax.set_xlabel("User cost: fields out of reading order (%)")
     ax.set_ylabel("Protection: drop in recall (%)")
     ax.set_title("Protection against user cost, one point per defense and scraper", loc="left")
     ax.legend(loc="center left")
-    footnote(fig, "Shuffling and the honeypot: 0% pixel difference, SSIM 1.000, 0 axe-core violations, no Lighthouse change "
-             "beyond noise. The honeypot protects by detection, not by lowering recall (Figure 4).")
+    note = "All defenses: 0% pixel difference, SSIM 1.000, 0 axe-core violations, no Lighthouse change beyond noise."
+    if "poisoned" in cost and cost["poisoned"].get("fakes_visible_max_s") is not None:
+        note += f" Poisoning shows fake values for {cost['poisoned']['fakes_visible_max_s']:.1f} s before the swap."
+    footnote(fig, note + " The honeypot protects by detection, not by lowering recall (Figure 4).")
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(path, dpi=200)
     plt.close(fig)
@@ -293,7 +305,7 @@ def tables(cells, cost, scrapers):
     lines += ["", "False-positive rate: planned (a human-like visitor that clicks only visible links, Sun Nov 29).", "",
               "## Table 3. User cost against baseline", "",
               "| Site | Pixel diff (max) | SSIM (min) | Fields out of reading order | HTML size | axe-core violations (new) | "
-              "Lighthouse score | FCP | LCP | TTI |", "|---|---|---|---|---|---|---|---|---|---|"]
+              "Lighthouse score | FCP | LCP | TTI | Fakes on screen (max) |", "|---|---|---|---|---|---|---|---|---|---|---|"]
     for cond in DEFENSES:
         c = cost.get(cond)
         if not c:
@@ -304,7 +316,8 @@ def tables(cells, cost, scrapers):
         lines.append(f"| {cond} | {c['pixel_diff_max_percent']:.3f}% | {c['ssim_min']:.4f} | "
                      f"{c['fields_out_of_order']:.0f}/{c['fields']:.0f} | {c['html_change_percent']:+.1f}% | "
                      f"{c.get('axe_violations', 0):.0f} ({c.get('axe_new_vs_baseline', 0):.0f}) | {ch('score', '', 1)} | "
-                     f"{ch('fcp_ms', ' ms')} | {ch('lcp_ms', ' ms')} | {ch('tti_ms', ' ms')} |")
+                     f"{ch('fcp_ms', ' ms')} | {ch('lcp_ms', ' ms')} | {ch('tti_ms', ' ms')} | "
+                     f"{'—' if c.get('fakes_visible_max_s') is None else format(c['fakes_visible_max_s'], '.2f') + ' s'} |")
     lines += ["", "Lighthouse changes are the mean over the 10 pages of each page's median of 5 runs; a change smaller than "
               "the baseline's own run-to-run range is not counted as an effect (§5).", ""]
     # Table 4: comparison with published work

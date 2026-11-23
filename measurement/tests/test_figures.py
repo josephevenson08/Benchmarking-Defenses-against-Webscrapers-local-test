@@ -64,7 +64,7 @@ class TablesTest(unittest.TestCase):
         self.assertIn("| (a) raw HTML | shuffled | 4 4 4 | 5.7% |", text)
         self.assertIn("94.3% | stops |", text)
         self.assertIn("| (d) adaptive | 0.00 | 1.00 | 0 |", text)
-        self.assertIn("| shuffled | 0.000% | 1.0000 | 70/70 | +21.2% | 0 (0) | +0.0 | +0 ms | +0 ms | +22 ms |", text)
+        self.assertIn("| shuffled | 0.000% | 1.0000 | 70/70 | +21.2% | 0 (0) | +0.0 | +0 ms | +0 ms | +22 ms | — |", text)
         self.assertIn("100% (88.7% → 0%) | WebCloak", text)
         self.assertIn("300×", text)
 

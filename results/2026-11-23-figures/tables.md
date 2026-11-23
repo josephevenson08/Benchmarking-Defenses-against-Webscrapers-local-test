@@ -36,10 +36,11 @@ False-positive rate: planned (a human-like visitor that clicks only visible link
 
 ## Table 3. User cost against baseline
 
-| Site | Pixel diff (max) | SSIM (min) | Fields out of reading order | HTML size | axe-core violations (new) | Lighthouse score | FCP | LCP | TTI |
-|---|---|---|---|---|---|---|---|---|---|
-| shuffled | 0.000% | 1.0000 | 70/70 | +21.2% | 0 (0) | +0.0 | +0 ms | +0 ms | +22 ms |
-| honeypot | 0.000% | 1.0000 | 0/70 | +2.8% | 0 (0) | +0.0 | +0 ms | +0 ms | -7 ms |
+| Site | Pixel diff (max) | SSIM (min) | Fields out of reading order | HTML size | axe-core violations (new) | Lighthouse score | FCP | LCP | TTI | Fakes on screen (max) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| shuffled | 0.000% | 1.0000 | 70/70 | +21.2% | 0 (0) | -0.2 | +0 ms | +0 ms | +9 ms | — |
+| honeypot | 0.000% | 1.0000 | 0/70 | +2.8% | 0 (0) | -0.2 | +0 ms | +0 ms | +16 ms | — |
+| poisoned | 0.000% | 1.0000 | 0/70 | +17.5% | 0 (0) | +0.0 | +2 ms | +2 ms | -31 ms | 2.03 s |
 
 Lighthouse changes are the mean over the 10 pages of each page's median of 5 runs; a change smaller than the baseline's own run-to-run range is not counted as an effect (§5).
 
