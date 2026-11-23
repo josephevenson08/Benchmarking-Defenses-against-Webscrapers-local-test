@@ -518,6 +518,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J346 | 346 | and what other defenses do i still need to add, and what else if left for this project based on my project outline | Checked the midterm's 5 scope items: 2 of 4 defenses built (poisoning and tarpit left), 4 of 5 scrapers (e left); the remaining Milestone 3 and 4 work; recommended poisoning only |
 | J347 | 347 | ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses | Poisoning's site and scoring side and Test 5 built (D105); Joseph writes `poisoned.js` next. Tarpit started at Joseph's choice, before the midterm's gate (D106, Deviates); its slot is ready for Joseph's `tarpit.js` (D107) |
 | J348 | 348 | (`git pull` output ending in "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)") | OneDrive lock on Git's clean-up: answer n; the pull is done; `git config gc.auto 0` stops it |
+| J349 | 349 | (`git log --oneline -1` output: `8e20c37 (HEAD -> main) d runs, results CSV and figures`) | The pull stopped before merging (31 commits behind); `git config gc.auto 0`, then pull again |
 
 ### Questions from Claude
 
@@ -15822,6 +15823,28 @@ All numbers are from the cross-checked results (D102).
 - **Check the pull:** `git log --oneline -1` should show `4dfeb12 Merge pull request #61`, and `site/defenses/README.md` should have the `fakeValue` section.
 - **To stop the prompt:** run `git config gc.auto 0` once in the project folder, or pause OneDrive syncing while using Git. Moving the project out of OneDrive (e.g. to `C:\dev\`) fixes it for good.
 - **Next:** `poisoned.js` (Turn 347's steps).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 349 — 2026-11-23 17:55 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git log --oneline -1
+> 8e20c37 (HEAD -> main) d runs, results CSV and figures
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Looked up `8e20c37` in `main`'s history: it is Joseph's own commit from Nov 20 ("d runs, results CSV and figures"). His laptop's `main` is 31 commits behind `origin/main` (`4dfeb12`).
+
+**Claude's answer (summary):**
+- **The pull stopped before it merged.** Git runs its clean-up between fetching and merging, so answering the OneDrive prompt ended the pull early, and nothing new reached his files. Nothing was lost.
+- **Fix:**
+  1. `git config gc.auto 0`, so the clean-up doesn't run;
+  2. `git pull` again;
+  3. `git log --oneline -1` should then show `4dfeb12`.
+- **If the prompt still appears:** pause OneDrive syncing, then pull again.
 
 **Questions Claude asked:** none.
 
