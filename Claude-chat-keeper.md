@@ -527,6 +527,8 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J354 | 354 | ok i got the file made in the scetion, can you walk me through how to make this | Step-by-step plan for `poisoned.js`: Steps 1–3 in detail (shape, switch on the field, price) with toy examples; Steps 4–10 as a roadmap; Joseph writes the code |
 | J355 | 355 | (Joseph's first draft of `poisoned.js`: the example's `sound(animal)` switch with a fixed fake for each field) | Reviewed: rename to `fakeValue(row, rng)` on `row.key`, add the export, placeholder default, drop the typo case; then random fakes per page with `rng()` |
 | J356 | 356 | (random characters, likely sent by accident) | Asked whether it was an accident; repeated the next step (Turn 355's fixes) |
+| J357 | 357 | (random characters, likely sent by accident) | Covered by Turn 356's reply |
+| J358 | 358 | (random characters, likely sent by accident) | Covered by Turn 356's reply |
 
 ### Questions from Claude
 
@@ -16090,7 +16092,7 @@ All numbers are from the cross-checked results (D102).
 > \--\ut65=-098709876567890-++
 > ++\=-09890-\+-9-6*5=[76t567890-\/
 
-**What Claude did:** Nothing. The message looks like accidental key presses: no words, no code and no command output. Two more messages like it arrived during the turn (`='-;oiu65490-=\+54` and `';lkjhgtfdsaQWER56 …`).
+**What Claude did:** Nothing. The message looks like accidental key presses: no words, no code and no command output. Two more messages like it arrived during the turn and were logged as Turns 357 and 358.
 
 **Claude's answer (summary):** asked whether it was sent by accident, and repeated the next step: the four fixes to `poisoned.js` from Turn 355, then the random price, then paste the file.
 
@@ -16104,7 +16106,13 @@ All numbers are from the cross-checked results (D102).
 
 > ='-;oiu65490-=\+54
 
-<!-- chat-keeper:pending -->
+**What Claude did:** Nothing. Random characters again; it arrived while Turn 356 was being answered and is handled in that reply.
+
+**Claude's answer (summary):** the same reply as Turn 356: the messages look accidental, and the next step is Turn 355's four fixes to `poisoned.js`.
+
+**Questions Claude asked:** none beyond Turn 356's.
+
+**Direction and fit:** no new decision.
 
 ### Turn 358 — 2026-11-23 18:17 UTC
 
@@ -16113,4 +16121,10 @@ All numbers are from the cross-checked results (D102).
 > ';lkjhgtfdsaQWER56
 > +L9OK8IJU6YH5T4R76543WQqacwva4r56rt678=
 
-<!-- chat-keeper:pending -->
+**What Claude did:** Nothing. Random characters again; it arrived while Turn 356 was being answered and is handled in that reply.
+
+**Claude's answer (summary):** the same reply as Turn 356: the messages look accidental, and the next step is Turn 355's four fixes to `poisoned.js`.
+
+**Questions Claude asked:** none beyond Turn 356's.
+
+**Direction and fit:** no new decision.
