@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110.)* |
 
 ---
 
@@ -165,6 +165,43 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 - **Still to do once the route exists:** the runner's robots.txt setting for (a), (b) and (d); the maze measures (pages loaded, seconds trapped, server time per request); Test 6's maze part. | Claude writes the whole route; Joseph writes the route and the server mounts it (chosen) | §3 Architecture item 2 ("An Express server serves … the optional /maze/<hash> route"); §2 Tarpit route row (Joseph: "the generation rules and the logging"); §1 item 5 "Done when"; §5 Test 6; CLAUDE.md (Joseph writes the tarpit route). | Interprets (the server's mount point; the route itself is Joseph's) |
 
 | D108 | 352 | **Test 5's HTML check searches each item page for its own real values only** (the other 2 pages are still searched for all 70). Found while preparing Joseph's walkthrough: availability has only four values (In stock, Low stock, Out of stock, Pre-order), so any fake availability is another product's real one. Ratings (3.9–4.8) and categories collide the same way. The old rule (all 70 values on every page) would have failed a correct defense. A fake that happens to equal another item's real value reveals nothing about this page, and scoring marks fakes per page and field (Figure 2). Same-page leaks are still caught, for example the real brand inside a fake name. Unit test added; the measurement suite passes. | Keep searching all 70 values on every page; per page (chosen) | Claude (tooling) | §5 Test 5 ("I search each poisoned page's HTML for every real value"); Figure 2 FakeValue (per item and field). | Interprets (which real values count for each page; narrows D105's rule) |
+| D109 | 368 | **Joseph finishes `poisoned.js` himself; Claude gives the remaining rules faster** (Joseph's choice, C41). Joseph had asked "just give me what it should look like". Claude asked first, because midterm §2 and CLAUDE.md say Joseph writes the page defenses. Claude then gave every remaining step in one message:
+- the fix for the price case label;
+- two helpers Joseph writes once, `pick` and `between`;
+- a rule for each of the 14 remaining fields;
+- the swap script's steps, with a standalone toy on Node `${}` versus browser `+`;
+- the export.
+Claude writes no `poisoned.js` code and checks each paste. | Claude writes everything (Deviates, as with scraper (d)); Claude writes the fakes and Joseph the swap (Deviates); Joseph finishes with faster guidance (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); CLAUDE.md AI-use boundaries. | Follows (superseded two turns later: Joseph asked for the whole file, D110) |
+| D110 | 370 | **⚠️ Claude writes `site/defenses/poisoned.js` (Joseph's request: "give me the file entirely").** Two turns after choosing to finish it himself (C41, D109), Joseph asked for the whole file.
+- **Who wrote what:** the price case is Joseph's own lines (Turn 367, with the label fixed); everything else is Claude's.
+- **Fakes:** helpers `pick` and `between`, made-up word lists with no real brand, category, name or tag, and a rule for each of the other 14 fields:
+  - rating from 1.0 to 5.0;
+  - review count with a comma;
+  - SKU with its letters kept and new digits;
+  - availability, one of the four phrases;
+  - dates up to day 28;
+  - names from 3 list words;
+  - 3 different tags.
+- **Swap script:** waits `poison_swap_delay_seconds` from `config.json`, fetches `page.valuesPath`, and sets each row's value by label with `textContent`.
+- **The file:** 124 lines, sha256 `cd781b46d7d1ea7e…`. It was given to Joseph in the chat to paste over his draft and commit from the laptop, and isn't committed on Claude's branch, so the merge won't hit his untracked copy.
+- **Checked in the cloud:** generator OK; Test 5 4/4 PASS, with 0 real values in the HTML and the swap at 2.01–2.06 s. A one-run preview (scratchpad, not results) gave (a) and (b) 70 fakes each and (d) 70/70 real, which fits hypothesis 2.
+- **Docs:** CLAUDE.md boundaries and the README's AI-use section updated. Joseph should tell the instructor, as with (d). | Keep guiding (D109); write it (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); §7 AI-agent plan; precedent D99. | **Deviates** (disclosed; Joseph to tell the instructor) |
+| D111 | 371 | **The first poisoned runs don't count; rerun after Test 5 passes.** Joseph's runs on Nov 23 (`results/2026-11-23-poisoned`, commit `d78603b`, 12 runs) gave 0/70 and 70 fakes for every run, (d) included. The `poisoned.js` in that commit is Joseph's 33-line draft from Turn 367, not the file from Turn 370 (sha256 `aec13160…`, not `cd781b46…`):
+- it has no `script` export, so nothing swaps;
+- most fields get the same fixed fake on every page;
+- unwritten fields get `"Fake "` + the real value.
+(d)'s 3.04 s per page is its plain 3 s quiet wait (baseline 3.03 s) with no change seen. In the cloud preview, with the swap, (d) took 4.63 s per page and got 70/70. Test 5, the poisoning's completion check, would have failed checks 2 and 4. Steps: paste the full file and save it, Test 5 4/4, commit, rerun 12 runs into a new folder, and leave the first folder out of the results. | Keep the runs as a "no swap" variant; rerun (chosen) | Claude (recommendation); Joseph to confirm by rerunning | §7 Stretch plan ("with Test 5 … as their completion check"); §5 Test 5; §2 Poisoning design (the swap after 2 s). | Follows |
+| D112 | 375 | **⭐ Poisoning runs done (Mon Nov 23; planned Nov 18 – Dec 1). The midterm's Ambitious item 3 "Done when" is met on the runner's scores.**
+- **The runs:** Joseph's laptop, commit `910ee22` (the full `poisoned.js`; the same as the Turn 370 file apart from the final newline), `results/2026-11-23-poisoned-2`, 12 of 12 runs finished.
+- **(a), (b) and (c):** 0/70 and 70 fakes in each of the 3 runs, so recall 0% ("stops", under 10%), a 100% drop in recall, and a fake-value rate of 100%. Every wrong value is its page's fake.
+- **(d):** 70/70 in each run. Time per page 4.65 s against 3.03 s on baseline: it waits out the 2 s swap and then its 3 s quiet.
+- **Hypothesis 2** ("poisoning lowers accuracy for (a), (b), (c) and (e)") holds for (a)–(c); (e) isn't built. Capability matching holds: only (d), which waits, recovers.
+- **"Done when"** ("every fake value in any scraper's output matches the fake-values file for its page, and (d) runs 3 times on baseline, shuffled, honeypot and poisoned"): both parts met.
+- **Test 5 on the laptop (Turn 376):** PASS 4/4 at the same commit `910ee22`: 70/70 valid fakes, 0 real values in the HTML, 70/70 fakes at 0 s, 70/70 real values at 3 s, the swap at 2.01–2.02 s after load, and every page fetched its JSON (200). It ran after the 12 runs, at the same commit, so the runs used the file that passes.
+- **Still to do:**
+  - `scoring/results.py` and the cross-check over all four folders, once the folder is pushed;
+  - poisoning's user cost (the user-cost runner change);
+  - `poisoned` in the tables and graphs. | — | Joseph (runs); Claude (reading) | §1 item 3 "Done when"; §4 metrics (accuracy, fake-value rate, the "stops" threshold); hypothesis 2; §7 Stretch plan (poisoning Nov 18 – Dec 1, with Test 5 as the completion check). | Follows |
 ---
 
 ## Questions register
@@ -523,6 +560,30 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J350 | 350 | same thing happened | Turn off Git's auto maintenance; fetch and merge as two steps so the OneDrive prompt can't stop the merge |
 | J351 | 351 | (`git fetch origin` and `git merge origin/main` output: fast-forward `8e20c37..4dfeb12`, 19 files) | Laptop up to date; `npm test`, then `poisoned.js` in small steps checked with Test 5 |
 | J352 | 352 | ok all 30 passed walk me through the poisoned then lets continue | Walkthrough of `poisoned.js` (concepts, standalone snippets, field rules, order of work); Test 5's HTML check fixed to search each page for its own values (D108) |
+| J353 | 353 | where am i putting this file? | `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`; the file name sets the condition name |
+| J354 | 354 | ok i got the file made in the scetion, can you walk me through how to make this | Step-by-step plan for `poisoned.js`: Steps 1–3 in detail (shape, switch on the field, price) with toy examples; Steps 4–10 as a roadmap; Joseph writes the code |
+| J355 | 355 | (Joseph's first draft of `poisoned.js`: the example's `sound(animal)` switch with a fixed fake for each field) | Reviewed: rename to `fakeValue(row, rng)` on `row.key`, add the export, placeholder default, drop the typo case; then random fakes per page with `rng()` |
+| J356 | 356 | (random characters, likely sent by accident) | Asked whether it was an accident; repeated the next step (Turn 355's fixes) |
+| J357 | 357 | (random characters, likely sent by accident) | Covered by Turn 356's reply |
+| J358 | 358 | (random characters, likely sent by accident) | Covered by Turn 356's reply |
+| J359 | 359 | (random characters and spaces, likely sent by accident) | No action; next step unchanged |
+| J360 | 360 | (random characters, likely sent by accident) | No action; next step unchanged |
+| J361 | 361 | (random characters, likely sent by accident) | No action; next step unchanged |
+| J362 | 362 | ok im back sorry my code still looks like i sent before | Walked through the four fixes line by line (interface lines and placeholder only), then the random price in five steps for Joseph to write |
+| J363 | 363 | (`npm run generate -- poisoned` output: 10 pages, 70 fakes) | Step 1 passes; check `p1.html` and the values JSON, make the price random, paste the file |
+| J364 | 364 | (Joseph's price case: `return Number(amount.toFixed(2))10 + rng() * 140);`) | Explained the syntax problems; standalone temperature function with one line per step and how to adapt it; Joseph writes the price case |
+| J365 | 365 | (Joseph's second draft: the price lines above the `switch`, `replace(" $", "")`, `+ " $"`) | Move the five lines into `case "price": { }`; remove `"$"` without a space and put it in front; then check p1 and p2 |
+| J366 | 366 | (Joseph's third draft: the price case inside `case "price": { }`) | Works: six different prices, the same on every rebuild; remove the space before `$`; next, rating and review count with the same pattern |
+| J367 | 367 | (Joseph's fourth draft: `$` fixed, but `case "     price":` with spaces inside the quotes) | The label no longer matches `"price"`, so the price falls to the default; remove the spaces inside the quotes; then Step 4 |
+| J368 | 368 | just give me what it should look like since i have the majority of it done | Asked first (C41): Joseph chose to finish it himself with faster guidance (D109); every remaining rule in one message |
+| J369 | 369 | what should the file look like? | An outline of `poisoned.js` (structure and comments only, with Joseph's price case kept); Joseph fills in each case and the script |
+| J370 | 370 | give me the file entirely | Claude wrote `poisoned.js` around Joseph's price case (D110, Deviates, disclosed); cloud Test 5 4/4; preview (a), (b) 70 fakes, (d) 70/70; steps to paste, test, commit and run |
+| J371 | 371 | (runner output: 12 poisoned runs, all 0/70 and 70 fakes, (d) included, commit `d78603b`) | The committed `poisoned.js` is the draft without the swap; these runs don't count (D111); paste and save the full file, Test 5, rerun into a new folder |
+| J372 | 372 | (Joseph pasted the full `poisoned.js` from Turn 370 into the chat) | The same as the Turn 370 file; `main` still has the draft, so save, check, Test 5, commit, rerun |
+| J373 | 373 | what file is this in (Get-Content site/defenses/poisoned.js).Count Select-String -Path site/defenses/poisoned.js -Pattern "function script" | Not a file: two commands for the PowerShell terminal; what each should print |
+| J374 | 374 | (check output: 124 lines; `function script(page)` on line 108) | Matches the Turn 370 file; next: generate, Test 5, commit, rerun |
+| J375 | 375 | (runner output: 12 poisoned runs; (a)–(c) 0/70 with 70 fakes, (d) 70/70 at 4.65 s per page; first folder deleted) | ⭐ Poisoning runs done; Ambitious item 3 met on the runner's scores (D112); push the results and the Test 5 report |
+| J376 | 376 | (laptop Test 5 output: PASS 4/4 at commit `910ee22`, the swap at 2.01–2.02 s) | Poisoning complete and checked; push the runs and the Test 5 folder, merge PR #63 |
 
 ### Questions from Claude
 
@@ -568,6 +629,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | C38 | 308 | Reading-order rule (§3: Joseph specifies and reviews it). Options (Turn 317): "Label or value moved (Recommended)", "Count elements separately". | Label or value moved. | Closed (Turn 317) → D96 |
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
 | C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
+| C41 | 368 | Joseph asked Claude to write the rest of `poisoned.js`; the midterm and CLAUDE.md say Joseph writes the defenses. How to finish it? Options: "I finish it, faster (Recommended)", "Claude writes the fakes" (Joseph the swap; a deviation), "Claude writes the rest" (a deviation, as with (d)). | "I finish it, faster (Recommended)" | Closed (Turn 368; D109). Reversed in Turn 370: Joseph asked for the whole file (D110) |
 
 ---
 
@@ -591,7 +653,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 
 **Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
-**For the report's AI-use disclosure (Turn 320):** list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
+**For the report's AI-use disclosure (Turn 320; Turns 364, 370):** `site/defenses/poisoned.js` was written by Claude at Joseph's request (D110, Deviates); only its price case is Joseph's, modeled on Claude's temperature example (Turns 354, 364). Joseph to tell the instructor, as with (d). Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -15974,3 +16036,929 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none.
 
 **Direction and fit:** D108 (Interprets).
+
+### Turn 353 — 2026-11-23 18:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> where am i putting this file?
+
+**What Claude did:** Answered from `site/defenses/README.md` and the generator's naming rule. No files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Where:** `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`.
+- **Why the name matters:** the generator finds a defense by its file name, so `poisoned.js` is what `npm run generate -- poisoned` builds. Any other name doesn't work.
+- **How in VS Code:** right-click `site/defenses` → New File → `poisoned.js`.
+- **To check:** `npm run generate -- poisoned` without the file says "Unknown or not-yet-built condition", and with it the error goes away.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 354 — 2026-11-23 18:10 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i got the file made in the scetion, can you walk me through how to make this
+
+**What Claude did:** No files changed apart from this log. Claude didn't write any of `poisoned.js` (CLAUDE.md: Joseph writes the page defenses).
+
+**Claude's answer (summary):** a step-by-step build plan for `site/defenses/poisoned.js`, with the detail on the first three steps and standalone toy examples:
+- **Step 1, the shape:** the same as Joseph's `honeypot.js`. One `fakeValue(row, rng)` returning a placeholder (`"Fake " + row.value`), exported at the bottom. Check with `npm run generate -- poisoned`, which should report 70 fakes, and look at `p1.html`.
+- **Step 2, choosing by field:** a `switch (row.key)` with a `default`. Toy example: animal sounds.
+- **Step 3, the price:**
+  1. turn the real price into a number;
+  2. pick a random amount with `rng()`;
+  3. keep 2 decimals;
+  4. change it if it equals the real number;
+  5. add the `$` back.
+  Toy example: a temperature.
+- **Steps 4–10, a roadmap:**
+  - 4: rating and review count;
+  - 5: SKU;
+  - 6: dates;
+  - 7: fields picked from a list (availability, category, brand, author, tags), with optional `pick` and `between` helpers;
+  - 8: the text fields;
+  - 9: `script`;
+  - 10: Test 5.
+- **Next:** Joseph pastes his file after Step 3, Claude reviews it, and then they continue.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 355 — 2026-11-23 18:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function sound(animal) {
+>   switch (animal) {
+>     case "price":
+>       return "$90.00";
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tage":
+>         return "this is a table";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "...";   // anything not listed above
+>   }
+> }
+
+**What Claude did:** Reviewed Joseph's first draft of `poisoned.js`, which he pasted into the chat (it isn't in the repository yet), against the generator's rules and `data/items.json`. No files changed apart from this log. Claude didn't rewrite the draft.
+
+**Claude's answer (summary):**
+- **Right:** one `case` per field, and most fakes already have the right format.
+- **Must change, or the generator rejects the file:**
+  1. the function is still the example's `sound(animal)`. It must be `fakeValue(row, rng)` with `switch (row.key)`;
+  2. there's no `module.exports = { fakeValue };`;
+  3. the `default` returns `"..."`. It should be the placeholder `"Fake " + row.value`;
+  4. `case "tage"` isn't a field and should go.
+- **Next:**
+  - every product gets the same fake ("$90.00" six times). The midterm's design is one fixed set of fakes *per page* from the seed (§6), so use `rng()` (Step 3);
+  - `review_count` needs a comma, like `1,301`;
+  - tags should be a few tags joined with `", "`;
+  - still missing: availability, description and the article fields (title, author, publish_date, summary).
+- **Check:** `npm run generate -- poisoned` and `p1.html` after fixing 1–4, then make the price random.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 356 — 2026-11-23 18:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ytretj7uk8i'[-;\-+/\
+> \--\ut65=-098709876567890-++
+> ++\=-09890-\+-9-6*5=[76t567890-\/
+
+**What Claude did:** Nothing. The message looks like accidental key presses: no words, no code and no command output. Two more messages like it arrived during the turn and were logged as Turns 357 and 358.
+
+**Claude's answer (summary):** asked whether it was sent by accident, and repeated the next step: the four fixes to `poisoned.js` from Turn 355, then the random price, then paste the file.
+
+**Questions Claude asked:** whether the message was sent by accident (in the reply, not as a multiple-choice question).
+
+**Direction and fit:** no new decision.
+
+### Turn 357 — 2026-11-23 18:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ='-;oiu65490-=\+54
+
+**What Claude did:** Nothing. Random characters again; it arrived while Turn 356 was being answered and is handled in that reply.
+
+**Claude's answer (summary):** the same reply as Turn 356: the messages look accidental, and the next step is Turn 355's four fixes to `poisoned.js`.
+
+**Questions Claude asked:** none beyond Turn 356's.
+
+**Direction and fit:** no new decision.
+
+### Turn 358 — 2026-11-23 18:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ';lkjhgtfdsaQWER56
+> +L9OK8IJU6YH5T4R76543WQqacwva4r56rt678=
+
+**What Claude did:** Nothing. Random characters again; it arrived while Turn 356 was being answered and is handled in that reply.
+
+**Claude's answer (summary):** the same reply as Turn 356: the messages look accidental, and the next step is Turn 355's four fixes to `poisoned.js`.
+
+**Questions Claude asked:** none beyond Turn 356's.
+
+**Direction and fit:** no new decision.
+
+### Turn 359 — 2026-11-23 18:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> 73\2]1{_?,8imunybtvcxcvabg enhrjk6l7;8p'[]\p[]\+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    l hi\74-*                                                                                0-/*
+
+**What Claude did:** Nothing. Random characters and a long run of spaces, like Turns 356–358.
+
+**Claude's answer (summary):** said briefly that it looks accidental and that nothing changed; the next step is unchanged (Turn 355's fixes, and merging PR #62 before Test 5).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 360 — 2026-11-23 18:18 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> \-]=9\oli\/\=\]=[-p0o9i8uvgi90-p=\8
+> 47]='[-;0lobk9n0pl
+> -
+> ][-;0p[-;0p
+>
+> \][poiuy\-i[-;p\
+> -++\/
+
+**What Claude did:** Nothing for the project. Random characters again, which interrupted Claude's log update; Claude stopped and checked what had been saved.
+
+**Claude's answer (summary):** the messages look accidental, nothing in the project changed, and the next step is unchanged.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 361 — 2026-11-23 18:19 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> [-;p08ijh7u6j8 04/5*6-+/8\-*678b9gi -0p53gtrv4
+
+**What Claude did:** Nothing for the project. Random characters again, which interrupted Claude's log update; Claude stopped and checked what had been saved.
+
+**Claude's answer (summary):** the messages look accidental, nothing in the project changed, and the next step is unchanged.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 362 — 2026-11-23 18:21 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok im back sorry my code still looks like i sent before
+
+**What Claude did:** No files changed apart from this log. Claude didn't write any of `poisoned.js`.
+
+**Claude's answer (summary):** walked Joseph through Turn 355's four fixes, one line at a time, as before → after:
+1. the first line, `function sound(animal) {` → `function fakeValue(row, rng) {`;
+2. the switch line, `switch (animal) {` → `switch (row.key) {`;
+3. the default, `"..."` → `"Fake " + row.value`;
+4. delete `case "tage"` and add `module.exports = { fakeValue };` at the bottom.
+
+The changed lines are the documented hook interface (`site/defenses/README.md`) and the placeholder, not the defense's logic. Then a check with `npm run generate -- poisoned`. Then the random price in five steps, which Joseph writes. PR #62 is still open; merge it before Test 5.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 363 — 2026-11-23 18:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> npm run generate -- poisoned
+>
+> > benchmarking-defenses-against-webscrapers@0.1.0 generate
+> > node site/generate.js poisoned
+>
+> Wrote 10 pages and robots.txt to conditions\poisoned/ (70 scored fields)
+> Poisoned: 70 fakes in conditions\poisoned.fakes.json, real values in conditions\poisoned/values/
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read Joseph's generator output: 10 pages and 70 fakes written, so the four fixes from Turn 362 work and the generator accepts `poisoned.js`. No files changed apart from this log.
+
+**Claude's answer (summary):** Step 1 passes. Joseph should:
+- **look at two files:**
+  - `conditions/poisoned/products/p1.html`: fakes in the rows, `Fake …` where a field has no case yet;
+  - `conditions/poisoned/values/products/p1.json`: the real values;
+- **do Step 3, the random price,** if it isn't done yet, then generate again and compare p1 and p2;
+- **paste the file** for review before Step 4, rating and review count.
+
+**Questions Claude asked:** whether the price is already random (in the reply).
+
+**Direction and fit:** no new decision.
+
+### Turn 364 — 2026-11-23 18:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> case "price":
+>       return Number(amount.toFixed(2))10 + rng() * 140);
+
+**What Claude did:** Reviewed Joseph's price line, `return Number(amount.toFixed(2))10 + rng() * 140);`. It doesn't parse: two expressions are run together, a `)` is unmatched, `amount` is used before it exists, and steps 1 and 4 are missing. No files changed apart from this log. Claude didn't write the price case.
+
+**Claude's answer (summary):**
+- **What's wrong:**
+  - one step per line;
+  - create `amount` first with `let`;
+  - a `case` can have several lines before its `return`; wrap them in `{ }` so the names in one case don't clash with another's;
+  - the `return` comes last, as text with `"$"` and `toFixed(2)`.
+- **A standalone example:** the temperature example again, as a stand-alone function `fakeTemperature(realText, rng)` with one comment per step.
+- **How to adapt it:**
+  - `row.value` instead of `realText`;
+  - remove the `$` at the start and put it back in front at the end;
+  - a range of 10 to 150;
+  - 2 decimals.
+- **Next:** generate, check that p1 and p2 get different prices, then paste the case.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Claude may show standalone examples (CLAUDE.md, midterm §2 "AI assistance"), so this follows the boundary. Added to the AI-use disclosure open item: the price case is modeled on Claude's temperature example (Turns 354 and 364).
+
+### Turn 365 — 2026-11-23 18:29 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function fakeValue(row, rng) {
+>     const real = Number(row.value.replace(" $", ""));
+>     let t = 10 + rng() * 140
+>     t = Number(t.toFixed(2));
+>     if (t === real) t = t + 1;
+>     return t.toFixed(2) + " $";
+>
+>   switch (row.key) {
+>     case "price":
+>       return 
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "Fake "  + row.value  // anything not listed above
+>   }
+> }
+>
+> module.exports = { fakeValue };
+
+**What Claude did:** Reviewed Joseph's second draft of `poisoned.js`. No files changed apart from this log. Claude didn't rewrite the draft.
+
+**Claude's answer (summary):**
+- **The price lines are in the wrong place.** They sit above the `switch`, so they run for every field and return straight away. Every one of the 70 fields would get a price-like fake, and the `switch` never runs. Move the five lines inside `case "price": { … }` and delete the empty `return`.
+- **The `$` is handled wrongly.** The real price is `$89.99`, with the `$` first and no space:
+  - remove `"$"`, not `" $"`. As written, `Number("$89.99")` is `NaN`;
+  - put the `$` in front when returning: `"$" + …`, not `… + " $"`.
+- **Small:** the semicolon after the `let` line, and renaming `t` to `amount` if Joseph likes.
+- **Check:**
+  - generate, and Price should look like `$63.42` and differ between p1 and p2;
+  - the other fields should still show the `switch`'s fixed fakes;
+  - then paste the file.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 366 — 2026-11-23 18:32 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function fakeValue(row, rng) {
+>   switch (row.key) {
+>     case "price": {
+>     const real = Number(row.value.replace("$", ""));
+>     let amount = 10 + rng() * 140;
+>     amount = Number(amount.toFixed(2));
+>     if (amount === real) amount = amount + 1;
+>     return " $" + amount.toFixed(2);
+>     }
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "Fake "  + row.value  // anything not listed above
+>   }
+> }
+>
+> module.exports = { fakeValue };
+
+**What Claude did:**
+- Reviewed Joseph's third draft and ran a scratch copy of it through `buildPages` (scratchpad only, not committed or put in `site/defenses/`).
+- The generator accepts it. Each product gets its own price, the same on every rebuild: p1 `$89.99` → ` $142.12`, p2 `$34.50` → ` $119.78`, p3 → ` $27.25`, p4 → ` $77.76`, p5 → ` $93.91`, p6 → ` $65.29`.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **The price case works.**
+- **One fix:** the `return` puts a space before the `$` (`" $"`), but real prices have none.
+- **Optional:** indent the five lines one level more.
+- **Next: Step 4, rating and review count,** the same five-line pattern:
+  - **rating:** 1.0 to 5.0 (`1 + rng() * 4`), `toFixed(1)`, no `$`;
+  - **review count:** a whole number (`Math.floor`), compared after removing the comma, and returned with `toLocaleString("en-US")` for the comma.
+- **Then** generate and paste.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 367 — 2026-11-23 18:36 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function fakeValue(row, rng) {
+>   switch (row.key) {
+>     case "     price": {
+>     const real = Number(row.value.replace("$", ""));
+>     let amount = 10 + rng() * 140;
+>     amount = Number(amount.toFixed(2));
+>     if (amount === real) amount = amount + 1;
+>     return "$" + amount.toFixed(2);
+>     }
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "Fake "  + row.value  // anything not listed above
+>   }
+> }
+>
+> module.exports = { fakeValue };
+
+**What Claude did:** Reviewed Joseph's fourth draft. No files changed apart from this log.
+
+**Claude's answer (summary):**
+- **The `$` fix is right.**
+- **But the case label now has spaces inside the quotes:** `case "     price":`. `row.key` is `"price"`, so the label never matches, and the price falls to the `default` (`Fake $89.99`). It was probably meant as indentation.
+- **Fix:** take the spaces out of the quotes. To indent, put the spaces before `case` or before the five lines inside it.
+- **Then:** rating and review count (Step 4, unchanged), generate, and paste.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 368 — 2026-11-23 18:38 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> just give me what it should look like since i have the majority of it done
+
+**What Claude did:**
+- Asked C41 before writing any defense code, because the midterm (§2) and CLAUDE.md say Joseph writes the page defenses. Joseph chose to finish `poisoned.js` himself with faster guidance (D109, Follows).
+- Gave every remaining step in one message. Claude wrote no `poisoned.js` code.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Fix the price case label** (no spaces inside the quotes).
+- **Two helpers to write once:** `pick(list, real, rng)` (take the real value out, pick one at random) and `between(lo, hi, rng)` (a whole number in a range). Their one-line bodies were already in Turn 352's general toolbox.
+- **Rules for the 14 fields:**
+  - rating and review count;
+  - SKU: keep the letters, add 4 new digits;
+  - availability: one of the 4 phrases;
+  - both dates: stacked `case` labels, day 28 or lower;
+  - category, brand and author: from Joseph's own lists;
+  - name: 3 words from lists, with no real brand or category words;
+  - description, summary and title: made-up text;
+  - tags: 3 different tags joined with `", "`.
+- **The swap script, `script(page)`:**
+  1. read `config.json` at the top of the file;
+  2. return `""` when there's no `valuesPath`;
+  3. the delay in ms;
+  4. `setTimeout` → `fetch(valuesPath)` → `.json()`;
+  5. for each `.field` row, find the JSON field by label and set `.value`'s `textContent`.
+  A standalone `greeter` toy shows `${}` (filled in by Node) next to `+` (worked out in the browser).
+- **Export:** `module.exports = { fakeValue, script };`
+- **Checks:** generate, paste the file after `fakeValue`, then Test 5 after merging PR #62.
+
+**Questions Claude asked:** C41, how to finish `poisoned.js`. Options: "I finish it, faster (Recommended)", "Claude writes the fakes", "Claude writes the rest". Answer: "I finish it, faster (Recommended)".
+
+**Direction and fit:** D109 (Follows).
+
+### Turn 369 — 2026-11-23 18:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what should the file look like?
+
+**What Claude did:** No files changed apart from this log. Read the question as asking for the file's layout, in line with D109: Joseph writes the code.
+
+**Claude's answer (summary):** an outline of `site/defenses/poisoned.js`. It has structure and comments only, with no field rules and no swap code:
+- the top comment and the `config` require;
+- the helpers `pick` and `between`, with empty bodies and comments;
+- `fakeValue` with one `case` block for every one of the 15 fields, and Joseph's finished price case kept;
+- `default: return "Fake " + row.value;`;
+- `script(page)` with its three steps as comments and a temporary `return "";`;
+- `module.exports = { fakeValue, script };`.
+
+Two behaviour notes:
+- a `case` with only comments falls through to the `default`, so the file still generates while the cases are being filled in;
+- the helpers must `return` before any case uses them.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. This stays inside D109 and CLAUDE.md's "explain concepts": an outline, not defense code. Added to the AI-use disclosure open item: the file's layout (function names, case labels, comments) follows Claude's outline (Turn 369).
+
+### Turn 370 — 2026-11-23 18:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> give me the file entirely
+
+**What Claude did:**
+- **Wrote `site/defenses/poisoned.js` at Joseph's request** (D110, **Deviates**, disclosed). The price case is Joseph's own lines; everything else is Claude's.
+- **Checked it in the cloud** with a temporary copy in `site/defenses/`, removed afterwards:
+  - the generator wrote 10 pages and 70 fakes;
+  - Test 5 passed 4/4, with 0 real values in the HTML, fakes at 0 s, real values at 3 s, and the swap at 2.01–2.06 s;
+  - a one-run preview with the runner (scratchpad, not a result) gave (a) and (b) 70 fakes each and (d) 70/70 correct.
+- **Recorded the file:** 124 lines, sha256 `cd781b46d7d1ea7e…`.
+- **Updated the docs:**
+  - CLAUDE.md's AI-use boundaries;
+  - the README's AI-use paragraph and Milestone 3 line;
+  - D109 marked as superseded, C41's status, the open item on AI-use disclosure, and the list of deviations in the fit labels table.
+- Committed and pushed; the open PR #62 gets these changes.
+
+**Claude's answer (summary):**
+- **The file,** to paste over Joseph's draft.
+- **Test results:** what each part does, and the cloud results.
+- **The disclosure:** like scraper (d), this changes the midterm's §2 plan. It's recorded in the README's AI-use section and in CLAUDE.md, and Joseph should tell the instructor.
+- **Laptop steps:**
+  1. merge PR #62;
+  2. `git fetch origin` and `git merge origin/main`;
+  3. paste the file and save;
+  4. `npm run generate -- poisoned`;
+  5. `python measurement/test5.py`;
+  6. commit and push `site/defenses/poisoned.js`;
+  7. the runs with (a)–(d) on `poisoned` × 3;
+  8. `results.py` over all the folders.
+
+**Questions Claude asked:** none. C41 had been asked and answered in Turn 368, and Joseph then asked for the whole file in plain words.
+
+**Direction and fit:** D110, **Deviates** (Joseph's decision; disclosed, as with D99).
+
+### Turn 371 — 2026-11-23 18:59 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers a b c d --conditions poisoned --out results/2026-11-23-poisoned
+> 12 runs: 1 conditions × 4 scrapers × 3 runs
+>   a-poisoned-1 ... 0/70, 70 fakes
+>   a-poisoned-2 ... 0/70, 70 fakes
+>   a-poisoned-3 ... 0/70, 70 fakes
+>   b-poisoned-1 ... 0/70, 70 fakes
+>   b-poisoned-2 ... 0/70, 70 fakes
+>   b-poisoned-3 ... 0/70, 70 fakes
+>   c-poisoned-1 ... 0/70, 70 fakes
+>   c-poisoned-2 ... 0/70, 70 fakes
+>   c-poisoned-3 ... 0/70, 70 fakes
+>   d-poisoned-1 ... 0/70, 70 fakes
+>   d-poisoned-2 ... 0/70, 70 fakes
+>   d-poisoned-3 ... 0/70, 70 fakes
+>
+> # Experiment runs
+>
+> Run 2026-11-23T12:53:33 → 2026-11-23T12:58:14 · commit d78603b · scrapers a, b, c, d · conditions poisoned · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `a-poisoned-1` | 0 | 0.793 | 0/70 = 0.000 | 10 | 0.019 s |
+> | `a-poisoned-2` | 0 | 0.58 | 0/70 = 0.000 | 10 | 0.019 s |
+> | `a-poisoned-3` | 0 | 0.496 | 0/70 = 0.000 | 10 | 0.014 s |
+> | `b-poisoned-1` | 0 | 1.469 | 0/70 = 0.000 | 10 | 0.030 s |
+> | `b-poisoned-2` | 0 | 1.389 | 0/70 = 0.000 | 10 | 0.027 s |
+> | `b-poisoned-3` | 0 | 1.379 | 0/70 = 0.000 | 10 | 0.028 s |
+> | `c-poisoned-1` | 0 | 73.751 | 0/70 = 0.000 | 10 | 7.260 s |
+> | `c-poisoned-2` | 0 | 51.525 | 0/70 = 0.000 | 10 | 5.011 s |
+> | `c-poisoned-3` | 0 | 51.13 | 0/70 = 0.000 | 10 | 4.999 s |
+> | `d-poisoned-1` | 0 | 31.515 | 0/70 = 0.000 | 10 | 3.044 s |
+> | `d-poisoned-2` | 0 | 31.476 | 0/70 = 0.000 | 10 | 3.042 s |
+> | `d-poisoned-3` | 0 | 31.579 | 0/70 = 0.000 | 10 | 3.043 s |
+>
+> **12 of 12 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's runner output: 12/12 runs finished, every run 0/70 with 70 fakes, (d) at 3.04 s per page.
+- Compared it with the cloud preview: (d) 70/70 at 4.63 s per page.
+- Fetched `main`. The `site/defenses/poisoned.js` committed in `d78603b` ("Poisoned defense (written with Claude, D110)") is Joseph's 33-line draft from Turn 367, with no `script` and fixed fakes. It isn't the 124-line file from Turn 370.
+- Merged `origin/main` into the branch and logged D111.
+
+**Claude's answer (summary):**
+- **Why:** the pipeline works, but these runs used the draft. With no swap, every scraper, (d) included, reads the fakes; (d) waited 3 s, saw no change, and read them.
+- **What to do with the runs:** they aren't the poisoning defense, so leave them out.
+- **Fix:**
+  1. paste the full file and save it (Ctrl+S);
+  2. check it: about 124 lines, and `function script` is there;
+  3. `npm run generate -- poisoned`;
+  4. Test 5 must pass 4/4 before any runs;
+  5. commit and push;
+  6. rerun into a new folder, `results/2026-11-23-poisoned-2`;
+  7. delete the first folder, which was never committed and is recorded in this log.
+- **Expected:** (a), (b) and (c) take the fakes, and (d) gets the real values at about 5 s per page.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D111 (Follows).
+
+### Turn 372 — 2026-11-23 19:02 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see, then the page swaps the real values back in after 2 s
+> // Written by Claude at Joseph's request (Nov 23, chat-keeper D110); the price case is Joseph's own lines.
+>
+> const config = require("../../config.json"); // for the swap delay (poison_swap_delay_seconds)
+>
+> // ---------- helpers ----------
+>
+> // a random item from the list that is not the real value
+> function pick(list, real, rng) {
+>   const choices = list.filter((item) => item !== real);
+>   return choices[Math.floor(rng() * choices.length)];
+> }
+>
+> // a random whole number from lo to hi
+> function between(lo, hi, rng) {
+>   return lo + Math.floor(rng() * (hi - lo + 1));
+> }
+>
+> // made-up words only: none of these are a real brand, category, name or tag on the site
+> const BRANDS = ["Brookline", "Ostrava", "Pemberly", "Quillon", "Rosmere", "Thistle", "Varden", "Wexley"];
+> const ADJECTIVES = ["Compact", "Classic", "Deluxe", "Everyday", "Folding", "Premium", "Rustic", "Slim"];
+> const NOUNS = ["Table", "Lamp", "Rug", "Clock", "Chair", "Mirror", "Bench", "Basket"];
+> const CATEGORIES = ["Furniture", "Home Decor", "Garden", "Office", "Toys", "Bath", "Storage", "Pets"];
+> const AVAILABILITY = ["In stock", "Low stock", "Out of stock", "Pre-order"];
+> const TITLES = [
+>   "Five Ways to Brighten a Small Room",
+>   "A Beginner's Guide to Houseplants",
+>   "How to Pick a Desk Chair",
+>   "Keeping Your Garden Tools Sharp",
+>   "Planning a Weekend Bike Ride",
+> ];
+> const FIRST_NAMES = ["Avery", "Jordan", "Priya", "Marcus", "Elena", "Tomas"];
+> const LAST_NAMES = ["Lindqvist", "Abara", "Moreau", "Castillo", "Brennan", "Hartley"];
+> const SENTENCES = [
+>   "A sturdy everyday pick with a simple design and a two-year warranty.",
+>   "Light, easy to wipe down and made to last through years of daily use.",
+>   "A quick guide to the basics, with tips you can use this weekend.",
+>   "Compact and practical, with a matte finish that suits any room.",
+>   "Step-by-step advice for getting started without spending much.",
+> ];
+> const TAGS = ["home", "tips", "garden", "storage", "budget", "diy", "weekend", "decor"];
+>
+> // ---------- one fake per field (the generator calls this 70 times) ----------
+>
+> function fakeValue(row, rng) {
+>   switch (row.key) {
+>     case "price": { // Joseph's lines
+>       const real = Number(row.value.replace("$", ""));
+>       let amount = 10 + rng() * 140;
+>       amount = Number(amount.toFixed(2));
+>       if (amount === real) amount = amount + 1;
+>       return "$" + amount.toFixed(2);
+>     }
+>     case "rating": { // 1.0 to 5.0, one decimal
+>       const real = Number(row.value);
+>       let amount = Number((1 + rng() * 4).toFixed(1));
+>       if (amount === real) amount = amount > 3 ? amount - 1 : amount + 1;
+>       return amount.toFixed(1);
+>     }
+>     case "review_count": { // a whole number, with a comma for thousands
+>       const real = Number(row.value.replace(",", ""));
+>       let amount = between(50, 9999, rng);
+>       if (amount === real) amount = amount + 1;
+>       return amount.toLocaleString("en-US");
+>     }
+>     case "sku": { // keep the letters (e.g. "LF-HP-"), new 4 digits
+>       const letters = row.value.slice(0, 6);
+>       let digits = between(0, 9999, rng);
+>       if (letters + String(digits).padStart(4, "0") === row.value) digits = (digits + 1) % 10000;
+>       return letters + String(digits).padStart(4, "0");
+>     }
+>     case "availability":
+>       return pick(AVAILABILITY, row.value, rng);
+>     case "release_date":
+>     case "publish_date": { // YYYY-MM-DD; day 28 or lower so every date exists
+>       const year = between(2022, 2026, rng);
+>       const month = String(between(1, 12, rng)).padStart(2, "0");
+>       let day = between(1, 28, rng);
+>       if (`${year}-${month}-${String(day).padStart(2, "0")}` === row.value) day = day === 28 ? 27 : day + 1;
+>       return `${year}-${month}-${String(day).padStart(2, "0")}`;
+>     }
+>     case "category":
+>       return pick(CATEGORIES, row.value, rng);
+>     case "brand":
+>       return pick(BRANDS, row.value, rng);
+>     case "name":
+>       return pick(BRANDS, null, rng) + " " + pick(ADJECTIVES, null, rng) + " " + pick(NOUNS, null, rng);
+>     case "title":
+>       return pick(TITLES, row.value, rng);
+>     case "author":
+>       return pick(FIRST_NAMES, null, rng) + " " + pick(LAST_NAMES, null, rng);
+>     case "description":
+>     case "summary":
+>       return pick(SENTENCES, row.value, rng);
+>     case "tags": { // 3 different tags
+>       const first = pick(TAGS, null, rng);
+>       const second = pick(TAGS, first, rng);
+>       const third = pick(TAGS.filter((tag) => tag !== second), first, rng);
+>       return first + ", " + second + ", " + third;
+>     }
+>     default:
+>       return "Fake " + row.value; // anything not listed above
+>   }
+> }
+>
+> // ---------- the swap: the text this returns runs in the browser ----------
+>
+> function script(page) {
+>   if (!page.valuesPath) return ""; // only item pages have real values to swap in
+>   const delay = config.poison_swap_delay_seconds * 1000;
+>   // ${...} is filled in here, when the page is built; everything else runs in the browser
+>   return `
+>     setTimeout(async function () {
+>       const response = await fetch("${page.valuesPath}");
+>       const data = await response.json();
+>       document.querySelectorAll(".field").forEach(function (row) {
+>         const label = row.querySelector(".label").textContent;
+>         const real = data.fields.find(function (field) { return field.label === label; });
+>         if (real) row.querySelector(".value").textContent = real.value;
+>       });
+>     }, ${delay});`;
+> }
+>
+> module.exports = { fakeValue, script };
+
+**What Claude did:**
+- Compared the file Joseph pasted into the chat with the Turn 370 file: the same content, the swap `script` included.
+- Fetched `main`: it still has the 33-line draft (`d78603b`, sha256 `aec13160…`), so the full file is open in VS Code but not yet saved and committed.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **The file is right.**
+- **Next, in order:**
+  1. save it with Ctrl+S;
+  2. check about 124 lines and `function script`;
+  3. `npm run generate -- poisoned`;
+  4. Test 5, which must pass 4/4;
+  5. commit and push;
+  6. rerun into `results/2026-11-23-poisoned-2`;
+  7. delete the first folder;
+  8. paste the Test 5 table and the runner output.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (D111 still applies).
+
+### Turn 373 — 2026-11-23 19:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what file is this in (Get-Content site/defenses/poisoned.js).Count
+> Select-String -Path site/defenses/poisoned.js -Pattern "function script"
+
+**What Claude did:** No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **They aren't file lines:** they're two PowerShell commands, typed in the VS Code terminal (the `(.venv) PS …>` prompt, where Joseph runs `git` and `npm`), one at a time, with Enter after each.
+- **What they print:**
+  - the first counts the file's lines and should print about 124;
+  - the second searches the file and should print the line holding `function script(page)`.
+- **If it prints 33, or nothing:** the full file isn't saved.
+- **Then:** generate and Test 5.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 374 — 2026-11-23 19:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> (Get-Content site/defenses/poisoned.js).Count
+> 124
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> Select-String -Path site/defenses/poisoned.js -Pattern "function script"
+>
+> site\defenses\poisoned.js:108:function script(page) {
+>
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Checked Joseph's output against the Turn 370 file: 124 lines, and `function script(page)` on line 108, which match. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **The full file is saved on the laptop.**
+- **Next, in order:**
+  1. `npm run generate -- poisoned` should print 70 fakes;
+  2. `python measurement/test5.py` must show PASS on all 4 checks;
+  3. commit and push;
+  4. rerun into `results/2026-11-23-poisoned-2`;
+  5. delete the first folder;
+  6. paste the Test 5 table and the runner output.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 375 — 2026-11-23 19:11 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers a b c d --conditions poisoned --out results/2026-11-23-poisoned-2
+> 12 runs: 1 conditions × 4 scrapers × 3 runs
+>   a-poisoned-1 ... 0/70, 70 fakes
+>   a-poisoned-2 ... 0/70, 70 fakes
+>   a-poisoned-3 ... 0/70, 70 fakes
+>   b-poisoned-1 ... 0/70, 70 fakes
+>   b-poisoned-2 ... 0/70, 70 fakes
+>   b-poisoned-3 ... 0/70, 70 fakes
+>   c-poisoned-1 ... 0/70, 70 fakes
+>   c-poisoned-2 ... 0/70, 70 fakes
+>   c-poisoned-3 ... 0/70, 70 fakes
+>   d-poisoned-1 ... 70/70, 0 fakes
+>   d-poisoned-2 ... 70/70, 0 fakes
+>   d-poisoned-3 ... 70/70, 0 fakes
+>
+> # Experiment runs
+>
+> Run 2026-11-23T13:05:12 → 2026-11-23T13:10:33 · commit 910ee22 · scrapers a, b, c, d · conditions poisoned · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `a-poisoned-1` | 0 | 0.675 | 0/70 = 0.000 | 10 | 0.020 s |
+> | `a-poisoned-2` | 0 | 0.495 | 0/70 = 0.000 | 10 | 0.016 s |
+> | `a-poisoned-3` | 0 | 0.513 | 0/70 = 0.000 | 10 | 0.018 s |
+> | `b-poisoned-1` | 0 | 1.296 | 0/70 = 0.000 | 10 | 0.025 s |
+> | `b-poisoned-2` | 0 | 1.28 | 0/70 = 0.000 | 10 | 0.026 s |
+> | `b-poisoned-3` | 0 | 1.272 | 0/70 = 0.000 | 10 | 0.025 s |
+> | `c-poisoned-1` | 0 | 65.575 | 0/70 = 0.000 | 10 | 6.436 s |
+> | `c-poisoned-2` | 0 | 52.728 | 0/70 = 0.000 | 10 | 5.142 s |
+> | `c-poisoned-3` | 0 | 52.22 | 0/70 = 0.000 | 10 | 5.116 s |
+> | `d-poisoned-1` | 0 | 47.566 | 70/70 = 1.000 | 10 | 4.658 s |
+> | `d-poisoned-2` | 0 | 47.565 | 70/70 = 1.000 | 10 | 4.650 s |
+> | `d-poisoned-3` | 0 | 47.546 | 70/70 = 1.000 | 10 | 4.649 s |
+>
+> **12 of 12 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> Remove-Item -Recurse results/2026-11-23-poisoned
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's runner output: 12/12 runs finished; (a)–(c) 0/70 with 70 fakes each run; (d) 70/70 at 4.65 s per page; the first folder deleted.
+- Fetched `main`: commit `910ee22` has the full `poisoned.js`, the same as the Turn 370 file apart from the missing newline at the end. The results folder isn't pushed yet.
+- Merged `origin/main` into the branch. Logged D112 and updated the README's Milestone 3 line. Committed and pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **Results:** poisoning stops (a), (b) and (c): 0% recall, a 100% drop (the same size as WebCloak's 100% drop), and every wrong value is the page's fake.
+- **(d)** isn't fooled: 70/70, though it pays about 1.6 s more per page.
+- **Hypothesis 2 holds for (a)–(c),** and the Ambitious "Done when" is met.
+- **Next, Joseph:**
+  1. run Test 5 if he hasn't, and paste it;
+  2. commit and push `results/2026-11-23-poisoned-2` (and the Test 5 folder);
+  3. merge the PR.
+- **Next, Claude:**
+  - rebuild `results.py` over all four folders, plus the cross-check;
+  - add `poisoned` to the graphs and tables;
+  - the user-cost runner change.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** whether Test 5 was run on the laptop (in the reply).
+
+**Direction and fit:** D112 (Follows).
+
+### Turn 376 — 2026-11-23 19:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> npm run generate -- poisoned
+> >> python measurement/test5.py
+>
+> > benchmarking-defenses-against-webscrapers@0.1.0 generate
+> > node site/generate.js poisoned
+>
+> Wrote 10 pages and robots.txt to conditions\poisoned/ (70 scored fields)
+> Poisoned: 70 fakes in conditions\poisoned.fakes.json, real values in conditions\poisoned/values/
+> Generating poisoned ...
+> Wrote 10 pages and robots.txt to conditions\poisoned/ (70 scored fields)
+> Poisoned: 70 fakes in conditions\poisoned.fakes.json, real values in conditions\poisoned/values/
+> Serving poisoned on port 3100; reading the HTML and each item page at 0 s and 3 s ...
+>
+> # Test 5: poisoning hides real values
+>
+> Run 2026-11-23T13:13:59 · commit 910ee22 · condition `poisoned` · read at 0 s (right after load) and 3 s after load
+>
+> **PASS**
+>
+> | Check | Result | |
+> |---|---|---|
+> | 1. Fakes file: one valid fake per field, each different from the real value | 70 of 70 fakes| PASS |
+> | 2. No real value in any page's HTML | 0 real values found (each item page searched for its own values, the other 2 pages for all 70) | PASS |
+> | 3. Every field shows its fake at 0 s | 70 of 70 | PASS |
+> | 4. Every field shows its real value at 3 s | 70 of 70 | PASS |
+>
+>
+> ## Each item page
+>
+> | Page | Fakes at 0 s | Real at 3 s | Values last changed | Fetched its real values | Fields not as expected |
+> |---|---|---|---|---|---|
+> | /products/p1 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p2 | 10/10 | 10/10 | 2.02 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p3 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p4 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p5 | 10/10 | 10/10 | 2.02 s after start (2.01 s after load) | yes (200) | — |
+> | /products/p6 | 10/10 | 10/10 | 2.03 s after start (2.01 s after load) | yes (200) | — |
+> | /articles/a1 | 5/5 | 5/5 | 2.03 s after start (2.02 s after load) | yes (200) | — |
+> | /articles/a2 | 5/5 | 5/5 | 2.02 s after start (2.01 s after load) | yes (200) | — |
+>
+> Fakes stay on screen until 2.03 s after the page starts loading (mean 2.03 s; config `poison_swap_delay_seconds` = 2).
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read Joseph's laptop Test 5 report: PASS 4/4 at commit `910ee22`, the commit the 12 runs used. Every page swapped 2.01–2.02 s after load and fetched its real values (200). Added it to D112 and updated the README. No other project files changed.
+
+**Claude's answer (summary):**
+- **Test 5 passes** on the laptop, at the same commit as the runs, so poisoning is complete and checked.
+- **Fakes stay on screen** about 2.0 s, as designed. That number goes into poisoning's user cost.
+- **Next, Joseph:**
+  1. commit and push `results/2026-11-23-poisoned-2` and the Test 5 folder (`results/2026-11-23-test5`);
+  2. merge PR #63.
+- **Then Claude:** the results tables over all four folders, the cross-check, the graphs, and the user-cost runner.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (adds to D112).
