@@ -191,6 +191,17 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - most fields get the same fixed fake on every page;
 - unwritten fields get `"Fake "` + the real value.
 (d)'s 3.04 s per page is its plain 3 s quiet wait (baseline 3.03 s) with no change seen. In the cloud preview, with the swap, (d) took 4.63 s per page and got 70/70. Test 5, the poisoning's completion check, would have failed checks 2 and 4. Steps: paste the full file and save it, Test 5 4/4, commit, rerun 12 runs into a new folder, and leave the first folder out of the results. | Keep the runs as a "no swap" variant; rerun (chosen) | Claude (recommendation); Joseph to confirm by rerunning | §7 Stretch plan ("with Test 5 … as their completion check"); §5 Test 5; §2 Poisoning design (the swap after 2 s). | Follows |
+| D112 | 375 | **⭐ Poisoning runs done (Mon Nov 23; planned Nov 18 – Dec 1). The midterm's Ambitious item 3 "Done when" is met on the runner's scores.**
+- **The runs:** Joseph's laptop, commit `910ee22` (the full `poisoned.js`; the same as the Turn 370 file apart from the final newline), `results/2026-11-23-poisoned-2`, 12 of 12 runs finished.
+- **(a), (b) and (c):** 0/70 and 70 fakes in each of the 3 runs, so recall 0% ("stops", under 10%), a 100% drop in recall, and a fake-value rate of 100%. Every wrong value is its page's fake.
+- **(d):** 70/70 in each run. Time per page 4.65 s against 3.03 s on baseline: it waits out the 2 s swap and then its 3 s quiet.
+- **Hypothesis 2** ("poisoning lowers accuracy for (a), (b), (c) and (e)") holds for (a)–(c); (e) isn't built. Capability matching holds: only (d), which waits, recovers.
+- **"Done when"** ("every fake value in any scraper's output matches the fake-values file for its page, and (d) runs 3 times on baseline, shuffled, honeypot and poisoned"): both parts met.
+- **Still to do:**
+  - `scoring/results.py` and the cross-check over all four folders, once the folder is pushed;
+  - Joseph's laptop Test 5 report;
+  - poisoning's user cost (the user-cost runner change);
+  - `poisoned` in the tables and graphs. | — | Joseph (runs); Claude (reading) | §1 item 3 "Done when"; §4 metrics (accuracy, fake-value rate, the "stops" threshold); hypothesis 2; §7 Stretch plan (poisoning Nov 18 – Dec 1, with Test 5 as the completion check). | Follows |
 ---
 
 ## Questions register
@@ -571,6 +582,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J372 | 372 | (Joseph pasted the full `poisoned.js` from Turn 370 into the chat) | The same as the Turn 370 file; `main` still has the draft, so save, check, Test 5, commit, rerun |
 | J373 | 373 | what file is this in (Get-Content site/defenses/poisoned.js).Count Select-String -Path site/defenses/poisoned.js -Pattern "function script" | Not a file: two commands for the PowerShell terminal; what each should print |
 | J374 | 374 | (check output: 124 lines; `function script(page)` on line 108) | Matches the Turn 370 file; next: generate, Test 5, commit, rerun |
+| J375 | 375 | (runner output: 12 poisoned runs; (a)–(c) 0/70 with 70 fakes, (d) 70/70 at 4.65 s per page; first folder deleted) | ⭐ Poisoning runs done; Ambitious item 3 met on the runner's scores (D112); push the results and the Test 5 report |
 
 ### Questions from Claude
 
@@ -16819,3 +16831,71 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 375 — 2026-11-23 19:11 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers a b c d --conditions poisoned --out results/2026-11-23-poisoned-2
+> 12 runs: 1 conditions × 4 scrapers × 3 runs
+>   a-poisoned-1 ... 0/70, 70 fakes
+>   a-poisoned-2 ... 0/70, 70 fakes
+>   a-poisoned-3 ... 0/70, 70 fakes
+>   b-poisoned-1 ... 0/70, 70 fakes
+>   b-poisoned-2 ... 0/70, 70 fakes
+>   b-poisoned-3 ... 0/70, 70 fakes
+>   c-poisoned-1 ... 0/70, 70 fakes
+>   c-poisoned-2 ... 0/70, 70 fakes
+>   c-poisoned-3 ... 0/70, 70 fakes
+>   d-poisoned-1 ... 70/70, 0 fakes
+>   d-poisoned-2 ... 70/70, 0 fakes
+>   d-poisoned-3 ... 70/70, 0 fakes
+>
+> # Experiment runs
+>
+> Run 2026-11-23T13:05:12 → 2026-11-23T13:10:33 · commit 910ee22 · scrapers a, b, c, d · conditions poisoned · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `a-poisoned-1` | 0 | 0.675 | 0/70 = 0.000 | 10 | 0.020 s |
+> | `a-poisoned-2` | 0 | 0.495 | 0/70 = 0.000 | 10 | 0.016 s |
+> | `a-poisoned-3` | 0 | 0.513 | 0/70 = 0.000 | 10 | 0.018 s |
+> | `b-poisoned-1` | 0 | 1.296 | 0/70 = 0.000 | 10 | 0.025 s |
+> | `b-poisoned-2` | 0 | 1.28 | 0/70 = 0.000 | 10 | 0.026 s |
+> | `b-poisoned-3` | 0 | 1.272 | 0/70 = 0.000 | 10 | 0.025 s |
+> | `c-poisoned-1` | 0 | 65.575 | 0/70 = 0.000 | 10 | 6.436 s |
+> | `c-poisoned-2` | 0 | 52.728 | 0/70 = 0.000 | 10 | 5.142 s |
+> | `c-poisoned-3` | 0 | 52.22 | 0/70 = 0.000 | 10 | 5.116 s |
+> | `d-poisoned-1` | 0 | 47.566 | 70/70 = 1.000 | 10 | 4.658 s |
+> | `d-poisoned-2` | 0 | 47.565 | 70/70 = 1.000 | 10 | 4.650 s |
+> | `d-poisoned-3` | 0 | 47.546 | 70/70 = 1.000 | 10 | 4.649 s |
+>
+> **12 of 12 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> Remove-Item -Recurse results/2026-11-23-poisoned
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's runner output: 12/12 runs finished; (a)–(c) 0/70 with 70 fakes each run; (d) 70/70 at 4.65 s per page; the first folder deleted.
+- Fetched `main`: commit `910ee22` has the full `poisoned.js`, the same as the Turn 370 file apart from the missing newline at the end. The results folder isn't pushed yet.
+- Merged `origin/main` into the branch. Logged D112 and updated the README's Milestone 3 line. Committed and pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **Results:** poisoning stops (a), (b) and (c): 0% recall, a 100% drop (the same size as WebCloak's 100% drop), and every wrong value is the page's fake.
+- **(d)** isn't fooled: 70/70, though it pays about 1.6 s more per page.
+- **Hypothesis 2 holds for (a)–(c),** and the Ambitious "Done when" is met.
+- **Next, Joseph:**
+  1. run Test 5 if he hasn't, and paste it;
+  2. commit and push `results/2026-11-23-poisoned-2` (and the Test 5 folder);
+  3. merge the PR.
+- **Next, Claude:**
+  - rebuild `results.py` over all four folders, plus the cross-check;
+  - add `poisoned` to the graphs and tables;
+  - the user-cost runner change.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** whether Test 5 was run on the laptop (in the reply).
+
+**Direction and fit:** D112 (Follows).
