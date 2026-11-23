@@ -546,6 +546,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J366 | 366 | (Joseph's third draft: the price case inside `case "price": { }`) | Works: six different prices, the same on every rebuild; remove the space before `$`; next, rating and review count with the same pattern |
 | J367 | 367 | (Joseph's fourth draft: `$` fixed, but `case "     price":` with spaces inside the quotes) | The label no longer matches `"price"`, so the price falls to the default; remove the spaces inside the quotes; then Step 4 |
 | J368 | 368 | just give me what it should look like since i have the majority of it done | Asked first (C41): Joseph chose to finish it himself with faster guidance (D109); every remaining rule in one message |
+| J369 | 369 | what should the file look like? | An outline of `poisoned.js` (structure and comments only, with Joseph's price case kept); Joseph fills in each case and the script |
 
 ### Questions from Claude
 
@@ -615,7 +616,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
-**For the report's AI-use disclosure (Turn 320; Turn 364):** `poisoned.js`'s price case is modeled on Claude's standalone temperature example (Turns 354, 364). Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
+**For the report's AI-use disclosure (Turn 320; Turn 364):** `poisoned.js`'s price case is modeled on Claude's standalone temperature example (Turns 354, 364). Its layout (function names, case labels, comments) follows Claude's outline (Turn 369). Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -16466,3 +16467,27 @@ The changed lines are the documented hook interface (`site/defenses/README.md`) 
 **Questions Claude asked:** C41, how to finish `poisoned.js`. Options: "I finish it, faster (Recommended)", "Claude writes the fakes", "Claude writes the rest". Answer: "I finish it, faster (Recommended)".
 
 **Direction and fit:** D109 (Follows).
+
+### Turn 369 — 2026-11-23 18:46 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what should the file look like?
+
+**What Claude did:** No files changed apart from this log. Read the question as asking for the file's layout, in line with D109: Joseph writes the code.
+
+**Claude's answer (summary):** an outline of `site/defenses/poisoned.js`. It has structure and comments only, with no field rules and no swap code:
+- the top comment and the `config` require;
+- the helpers `pick` and `between`, with empty bodies and comments;
+- `fakeValue` with one `case` block for every one of the 15 fields, and Joseph's finished price case kept;
+- `default: return "Fake " + row.value;`;
+- `script(page)` with its three steps as comments and a temporary `return "";`;
+- `module.exports = { fakeValue, script };`.
+
+Two behaviour notes:
+- a `case` with only comments falls through to the `default`, so the file still generates while the cases are being filled in;
+- the helpers must `return` before any case uses them.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. This stays inside D109 and CLAUDE.md's "explain concepts": an outline, not defense code. Added to the AI-use disclosure open item: the file's layout (function names, case labels, comments) follows Claude's outline (Turn 369).
