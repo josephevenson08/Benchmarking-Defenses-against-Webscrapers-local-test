@@ -238,6 +238,12 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **The other defenses:** shuffled and honeypot match Nov 20 on every visual, reading-order, size and axe measure. Their Lighthouse changes (score −0.2, TTI +9 and +16 ms) are also noise.
 - **So:** poisoning costs a visitor about 2 s of wrong values on screen and some page weight, and nothing else measured.
 - **Waiting on:** the push, for the cross-check, graphs 6–8 and Table 3. | — | Joseph (run); Claude (reading) | §4 item 4 (user cost, including "the seconds fake values stay visible (2 by design)"); §5 User cost; hypothesis 5's cost side; D114, D115. | Follows |
+| D117 | 380 | **Poisoning's tables and graphs finished with the laptop's user cost.**
+- **Cross-check:** rerun over the 48 runs, `results-all` and `results/2026-11-23-user-cost-full-2`, **734/734 agree**. That includes reading order on poisoned pages after the swap, and the fakes lasting at least the 2 s delay and ending before the 3 s screenshot.
+- **Graphs:** metric graphs 6–8 (SSIM, Lighthouse, HTML size) redrawn with poisoned.
+- **Tables:** `tables.md` Table 3 gains a "Fakes on screen (max)" column (poisoned 2.03 s).
+- **fig3:** its note now covers all three defenses and poisoning's 2.0 s. Points that share a spot (honeypot on all four scrapers, poisoning on (d), both at 0% and 0%) now sit side by side with stacked labels; before, the labels overlapped.
+- **README:** updated. The measurement tests pass. | — | Claude (tooling) | §4 metrics and item 4; §5 User cost and Analysis; D113, D114, D116. | Follows |
 ---
 
 ## Questions register
@@ -623,6 +629,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J377 | 377 | ok i pushed and merged | Results over 48 runs and cross-check 707/707 (D113); poisoned added to the graphs; user-cost runner serves pages and measures fakes on screen (D114); laptop user-cost run next |
 | J378 | 378 | (laptop user-cost output: commit `32e3f77`, poisoned 0.329% pixel difference, SSIM 0.985, 70/70 out of order) | The old runner ran (PR #64 not merged); poisoned's visual numbers come from unswapped fakes (D115); merge, check, rerun into a new folder |
 | J379 | 379 | (laptop user-cost output, commit `f2414b1`: poisoned 0% pixel difference, SSIM 1.000, 0/70 out of order, fakes 2.02 s) | Correct; poisoning's user cost recorded (D116); push the folder for the graphs and cross-check |
+| J380 | 380 | its pushed | Cross-check 734/734 with the laptop's user cost; graphs 6–8, Table 3 and fig3 with poisoned (D117); what's left |
 
 ### Questions from Claude
 
@@ -678,7 +685,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **Earlier resume note (Turn 336, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330, with the metrics write-up and the WebCloak rationale added in Turns 334–335); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
 
-**For poisoning's user cost (found Turn 347; tooling done Turn 377, D114):** the runner now serves the pages and reports how long the fakes stay on screen. Left: the full run with Lighthouse on the laptop (`--conditions shuffled honeypot poisoned`), then graphs 6–8 and Table 3 again.
+**For poisoning's user cost (found Turn 347):** done. The runner was changed in Turn 377 (D114), the laptop run in Turn 379 (D116), and the tables and graphs in Turn 380 (D117).
 
 **For the tarpit (Turn 347, D107):** once Joseph's `tarpit.js` exists, add: the runner's `--robots ignore` setting for (a), (b) and (d) (the scrapers already take `--robots obey|ignore`); maze pages loaded, seconds trapped and server time per maze request in `scoring/results.py`; Test 6's maze part (a scraper that obeys robots.txt never requests `/maze/`); `tarpit` in the graphs.
 
@@ -17178,3 +17185,34 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** D116 (Follows).
+
+### Turn 380 — 2026-11-23 20:13 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> its pushed
+
+**What Claude did:**
+- Fetched and merged `main`, which brought in Joseph's `results/2026-11-23-user-cost-full-2`.
+- Reran the cross-check over everything: 734/734 agree.
+- Redrew metric graphs 6–8 and the figures and tables with the laptop's user cost.
+- Added Table 3's "Fakes on screen (max)" column, updated fig3's note, and fixed fig3's overlapping labels for points that share a spot. Looked at graphs 7 and 8 and at fig3.
+- Tests pass. Updated the README, logged D117, committed and pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **All four defenses are now measured.** Poisoning's numbers are final, across scraping, detection and user cost.
+- **Where the graphs are**, and what's new in them.
+- **The cross-check agrees** on 734/734 counts.
+- **What's left in the project,** in brief:
+  - the tarpit (Joseph's `tarpit.js`; D106 and D107);
+  - the honeypot false-positive check;
+  - the (d) part of Test 3;
+  - Test 7's stub part for (c);
+  - our column in the related-work table;
+  - Cut-line 2 on Dec 1;
+  - Milestone 4.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D117 (Follows).

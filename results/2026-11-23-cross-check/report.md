@@ -1,8 +1,8 @@
 # Cross-check of the results
 
-Run 2026-11-23T19:22:27 · runs: `results/2026-11-18-experiment`, `results/2026-11-18-c-all`, `results/2026-11-20-d-all`, `results/2026-11-23-poisoned-2` · results: `results/2026-11-23-results-all` · user cost: `results/2026-11-20-user-cost-full`
+Run 2026-11-23T20:13:11 · runs: `results/2026-11-18-experiment`, `results/2026-11-18-c-all`, `results/2026-11-20-d-all`, `results/2026-11-23-poisoned-2` · results: `results/2026-11-23-results-all` · user cost: `results/2026-11-23-user-cost-full-2`
 
-**707 of 707 checks agree.**
+**734 of 734 checks agree.**
 
 ## Tally for each scraper and defense (recounted from the raw outputs and logs)
 
@@ -724,15 +724,42 @@ Run 2026-11-23T19:22:27 · runs: `results/2026-11-18-experiment`, `results/2026-
 | user cost honeypot /articles/a1: fields out of reading order | yes | from the HTML 0/5, reported 0/5 |
 | user cost honeypot /articles/a2: HTML bytes | yes | regenerated 1982, reported 1982 |
 | user cost honeypot /articles/a2: fields out of reading order | yes | from the HTML 0/5, reported 0/5 |
+| user cost poisoned /: HTML bytes | yes | regenerated 1564, reported 1564 |
+| user cost poisoned /: fields out of reading order | yes | from the HTML 0/0, reported 0/0 |
+| user cost poisoned /products/: HTML bytes | yes | regenerated 1596, reported 1596 |
+| user cost poisoned /products/: fields out of reading order | yes | from the HTML 0/0, reported 0/0 |
+| user cost poisoned /products/p1: HTML bytes | yes | regenerated 2863, reported 2863 |
+| user cost poisoned /products/p1: fields out of reading order | yes | from the HTML 0/10, reported 0/10 |
+| user cost poisoned /products/p2: HTML bytes | yes | regenerated 2869, reported 2869 |
+| user cost poisoned /products/p2: fields out of reading order | yes | from the HTML 0/10, reported 0/10 |
+| user cost poisoned /products/p3: HTML bytes | yes | regenerated 2870, reported 2870 |
+| user cost poisoned /products/p3: fields out of reading order | yes | from the HTML 0/10, reported 0/10 |
+| user cost poisoned /products/p4: HTML bytes | yes | regenerated 2864, reported 2864 |
+| user cost poisoned /products/p4: fields out of reading order | yes | from the HTML 0/10, reported 0/10 |
+| user cost poisoned /products/p5: HTML bytes | yes | regenerated 2869, reported 2869 |
+| user cost poisoned /products/p5: fields out of reading order | yes | from the HTML 0/10, reported 0/10 |
+| user cost poisoned /products/p6: HTML bytes | yes | regenerated 2870, reported 2870 |
+| user cost poisoned /products/p6: fields out of reading order | yes | from the HTML 0/10, reported 0/10 |
+| user cost poisoned /articles/a1: HTML bytes | yes | regenerated 2388, reported 2388 |
+| user cost poisoned /articles/a1: fields out of reading order | yes | from the HTML 0/5, reported 0/5 |
+| user cost poisoned /articles/a2: HTML bytes | yes | regenerated 2377, reported 2377 |
+| user cost poisoned /articles/a2: fields out of reading order | yes | from the HTML 0/5, reported 0/5 |
 | user cost shuffled: screenshots identical to baseline pixel for pixel when 0% is reported | yes | 0 of 10 pages differ; reported max 0.0% |
 | user cost shuffled: axe-core violations | yes | from the axe report 0, reported 0 |
-| user cost shuffled: Lighthouse score change (median of runs, mean over pages) | yes | recounted 0, reported 0.0 |
-| user cost shuffled: Lighthouse fcp_ms change (median of runs, mean over pages) | yes | recounted -0.3616599999999835, reported -0.36166 |
-| user cost shuffled: Lighthouse lcp_ms change (median of runs, mean over pages) | yes | recounted -0.3616599999999835, reported -0.36166 |
-| user cost shuffled: Lighthouse tti_ms change (median of runs, mean over pages) | yes | recounted 21.55458000000001, reported 21.5546 |
+| user cost shuffled: Lighthouse score change (median of runs, mean over pages) | yes | recounted -0.2, reported -0.2 |
+| user cost shuffled: Lighthouse fcp_ms change (median of runs, mean over pages) | yes | recounted 0.07283000000001039, reported 0.07283 |
+| user cost shuffled: Lighthouse lcp_ms change (median of runs, mean over pages) | yes | recounted 0.07283000000001039, reported 0.07283 |
+| user cost shuffled: Lighthouse tti_ms change (median of runs, mean over pages) | yes | recounted 8.683384999999987, reported 8.68338 |
 | user cost honeypot: screenshots identical to baseline pixel for pixel when 0% is reported | yes | 0 of 10 pages differ; reported max 0.0% |
 | user cost honeypot: axe-core violations | yes | from the axe report 0, reported 0 |
-| user cost honeypot: Lighthouse score change (median of runs, mean over pages) | yes | recounted 0, reported 0.0 |
-| user cost honeypot: Lighthouse fcp_ms change (median of runs, mean over pages) | yes | recounted 0.2789250000000152, reported 0.278925 |
-| user cost honeypot: Lighthouse lcp_ms change (median of runs, mean over pages) | yes | recounted 0.2789250000000152, reported 0.278925 |
-| user cost honeypot: Lighthouse tti_ms change (median of runs, mean over pages) | yes | recounted -6.77064499999999, reported -6.77064 |
+| user cost honeypot: Lighthouse score change (median of runs, mean over pages) | yes | recounted -0.2, reported -0.2 |
+| user cost honeypot: Lighthouse fcp_ms change (median of runs, mean over pages) | yes | recounted 0.05217000000001235, reported 0.05217 |
+| user cost honeypot: Lighthouse lcp_ms change (median of runs, mean over pages) | yes | recounted 0.05217000000001235, reported 0.05217 |
+| user cost honeypot: Lighthouse tti_ms change (median of runs, mean over pages) | yes | recounted 16.35996000000001, reported 16.36 |
+| user cost poisoned: screenshots identical to baseline pixel for pixel when 0% is reported | yes | 0 of 10 pages differ; reported max 0.0% |
+| user cost poisoned: fakes stay on screen at least the swap delay and end before the screenshot | yes | longest 2.0348 s; swap delay 2 s, screenshot at 3.0 s |
+| user cost poisoned: axe-core violations | yes | from the axe report 0, reported 0 |
+| user cost poisoned: Lighthouse score change (median of runs, mean over pages) | yes | recounted 0, reported 0.0 |
+| user cost poisoned: Lighthouse fcp_ms change (median of runs, mean over pages) | yes | recounted 1.7224199999999996, reported 1.72242 |
+| user cost poisoned: Lighthouse lcp_ms change (median of runs, mean over pages) | yes | recounted 1.7224199999999996, reported 1.72242 |
+| user cost poisoned: Lighthouse tti_ms change (median of runs, mean over pages) | yes | recounted -31.318005000000017, reported -31.318 |
