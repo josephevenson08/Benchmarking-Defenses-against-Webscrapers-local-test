@@ -534,6 +534,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J361 | 361 | (random characters, likely sent by accident) | No action; next step unchanged |
 | J362 | 362 | ok im back sorry my code still looks like i sent before | Walked through the four fixes line by line (interface lines and placeholder only), then the random price in five steps for Joseph to write |
 | J363 | 363 | (`npm run generate -- poisoned` output: 10 pages, 70 fakes) | Step 1 passes; check `p1.html` and the values JSON, make the price random, paste the file |
+| J364 | 364 | (Joseph's price case: `return Number(amount.toFixed(2))10 + rng() * 140);`) | Explained the syntax problems; standalone temperature function with one line per step and how to adapt it; Joseph writes the price case |
 
 ### Questions from Claude
 
@@ -602,7 +603,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 
 **Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
-**For the report's AI-use disclosure (Turn 320):** list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
+**For the report's AI-use disclosure (Turn 320; Turn 364):** `poisoned.js`'s price case is modeled on Claude's standalone temperature example (Turns 354, 364). Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -16227,3 +16228,30 @@ The changed lines are the documented hook interface (`site/defenses/README.md`) 
 **Questions Claude asked:** whether the price is already random (in the reply).
 
 **Direction and fit:** no new decision.
+
+### Turn 364 — 2026-11-23 18:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> case "price":
+>       return Number(amount.toFixed(2))10 + rng() * 140);
+
+**What Claude did:** Reviewed Joseph's price line, `return Number(amount.toFixed(2))10 + rng() * 140);`. It doesn't parse: two expressions are run together, a `)` is unmatched, `amount` is used before it exists, and steps 1 and 4 are missing. No files changed apart from this log. Claude didn't write the price case.
+
+**Claude's answer (summary):**
+- **What's wrong:**
+  - one step per line;
+  - create `amount` first with `let`;
+  - a `case` can have several lines before its `return`; wrap them in `{ }` so the names in one case don't clash with another's;
+  - the `return` comes last, as text with `"$"` and `toFixed(2)`.
+- **A standalone example:** the temperature example again, as a stand-alone function `fakeTemperature(realText, rng)` with one comment per step.
+- **How to adapt it:**
+  - `row.value` instead of `realText`;
+  - remove the `$` at the start and put it back in front at the end;
+  - a range of 10 to 150;
+  - 2 decimals.
+- **Next:** generate, check that p1 and p2 get different prices, then paste the case.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Claude may show standalone examples (CLAUDE.md, midterm §2 "AI assistance"), so this follows the boundary. Added to the AI-use disclosure open item: the price case is modeled on Claude's temperature example (Turns 354 and 364).
