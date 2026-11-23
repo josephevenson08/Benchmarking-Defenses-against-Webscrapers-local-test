@@ -524,6 +524,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J351 | 351 | (`git fetch origin` and `git merge origin/main` output: fast-forward `8e20c37..4dfeb12`, 19 files) | Laptop up to date; `npm test`, then `poisoned.js` in small steps checked with Test 5 |
 | J352 | 352 | ok all 30 passed walk me through the poisoned then lets continue | Walkthrough of `poisoned.js` (concepts, standalone snippets, field rules, order of work); Test 5's HTML check fixed to search each page for its own values (D108) |
 | J353 | 353 | where am i putting this file? | `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`; the file name sets the condition name |
+| J354 | 354 | ok i got the file made in the scetion, can you walk me through how to make this | Step-by-step plan for `poisoned.js`: Steps 1–3 in detail (shape, switch on the field, price) with toy examples; Steps 4–10 as a roadmap; Joseph writes the code |
 
 ### Questions from Claude
 
@@ -15989,6 +15990,38 @@ All numbers are from the cross-checked results (D102).
 - **Why the name matters:** the generator finds a defense by its file name, so `poisoned.js` is what `npm run generate -- poisoned` builds. Any other name doesn't work.
 - **How in VS Code:** right-click `site/defenses` → New File → `poisoned.js`.
 - **To check:** `npm run generate -- poisoned` without the file says "Unknown or not-yet-built condition", and with it the error goes away.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 354 — 2026-11-23 18:10 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i got the file made in the scetion, can you walk me through how to make this
+
+**What Claude did:** No files changed apart from this log. Claude didn't write any of `poisoned.js` (CLAUDE.md: Joseph writes the page defenses).
+
+**Claude's answer (summary):** a step-by-step build plan for `site/defenses/poisoned.js`, with the detail on the first three steps and standalone toy examples:
+- **Step 1, the shape:** the same as Joseph's `honeypot.js`. One `fakeValue(row, rng)` returning a placeholder (`"Fake " + row.value`), exported at the bottom. Check with `npm run generate -- poisoned`, which should report 70 fakes, and look at `p1.html`.
+- **Step 2, choosing by field:** a `switch (row.key)` with a `default`. Toy example: animal sounds.
+- **Step 3, the price:**
+  1. turn the real price into a number;
+  2. pick a random amount with `rng()`;
+  3. keep 2 decimals;
+  4. change it if it equals the real number;
+  5. add the `$` back.
+  Toy example: a temperature.
+- **Steps 4–10, a roadmap:**
+  - 4: rating and review count;
+  - 5: SKU;
+  - 6: dates;
+  - 7: fields picked from a list (availability, category, brand, author, tags), with optional `pick` and `between` helpers;
+  - 8: the text fields;
+  - 9: `script`;
+  - 10: Test 5.
+- **Next:** Joseph pastes his file after Step 3, Claude reviews it, and then they continue.
 
 **Questions Claude asked:** none.
 
