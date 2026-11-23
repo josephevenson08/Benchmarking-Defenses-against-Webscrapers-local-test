@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110.)* |
 
 ---
 
@@ -171,7 +171,21 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 - a rule for each of the 14 remaining fields;
 - the swap script's steps, with a standalone toy on Node `${}` versus browser `+`;
 - the export.
-Claude writes no `poisoned.js` code and checks each paste. | Claude writes everything (Deviates, as with scraper (d)); Claude writes the fakes and Joseph the swap (Deviates); Joseph finishes with faster guidance (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); CLAUDE.md AI-use boundaries. | Follows |
+Claude writes no `poisoned.js` code and checks each paste. | Claude writes everything (Deviates, as with scraper (d)); Claude writes the fakes and Joseph the swap (Deviates); Joseph finishes with faster guidance (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); CLAUDE.md AI-use boundaries. | Follows (superseded two turns later: Joseph asked for the whole file, D110) |
+| D110 | 370 | **⚠️ Claude writes `site/defenses/poisoned.js` (Joseph's request: "give me the file entirely").** Two turns after choosing to finish it himself (C41, D109), Joseph asked for the whole file.
+- **Who wrote what:** the price case is Joseph's own lines (Turn 367, with the label fixed); everything else is Claude's.
+- **Fakes:** helpers `pick` and `between`, made-up word lists with no real brand, category, name or tag, and a rule for each of the other 14 fields:
+  - rating from 1.0 to 5.0;
+  - review count with a comma;
+  - SKU with its letters kept and new digits;
+  - availability, one of the four phrases;
+  - dates up to day 28;
+  - names from 3 list words;
+  - 3 different tags.
+- **Swap script:** waits `poison_swap_delay_seconds` from `config.json`, fetches `page.valuesPath`, and sets each row's value by label with `textContent`.
+- **The file:** 124 lines, sha256 `cd781b46d7d1ea7e…`. It was given to Joseph in the chat to paste over his draft and commit from the laptop, and isn't committed on Claude's branch, so the merge won't hit his untracked copy.
+- **Checked in the cloud:** generator OK; Test 5 4/4 PASS, with 0 real values in the HTML and the swap at 2.01–2.06 s. A one-run preview (scratchpad, not results) gave (a) and (b) 70 fakes each and (d) 70/70 real, which fits hypothesis 2.
+- **Docs:** CLAUDE.md boundaries and the README's AI-use section updated. Joseph should tell the instructor, as with (d). | Keep guiding (D109); write it (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); §7 AI-agent plan; precedent D99. | **Deviates** (disclosed; Joseph to tell the instructor) |
 ---
 
 ## Questions register
@@ -547,6 +561,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J367 | 367 | (Joseph's fourth draft: `$` fixed, but `case "     price":` with spaces inside the quotes) | The label no longer matches `"price"`, so the price falls to the default; remove the spaces inside the quotes; then Step 4 |
 | J368 | 368 | just give me what it should look like since i have the majority of it done | Asked first (C41): Joseph chose to finish it himself with faster guidance (D109); every remaining rule in one message |
 | J369 | 369 | what should the file look like? | An outline of `poisoned.js` (structure and comments only, with Joseph's price case kept); Joseph fills in each case and the script |
+| J370 | 370 | give me the file entirely | Claude wrote `poisoned.js` around Joseph's price case (D110, Deviates, disclosed); cloud Test 5 4/4; preview (a), (b) 70 fakes, (d) 70/70; steps to paste, test, commit and run |
 
 ### Questions from Claude
 
@@ -592,7 +607,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | C38 | 308 | Reading-order rule (§3: Joseph specifies and reviews it). Options (Turn 317): "Label or value moved (Recommended)", "Count elements separately". | Label or value moved. | Closed (Turn 317) → D96 |
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
 | C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
-| C41 | 368 | Joseph asked Claude to write the rest of `poisoned.js`; the midterm and CLAUDE.md say Joseph writes the defenses. How to finish it? Options: "I finish it, faster (Recommended)", "Claude writes the fakes" (Joseph the swap; a deviation), "Claude writes the rest" (a deviation, as with (d)). | "I finish it, faster (Recommended)" | Closed (Turn 368; D109) |
+| C41 | 368 | Joseph asked Claude to write the rest of `poisoned.js`; the midterm and CLAUDE.md say Joseph writes the defenses. How to finish it? Options: "I finish it, faster (Recommended)", "Claude writes the fakes" (Joseph the swap; a deviation), "Claude writes the rest" (a deviation, as with (d)). | "I finish it, faster (Recommended)" | Closed (Turn 368; D109). Reversed in Turn 370: Joseph asked for the whole file (D110) |
 
 ---
 
@@ -616,7 +631,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
-**For the report's AI-use disclosure (Turn 320; Turn 364):** `poisoned.js`'s price case is modeled on Claude's standalone temperature example (Turns 354, 364). Its layout (function names, case labels, comments) follows Claude's outline (Turn 369). Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
+**For the report's AI-use disclosure (Turn 320; Turns 364, 370):** `site/defenses/poisoned.js` was written by Claude at Joseph's request (D110, Deviates); only its price case is Joseph's, modeled on Claude's temperature example (Turns 354, 364). Joseph to tell the instructor, as with (d). Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -16491,3 +16506,40 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. This stays inside D109 and CLAUDE.md's "explain concepts": an outline, not defense code. Added to the AI-use disclosure open item: the file's layout (function names, case labels, comments) follows Claude's outline (Turn 369).
+
+### Turn 370 — 2026-11-23 18:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> give me the file entirely
+
+**What Claude did:**
+- **Wrote `site/defenses/poisoned.js` at Joseph's request** (D110, **Deviates**, disclosed). The price case is Joseph's own lines; everything else is Claude's.
+- **Checked it in the cloud** with a temporary copy in `site/defenses/`, removed afterwards:
+  - the generator wrote 10 pages and 70 fakes;
+  - Test 5 passed 4/4, with 0 real values in the HTML, fakes at 0 s, real values at 3 s, and the swap at 2.01–2.06 s;
+  - a one-run preview with the runner (scratchpad, not a result) gave (a) and (b) 70 fakes each and (d) 70/70 correct.
+- **Recorded the file:** 124 lines, sha256 `cd781b46d7d1ea7e…`.
+- **Updated the docs:**
+  - CLAUDE.md's AI-use boundaries;
+  - the README's AI-use paragraph and Milestone 3 line;
+  - D109 marked as superseded, C41's status, the open item on AI-use disclosure, and the list of deviations in the fit labels table.
+- Committed and pushed; the open PR #62 gets these changes.
+
+**Claude's answer (summary):**
+- **The file,** to paste over Joseph's draft.
+- **Test results:** what each part does, and the cloud results.
+- **The disclosure:** like scraper (d), this changes the midterm's §2 plan. It's recorded in the README's AI-use section and in CLAUDE.md, and Joseph should tell the instructor.
+- **Laptop steps:**
+  1. merge PR #62;
+  2. `git fetch origin` and `git merge origin/main`;
+  3. paste the file and save;
+  4. `npm run generate -- poisoned`;
+  5. `python measurement/test5.py`;
+  6. commit and push `site/defenses/poisoned.js`;
+  7. the runs with (a)–(d) on `poisoned` × 3;
+  8. `results.py` over all the folders.
+
+**Questions Claude asked:** none. C41 had been asked and answered in Turn 368, and Joseph then asked for the whole file in plain words.
+
+**Direction and fit:** D110, **Deviates** (Joseph's decision; disclosed, as with D99).

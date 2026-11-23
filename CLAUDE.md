@@ -40,8 +40,9 @@ Joseph works on `main`, on his laptop in VS Code. Claude works on `claude/quirky
   - the measurement tooling (scoring script, experiment runner, user-cost runner);
   - the setup for scraper (e) (model choice and request format);
   - scraper (d): Joseph asked Claude to write it on Nov 20 (Turn 321, D99; part 1's lines were already Claude's, D98). This changes the midterm's §2 split and is disclosed as a deviation.
+  - the poisoning defense, `site/defenses/poisoned.js`: Joseph asked Claude for the whole file on Nov 23 (Turn 370, D110). The price case is Joseph's own lines. This changes the midterm's §2 split and is disclosed as a deviation.
 - **Joseph writes, and Claude must not write:**
-  - the page defenses (shuffling, honeypot, poisoning);
+  - the page defenses: shuffling and honeypot (poisoning: see above);
   - the tarpit route;
   - scrapers (a)–(c);
   - the prompt, parsing and failure rules for (e).
