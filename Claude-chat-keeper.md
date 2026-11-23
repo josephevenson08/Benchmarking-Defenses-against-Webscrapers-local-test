@@ -537,6 +537,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J364 | 364 | (Joseph's price case: `return Number(amount.toFixed(2))10 + rng() * 140);`) | Explained the syntax problems; standalone temperature function with one line per step and how to adapt it; Joseph writes the price case |
 | J365 | 365 | (Joseph's second draft: the price lines above the `switch`, `replace(" $", "")`, `+ " $"`) | Move the five lines into `case "price": { }`; remove `"$"` without a space and put it in front; then check p1 and p2 |
 | J366 | 366 | (Joseph's third draft: the price case inside `case "price": { }`) | Works: six different prices, the same on every rebuild; remove the space before `$`; next, rating and review count with the same pattern |
+| J367 | 367 | (Joseph's fourth draft: `$` fixed, but `case "     price":` with spaces inside the quotes) | The label no longer matches `"price"`, so the price falls to the default; remove the spaces inside the quotes; then Step 4 |
 
 ### Questions from Claude
 
@@ -16365,6 +16366,56 @@ The changed lines are the documented hook interface (`site/defenses/README.md`) 
   - **rating:** 1.0 to 5.0 (`1 + rng() * 4`), `toFixed(1)`, no `$`;
   - **review count:** a whole number (`Math.floor`), compared after removing the comma, and returned with `toLocaleString("en-US")` for the comma.
 - **Then** generate and paste.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 367 — 2026-11-23 18:36 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function fakeValue(row, rng) {
+>   switch (row.key) {
+>     case "     price": {
+>     const real = Number(row.value.replace("$", ""));
+>     let amount = 10 + rng() * 140;
+>     amount = Number(amount.toFixed(2));
+>     if (amount === real) amount = amount + 1;
+>     return "$" + amount.toFixed(2);
+>     }
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "Fake "  + row.value  // anything not listed above
+>   }
+> }
+>
+> module.exports = { fakeValue };
+
+**What Claude did:** Reviewed Joseph's fourth draft. No files changed apart from this log.
+
+**Claude's answer (summary):**
+- **The `$` fix is right.**
+- **But the case label now has spaces inside the quotes:** `case "     price":`. `row.key` is `"price"`, so the label never matches, and the price falls to the `default` (`Fake $89.99`). It was probably meant as indentation.
+- **Fix:** take the spaces out of the quotes. To indent, put the spaces before `case` or before the five lines inside it.
+- **Then:** rating and review count (Step 4, unchanged), generate, and paste.
 
 **Questions Claude asked:** none.
 
