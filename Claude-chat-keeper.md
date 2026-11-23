@@ -136,7 +136,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 - **Grouped by scraper (a)–(d), bars per site:** recall, precision, F1, success rate, drop in recall, detection rate.
 - **Per defended site:** SSIM, fields out of reading order, HTML size change, and Lighthouse FCP/LCP/TTI change (grey bars, so they are not confused with site colours).
 - **Published reference lines (dashed), where a study reports the same metric:** Beyond BeautifulSoup 0.82–1.00 (success rate), WebCloak 100% (drop in recall), Shy Guys 67.6% (detection), WebCloak LCP +880 ms.
-Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; the measurement suite passes. | Add more panels to `figures.py`; leave Joseph to write it alone | Claude (tooling; analysis code that Claude may draft) | Scrum feedback (Turn 237); D68–D71; §4 "Final outputs". | Adds (from the scrum feedback) |
+Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; the measurement suite passes. **Turn 345 (Joseph's list):** trimmed to exactly 8 graphs with plain titles: recall (accuracy), precision, success rate, drop in recall (accuracy), detection and evasion rate (one bar per scraper, split into caught and evaded), SSIM, Lighthouse change, HTML size change. F1 and reading order were removed from the script's output. The detection reference is only Shy Guys' 67.6%: FP-Inconsistent reports both a share of requests detected (DataDome 55.44%, BotD 47.07%) and an average evasion per bot service (52.93%, 44.56%), which don't add to 100%, so they were left out to avoid confusion. | Add more panels to `figures.py`; leave Joseph to write it alone | Claude (tooling; analysis code that Claude may draft) | Scrum feedback (Turn 237); D68–D71; §4 "Final outputs". | Adds (from the scrum feedback) |
 
 ---
 
@@ -488,6 +488,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J342 | 342 | (Joseph's current doc: the day-by-day list, the new-metrics table, the published-comparison table, and "plus the graph at the moment is on the page") | Pointed out the "your" → "my" wording and the 31% vs 30.5% mismatch; built a full Word version (3 pages), which Joseph interrupted |
 | J343 | 343 | just paste it out here dont build a page | The full scrum update as text in the chat, ready to paste into Joseph's own doc |
 | J344 | 344 | can you help me set up to make a graph in matplot lib for each of the metrics? | `measurement/metric_graphs.py` (D104): 10 graphs, one per metric, with published reference lines; command to run it on the laptop |
+| J345 | 345 | do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple, | The 8 requested graphs (D104 updated) and how the detection and evasion rates are calculated |
 
 ### Questions from Claude
 
@@ -15678,3 +15679,31 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none.
 
 **Direction and fit:** D104 (Adds, from the scrum feedback).
+
+### Turn 345 — 2026-11-23 17:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple,
+
+**What Claude did:**
+- Changed `measurement/metric_graphs.py` (D104) to draw exactly Joseph's 8 graphs, with simple titles:
+  - added `detection_graph`, a stacked bar per scraper: caught (green) and evaded (grey) add up to 100%;
+  - removed F1 and reading order from the output.
+- Checked FP-Inconsistent's text: it gives both detection over all requests (55.44%, 47.07%) and average evasion per bot service (52.93%, 44.56%). These don't add to 100%, so only Shy Guys' 67.6% is used as the reference line.
+- Updated the test (8 graphs); the suite passes. Updated `README.md`.
+- Drew the graphs from the committed results and looked at all 8 tiled.
+- Committed, pushed and updated the pull request. Sent the 8 PNGs.
+
+**Claude's answer (summary):**
+- **The 8 graphs.**
+- **How the rates are calculated:**
+  - detection rate = honeypot runs that requested `/trap` at least once (counted in the server's request log by the run ID) ÷ the scraper's honeypot runs;
+  - evasion rate = 1 − detection rate;
+  - worked for (a), at 3/3 = 100% caught, and for (d), at 0/3 = 100% evaded;
+  - how the published rate differs.
+- The command to run the script on the laptop.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D104 updated (Adds).

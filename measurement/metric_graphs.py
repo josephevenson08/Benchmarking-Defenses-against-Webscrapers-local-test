@@ -1,5 +1,8 @@
 """One graph per metric (D104), for slides and reports. Simple matplotlib, meant to be read and changed.
 
+Graphs: recall (accuracy), precision, success rate, drop in recall, detection and evasion rate, SSIM, Lighthouse change,
+HTML size change.
+
     python measurement/metric_graphs.py --cells results/2026-11-20-results-all/cells.csv \
                                         --cost results/2026-11-20-user-cost-full/cost.csv --out results/<date>-metric-graphs
 
@@ -83,6 +86,30 @@ def scraper_graph(cells, column, sites, title, ylabel, out, scale=1.0, ymax=None
     print("wrote", out)
 
 
+def detection_graph(cells, out):
+    """One bar per scraper: the share of its honeypot runs that were caught (detection) and that got away (evasion)."""
+    fig, ax = plt.subplots(figsize=(7.5, 4))
+    caught = [100 * cells[(s, "honeypot")]["detection_rate"] for s in SCRAPERS]
+    evaded = [100 - c for c in caught]
+    xs = range(len(SCRAPERS))
+    ax.bar(xs, caught, 0.55, color=COLORS["honeypot"], label="detection rate (caught)")
+    ax.bar(xs, evaded, 0.55, bottom=caught, color="#c3c2b7", label="evasion rate (got away)")
+    for x, c, e in zip(xs, caught, evaded):
+        if c:
+            ax.text(x, c / 2, f"caught\n{c:.0f}%", ha="center", va="center", fontsize=8, color="white")
+        if e:
+            ax.text(x, c + e / 2, f"evaded\n{e:.0f}%", ha="center", va="center", fontsize=8)
+    ax.set_xticks(list(xs), [NAMES[s] for s in SCRAPERS])
+    ax.set_ylim(0, 115)
+    tidy(ax, "Honeypot: detection and evasion rate", "Share of the scraper's runs (%)")
+    reference(ax, 67.6, "Shy Guys\ndetection: 67.6%")
+    ax.legend(frameon=False, ncols=2, loc="upper left", bbox_to_anchor=(0, -0.08))
+    fig.tight_layout()
+    fig.savefig(out, dpi=200)
+    plt.close(fig)
+    print("wrote", out)
+
+
 def site_graph(cost, columns, title, ylabel, out, fmt="{:.2f}", ref=None):
     """Bars per defended site (shuffled, honeypot); several columns become grouped bars."""
     sites = [s for s in ("shuffled", "honeypot") if s in cost]
@@ -119,31 +146,22 @@ def main():
     cells = read_rows(args.cells, key=lambda r: (r["scraper"], r["condition"]))
     cost = read_rows(args.cost, key=lambda r: r["condition"])
 
-    # Scraping metrics: one group of bars per scraper
-    scraper_graph(cells, "recall_mean", SITES, "Recall: share of the 70 fields right", "Recall (0–1)",
-                  out / "1-recall.png", ymax=1.15)
-    scraper_graph(cells, "precision_mean", SITES, "Precision: right answers among fields filled in", "Precision (0–1)",
-                  out / "2-precision.png", ymax=1.15)
-    scraper_graph(cells, "f1_mean", SITES, "F1: recall and precision combined", "F1 (0–1)", out / "3-f1.png", ymax=1.15)
-    scraper_graph(cells, "esr", SITES, "Success rate: runs with all 70 fields right", "Success rate (0–1)",
-                  out / "4-success-rate.png", ymax=1.15, ref=(0.82, "Beyond BeautifulSoup:\n0.82–1.00"))
-    scraper_graph(cells, "reduction_recall", ["shuffled", "honeypot"], "Drop in recall caused by each defense",
-                  "Drop in recall (%)", out / "5-drop-in-recall.png", scale=100, ymax=115,
-                  ref=(100, "WebCloak:\n100%"), fmt="{:.1f}%")
-    scraper_graph(cells, "detection_rate", ["honeypot"], "Honeypot detection rate", "Runs caught (%)",
-                  out / "6-detection-rate.png", scale=100, ymax=115, ref=(67.6, "Shy Guys:\n67.6%"), fmt="{:.0f}%")
+    # Scraping metrics: one group of bars per scraper, one bar per site
+    scraper_graph(cells, "recall_mean", SITES, "Recall (accuracy)", "Recall (0\u20131)", out / "1-recall.png", ymax=1.15)
+    scraper_graph(cells, "precision_mean", SITES, "Precision", "Precision (0\u20131)", out / "2-precision.png", ymax=1.15)
+    scraper_graph(cells, "esr", SITES, "Success rate (runs with all 70 fields right)", "Success rate (0\u20131)",
+                  out / "3-success-rate.png", ymax=1.15, ref=(0.82, "Beyond BeautifulSoup:\n0.82\u20131.00"))
+    scraper_graph(cells, "reduction_recall", ["shuffled", "honeypot"], "Drop in recall (accuracy) from each defense",
+                  "Drop in recall (%)", out / "4-drop-in-recall.png", scale=100, ymax=115, ref=(100, "WebCloak:\n100%"), fmt="{:.1f}%")
+    detection_graph(cells, out / "5-detection-evasion.png")
 
     # Cost to visitors: one bar (or group) per defended site
-    site_graph(cost, [("ssim_mean", "SSIM")], "SSIM: how alike the defended page looks (1 = identical)", "SSIM",
-               out / "7-ssim.png", fmt="{:.3f}")
-    site_graph(cost, [("reading_order_mismatch_rate", "Fields out of order")], "Fields out of reading order",
-               "Share of the 70 fields", out / "8-reading-order.png")
-    site_graph(cost, [("html_change_percent", "HTML size")], "HTML size change from the normal site", "Change (%)",
-               out / "9-html-size.png", fmt="{:+.1f}%")
+    site_graph(cost, [("ssim_mean", "SSIM")], "SSIM (1 = looks identical)", "SSIM", out / "6-ssim.png", fmt="{:.3f}")
     site_graph(cost, [("lh_fcp_ms_change_mean", "FCP"), ("lh_lcp_ms_change_mean", "LCP"), ("lh_tti_ms_change_mean", "TTI")],
-               "Lighthouse: change in load times", "Change (ms)", out / "10-lighthouse.png", fmt="{:+.0f}",
+               "Lighthouse change in load times", "Change (ms)", out / "7-lighthouse.png", fmt="{:+.0f}",
                ref=(880, "WebCloak LCP:\n+880 ms"))
-
+    site_graph(cost, [("html_change_percent", "HTML size")], "HTML size change", "Change (%)",
+               out / "8-html-size.png", fmt="{:+.1f}%")
 
 if __name__ == "__main__":
     main()

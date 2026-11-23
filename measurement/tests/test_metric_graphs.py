@@ -25,8 +25,8 @@ class MetricGraphsTest(unittest.TestCase):
             with mock.patch.object(sys, "argv", argv), mock.patch("builtins.print"):
                 mg.main()
             written = sorted(p.name for p in Path(tmp).glob("*.png"))
-        self.assertEqual(len(written), 10)
-        self.assertIn("5-drop-in-recall.png", written)
+        self.assertEqual(len(written), 8)
+        self.assertIn("5-detection-evasion.png", written)
 
 
 if __name__ == "__main__":
