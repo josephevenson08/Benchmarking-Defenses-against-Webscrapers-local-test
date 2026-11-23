@@ -53,6 +53,15 @@ class ReadingOrderTest(unittest.TestCase):
     SHUFFLED = '<div class="fields"><span class="value" style="order: 3">$5</span><span class="label" style="order: 0">Name</span>' \
                '<span class="label" style="order: 2">Price</span><span class="value" style="order: 1">Lamp</span></div></main>'
 
+    def test_a_poisoned_page_is_compared_after_its_swap(self):
+        poisoned = '<div class="fields"><div class="field"><span class="label">Name</span><span class="value">Fake Lamp</span></div>' \
+                   '<div class="field"><span class="label">Price</span><span class="value">$9</span></div></div></main>'
+        values = {"fields": [{"label": "Name", "value": "Lamp"}, {"label": "Price", "value": "$5"}]}
+        base, shown = xc.html_fields(self.BASE), xc.swapped(xc.html_fields(poisoned), values)
+        self.assertEqual(shown, base)
+        self.assertEqual(xc.out_of_order(base, shown), (2, 0))
+        self.assertEqual(xc.out_of_order(base, xc.html_fields(poisoned)), (2, 2))
+
     def test_fields_and_order_from_html(self):
         base, shuffled = xc.html_fields(self.BASE), xc.html_fields(self.SHUFFLED)
         self.assertEqual(base[0], ("label", "Name", 0))

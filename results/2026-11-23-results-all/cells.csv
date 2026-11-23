@@ -1,0 +1,17 @@
+scraper,condition,runs,failed_runs,correct_per_run,recall_mean,recall_min,recall_max,precision_mean,f1_mean,esr,reduction_recall,reduction_f1,verdict,baseline_check,fake_value_rate_mean,time_per_page_mean,time_per_page_min,time_per_page_max,honeypot_hits,detection_rate,evasion_rate
+a,baseline,3,0,70 70 70,1,1,1,1,1,1,,,baseline,pass,0,0.012,0.0089,0.0143,0,0,1
+a,shuffled,3,0,4 4 4,0.0571429,0.0571429,0.0571429,0.0606061,0.0588235,0,0.942857,0.941176,stops,pass,0,0.0157667,0.0146,0.0178,0,0,1
+a,honeypot,3,0,70 70 70,1,1,1,1,1,1,0,0,no effect,pass,0,0.0171515,0.0159091,0.0189091,3,1,0
+a,poisoned,3,0,0 0 0,0,0,0,0,0,0,1,1,stops,pass,1,0.0180333,0.0161,0.0204,0,0,1
+b,baseline,3,0,70 70 70,1,1,1,1,1,1,,,baseline,pass,0,0.0230333,0.0224,0.0235,0,0,1
+b,shuffled,3,0,4 4 4,0.0571429,0.0571429,0.0571429,0.0606061,0.0588235,0,0.942857,0.941176,stops,pass,0,0.0221,0.0204,0.0242,0,0,1
+b,honeypot,3,0,70 70 70,1,1,1,1,1,1,0,0,no effect,pass,0,0.0222424,0.0213636,0.0228182,3,1,0
+b,poisoned,3,0,0 0 0,0,0,0,0,0,0,1,1,stops,pass,1,0.0254,0.025,0.026,0,0,1
+c,baseline,3,0,70 70 70,1,1,1,1,1,1,,,baseline,pass,0,5.74603,5.1327,6.8784,0,0,1
+c,shuffled,3,0,48 49 49,0.695238,0.685714,0.7,0.80674,0.746839,0,0.304762,0.253161,reduces,pass,0,5.45073,4.8135,6.4167,0,0,1
+c,honeypot,3,0,70 70 70,1,1,1,1,1,1,0,0,no effect,pass,0,5.35606,4.95127,5.55945,3,1,0
+c,poisoned,3,0,0 0 0,0,0,0,0,0,0,1,1,stops,pass,1,5.5648,5.1157,6.4364,0,0,1
+d,baseline,3,0,70 70 70,1,1,1,1,1,1,,,baseline,pass,0,3.0347,3.032,3.0375,0,0,1
+d,shuffled,3,0,70 70 70,1,1,1,1,1,1,0,0,no effect,pass,0,3.03713,3.0363,3.0381,0,0,1
+d,honeypot,3,0,70 70 70,1,1,1,1,1,1,0,0,no effect,pass,0,3.03623,3.0353,3.0381,0,0,1
+d,poisoned,3,0,70 70 70,1,1,1,1,1,1,0,0,no effect,pass,0,4.65247,4.6492,4.6581,0,0,1

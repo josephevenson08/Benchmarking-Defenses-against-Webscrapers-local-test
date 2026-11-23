@@ -202,6 +202,25 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
   - `scoring/results.py` and the cross-check over all four folders, once the folder is pushed;
   - poisoning's user cost (the user-cost runner change);
   - `poisoned` in the tables and graphs. | — | Joseph (runs); Claude (reading) | §1 item 3 "Done when"; §4 metrics (accuracy, fake-value rate, the "stops" threshold); hypothesis 2; §7 Stretch plan (poisoning Nov 18 – Dec 1, with Test 5 as the completion check). | Follows |
+| D113 | 377 | **Results over all four sites (48 runs) and the graphs with poisoned added.**
+- **Results:** `scoring/results.py` over the Nov 18, 18, 20 and 23 runner folders wrote `results/2026-11-23-results-all`, with a poisoned table (fakes, other wrong values and missing values per run).
+- **The numbers:** for (a), (b) and (c), recall 0%, a 100% drop, "stops", and a fake-value rate of 100% with 0 other wrong values. For (d), 70/70 and "no effect", at a time per page of 4.65 s.
+- **Cross-check:** independent recount `results/2026-11-23-cross-check`, **707/707 agree**, including a fakes check for each poisoned run.
+- **Graphs and tables:** `measurement/metric_graphs.py` and `measurement/figures.py` now include `poisoned` wherever it has results:
+  - poisoned's colour is the reference palette's slot 4, yellow `#eda100`. Validated with the dataviz validator: CVD and normal-vision checks pass; its contrast warning is covered by the value labels on every bar and by `tables.md`;
+  - the drop-in-recall graph and fig2 and fig6 show poisoning beside shuffling and WebCloak;
+  - Table 1 gains a fake-value rate column, and Table 4 the poisoning drops;
+  - the reference label's line alignment is fixed.
+- **Outputs:** `results/2026-11-23-metric-graphs` and `results/2026-11-23-figures`. The measurement tests pass. | — | Claude (tooling) | §4 metrics and Analysis; §5 (mean and min–max over 3 runs); D68–D71, D90, D100–D104. | Follows (D103 and D104 themselves are Adds) |
+| D114 | 377 | **User cost for poisoning: the runner serves the pages and measures how long the fakes stay on screen.**
+- **Why the change:** `measurement/user_cost.py` opened the pages from their files, so a poisoned page couldn't fetch its JSON and its screenshots would have kept the fakes. It now serves each condition with `site/server.js` on `--port`, with a log in `logs/visit-<condition>.jsonl`, apart from scraper logs.
+- **The new measure:** "seconds fake values stay visible", the last value change after load, recorded as in Test 5. New columns: `fakes_visible_s` per page, and `pages_with_fakes`, `fakes_visible_mean_s` and `fakes_visible_max_s` per condition. The report gains a section for it.
+- **Cross-check:** it now compares poisoned pages after applying the real values, as the 3 s screenshot does, and checks that the fakes last at least the swap delay and end before the screenshot.
+- **Cloud run** (no Lighthouse, scratchpad):
+  - shuffled and honeypot are identical to the laptop's Nov 20 numbers;
+  - poisoned: 0% pixel difference, SSIM 1.000, 0/70 fields out of reading order, 0 axe violations, HTML +17.5% (the swap script), fakes on screen 2.02 s mean and 2.03 s max;
+  - cross-check 722/722.
+- **Still to do:** the full run with Lighthouse on the laptop. | Keep opening files and inject the real values; serve the pages (chosen) | Claude (tooling) | §5 User cost ("screenshots taken after a 3-second wait so poisoned pages show their real values"); §4 item 4 ("for poisoning, the seconds fake values stay visible (2 by design)"); §2 test site (the server serves the real-values JSON). | Follows (the measures); Interprets (served pages, how the seconds are measured) |
 ---
 
 ## Questions register
@@ -584,6 +603,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J374 | 374 | (check output: 124 lines; `function script(page)` on line 108) | Matches the Turn 370 file; next: generate, Test 5, commit, rerun |
 | J375 | 375 | (runner output: 12 poisoned runs; (a)–(c) 0/70 with 70 fakes, (d) 70/70 at 4.65 s per page; first folder deleted) | ⭐ Poisoning runs done; Ambitious item 3 met on the runner's scores (D112); push the results and the Test 5 report |
 | J376 | 376 | (laptop Test 5 output: PASS 4/4 at commit `910ee22`, the swap at 2.01–2.02 s) | Poisoning complete and checked; push the runs and the Test 5 folder, merge PR #63 |
+| J377 | 377 | ok i pushed and merged | Results over 48 runs and cross-check 707/707 (D113); poisoned added to the graphs; user-cost runner serves pages and measures fakes on screen (D114); laptop user-cost run next |
 
 ### Questions from Claude
 
@@ -639,7 +659,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **Earlier resume note (Turn 336, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330, with the metrics write-up and the WebCloak rationale added in Turns 334–335); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
 
-**For poisoning's user cost (found Turn 347):** `measurement/user_cost.py` opens each page from its file (`file://`), so a poisoned page's script can't fetch `/values/...` and its screenshot would keep the fakes. Before measuring `poisoned`, serve the pages through `site/server.js` (with a log kept apart from scraper logs, as for Lighthouse) and add the seconds fake values stay visible (§4 item 4; Test 5 already measures it). Check that the other conditions' numbers don't change.
+**For poisoning's user cost (found Turn 347; tooling done Turn 377, D114):** the runner now serves the pages and reports how long the fakes stay on screen. Left: the full run with Lighthouse on the laptop (`--conditions shuffled honeypot poisoned`), then graphs 6–8 and Table 3 again.
 
 **For the tarpit (Turn 347, D107):** once Joseph's `tarpit.js` exists, add: the runner's `--robots ignore` setting for (a), (b) and (d) (the scrapers already take `--robots obey|ignore`); maze pages loaded, seconds trapped and server time per maze request in `scoring/results.py`; Test 6's maze part (a scraper that obeys robots.txt never requests `/maze/`); `tarpit` in the graphs.
 
@@ -16962,3 +16982,32 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (adds to D112).
+
+### Turn 377 — 2026-11-23 19:15 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i pushed and merged
+
+**What Claude did:**
+- Fetched and merged `main` (PR #63 and Joseph's "Poisoned runs and Test 5").
+- Built `results/2026-11-23-results-all` over the four runner folders (48 runs) and the cross-check `results/2026-11-23-cross-check` (707/707 agree) (D113).
+- Added `poisoned` to `metric_graphs.py` and `figures.py`: palette slot 4, run through the dataviz validator. Rendered the graphs to `results/2026-11-23-metric-graphs` and `results/2026-11-23-figures` and looked at them.
+- Changed the user-cost runner to serve the pages and measure how long the fakes stay on screen. The cross-check now handles poisoned pages (D114).
+- Ran the user-cost runner in the cloud without Lighthouse: shuffled and honeypot unchanged; poisoned fakes on screen 2.02 s; cross-check 722/722.
+- Tests: measurement suite passes (new tests for the fakes-on-screen column and the swap in the cross-check).
+- Updated the README. Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **The full results table**, with poisoning beside the other defenses and the comparison with WebCloak.
+- **Visitor cost of poisoning so far:** visually identical after the swap, no accessibility or reading-order cost, about 2 s of fakes on screen, and an HTML +17.5% from the script. Lighthouse is still to come.
+- **Next, Joseph:**
+  1. merge the PR;
+  2. on the laptop, run the full user cost with Lighthouse for all three defenses;
+  3. push it.
+  Then Claude redraws graphs 6–8 and Table 3 and reruns the cross-check.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D113 (Follows), D114 (Follows / Interprets).

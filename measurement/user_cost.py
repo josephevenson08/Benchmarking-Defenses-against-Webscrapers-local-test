@@ -3,10 +3,11 @@
     python measurement/user_cost.py [--conditions shuffled honeypot] [--out results/<date>-user-cost] [--wait 3]
                                     [--lighthouse-runs 5] [--no-axe] [--port 3200]
 
-For the baseline and each condition, it rebuilds the site from the data list and opens every page from its files
-in headless Chromium (1280x800 viewport, no server, so no request log is touched). After --wait seconds (§5: 3 s,
-so poisoned pages show their real values) it takes a full-page screenshot and records where each field's label
-and value sit on screen. Then, against the baseline:
+For the baseline and each condition, it rebuilds the site from the data list, serves it with site/server.js on
+--port (with its own request log in logs/, kept apart from scraper logs) and opens every page in headless Chromium
+(1280x800 viewport). The pages are served, not opened from their files, so a poisoned page can fetch its real
+values. After --wait seconds (§5: 3 s, so poisoned pages show their real values) it takes a full-page screenshot and
+records where each field's label and value sit on screen. Then, against the baseline:
 
   pixel difference   % of pixels that differ (pixelmatch, measurement/pixel_diff.mjs, as in Test 4)
   SSIM               structural similarity (Wang et al. 2004), same script; 1.0 = identical
@@ -20,6 +21,9 @@ and value sit on screen. Then, against the baseline:
                      condition), by impact and by WCAG level, and how many are new against the baseline
   Lighthouse         performance score, FCP, LCP and TTI: the median of --lighthouse-runs runs per page (§5: 5),
                      with the site served on --port, as changes from the baseline (D70; measurement/lighthouse.mjs)
+  fakes on screen    poisoning only (§4 item 4, "the seconds fake values stay visible"): when a page's field values
+                     last changed after the load event, in seconds from the start of the page load; empty for pages
+                     whose values never change. Measured as in Test 5 (measurement/test5.py).
 
 axe-core and Lighthouse need `npm install` (both are pinned in package.json). --lighthouse-runs 0 skips Lighthouse.
 
@@ -28,7 +32,7 @@ Writes to the results folder:
   pixel-<condition>.json     the pixel-diff and SSIM report per page
   axe-<condition>.json       every axe-core violation per page
   lighthouse-<condition>.json every Lighthouse run per page, and the medians
-  logs/                      the request logs of the Lighthouse servers (kept apart from scraper logs)
+  logs/                      the request logs of the page visits and the Lighthouse servers (apart from scraper logs)
   pages.csv                  one row per condition and page
   cost.csv                   one row per condition (the midterm's CostMeasurement)
   report.md, manifest.json
@@ -101,30 +105,51 @@ def wcag_level(tags):
     return "best-practice"
 
 
-def visit_pages(condition, conditions_dir, shots_dir, wait, width=1280, height=800, run_axe=True):
-    """Screenshots every page of a condition. Returns ({page path: field elements in source order},
-    {page path: axe-core violations}); the second is empty when run_axe is False."""
+# The last time (ms from the start of the page load) a field value changed after the load event; null if none did.
+LAST_SWAP = """() => {
+  const nav = performance.getEntriesByType("navigation")[0];
+  const after = (window.__valueChanges || []).filter((t) => t > (nav ? nav.loadEventEnd : 0));
+  return after.length ? Math.max(...after) : null;
+}"""
+
+
+def visit_pages(condition, conditions_dir, shots_dir, wait, port, log_file, width=1280, height=800, run_axe=True):
+    """Serves a condition on `port` and screenshots every page. Returns ({page path: field elements in source
+    order}, {page path: axe-core violations}, {page path: seconds the fakes stayed on screen, or None}); the second
+    is empty when run_axe is False."""
     from playwright.sync_api import sync_playwright
     from measurement.screenshots import load_pages, png_name
+    from measurement.test5 import RECORD_CHANGES
+    from measurement.test6 import start_server
     if run_axe and not AXE_SCRIPT.exists():
         raise SystemExit(f"axe-core is not installed ({AXE_SCRIPT}). Run: npm install")
-    site = Path(conditions_dir) / condition
     shots_dir = Path(shots_dir)
     shots_dir.mkdir(parents=True, exist_ok=True)
-    fields, axe = {}, {}
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page(viewport={"width": width, "height": height}, device_scale_factor=1)
-        for entry in load_pages(condition, conditions_dir):
-            page.goto((site / entry["file"]).resolve().as_uri(), wait_until="load")
-            page.wait_for_timeout(wait * 1000)
-            page.screenshot(path=str(shots_dir / png_name(entry["path"])), full_page=True)
-            fields[entry["path"]] = page.evaluate(FIELD_ELEMENTS)
-            if run_axe:
-                page.add_script_tag(path=str(AXE_SCRIPT))
-                axe[entry["path"]] = page.evaluate(AXE_RUN)
-        browser.close()
-    return fields, axe
+    Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+    fields, axe, swaps = {}, {}, {}
+    server = start_server(condition, port, log_file)
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            context = browser.new_context(viewport={"width": width, "height": height}, device_scale_factor=1,
+                                          user_agent="bench-user-cost (run=user-cost)")
+            context.add_init_script(script=RECORD_CHANGES)
+            page = context.new_page()
+            for entry in load_pages(condition, conditions_dir):
+                page.goto(f"http://127.0.0.1:{port}{entry['path']}", wait_until="load")
+                page.wait_for_timeout(wait * 1000)
+                page.screenshot(path=str(shots_dir / png_name(entry["path"])), full_page=True)
+                fields[entry["path"]] = page.evaluate(FIELD_ELEMENTS)
+                last = page.evaluate(LAST_SWAP)
+                swaps[entry["path"]] = None if last is None else last / 1000
+                if run_axe:
+                    page.add_script_tag(path=str(AXE_SCRIPT))
+                    axe[entry["path"]] = page.evaluate(AXE_RUN)
+            browser.close()
+    finally:
+        server.terminate()
+        server.wait(timeout=10)
+    return fields, axe, swaps
 
 
 def chromium_path():
@@ -170,7 +195,8 @@ def axe_counts(violations):
     return {v["id"]: v["nodes"] for v in violations}
 
 
-def page_rows(condition, sizes, base_sizes, fields, base_fields, pixels, axe=None, base_axe=None, lh=None, base_lh=None):
+def page_rows(condition, sizes, base_sizes, fields, base_fields, pixels, axe=None, base_axe=None, lh=None, base_lh=None,
+              swaps=None):
     from measurement.screenshots import png_name
     per_png = {p["page"]: p for p in (pixels or {}).get("pages", [])}
     lh_pages = {p["path"]: p["median"] for p in (lh or {}).get("pages", [])}
@@ -185,6 +211,7 @@ def page_rows(condition, sizes, base_sizes, fields, base_fields, pixels, axe=Non
             "html_change_percent": None if not base else 100 * (size - base) / base,
             "pixel_diff_percent": px.get("percent"), "ssim": px.get("ssim"),
             "fields": n, "fields_out_of_order": out,
+            "fakes_visible_s": (swaps or {}).get(path),
         }
         if axe is not None:
             mine, theirs = axe_counts(axe.get(path, [])), axe_counts((base_axe or {}).get(path, []))
@@ -210,6 +237,7 @@ def condition_row(condition, rows, pixels, base_total):
     out = sum(r["fields_out_of_order"] for r in rows)
     html = sum(r["html_bytes"] for r in rows)
     changes = [r["html_change_percent"] for r in rows if r["html_change_percent"] is not None]
+    swaps = [r["fakes_visible_s"] for r in rows if r.get("fakes_visible_s") is not None]
     return {
         "condition": condition, "pages": len(rows),
         "pixel_diff_mean_percent": pixels["mean_percent"] if pixels else None,
@@ -221,6 +249,9 @@ def condition_row(condition, rows, pixels, base_total):
         "html_bytes": html,
         "html_change_percent": 100 * (html - base_total) / base_total if base_total else None,
         "html_change_max_page_percent": max(changes) if changes else None,
+        "pages_with_fakes": len(swaps),
+        "fakes_visible_mean_s": sum(swaps) / len(swaps) if swaps else None,
+        "fakes_visible_max_s": max(swaps) if swaps else None,
         **axe_totals(rows), **lighthouse_means(rows),
     }
 
@@ -252,11 +283,12 @@ def lighthouse_means(rows):
 
 COST_COLUMNS = ["condition", "pages", "pixel_diff_mean_percent", "pixel_diff_max_percent", "ssim_mean", "ssim_min",
                 "fields", "fields_out_of_order", "reading_order_mismatch_rate", "html_bytes", "html_change_percent",
-                "html_change_max_page_percent", "axe_violations", "axe_new_vs_baseline"] + \
+                "html_change_max_page_percent", "pages_with_fakes", "fakes_visible_mean_s", "fakes_visible_max_s",
+                "axe_violations", "axe_new_vs_baseline"] + \
                [f"axe_{i}" for i in IMPACTS] + [f"axe_level_{lv}" for lv in LEVELS] + \
                [f"lh_{k}_{s}" for k in LH_MEASURES for s in ("mean", "change_mean")]
 PAGE_COLUMNS = ["condition", "page", "html_bytes", "html_change_percent", "pixel_diff_percent", "ssim", "fields",
-                "fields_out_of_order", "axe_violations", "axe_new_vs_baseline", "axe_rules"] + \
+                "fields_out_of_order", "fakes_visible_s", "axe_violations", "axe_new_vs_baseline", "axe_rules"] + \
                [f"lh_{k}{s}" for k in LH_MEASURES for s in ("", "_change")]
 
 
@@ -291,6 +323,14 @@ def write_report(out_dir, manifest, cost):
             f"{f(c['ssim_mean'], '.4f')} / {f(c['ssim_min'], '.4f')} | "
             f"{c['fields_out_of_order']}/{c['fields']} fields = {f(c['reading_order_mismatch_rate'], '.3f')} | "
             f"{f(c['html_change_percent'], '+.1f')}% (max page {f(c['html_change_max_page_percent'], '+.1f')}%) |")
+    if any(c.get("pages_with_fakes") for c in cost):
+        lines += ["", "## Fakes on screen (poisoning)", "",
+                  "Seconds from the start of the page load until the last field showed its real value.", "",
+                  "| Condition | Pages that swapped | Mean | Max |", "|---|---|---|---|"]
+        for c in cost:
+            if c.get("pages_with_fakes"):
+                lines.append(f"| {c['condition']} | {c['pages_with_fakes']} | {f(c['fakes_visible_mean_s'], '.2f')} s | "
+                             f"{f(c['fakes_visible_max_s'], '.2f')} s |")
     if any("axe_violations" in c for c in cost):
         lines += ["", "## Accessibility (axe-core, all 10 pages)", "",
                   "| Condition | Violations | New vs baseline | Critical / serious / moderate / minor | WCAG A / AA / AAA / best practice |",
@@ -324,7 +364,7 @@ def main():
     parser.add_argument("--wait", type=float, default=3.0, help="seconds to wait after load (default 3)")
     parser.add_argument("--lighthouse-runs", type=int, default=5, help="Lighthouse runs per page, median kept (default 5; 0 skips)")
     parser.add_argument("--no-axe", action="store_true", help="skip axe-core")
-    parser.add_argument("--port", type=int, default=3200, help="port for the Lighthouse server (default 3200)")
+    parser.add_argument("--port", type=int, default=3200, help="port for the page visits and Lighthouse (default 3200)")
     args = parser.parse_args()
 
     from measurement.run_experiment import tool_versions
@@ -345,13 +385,17 @@ def main():
                 "conditions": ["baseline"] + args.conditions, "versions": versions,
                 "config": json.loads((ROOT / "config.json").read_text(encoding="utf-8"))}
 
-    sizes, fields, axe, lighthouse = {}, {}, {}, {}
+    sizes, fields, axe, lighthouse, swaps = {}, {}, {}, {}, {}
     for condition in manifest["conditions"]:
         print(f"{condition}: generating, screenshots, field positions" + ("" if args.no_axe else ", axe-core") + " ...", flush=True)
         generate(condition)
         sizes[condition] = html_sizes(condition, conditions_dir)
-        fields[condition], axe[condition] = visit_pages(condition, conditions_dir, out_dir / "screenshots" / condition,
-                                                        args.wait, run_axe=not args.no_axe)
+        fields[condition], axe[condition], swaps[condition] = visit_pages(
+            condition, conditions_dir, out_dir / "screenshots" / condition, args.wait, args.port,
+            out_dir / "logs" / f"visit-{condition}.jsonl", run_axe=not args.no_axe)
+        delay = manifest["config"].get("poison_swap_delay_seconds", 0)
+        if any(v is not None for v in swaps[condition].values()) and args.wait <= delay:
+            print(f"  warning: --wait {args.wait:g} s is not longer than the {delay} s swap, so screenshots may show fakes")
         if not args.no_axe:
             (out_dir / f"axe-{condition}.json").write_text(json.dumps(axe[condition], indent=2) + "\n", encoding="utf-8")
         if args.lighthouse_runs > 0:
@@ -370,7 +414,7 @@ def main():
                                   out_dir / "screenshots" / f"diff-{condition}", out_dir / f"pixel-{condition}.json")
         rows = page_rows(condition, sizes[condition], sizes["baseline"], fields[condition], fields["baseline"], pixels,
                          axe=None if args.no_axe else axe[condition], base_axe=None if args.no_axe else axe["baseline"],
-                         lh=lighthouse.get(condition), base_lh=lighthouse.get("baseline"))
+                         lh=lighthouse.get(condition), base_lh=lighthouse.get("baseline"), swaps=swaps[condition])
         all_pages += rows
         cost.append(condition_row(condition, rows, pixels, sum(sizes["baseline"].values())))
 
