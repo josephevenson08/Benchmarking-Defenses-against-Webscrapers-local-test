@@ -517,6 +517,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J345 | 345 | do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple, | The 8 requested graphs (D104 updated) and how the detection and evasion rates are calculated |
 | J346 | 346 | and what other defenses do i still need to add, and what else if left for this project based on my project outline | Checked the midterm's 5 scope items: 2 of 4 defenses built (poisoning and tarpit left), 4 of 5 scrapers (e left); the remaining Milestone 3 and 4 work; recommended poisoning only |
 | J347 | 347 | ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses | Poisoning's site and scoring side and Test 5 built (D105); Joseph writes `poisoned.js` next. Tarpit started at Joseph's choice, before the midterm's gate (D106, Deviates); its slot is ready for Joseph's `tarpit.js` (D107) |
+| J348 | 348 | (`git pull` output ending in "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)") | OneDrive lock on Git's clean-up: answer n; the pull is done; `git config gc.auto 0` stops it |
 
 ### Questions from Claude
 
@@ -15801,3 +15802,27 @@ All numbers are from the cross-checked results (D102).
 - D105: Follows / Interprets.
 - D106: **Deviates** (Joseph's decision).
 - D107: Interprets.
+
+### Turn 348 — 2026-11-23 17:54 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git pull
+> Enumerating objects: 1014, done.
+> Counting objects: 100% (1/1), done.
+> Writing objects: 100% (1/1), done.
+> Total 1 (delta 0), reused 1 (delta 0), pack-reused 0 (from 0)
+> Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)
+
+**What Claude did:** Checked PR #61 (https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test/pull/61): Joseph merged it at 17:53 UTC (merge commit `4dfeb12`). Merged `origin/main` into the branch.
+
+**Claude's answer (summary):**
+- **The prompt is OneDrive again** (Turns 164 and 323). After the pull, Git tidies its object folder, and OneDrive is holding `.git/objects/00` open.
+- **Answer `n`, and Ctrl+C if it asks again.** Nothing is lost: the pull already finished, and only the clean-up is skipped.
+- **Check the pull:** `git log --oneline -1` should show `4dfeb12 Merge pull request #61`, and `site/defenses/README.md` should have the `fakeValue` section.
+- **To stop the prompt:** run `git config gc.auto 0` once in the project folder, or pause OneDrive syncing while using Git. Moving the project out of OneDrive (e.g. to `C:\dev\`) fixes it for good.
+- **Next:** `poisoned.js` (Turn 347's steps).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
