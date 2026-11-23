@@ -523,6 +523,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J350 | 350 | same thing happened | Turn off Git's auto maintenance; fetch and merge as two steps so the OneDrive prompt can't stop the merge |
 | J351 | 351 | (`git fetch origin` and `git merge origin/main` output: fast-forward `8e20c37..4dfeb12`, 19 files) | Laptop up to date; `npm test`, then `poisoned.js` in small steps checked with Test 5 |
 | J352 | 352 | ok all 30 passed walk me through the poisoned then lets continue | Walkthrough of `poisoned.js` (concepts, standalone snippets, field rules, order of work); Test 5's HTML check fixed to search each page for its own values (D108) |
+| J353 | 353 | where am i putting this file? | `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`; the file name sets the condition name |
 
 ### Questions from Claude
 
@@ -15974,3 +15975,21 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none.
 
 **Direction and fit:** D108 (Interprets).
+
+### Turn 353 — 2026-11-23 18:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> where am i putting this file?
+
+**What Claude did:** Answered from `site/defenses/README.md` and the generator's naming rule. No files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Where:** `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`.
+- **Why the name matters:** the generator finds a defense by its file name, so `poisoned.js` is what `npm run generate -- poisoned` builds. Any other name doesn't work.
+- **How in VS Code:** right-click `site/defenses` → New File → `poisoned.js`.
+- **To check:** `npm run generate -- poisoned` without the file says "Unknown or not-yet-built condition", and with it the error goes away.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
