@@ -113,6 +113,18 @@ class AxeAndLighthouseTest(unittest.TestCase):
         self.assertEqual((totals["lh_score_mean"], totals["lh_score_change_mean"]), (96, -3))
         self.assertEqual(totals["lh_tti_ms_change_mean"], 50)
 
+    def test_seconds_fakes_stay_on_screen(self):
+        sizes = {"/": 100, "/products/p1": 300, "/products/p2": 300}
+        rows = uc.page_rows("poisoned", sizes, sizes, {}, {}, None,
+                            swaps={"/": None, "/products/p1": 2.03, "/products/p2": 2.01})
+        self.assertEqual([r["fakes_visible_s"] for r in rows], [None, 2.03, 2.01])
+        totals = uc.condition_row("poisoned", rows, None, 700)
+        self.assertEqual(totals["pages_with_fakes"], 2)
+        self.assertAlmostEqual(totals["fakes_visible_mean_s"], 2.02)
+        self.assertEqual(totals["fakes_visible_max_s"], 2.03)
+        plain = uc.condition_row("shuffled", uc.page_rows("shuffled", sizes, sizes, {}, {}, None), None, 700)
+        self.assertEqual((plain["pages_with_fakes"], plain["fakes_visible_max_s"]), (0, None))
+
     def test_without_axe_or_lighthouse_the_columns_stay_empty(self):
         rows = uc.page_rows("shuffled", {"/": 100}, {"/": 100}, {}, {}, None)
         self.assertNotIn("axe_violations", rows[0])

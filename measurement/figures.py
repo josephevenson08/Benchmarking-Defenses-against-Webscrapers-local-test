@@ -32,9 +32,11 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 NAMES = {"a": "(a) raw HTML", "b": "(b) browser", "c": "(c) LLM", "d": "(d) adaptive"}
-CONDITIONS = ["baseline", "shuffled", "honeypot"]
+CONDITIONS = ["baseline", "shuffled", "honeypot", "poisoned"]
+DEFENSES = ["shuffled", "honeypot", "poisoned"]
+DEFENSE_NAMES = {"shuffled": "shuffling", "honeypot": "honeypot", "poisoned": "poisoning"}
 # Categorical slots 1-3 of the dataviz reference palette, validated together for colour-blind separation.
-COLORS = {"baseline": "#2a78d6", "shuffled": "#eb6834", "honeypot": "#1baf7a"}
+COLORS = {"baseline": "#2a78d6", "shuffled": "#eb6834", "honeypot": "#1baf7a", "poisoned": "#eda100"}  # palette slots 1-4
 OURS, PUBLISHED = "#2a78d6", "#eb6834"
 INK, INK2, GRID, AXIS = "#0b0b0b", "#52514e", "#e1e0d9", "#c3c2b7"
 # Published results in the same metrics, as reported in the papers (docs/metrics-plan.md, related-work table).
@@ -99,26 +101,27 @@ def fig_recall(plt, cells, scrapers, path):
     import numpy as np
     fig, ax = plt.subplots(figsize=(8, 4.2))
     x = np.arange(len(scrapers))
-    width = 0.26
-    for i, cond in enumerate(CONDITIONS):
+    conds = [c for c in CONDITIONS if any((s, c) in cells for s in scrapers)]
+    width = 0.8 / len(conds)
+    for i, cond in enumerate(conds):
         means, lows, highs = [], [], []
         for s in scrapers:
             c = cells.get((s, cond))
             means.append(100 * c["recall_mean"] if c else np.nan)
             lows.append(100 * (c["recall_mean"] - c["recall_min"]) if c else 0)
             highs.append(100 * (c["recall_max"] - c["recall_mean"]) if c else 0)
-        pos = x + (i - 1) * width
+        pos = x + (i - (len(conds) - 1) / 2) * width
         ax.bar(pos, means, width * 0.92, color=COLORS[cond], label=cond, yerr=[lows, highs],
                error_kw={"ecolor": INK2, "elinewidth": 1, "capsize": 3})
         for xp, m in zip(pos, means):
             if not np.isnan(m):
-                ax.text(xp, m + 1.5, f"{m:.0f}", ha="center", va="bottom", fontsize=8.5, color=INK)
+                ax.text(xp, m + 1.5, f"{m:.0f}", ha="center", va="bottom", fontsize=8 if len(conds) > 3 else 8.5, color=INK)
     ax.axhline(10, color=INK2, linewidth=1, linestyle=(0, (4, 3)), label='"stops" line (10%)')
     ax.set_xticks(x, [NAMES[s] for s in scrapers])
     ax.set_ylim(0, 112)
     ax.set_ylabel("Recall (= accuracy), % of 70 fields")
     ax.set_title("Recall by scraper and site (mean of runs; bars show min–max)", loc="left")
-    ax.legend(ncols=4, loc="upper left", bbox_to_anchor=(0, -0.1))
+    ax.legend(ncols=len(conds) + 1, loc="upper left", bbox_to_anchor=(0, -0.1), fontsize=8.5)
     ax.grid(axis="x", visible=False)
     fig.tight_layout()
     fig.savefig(path, dpi=200)
@@ -126,8 +129,9 @@ def fig_recall(plt, cells, scrapers, path):
 
 
 def fig_reduction(plt, cells, scrapers, path):
-    rows = [(f"Shuffling vs {NAMES[s]}", 100 * cells[(s, "shuffled")]["reduction_recall"], OURS)
-            for s in scrapers if (s, "shuffled") in cells and cells[(s, "shuffled")]["reduction_recall"] is not None]
+    rows = [(f"{DEFENSE_NAMES[cond].capitalize()} vs {NAMES[s]}", 100 * cells[(s, cond)]["reduction_recall"], OURS)
+            for cond in ("shuffled", "poisoned") for s in scrapers
+            if (s, cond) in cells and cells[(s, cond)]["reduction_recall"] is not None]
     rows.append(("WebCloak vs LLM scrapers (published)", 100 * (1 - WEBCLOAK["after"] / WEBCLOAK["before"]), PUBLISHED))
     rows = rows[::-1]
     fig, ax = plt.subplots(figsize=(8, 0.55 * len(rows) + 1.4))
@@ -139,7 +143,7 @@ def fig_reduction(plt, cells, scrapers, path):
     ax.axvline(90, color=INK2, linewidth=1, linestyle=(0, (4, 3)), label='"stops" line (recall below 10%)')
     ax.set_xlim(0, 112)
     ax.set_xlabel("Drop in recall: 1 − recall with the defense ÷ recall without (%)")
-    fig.suptitle("Drop in scraping recall: our shuffling vs a published defense", x=0.01, ha="left",
+    fig.suptitle("Drop in scraping recall: our defenses vs a published defense", x=0.01, ha="left",
                  fontsize=12, fontweight="bold", color=INK)
     ax.legend(loc="lower left", bbox_to_anchor=(0, 1.0), fontsize=8.5)
     ax.grid(axis="y", visible=False)
@@ -152,7 +156,7 @@ def fig_reduction(plt, cells, scrapers, path):
 
 def fig_protection_vs_cost(plt, cells, cost, scrapers, path):
     fig, ax = plt.subplots(figsize=(7.2, 4.6))
-    for cond in ("shuffled", "honeypot"):
+    for cond in DEFENSES:
         if cond not in cost:
             continue
         x = cost[cond]["reading_order_mismatch_rate"] or 0.0
@@ -172,8 +176,8 @@ def fig_protection_vs_cost(plt, cells, cost, scrapers, path):
     ax.set_ylabel("Protection: drop in recall (%)")
     ax.set_title("Protection against user cost, one point per defense and scraper", loc="left")
     ax.legend(loc="center left")
-    footnote(fig, "Both defenses: 0% pixel difference, SSIM 1.000, 0 axe-core violations, no Lighthouse change beyond "
-             "noise. The honeypot protects by detection, not by lowering recall (Figure 4).")
+    footnote(fig, "Shuffling and the honeypot: 0% pixel difference, SSIM 1.000, 0 axe-core violations, no Lighthouse change "
+             "beyond noise. The honeypot protects by detection, not by lowering recall (Figure 4).")
     fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(path, dpi=200)
     plt.close(fig)
@@ -209,9 +213,10 @@ def fig_published(plt, cells, cost, scrapers, path):
         ax.grid(axis="y", visible=False)
 
     short = {"a": "(a) HTML", "b": "(b) browser", "c": "(c) LLM", "d": "(d) adaptive"}
-    fig, axes = plt.subplots(2, 2, figsize=(7.6, 5.4))
-    drop = [(f"Ours: shuffling vs {short[s]}", 100 * cells[(s, "shuffled")]["reduction_recall"], OURS)
-            for s in scrapers if (s, "shuffled") in cells]
+    tall = any((s, "poisoned") in cells for s in scrapers)
+    fig, axes = plt.subplots(2, 2, figsize=(7.6, 6.4 if tall else 5.4))
+    drop = [(f"Ours: {DEFENSE_NAMES[cond]} vs {short[s]}", 100 * cells[(s, cond)]["reduction_recall"], OURS)
+            for cond in ("shuffled", "poisoned") for s in scrapers if (s, cond) in cells]
     drop.append(("WebCloak vs LLM agents", 100 * (1 - WEBCLOAK["after"] / WEBCLOAK["before"]), PUBLISHED))
     panel(axes[0][0], "(a) Drop in recall from the defense", drop, "%", 125, lambda v: f"{v:.1f}")
     success = [(f"Ours: {short[s]}", cells[(s, "baseline")]["esr"], OURS) for s in scrapers if (s, "baseline") in cells]
@@ -221,7 +226,7 @@ def fig_published(plt, cells, cost, scrapers, path):
                  for s in scrapers if (s, "honeypot") in cells]
     detection += [(name, v, PUBLISHED) for name, v in PUBLISHED_RESULTS["detection"]]
     panel(axes[1][0], "(c) Bot detection rate", detection, "%", 125, lambda v: f"{v:.1f}")
-    lcp = [(f"Ours: {cond}", cost[cond]["lh_lcp_ms_change_mean"] or 0.0, OURS) for cond in ("shuffled", "honeypot") if cond in cost]
+    lcp = [(f"Ours: {cond}", cost[cond]["lh_lcp_ms_change_mean"] or 0.0, OURS) for cond in DEFENSES if cond in cost]
     lcp += [(name, v, PUBLISHED) for name, v in PUBLISHED_RESULTS["lcp_ms"]]
     panel(axes[1][1], "(d) Load-time cost (LCP)", lcp, " ms", 1100, lambda v: f"{round(v) + 0:+d}")
     from matplotlib.patches import Patch
@@ -262,8 +267,8 @@ def tables(cells, cost, scrapers):
     lines = ["# Results tables", "", f"Made {datetime.date.today().isoformat()} by `measurement/figures.py` from `cells.csv` "
              "(scoring/results.py) and `cost.csv` (measurement/user_cost.py).", "",
              "## Table 1. Extraction quality by defense and scraper", "",
-             "| Scraper | Site | Correct per run | Recall (min–max) | Precision | F1 | ESR | Drop in recall | Verdict |",
-             "|---|---|---|---|---|---|---|---|---|"]
+             "| Scraper | Site | Correct per run | Recall (min–max) | Precision | F1 | ESR | Drop in recall | Verdict | Fake-value rate |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
     for s in scrapers:
         for cond in CONDITIONS:
             c = cells.get((s, cond))
@@ -272,7 +277,8 @@ def tables(cells, cost, scrapers):
             rng = "" if c["recall_min"] == c["recall_max"] else f" ({pct(c['recall_min'])}–{pct(c['recall_max'])})"
             prec = "—" if c["precision_mean"] is None else f"{c['precision_mean']:.3f}"
             lines.append(f"| {NAMES[s]} | {cond} | {c['correct_per_run']} | {pct(c['recall_mean'])}{rng} | {prec} | "
-                         f"{c['f1_mean']:.3f} | {c['esr']:.2f} | {pct(c['reduction_recall'])} | {c['verdict']} |")
+                         f"{c['f1_mean']:.3f} | {c['esr']:.2f} | {pct(c['reduction_recall'])} | {c['verdict']} | "
+                         f"{pct(c.get('fake_value_rate_mean')) if cond == 'poisoned' else '—'} |")
     base_tpp = cells.get(("a", "baseline"), {}).get("time_per_page_mean")
     lines += ["", "## Table 2. Honeypot and speed", "",
               "| Scraper | Honeypot detection rate | Evasion rate | Trap hits (honeypot runs) | Time per page (baseline) | Slowdown vs (a) |",
@@ -288,7 +294,7 @@ def tables(cells, cost, scrapers):
               "## Table 3. User cost against baseline", "",
               "| Site | Pixel diff (max) | SSIM (min) | Fields out of reading order | HTML size | axe-core violations (new) | "
               "Lighthouse score | FCP | LCP | TTI |", "|---|---|---|---|---|---|---|---|---|---|"]
-    for cond in ("shuffled", "honeypot"):
+    for cond in DEFENSES:
         c = cost.get(cond)
         if not c:
             continue
@@ -304,6 +310,9 @@ def tables(cells, cost, scrapers):
     # Table 4: comparison with published work
     sh = {s: cells[(s, "shuffled")] for s in scrapers if (s, "shuffled") in cells}
     drops = ", ".join(f"{pct(c['reduction_recall'])} {NAMES[s].split()[0]}" for s, c in sh.items())
+    po = {s: cells[(s, "poisoned")] for s in scrapers if (s, "poisoned") in cells}
+    if po:
+        drops += "; poisoning: " + ", ".join(f"{pct(c['reduction_recall'])} {NAMES[s].split()[0]}" for s, c in po.items())
     esr = ", ".join(f"{cells[(s, 'baseline')]['esr']:.2f} {NAMES[s].split()[0]}" for s in scrapers if (s, "baseline") in cells)
     det = ", ".join(f"{cells[(s, 'honeypot')]['detection_rate']:.2f} {NAMES[s].split()[0]}" for s in scrapers if (s, "honeypot") in cells)
     lines += ["## Table 4. Our results next to published ones (same metric)", "",

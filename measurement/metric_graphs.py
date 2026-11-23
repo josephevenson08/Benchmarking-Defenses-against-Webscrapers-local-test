@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 
 SCRAPERS = ["a", "b", "c", "d"]
 NAMES = {"a": "(a) raw HTML", "b": "(b) browser", "c": "(c) LLM", "d": "(d) adaptive"}
-SITES = ["baseline", "shuffled", "honeypot"]
-COLORS = {"baseline": "#2a78d6", "shuffled": "#eb6834", "honeypot": "#1baf7a"}  # same colours as figures.py
+SITES = ["baseline", "shuffled", "honeypot", "poisoned"]  # a site without results is left out
+COLORS = {"baseline": "#2a78d6", "shuffled": "#eb6834", "honeypot": "#1baf7a", "poisoned": "#eda100"}  # same as figures.py
 GREY = "#52514e"
 MEASURE_COLORS = ["#52514e", "#898781", "#c3c2b7"]  # greys for FCP, LCP, TTI, so they are not confused with sites
 
@@ -59,12 +59,13 @@ def tidy(ax, title, ylabel):
 def reference(ax, value, text):
     """A dashed line for a published number."""
     ax.axhline(value, color=GREY, linestyle="--", linewidth=1)
-    ax.text(ax.get_xlim()[1], value, " " + text, va="center", ha="left", fontsize=8, color=GREY)
+    ax.text(ax.get_xlim()[1], value, text, va="center", ha="left", multialignment="left", fontsize=8, color=GREY)
 
 
 def scraper_graph(cells, column, sites, title, ylabel, out, scale=1.0, ymax=None, ref=None, fmt="{:.2f}"):
     """Grouped bars: one group per scraper, one bar per site."""
-    fig, ax = plt.subplots(figsize=(7.5, 4))
+    sites = [site for site in sites if any((s, site) in cells for s in SCRAPERS)]
+    fig, ax = plt.subplots(figsize=(8.5 if len(sites) > 3 else 7.5, 4))
     width = 0.8 / len(sites)
     for i, site in enumerate(sites):
         xs = [n + (i - (len(sites) - 1) / 2) * width for n in range(len(SCRAPERS))]
@@ -72,7 +73,7 @@ def scraper_graph(cells, column, sites, title, ylabel, out, scale=1.0, ymax=None
                   for s in SCRAPERS]
         ax.bar(xs, values, width * 0.9, color=COLORS[site], label=site)
         for x, v in zip(xs, values):
-            ax.text(x, v, label(fmt, v), ha="center", va="bottom", fontsize=8)
+            ax.text(x, v, label(fmt, v), ha="center", va="bottom", fontsize=7 if len(sites) > 3 else 8)
     ax.set_xticks(range(len(SCRAPERS)), [NAMES[s] for s in SCRAPERS])
     if ymax:
         ax.set_ylim(0, ymax)
@@ -112,7 +113,7 @@ def detection_graph(cells, out):
 
 def site_graph(cost, columns, title, ylabel, out, fmt="{:.2f}", ref=None):
     """Bars per defended site (shuffled, honeypot); several columns become grouped bars."""
-    sites = [s for s in ("shuffled", "honeypot") if s in cost]
+    sites = [s for s in ("shuffled", "honeypot", "poisoned") if s in cost]
     fig, ax = plt.subplots(figsize=(6.5, 3.8))
     width = 0.8 / len(columns)
     for i, (column, name) in enumerate(columns):
@@ -151,7 +152,7 @@ def main():
     scraper_graph(cells, "precision_mean", SITES, "Precision", "Precision (0\u20131)", out / "2-precision.png", ymax=1.15)
     scraper_graph(cells, "esr", SITES, "Success rate (runs with all 70 fields right)", "Success rate (0\u20131)",
                   out / "3-success-rate.png", ymax=1.15, ref=(0.82, "Beyond BeautifulSoup:\n0.82\u20131.00"))
-    scraper_graph(cells, "reduction_recall", ["shuffled", "honeypot"], "Drop in recall (accuracy) from each defense",
+    scraper_graph(cells, "reduction_recall", ["shuffled", "honeypot", "poisoned"], "Drop in recall (accuracy) from each defense",
                   "Drop in recall (%)", out / "4-drop-in-recall.png", scale=100, ymax=115, ref=(100, "WebCloak:\n100%"), fmt="{:.1f}%")
     detection_graph(cells, out / "5-detection-evasion.png")
 

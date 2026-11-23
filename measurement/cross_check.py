@@ -272,6 +272,19 @@ def html_fields(html):
     return [(k, " ".join(t.split()), int(o) if o else 0) for k, o, t in FIELD_SPAN.findall(block)]
 
 
+def swapped(fields, values):
+    """A poisoned page's fields as the browser shows them after the swap: each value gets the real value for its label
+    from the page's real-values JSON ({"fields": [{label, value}]}); other elements stay as they are."""
+    real = {" ".join(f["label"].split()): " ".join(str(f["value"]).split()) for f in values["fields"]}
+    out, label = [], None
+    for kind, text, order in fields:
+        if kind == "value" and label in real:
+            text = real[label]
+        label = text if kind == "label" else None
+        out.append((kind, text, order))
+    return out
+
+
 def out_of_order(base, other):
     """Fields whose label or value sits at a different place in the source than on screen (stable sort by order)."""
     pairs = [(base[i][1], base[i + 1][1]) for i in range(len(base) - 1) if base[i][0] == "label" and base[i + 1][0] == "value"]
@@ -301,6 +314,9 @@ def check_cost(cost_dir, checks):
                 html = Path(tmp, cond, p["file"]).read_text(encoding="utf-8")
                 sizes[(cond, p["path"])] = Path(tmp, cond, p["file"]).stat().st_size
                 fields[(cond, p["path"])] = html_fields(html)
+                if p.get("values"):  # poisoned: compare what the page shows after its swap, as the screenshots do
+                    values = json.loads(Path(tmp, cond, p["values"].lstrip("/")).read_text(encoding="utf-8"))
+                    fields[(cond, p["path"])] = swapped(fields[(cond, p["path"])], values)
     for r in pages_rows:
         key = (r["condition"], r["page"])
         checks.add(f"user cost {r['condition']} {r['page']}: HTML bytes", sizes.get(key) == int(r["html_bytes"]),
@@ -320,6 +336,13 @@ def check_cost(cost_dir, checks):
         reported_max = number(cost_rows[cond]["pixel_diff_max_percent"])
         checks.add(f"user cost {cond}: screenshots identical to baseline pixel for pixel when 0% is reported",
                    (differing == 0) == (reported_max == 0), f"{differing} of {len(shots)} pages differ; reported max {reported_max}%")
+        if number(cost_rows[cond].get("pages_with_fakes")):
+            config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+            manifest = json.loads((cost_dir / "manifest.json").read_text(encoding="utf-8"))
+            low, high = config["poison_swap_delay_seconds"], manifest["wait_seconds"]
+            longest = number(cost_rows[cond]["fakes_visible_max_s"])
+            checks.add(f"user cost {cond}: fakes stay on screen at least the swap delay and end before the screenshot",
+                       longest is not None and low <= longest < high, f"longest {longest} s; swap delay {low} s, screenshot at {high} s")
         axe = json.loads((cost_dir / f"axe-{cond}.json").read_text(encoding="utf-8")) if (cost_dir / f"axe-{cond}.json").exists() else None
         if axe is not None:
             count = sum(v["nodes"] for page in axe.values() for v in page)
