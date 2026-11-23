@@ -1,0 +1,30 @@
+http://127.0.0.1:3100/ 15 run=c-poisoned-3 ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+/ 0
+200 http://127.0.0.1:3100/products/
+/products/ 0
+200 http://127.0.0.1:3100/articles/a1
+/articles/a1 5
+{"Title": "Keeping Your Garden Tools Sharp", "Author": "Priya Abara", "Published": "2026-03-28", "Tags": "weekend, garden, budget", "Summary": "Light, easy to wipe down and made to last through years of daily use."}
+200 http://127.0.0.1:3100/articles/a2
+/articles/a2 5
+{"Title": "How to Pick a Desk Chair", "Author": "Avery Hartley", "Published": "2022-10-03", "Tags": "decor, budget, weekend", "Summary": "A quick guide to the basics, with tips you can use this weekend."}
+200 http://127.0.0.1:3100/products/p1
+/products/p1 10
+{"Name": "Wexley Slim Clock", "Brand": "Ostrava", "Category": "Bath", "Price": "$22.48", "SKU": "LF-HP-9958", "Rating": "1.8", "Reviews": "5,824", "Availability": "Low stock", "Release date": "2023-06-02", "Description": "A sturdy everyday pick with a simple design and a two-year warranty."}
+200 http://127.0.0.1:3100/products/p2
+/products/p2 10
+{"Name": "Varden Rustic Chair", "Brand": "Brookline", "Category": "Office", "Price": "$50.96", "SKU": "CV-LT-8410", "Rating": "4.4", "Reviews": "8,729", "Availability": "In stock", "Release date": "2024-08-24", "Description": "Light, easy to wipe down and made to last through years of daily use."}
+200 http://127.0.0.1:3100/products/p3
+/products/p3 10
+{"Name": "Brookline Premium Clock", "Brand": "Pemberly", "Category": "Office", "Price": "$24.28", "SKU": "BV-KT-5427", "Rating": "4.9", "Reviews": "9,603", "Availability": "Out of stock", "Release date": "2023-09-11", "Description": "Compact and practical, with a matte finish that suits any room."}
+200 http://127.0.0.1:3100/products/p4
+/products/p4 10
+{"Name": "Quillon Classic Lamp", "Brand": "Varden", "Category": "Furniture", "Price": "$137.85", "SKU": "TS-BP-5907", "Rating": "3.4", "Reviews": "8,753", "Availability": "In stock", "Release date": "2024-08-14", "Description": "Step-by-step advice for getting started without spending much."}
+200 http://127.0.0.1:3100/products/p5
+/products/p5 10
+{"Name": "Rosmere Premium Mirror", "Brand": "Thistle", "Category": "Pets", "Price": "$19.65", "SKU": "MR-MS-0650", "Rating": "3.0", "Reviews": "6,921", "Availability": "Low stock", "Release date": "2023-03-21", "Description": "Light, easy to wipe down and made to last through years of daily use."}
+200 http://127.0.0.1:3100/products/p6
+/products/p6 10
+{"Name": "Quillon Compact Mirror", "Brand": "Varden", "Category": "Storage", "Price": "$60.52", "SKU": "HD-CI-5822", "Rating": "3.7", "Reviews": "9,546", "Availability": "In stock", "Release date": "2022-02-12", "Description": "Light, easy to wipe down and made to last through years of daily use."}
+70 records written to results\2026-11-23-poisoned-2\runs\c-poisoned-3.json

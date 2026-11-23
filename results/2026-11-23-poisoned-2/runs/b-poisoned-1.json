@@ -1,0 +1,415 @@
+{
+  "run": {
+    "run_id": "b-poisoned-1",
+    "scraper": "b",
+    "start_url": "http://127.0.0.1:3100/",
+    "page_cap": 15,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-23T19:05:16.130935+00:00",
+    "seconds": 0.252
+  },
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a1",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a2",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p1",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p2",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p3",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p4",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p5",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p6",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/articles/a1",
+      "field": "title",
+      "value": "Keeping Your Garden Tools Sharp"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "author",
+      "value": "Priya Abara"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "publish_date",
+      "value": "2026-03-28"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "tags",
+      "value": "weekend, garden, budget"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "summary",
+      "value": "Light, easy to wipe down and made to last through years of daily use."
+    },
+    {
+      "page": "/articles/a2",
+      "field": "title",
+      "value": "How to Pick a Desk Chair"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "author",
+      "value": "Avery Hartley"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "publish_date",
+      "value": "2022-10-03"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "tags",
+      "value": "decor, budget, weekend"
+    },
+    {
+      "page": "/articles/a2",
+      "field": "summary",
+      "value": "A quick guide to the basics, with tips you can use this weekend."
+    },
+    {
+      "page": "/products/p1",
+      "field": "name",
+      "value": "Wexley Slim Clock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "brand",
+      "value": "Ostrava"
+    },
+    {
+      "page": "/products/p1",
+      "field": "category",
+      "value": "Bath"
+    },
+    {
+      "page": "/products/p1",
+      "field": "price",
+      "value": "$22.48"
+    },
+    {
+      "page": "/products/p1",
+      "field": "sku",
+      "value": "LF-HP-9958"
+    },
+    {
+      "page": "/products/p1",
+      "field": "rating",
+      "value": "1.8"
+    },
+    {
+      "page": "/products/p1",
+      "field": "review_count",
+      "value": "5,824"
+    },
+    {
+      "page": "/products/p1",
+      "field": "availability",
+      "value": "Low stock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "release_date",
+      "value": "2023-06-02"
+    },
+    {
+      "page": "/products/p1",
+      "field": "description",
+      "value": "A sturdy everyday pick with a simple design and a two-year warranty."
+    },
+    {
+      "page": "/products/p2",
+      "field": "name",
+      "value": "Varden Rustic Chair"
+    },
+    {
+      "page": "/products/p2",
+      "field": "brand",
+      "value": "Brookline"
+    },
+    {
+      "page": "/products/p2",
+      "field": "category",
+      "value": "Office"
+    },
+    {
+      "page": "/products/p2",
+      "field": "price",
+      "value": "$50.96"
+    },
+    {
+      "page": "/products/p2",
+      "field": "sku",
+      "value": "CV-LT-8410"
+    },
+    {
+      "page": "/products/p2",
+      "field": "rating",
+      "value": "4.4"
+    },
+    {
+      "page": "/products/p2",
+      "field": "review_count",
+      "value": "8,729"
+    },
+    {
+      "page": "/products/p2",
+      "field": "availability",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p2",
+      "field": "release_date",
+      "value": "2024-08-24"
+    },
+    {
+      "page": "/products/p2",
+      "field": "description",
+      "value": "Light, easy to wipe down and made to last through years of daily use."
+    },
+    {
+      "page": "/products/p3",
+      "field": "name",
+      "value": "Brookline Premium Clock"
+    },
+    {
+      "page": "/products/p3",
+      "field": "brand",
+      "value": "Pemberly"
+    },
+    {
+      "page": "/products/p3",
+      "field": "category",
+      "value": "Office"
+    },
+    {
+      "page": "/products/p3",
+      "field": "price",
+      "value": "$24.28"
+    },
+    {
+      "page": "/products/p3",
+      "field": "sku",
+      "value": "BV-KT-5427"
+    },
+    {
+      "page": "/products/p3",
+      "field": "rating",
+      "value": "4.9"
+    },
+    {
+      "page": "/products/p3",
+      "field": "review_count",
+      "value": "9,603"
+    },
+    {
+      "page": "/products/p3",
+      "field": "availability",
+      "value": "Out of stock"
+    },
+    {
+      "page": "/products/p3",
+      "field": "release_date",
+      "value": "2023-09-11"
+    },
+    {
+      "page": "/products/p3",
+      "field": "description",
+      "value": "Compact and practical, with a matte finish that suits any room."
+    },
+    {
+      "page": "/products/p4",
+      "field": "name",
+      "value": "Quillon Classic Lamp"
+    },
+    {
+      "page": "/products/p4",
+      "field": "brand",
+      "value": "Varden"
+    },
+    {
+      "page": "/products/p4",
+      "field": "category",
+      "value": "Furniture"
+    },
+    {
+      "page": "/products/p4",
+      "field": "price",
+      "value": "$137.85"
+    },
+    {
+      "page": "/products/p4",
+      "field": "sku",
+      "value": "TS-BP-5907"
+    },
+    {
+      "page": "/products/p4",
+      "field": "rating",
+      "value": "3.4"
+    },
+    {
+      "page": "/products/p4",
+      "field": "review_count",
+      "value": "8,753"
+    },
+    {
+      "page": "/products/p4",
+      "field": "availability",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p4",
+      "field": "release_date",
+      "value": "2024-08-14"
+    },
+    {
+      "page": "/products/p4",
+      "field": "description",
+      "value": "Step-by-step advice for getting started without spending much."
+    },
+    {
+      "page": "/products/p5",
+      "field": "name",
+      "value": "Rosmere Premium Mirror"
+    },
+    {
+      "page": "/products/p5",
+      "field": "brand",
+      "value": "Thistle"
+    },
+    {
+      "page": "/products/p5",
+      "field": "category",
+      "value": "Pets"
+    },
+    {
+      "page": "/products/p5",
+      "field": "price",
+      "value": "$19.65"
+    },
+    {
+      "page": "/products/p5",
+      "field": "sku",
+      "value": "MR-MS-0650"
+    },
+    {
+      "page": "/products/p5",
+      "field": "rating",
+      "value": "3.0"
+    },
+    {
+      "page": "/products/p5",
+      "field": "review_count",
+      "value": "6,921"
+    },
+    {
+      "page": "/products/p5",
+      "field": "availability",
+      "value": "Low stock"
+    },
+    {
+      "page": "/products/p5",
+      "field": "release_date",
+      "value": "2023-03-21"
+    },
+    {
+      "page": "/products/p5",
+      "field": "description",
+      "value": "Light, easy to wipe down and made to last through years of daily use."
+    },
+    {
+      "page": "/products/p6",
+      "field": "name",
+      "value": "Quillon Compact Mirror"
+    },
+    {
+      "page": "/products/p6",
+      "field": "brand",
+      "value": "Varden"
+    },
+    {
+      "page": "/products/p6",
+      "field": "category",
+      "value": "Storage"
+    },
+    {
+      "page": "/products/p6",
+      "field": "price",
+      "value": "$60.52"
+    },
+    {
+      "page": "/products/p6",
+      "field": "sku",
+      "value": "HD-CI-5822"
+    },
+    {
+      "page": "/products/p6",
+      "field": "rating",
+      "value": "3.7"
+    },
+    {
+      "page": "/products/p6",
+      "field": "review_count",
+      "value": "9,546"
+    },
+    {
+      "page": "/products/p6",
+      "field": "availability",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p6",
+      "field": "release_date",
+      "value": "2022-02-12"
+    },
+    {
+      "page": "/products/p6",
+      "field": "description",
+      "value": "Light, easy to wipe down and made to last through years of daily use."
+    }
+  ]
+}
