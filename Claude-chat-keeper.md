@@ -569,6 +569,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J370 | 370 | give me the file entirely | Claude wrote `poisoned.js` around Joseph's price case (D110, Deviates, disclosed); cloud Test 5 4/4; preview (a), (b) 70 fakes, (d) 70/70; steps to paste, test, commit and run |
 | J371 | 371 | (runner output: 12 poisoned runs, all 0/70 and 70 fakes, (d) included, commit `d78603b`) | The committed `poisoned.js` is the draft without the swap; these runs don't count (D111); paste and save the full file, Test 5, rerun into a new folder |
 | J372 | 372 | (Joseph pasted the full `poisoned.js` from Turn 370 into the chat) | The same as the Turn 370 file; `main` still has the draft, so save, check, Test 5, commit, rerun |
+| J373 | 373 | what file is this in (Get-Content site/defenses/poisoned.js).Count Select-String -Path site/defenses/poisoned.js -Pattern "function script" | Not a file: two commands for the PowerShell terminal; what each should print |
 
 ### Questions from Claude
 
@@ -16767,3 +16768,24 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision (D111 still applies).
+
+### Turn 373 — 2026-11-23 19:03 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what file is this in (Get-Content site/defenses/poisoned.js).Count
+> Select-String -Path site/defenses/poisoned.js -Pattern "function script"
+
+**What Claude did:** No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **They aren't file lines:** they're two PowerShell commands, typed in the VS Code terminal (the `(.venv) PS …>` prompt, where Joseph runs `git` and `npm`), one at a time, with Enter after each.
+- **What they print:**
+  - the first counts the file's lines and should print about 124;
+  - the second searches the file and should print the line holding `function script(page)`.
+- **If it prints 33, or nothing:** the full file isn't saved.
+- **Then:** generate and Test 5.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
