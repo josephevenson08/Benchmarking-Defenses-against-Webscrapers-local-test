@@ -202,7 +202,7 @@ python measurement/test7.py --scrapers a b c     # (c) too (the test pages make 
 python measurement/test6.py
 ```
 
-**Test 5** (poisoning hides real values) in one command, once `site/defenses/poisoned.js` exists. It rebuilds `poisoned`, serves it on port 3100 with a fresh log, searches every page's HTML for the 70 real values, and reads each item page in Chromium right after load and 3 s later. Every field should show its fake first and its real value 3 s later. It also checks the fakes file and records when each page swapped; writes `results/<date>-test5/`:
+**Test 5** (poisoning hides real values) in one command, once `site/defenses/poisoned.js` exists. It rebuilds `poisoned`, serves it on port 3100 with a fresh log, searches each item page's HTML for its own real values (and the other pages for all 70), and reads each item page in Chromium right after load and 3 s later. Every field should show its fake first and its real value 3 s later. It also checks the fakes file and records when each page swapped; writes `results/<date>-test5/`:
 
 ```bash
 python measurement/test5.py

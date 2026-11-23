@@ -9,8 +9,10 @@ field should equal its fake at 0 s, and every field should equal its real value 
   1. Fakes file: conditions/poisoned.fakes.json has one fake for each of the 70 scored fields, and each fake is a
      valid value for its field that differs from the real one under the matching rules (scoring/score.py's
      load_fakes, the same check the scoring uses).
-  2. HTML: every page's HTML, as served (view source), is searched for each of the 70 real values. A match must
-     stand alone: "4.5" inside "$64.50" or "Lark" inside "Larkfield" is not a match.
+  2. HTML: each page's HTML, as served (view source), is searched for real values: an item page for each of its
+     own real values, every other page for all 70. A match must stand alone: "4.5" inside "$64.50" or "Lark" inside
+     "Larkfield" is not a match. Another item's real value is not searched for on an item page: a fake may
+     happen to equal it (availability has only four values), and it reveals nothing about this page.
   3. At 0 s: each item page is opened in Chromium (Playwright) and read right after the load event. Every field
      should show its fake.
   4. At 3 s (--late): the same page, read again 3 s after the load event. Every field should show its real value.
@@ -83,11 +85,16 @@ def standalone(value, html):
     return sorted(set(hits))
 
 
-def leaks(pages_html, truth):
-    """[{page, item_id, field, value, context}] for every real value found standing alone in any page's HTML."""
+def leaks(pages_html, truth, page_items=None):
+    """[{page, item_id, field, value, context}] for every real value found standing alone in a page's HTML.
+    page_items maps an item page's path to its item_id: that page is searched for its own real values only."""
+    page_items = page_items or {}
     found = []
     for path, html in pages_html.items():
+        own = page_items.get(path)
         for (item, field), value in truth.items():
+            if own is not None and item != own:
+                continue
             for at in standalone(value, html):
                 found.append({"page": path, "item_id": item, "field": field, "value": value,
                               "context": html[max(0, at - 40): at + len(value) + 40].replace("\n", " ")})
@@ -180,7 +187,7 @@ def write_report(out_dir, report):
              f"{c['fakes_file']['fakes']} of 70 fakes" + (f"; {len(c['fakes_file']['problems'])} problems" if c['fakes_file']['problems'] else "")
              + f" | {mark(c['fakes_file']['passed'])} |",
              f"| 2. No real value in any page's HTML | {len(c['html']['leaks'])} real values found "
-             f"(searched {c['html']['pages']} pages for 70 values) | {mark(c['html']['passed'])} |",
+             f"(each item page searched for its own values, the other {c['html']['pages'] - 8} pages for all 70) | {mark(c['html']['passed'])} |",
              f"| 3. Every field shows its fake at 0 s | {c['early']['matching']} of {c['early']['fields']} | {mark(c['early']['passed'])} |",
              f"| 4. Every field shows its real value at {report['late_seconds']:g} s | {c['late']['matching']} of {c['late']['fields']} | "
              f"{mark(c['late']['passed'])} |", ""]
@@ -245,7 +252,7 @@ def main():
         server.wait(timeout=10)
     log = read_log(log_file)
 
-    found = leaks(html, data.truth)
+    found = leaks(html, data.truth, {p["path"]: p["item_id"] for p in item_pages})
     pages, early_ok, late_ok, fields = [], 0, 0, 0
     for b in browser:
         item = next(p for p in item_pages if p["path"] == b["page"])

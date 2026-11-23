@@ -164,6 +164,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 - **Tests and docs:** 2 Node tests with stand-ins that only exercise the slot; the defense README documents all five new hooks.
 - **Still to do once the route exists:** the runner's robots.txt setting for (a), (b) and (d); the maze measures (pages loaded, seconds trapped, server time per request); Test 6's maze part. | Claude writes the whole route; Joseph writes the route and the server mounts it (chosen) | §3 Architecture item 2 ("An Express server serves … the optional /maze/<hash> route"); §2 Tarpit route row (Joseph: "the generation rules and the logging"); §1 item 5 "Done when"; §5 Test 6; CLAUDE.md (Joseph writes the tarpit route). | Interprets (the server's mount point; the route itself is Joseph's) |
 
+| D108 | 352 | **Test 5's HTML check searches each item page for its own real values only** (the other 2 pages are still searched for all 70). Found while preparing Joseph's walkthrough: availability has only four values (In stock, Low stock, Out of stock, Pre-order), so any fake availability is another product's real one. Ratings (3.9–4.8) and categories collide the same way. The old rule (all 70 values on every page) would have failed a correct defense. A fake that happens to equal another item's real value reveals nothing about this page, and scoring marks fakes per page and field (Figure 2). Same-page leaks are still caught, for example the real brand inside a fake name. Unit test added; the measurement suite passes. | Keep searching all 70 values on every page; per page (chosen) | Claude (tooling) | §5 Test 5 ("I search each poisoned page's HTML for every real value"); Figure 2 FakeValue (per item and field). | Interprets (which real values count for each page; narrows D105's rule) |
 ---
 
 ## Questions register
@@ -521,6 +522,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J349 | 349 | (`git log --oneline -1` output: `8e20c37 (HEAD -> main) d runs, results CSV and figures`) | The pull stopped before merging (31 commits behind); `git config gc.auto 0`, then pull again |
 | J350 | 350 | same thing happened | Turn off Git's auto maintenance; fetch and merge as two steps so the OneDrive prompt can't stop the merge |
 | J351 | 351 | (`git fetch origin` and `git merge origin/main` output: fast-forward `8e20c37..4dfeb12`, 19 files) | Laptop up to date; `npm test`, then `poisoned.js` in small steps checked with Test 5 |
+| J352 | 352 | ok all 30 passed walk me through the poisoned then lets continue | Walkthrough of `poisoned.js` (concepts, standalone snippets, field rules, order of work); Test 5's HTML check fixed to search each page for its own values (D108) |
 
 ### Questions from Claude
 
@@ -15931,3 +15933,44 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 352 — 2026-11-23 17:58 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok all 30 passed walk me through the poisoned then lets continue
+
+**What Claude did:**
+- Looked at every real value's format (`data/items.json`, as the test site's author) and at `score.py`'s matching rules, to write the walkthrough.
+- Found that Test 5's HTML check would fail a correct defense, so changed it (D108, Interprets): each item page is now searched only for its own real values.
+- Reran the fakes-only stand-in from the scratchpad, then deleted it again; the report reads right. Unit test added; measurement tests pass.
+- Updated the README line. Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):** a walkthrough of `site/defenses/poisoned.js`, without writing it:
+- **The picture:**
+  - the generator calls `fakeValue` 70 times while building the pages, in Node, so the HTML shows fakes;
+  - the generator writes the real values to JSON;
+  - `script(page)` returns text that runs later in the browser: wait 2 s, fetch the JSON, swap the values.
+- **Part 1, `fakeValue`:** one branch per `row.key`, with generic tools shown as standalone snippets:
+  - a whole number in a range, from `rng()`;
+  - picking from a list without the real value;
+  - `toFixed(2)`, `toLocaleString("en-US")` and `padStart`.
+  A table gives the rule for each field.
+- **Pitfalls:**
+  - Test 5 compares under the scoring rules: `$89.990`, `4.50` and tags in another order all count as the real value;
+  - don't reuse the same page's real words in other fields;
+  - always `rng()`, never `Math.random()`.
+- **Part 2, `script(page)`:** Node builds the text and the browser runs it. Put `page.valuesPath` and the delay from `config.json` into the string; return `""` without a `valuesPath`; match rows to the JSON by label; set `textContent`.
+- **Order of work:**
+  1. Part 1 for a few fields;
+  2. `npm run generate -- poisoned`;
+  3. look at `p1.html` and the fakes file;
+  4. the rest of the fields;
+  5. Part 2;
+  6. Test 5, after merging the new pull request.
+- **Meanwhile, Claude:** the user-cost runner change.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D108 (Interprets).
