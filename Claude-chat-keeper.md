@@ -489,6 +489,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J343 | 343 | just paste it out here dont build a page | The full scrum update as text in the chat, ready to paste into Joseph's own doc |
 | J344 | 344 | can you help me set up to make a graph in matplot lib for each of the metrics? | `measurement/metric_graphs.py` (D104): 10 graphs, one per metric, with published reference lines; command to run it on the laptop |
 | J345 | 345 | do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple, | The 8 requested graphs (D104 updated) and how the detection and evasion rates are calculated |
+| J346 | 346 | and what other defenses do i still need to add, and what else if left for this project based on my project outline | Checked the midterm's 5 scope items: 2 of 4 defenses built (poisoning and tarpit left), 4 of 5 scrapers (e left); the remaining Milestone 3 and 4 work; recommended poisoning only |
 
 ### Questions from Claude
 
@@ -15707,3 +15708,29 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none.
 
 **Direction and fit:** D104 updated (Adds).
+
+### Turn 346 — 2026-11-23 17:24 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> and what other defenses do i still need to add, and what else if left for this project based on my project outline
+
+**What Claude did:** Read the midterm's "Features and completion criteria" (§1, items 1–5) and its poisoning design.
+- §2 Measurement: a JavaScript swap after 2 s, with the server serving "robots.txt and the real values JSON".
+- §5 Test 5: no real value in the poisoned HTML; the fake is shown at 0 s and the real value at 3 s.
+- Checked what exists: `site/defenses/` has `shuffled.js` and `honeypot.js`; there is no poisoned defense and no real-values route in `site/server.js`.
+
+**Claude's answer (summary):**
+- **Defenses:**
+  - shuffling and honeypot are done (Essential);
+  - **poisoning is left** (Ambitious, item 3): the only untested hypothesis. It needs Joseph's `poisoned.js`, a real-values route on the server and a fake-values file (Claude's site and tooling side), Test 5, and 12 runs;
+  - the **tarpit is left** (If time permits, item 5); it's only allowed if everything else ran by Dec 1, so it's likely dropped.
+- **Scrapers:** (a)–(d) done; **(e) vision is left** (item 4). It's likely dropped: a vision model on a CPU-only laptop is slow.
+- **Other work:**
+  - Milestone 3: (d)'s Test 3 part, Test 7's stub part for (c), the honeypot false-positive check, the related-work table, Cut-line 2 on Dec 1;
+  - Milestone 4: final tables and figures, README and manifest, clean rerun, the report (with the scope-change and AI-use sections), the tag on Dec 8, the deadline on Dec 10.
+- **Recommendation:** build poisoning only, this week, because Nov 26–27 is Thanksgiving. Report (e) and the tarpit as not done, with the reason.
+
+**Questions Claude asked:** none (whether to build poisoning is for the professor and Joseph).
+
+**Direction and fit:** no new decision.
