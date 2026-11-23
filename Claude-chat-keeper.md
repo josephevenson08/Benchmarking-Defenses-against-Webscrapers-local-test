@@ -519,6 +519,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J347 | 347 | ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses | Poisoning's site and scoring side and Test 5 built (D105); Joseph writes `poisoned.js` next. Tarpit started at Joseph's choice, before the midterm's gate (D106, Deviates); its slot is ready for Joseph's `tarpit.js` (D107) |
 | J348 | 348 | (`git pull` output ending in "Deletion of directory '.git/objects/00' failed. Should I try again? (y/n)") | OneDrive lock on Git's clean-up: answer n; the pull is done; `git config gc.auto 0` stops it |
 | J349 | 349 | (`git log --oneline -1` output: `8e20c37 (HEAD -> main) d runs, results CSV and figures`) | The pull stopped before merging (31 commits behind); `git config gc.auto 0`, then pull again |
+| J350 | 350 | same thing happened | Turn off Git's auto maintenance; fetch and merge as two steps so the OneDrive prompt can't stop the merge |
 
 ### Questions from Claude
 
@@ -15845,6 +15846,26 @@ All numbers are from the cross-checked results (D102).
   2. `git pull` again;
   3. `git log --oneline -1` should then show `4dfeb12`.
 - **If the prompt still appears:** pause OneDrive syncing, then pull again.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 350 — 2026-11-23 17:57 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> same thing happened
+
+**What Claude did:** No files changed. Worked out why `gc.auto 0` wasn't enough: newer Git versions run their own automatic maintenance after a fetch, which `gc.auto` doesn't switch off.
+
+**Claude's answer (summary):**
+- **Split the pull in two,** so the clean-up can't stop the merge:
+  1. `git config maintenance.auto false`, which turns off Git's automatic maintenance;
+  2. `git fetch origin`. If the prompt appears, answer `n`; the download is already saved by then;
+  3. `git merge origin/main`. If the prompt appears after it, `n` is harmless, because the merge is already done;
+  4. `git log --oneline -1` should show `4dfeb12`.
+- **If it still won't merge:** pause OneDrive first.
 
 **Questions Claude asked:** none.
 
