@@ -526,6 +526,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J353 | 353 | where am i putting this file? | `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`; the file name sets the condition name |
 | J354 | 354 | ok i got the file made in the scetion, can you walk me through how to make this | Step-by-step plan for `poisoned.js`: Steps 1–3 in detail (shape, switch on the field, price) with toy examples; Steps 4–10 as a roadmap; Joseph writes the code |
 | J355 | 355 | (Joseph's first draft of `poisoned.js`: the example's `sound(animal)` switch with a fixed fake for each field) | Reviewed: rename to `fakeValue(row, rng)` on `row.key`, add the export, placeholder default, drop the typo case; then random fakes per page with `rng()` |
+| J356 | 356 | (random characters, likely sent by accident) | Asked whether it was an accident; repeated the next step (Turn 355's fixes) |
 
 ### Questions from Claude
 
@@ -16078,5 +16079,21 @@ All numbers are from the cross-checked results (D102).
 - **Check:** `npm run generate -- poisoned` and `p1.html` after fixing 1–4, then make the price random.
 
 **Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 356 — 2026-11-23 18:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ytretj7uk8i'[-;\-+/\
+> \--\ut65=-098709876567890-++
+> ++\=-09890-\+-9-6*5=[76t567890-\/
+
+**What Claude did:** Nothing. The message looks like accidental key presses: no words, no code and no command output.
+
+**Claude's answer (summary):** asked whether it was sent by accident, and repeated the next step: the four fixes to `poisoned.js` from Turn 355, then the random price, then paste the file.
+
+**Questions Claude asked:** whether the message was sent by accident (in the reply, not as a multiple-choice question).
 
 **Direction and fit:** no new decision.
