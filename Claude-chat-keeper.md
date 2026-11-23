@@ -132,6 +132,11 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | D101 | 323 | **⭐ Scraper (d): baseline check passed and runs on all three conditions done (Fri Nov 20; planned Wed Nov 25 and Sat Nov 28).** Joseph's laptop, commit `2065190`, runner `--scrapers d`: 9/9 runs, 70/70 on baseline, shuffled and honeypot in every run, honeypot 10 pages each (no `/trap`), 3.03–3.04 s per page (31 s per run). `scoring/results.py` over the three folders (36 runs): (d) shuffled and honeypot "no effect", honeypot detection 0.00 (evasion 1.00). **Hypotheses (§4):** (1) shuffling lowers (a) and (b) ("stops", 94.3% drop); (d) is unaffected (0.0%); for (c), which the midterm left uncertain, it "reduces" (30.5%). (3) The honeypot leaves accuracy unchanged and catches (a), (b) and (c) in every run, and (d) in none. (4) Shuffling: pixel difference 0, reading order 70/70, axe-core unchanged. (5) "No single defense stops all five scrapers" holds so far: shuffling stops only (a) and (b). (2) Poisoning is not built, so it is untested. Figures and tables made on the laptop: `results/2026-11-20-figures/` (D100). Still open for (d): its part of Test 3. | — | Joseph (ran); Claude (scraper (d), D99; tooling) | §4 Hypotheses 1–5; §4 item 10 (baseline check); §5 item 9 (3 runs per cell); §7 Milestone 3 (Ambitious, as re-planned). | Follows |
 | D102 | 328 | **Cross-check of the results: `measurement/cross_check.py`** (Joseph's request: "do a mass check to make sure they we are claculating the metrics right and that my scrapers are also getting tallied correctly for ecah test with scraper vs defense"). It recounts from the raw files without `scoring/score.py`, `scoring/results.py` or `user_cost.py`. **How:** the matching rules are written again from `docs/scraper-output.md`, and the independent counter is first run on the hand-counted Test 2 fixture (63 correct, 4 wrong of which 2 fake and 1 malformed, 3 missing: it agrees). Per run it recounts correct/wrong/missing, precision, F1, honeypot hits, page requests (output vs log), time per page, run ID and scraper label, and that every request carries the run ID. Per cell it recomputes mean/min/max recall, precision, F1, success rate, drop in recall, verdict and detection rate. It also checks that every log line belongs to a run of its condition, and that each condition's pages and seeds are identical in the 3 folders. For user cost it regenerates each condition for HTML size, compares screenshots pixel by pixel, reads reading order from the HTML's CSS `order`, and recomputes axe counts and Lighthouse medians and changes from every saved run. **Result** (36 runs, user cost): 541 of 541 checks agree, after allowing for the CSVs' 6-significant-digit rounding (5 values differed only in the 7th digit). Planted errors (an extra correct field, a false trap hit, a wrong verdict) are all caught. Also checked: no change to `site/` or `data/` between the result commits (only the unused timeout setting); no scraper changed after its runs. Report committed as `results/2026-11-20-cross-check/report.md`. 5 tests. | Trust the scoring scripts' own tests | Claude (tooling) | §5 Test 2 (metric calculation); §5 "I check the output JSON and saved stats"; §7 verification of AI-written code. | Adds (a second, independent check) |
 | D103 | 340 | **Figure: our results next to published ones in the same metrics (`fig6-published.png`, `measurement/figures.py`).** Four panels, "This study" in blue and "Published" in orange. (a) Drop in recall: shuffling vs (a)–(d) (94.3, 94.3, 30.5, 0.0%) and WebCloak vs LLM agents (100%). (b) Success rate on simple pages: (a)–(d) 1.00, and Beyond BeautifulSoup's simple-HTML results (BeautifulSoup 0.93, Scrapy 0.82, Claude 1.00, Simular.ai 1.00). (c) Bot detection rate: the honeypot vs (a)–(d) (100, 100, 100, 0%), Shy Guys 67.6% at 3% false positives, and FP-Inconsistent's DataDome 55.44% and BotD 47.07%. (d) Load-time cost (LCP change): ours +0 ms for both defenses, WebCloak +880 ms. Published numbers are kept in `PUBLISHED_RESULTS`, as quoted in `docs/metrics-plan.md`. Ours come from `cells.csv` and `cost.csv`. A footnote names the sources and says to compare effects, not raw scores. Test added. | One chart per metric; a table only | Claude (tooling); Joseph asked for it | Scrum feedback (Nov 16, Turn 237); D68–D71; `docs/metrics-plan.md` related-work table. | Adds (from the scrum feedback, like Figure 2, Turn 303) |
+| D104 | 344 | **One graph per metric: `measurement/metric_graphs.py`** (Joseph's request: "help me set up to make a graph in matplot lib for each of the metrics"). A short, commented matplotlib script, meant to be read and changed, that writes 10 PNGs from `cells.csv` and `cost.csv`:
+- **Grouped by scraper (a)–(d), bars per site:** recall, precision, F1, success rate, drop in recall, detection rate.
+- **Per defended site:** SSIM, fields out of reading order, HTML size change, and Lighthouse FCP/LCP/TTI change (grey bars, so they are not confused with site colours).
+- **Published reference lines (dashed), where a study reports the same metric:** Beyond BeautifulSoup 0.82–1.00 (success rate), WebCloak 100% (drop in recall), Shy Guys 67.6% (detection), WebCloak LCP +880 ms.
+Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; the measurement suite passes. | Add more panels to `figures.py`; leave Joseph to write it alone | Claude (tooling; analysis code that Claude may draft) | Scrum feedback (Turn 237); D68–D71; §4 "Final outputs". | Adds (from the scrum feedback) |
 
 ---
 
@@ -482,6 +487,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | J341 | 341 | ok what else do i need to add | Recommended the rest of the report: the results table, the cost to visitors, a short hypothesis check, next steps, blockers and questions, and the AI-use line; what to leave out |
 | J342 | 342 | (Joseph's current doc: the day-by-day list, the new-metrics table, the published-comparison table, and "plus the graph at the moment is on the page") | Pointed out the "your" → "my" wording and the 31% vs 30.5% mismatch; built a full Word version (3 pages), which Joseph interrupted |
 | J343 | 343 | just paste it out here dont build a page | The full scrum update as text in the chat, ready to paste into Joseph's own doc |
+| J344 | 344 | can you help me set up to make a graph in matplot lib for each of the metrics? | `measurement/metric_graphs.py` (D104): 10 graphs, one per metric, with published reference lines; command to run it on the laptop |
 
 ### Questions from Claude
 
@@ -15650,3 +15656,25 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 344 — 2026-11-23 17:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> can you help me set up to make a graph in matplot lib for each of the metrics?
+
+**What Claude did:**
+- Wrote `measurement/metric_graphs.py` (D104) and `measurement/tests/test_metric_graphs.py` (2 tests).
+- Ran it on the committed `results/2026-11-20-results-all/cells.csv` and `results/2026-11-20-user-cost-full/cost.csv`, and looked at all 10 graphs tiled together. Fixed the Lighthouse graph's colours (they reused the site colours) and the "-0" labels, then redrew and checked it.
+- Measurement suite passes.
+- Added the usage to `README.md`. Fetched `main` and merged it into the branch.
+- Committed, pushed and opened a pull request. Sent the 10 PNGs.
+
+**Claude's answer (summary):**
+- What each of the 10 graphs shows, and where the published reference lines are.
+- The command to run it on the laptop.
+- How to add or change a graph: copy one call in `main()` and change the column and labels.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D104 (Adds, from the scrum feedback).

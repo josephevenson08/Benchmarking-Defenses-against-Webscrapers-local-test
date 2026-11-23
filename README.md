@@ -295,6 +295,12 @@ It writes `results/<date>-figures/`:
 - `fig6-published.png`: your results next to published ones in the same metrics (drop in recall, success rate, detection rate, load-time cost);
 - `tables.md`: Tables 1–4, including the comparison with published work.
 
+**One graph per metric** (recall, precision, F1, success rate, drop in recall, detection rate, SSIM, reading order, HTML size, Lighthouse), with published values as dashed reference lines where a study reports the same metric:
+
+```
+python measurement/metric_graphs.py --cells results/2026-11-20-results-all/cells.csv --cost results/2026-11-20-user-cost-full/cost.csv --out results/<date>-metric-graphs
+```
+
 **Cross-check** of the results, recounted from the raw files without the scoring scripts (the matching rules are written again from `docs/scraper-output.md`, and checked first on the hand-counted Test 2 fixture):
 
 ```
