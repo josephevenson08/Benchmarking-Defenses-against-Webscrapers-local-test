@@ -535,6 +535,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J362 | 362 | ok im back sorry my code still looks like i sent before | Walked through the four fixes line by line (interface lines and placeholder only), then the random price in five steps for Joseph to write |
 | J363 | 363 | (`npm run generate -- poisoned` output: 10 pages, 70 fakes) | Step 1 passes; check `p1.html` and the values JSON, make the price random, paste the file |
 | J364 | 364 | (Joseph's price case: `return Number(amount.toFixed(2))10 + rng() * 140);`) | Explained the syntax problems; standalone temperature function with one line per step and how to adapt it; Joseph writes the price case |
+| J365 | 365 | (Joseph's second draft: the price lines above the `switch`, `replace(" $", "")`, `+ " $"`) | Move the five lines into `case "price": { }`; remove `"$"` without a space and put it in front; then check p1 and p2 |
 
 ### Questions from Claude
 
@@ -16255,3 +16256,59 @@ The changed lines are the documented hook interface (`site/defenses/README.md`) 
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. Claude may show standalone examples (CLAUDE.md, midterm §2 "AI assistance"), so this follows the boundary. Added to the AI-use disclosure open item: the price case is modeled on Claude's temperature example (Turns 354 and 364).
+
+### Turn 365 — 2026-11-23 18:29 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function fakeValue(row, rng) {
+>     const real = Number(row.value.replace(" $", ""));
+>     let t = 10 + rng() * 140
+>     t = Number(t.toFixed(2));
+>     if (t === real) t = t + 1;
+>     return t.toFixed(2) + " $";
+>
+>   switch (row.key) {
+>     case "price":
+>       return 
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "Fake "  + row.value  // anything not listed above
+>   }
+> }
+>
+> module.exports = { fakeValue };
+
+**What Claude did:** Reviewed Joseph's second draft of `poisoned.js`. No files changed apart from this log. Claude didn't rewrite the draft.
+
+**Claude's answer (summary):**
+- **The price lines are in the wrong place.** They sit above the `switch`, so they run for every field and return straight away. Every one of the 70 fields would get a price-like fake, and the `switch` never runs. Move the five lines inside `case "price": { … }` and delete the empty `return`.
+- **The `$` is handled wrongly.** The real price is `$89.99`, with the `$` first and no space:
+  - remove `"$"`, not `" $"`. As written, `Number("$89.99")` is `NaN`;
+  - put the `$` in front when returning: `"$" + …`, not `… + " $"`.
+- **Small:** the semicolon after the `let` line, and renaming `t` to `amount` if Joseph likes.
+- **Check:**
+  - generate, and Price should look like `$63.42` and differ between p1 and p2;
+  - the other fields should still show the `switch`'s fixed fakes;
+  - then paste the file.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
