@@ -631,6 +631,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J379 | 379 | (laptop user-cost output, commit `f2414b1`: poisoned 0% pixel difference, SSIM 1.000, 0/70 out of order, fakes 2.02 s) | Correct; poisoning's user cost recorded (D116); push the folder for the graphs and cross-check |
 | J380 | 380 | its pushed | Cross-check 734/734 with the laptop's user cost; graphs 6–8, Table 3 and fig3 with poisoned (D117); what's left |
 | J381 | 381 | ok i merged, can you give me here, my scrum meeting report i have later today (with his current report pasted) | The full report updated with poisoning, as text in the chat: daily list, metrics, 48-run results, published comparison, cost, next steps, AI-use line |
+| J382 | 382 | how does the llm model work exactly simply | Plain explanation: next-word prediction, Ollama on the laptop, (c)'s seven steps, and why it gets 70% on shuffled (field-by-field counts), is caught by the honeypot and is fooled by poisoning |
 
 ### Questions from Claude
 
@@ -17334,3 +17335,38 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The report draws on D99, D106, D110 and D112–D117.
+
+### Turn 382 — 2026-11-23 20:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how does the llm model work exactly simply
+
+**What Claude did:**
+- Read `scrapers/c_llm_text.py` (the prompt, the Ollama request, the parsing and the failure rules), to describe it as Joseph wrote it.
+- Counted (c)'s correct values per field on the shuffled site (`results/2026-11-18-c-all`, 3 runs):
+  - always right: brand, category, price, rating and SKU (18/18 each);
+  - release date 15/18; name and availability 12/18; description 8/18; reviews 2/18;
+  - articles: author and title 3/6, published 1/6, summary and tags 0/6.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** a plain explanation, in three parts:
+- **What a language model is:** trained on huge amounts of text to predict the next piece of text. llama3.2:3b has 3 billion learned numbers and is small enough for a laptop CPU. Ollama runs it locally at `localhost:11434`, so nothing leaves the laptop.
+- **What (c) does on each item page:**
+  1. open the page in Chromium;
+  2. take the visible text of `<main>`;
+  3. build a prompt that lists the field names;
+  4. send it with `format: json` and temperature 0, so every run gives the same answer;
+  5. check the reply: valid JSON, with every key present;
+  6. turn price and rating into numbers;
+  7. save the values.
+  It takes about 5 s per page because the model writes its answer one piece at a time.
+- **Why it scores as it does:**
+  - **Shuffled:** the text arrives with labels and values jumbled, and the model matches them by meaning. Values with a clear shape (price, SKU, rating) are always right; look-alike numbers and long text often go wrong; hence 70%.
+  - **Honeypot:** it follows the hidden link, like (a) and (b).
+  - **Poisoned:** it reads right after load and copies the fakes faithfully.
+- **Simplest way to say it:** it reads like a person skimming, but it doesn't check anything, and it never waits.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
