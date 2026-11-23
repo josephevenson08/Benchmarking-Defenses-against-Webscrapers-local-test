@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(None so far.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106.)* |
 
 ---
 
@@ -137,6 +137,32 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 - **Per defended site:** SSIM, fields out of reading order, HTML size change, and Lighthouse FCP/LCP/TTI change (grey bars, so they are not confused with site colours).
 - **Published reference lines (dashed), where a study reports the same metric:** Beyond BeautifulSoup 0.82–1.00 (success rate), WebCloak 100% (drop in recall), Shy Guys 67.6% (detection), WebCloak LCP +880 ms.
 Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; the measurement suite passes. **Turn 345 (Joseph's list):** trimmed to exactly 8 graphs with plain titles: recall (accuracy), precision, success rate, drop in recall (accuracy), detection and evasion rate (one bar per scraper, split into caught and evaded), SSIM, Lighthouse change, HTML size change. F1 and reading order were removed from the script's output. The detection reference is only Shy Guys' 67.6%: FP-Inconsistent reports both a share of requests detected (DataDome 55.44%, BotD 47.07%) and an average evasion per bot service (52.93%, 44.56%), which don't add to 100%, so they were left out to avoid confusion. | Add more panels to `figures.py`; leave Joseph to write it alone | Claude (tooling; analysis code that Claude may draft) | Scrum feedback (Turn 237); D68–D71; §4 "Final outputs". | Adds (from the scrum feedback) |
+
+| D105 | 347 | **Poisoning: the site and scoring side (Claude).** Joseph writes `site/defenses/poisoned.js` (the fakes and the swap script); everything around it is ready:
+- **Generator (`site/generate.js`):** two new hooks. `fakeValue(row, rng)` returns the fake for one field; it gets the real value as plain text and one seeded random function per page, so the fakes are fixed per seed (§6). `script(page)` returns JavaScript placed in a `<script>` at the end of `<body>`, outside `<main>`; item pages get `page.valuesPath`.
+- **Outputs:** each item page's real values in `conditions/poisoned/values/<path>.json`, served by the existing static route, in field order with key, label and value. Every fake goes to `conditions/poisoned.fakes.json` in D35's format, outside the served folder. The manifest names the fakes file and each page's values path.
+- **Refusals:** the generator refuses an empty fake, a fake equal to the real value, and a script containing `<script>` tags.
+- **Unchanged:** baseline, shuffled and honeypot are byte-identical to the old generator's output (checked file by file).
+- **Scoring:**
+  - the runner copies the fakes file into the results and its quick score counts fakes;
+  - `scoring/results.py` scores fakes. It refuses a condition whose manifest names a fakes file that is missing, and adds a poisoned table with fakes, other wrong values and missing values per run. The "other wrong" column is the midterm's Ambitious "Done when": every fake in an output matches its page's fake;
+  - `measurement/cross_check.py` recounts fakes on its own and orders poisoned and tarpit cells.
+  Rebuilding the Nov 20 results gives identical CSVs, and the cross-check still agrees 541/541.
+- **Test 5 (`measurement/test5.py`):**
+  1. the fakes file: each fake is checked with `score.py`'s `load_fakes` on its own, so every bad fake is listed;
+  2. no real value in any page's served HTML: all 70 values on all 10 pages, matched only when standing alone, so "4.5" inside "$64.50" is not a leak;
+  3. every field shows its fake right after load;
+  4. every field shows its real value 3 s after load.
+  It also records when each page's values last changed (the "seconds fake values stay visible") and whether each page fetched its JSON.
+  It was checked against two throwaway stand-ins in the scratchpad, never committed and not shown to Joseph: one with fakes only, which failed the 3 s check, and one that wrongly writes the real values into the page, which failed the HTML check and swapped at 2.00 s. Unit tests cover the matching rules.
+- **Tests:** Node 30/30; scoring 35; measurement 67. | (1) `fieldRows` writes the fakes and the generator reads them back out of the HTML; (2) a `fakeValue` hook, so the generator knows every fake (chosen); the script in `mainEnd` or in its own hook (own hook chosen, so text read from `<main>` holds no JavaScript) | Claude (site and tooling); Joseph's request | §2 test-site row ("serves robots.txt and the real values JSON"); §3 Architecture item 2 ("A page generator … writes the fake-values file"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); Figure 2 FakeValue (unique per item and field, differs from the real value); §4 metrics (fake-value rate); §5 Test 5; §1 item 3 "Done when". | Follows (the split and the outputs); Interprets (the hook shapes, the JSON's place and format, and Test 5's stand-alone match rule) |
+| D106 | 347 | **Start the tarpit now, alongside poisoning (Joseph's choice: "i would like to have 4 defenses").** The midterm's gate (§7 Stretch plan): "I start it only if the other three defenses and all five scrapers already run by Dec 1, and build it Dec 2 – 4." Neither condition holds yet: poisoning hasn't run, and (e) is likely dropped. Order kept: poisoning first (Test 5, then 12 runs), then the tarpit. The Dec 1 cut-line still applies, and the tarpit is its own condition, so the existing results are untouched. | Wait for the gate (Turn 346's recommendation); start now | Joseph | §1 item 5 (If Time Permits); §7 Stretch plan (the gate and "never put the essential results at risk"); Cut-line 2 (Dec 1). | **Deviates** (the start gate; Joseph's decision, to be reported) |
+| D107 | 347 | **Tarpit: the slot (Claude), with the route left to Joseph.**
+- **Generator:** `footer(page, rng)` adds HTML at the end of `<footer>`, for the entrance link; `disallow` (a list of paths) becomes robots.txt's `Disallow:` lines.
+- **Server:** loads the condition's defense file. If it exports `maze(req, res)`, the server answers `GET /maze/:hash` with it, and adds any `res.locals.log` fields to that request's log line (they never replace the standard ones). Without the export, `/maze/...` stays a 404.
+- **Joseph writes `site/defenses/tarpit.js`:** the footer link, `Disallow: /maze/`, the maze page (seeded from the hash, about 5 links to other maze paths, a fixed delay) and the log fields.
+- **Tests and docs:** 2 Node tests with stand-ins that only exercise the slot; the defense README documents all five new hooks.
+- **Still to do once the route exists:** the runner's robots.txt setting for (a), (b) and (d); the maze measures (pages loaded, seconds trapped, server time per request); Test 6's maze part. | Claude writes the whole route; Joseph writes the route and the server mounts it (chosen) | §3 Architecture item 2 ("An Express server serves … the optional /maze/<hash> route"); §2 Tarpit route row (Joseph: "the generation rules and the logging"); §1 item 5 "Done when"; §5 Test 6; CLAUDE.md (Joseph writes the tarpit route). | Interprets (the server's mount point; the route itself is Joseph's) |
 
 ---
 
@@ -490,6 +516,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J344 | 344 | can you help me set up to make a graph in matplot lib for each of the metrics? | `measurement/metric_graphs.py` (D104): 10 graphs, one per metric, with published reference lines; command to run it on the laptop |
 | J345 | 345 | do a recall(accuracy) graph, a precision graph, a success rate , a drop in recall(accuracy), a detection / evasion rate graph, also explain how detection and evasion rate is calculated, and then do a SSIM graph, a light house change graph and then a change in html size graph, i want these graphs to be like the ones you showed above, but keep it simple, | The 8 requested graphs (D104 updated) and how the detection and evasion rates are calculated |
 | J346 | 346 | and what other defenses do i still need to add, and what else if left for this project based on my project outline | Checked the midterm's 5 scope items: 2 of 4 defenses built (poisoning and tarpit left), 4 of 5 scrapers (e left); the remaining Milestone 3 and 4 work; recommended poisoning only |
+| J347 | 347 | ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses | Poisoning's site and scoring side and Test 5 built (D105); Joseph writes `poisoned.js` next. Tarpit started at Joseph's choice, before the midterm's gate (D106, Deviates); its slot is ready for Joseph's `tarpit.js` (D107) |
 
 ### Questions from Claude
 
@@ -540,7 +567,13 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 
 ## Open items
 
-**▶ Resume here (Turn 336, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330, with the metrics write-up and the WebCloak rationale added in Turns 334–335); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
+**▶ Resume here (Turn 347, Mon Nov 23):** Poisoning and the tarpit started. Poisoning's site and scoring side is ready (D105): the generator's `fakeValue` and `script` hooks, the real-values JSON, the fakes file, fakes in the runner, results and cross-check, and Test 5 (`measurement/test5.py`). **Next, Joseph:** write `site/defenses/poisoned.js` (fakes, then the swap), `npm run generate -- poisoned`, `python measurement/test5.py` until all 4 checks pass, then (a)–(d) on `poisoned` × 3 and `scoring/results.py` over all folders. **Next, Claude:** serve pages in the user-cost runner, so poisoned pages can fetch their JSON, and add the seconds fakes stay visible; add `poisoned` to the graphs. Tarpit (D106, Deviates, Joseph's choice): the slot is ready (D107); after poisoning, Joseph writes `site/defenses/tarpit.js`, then Claude adds the runner's robots.txt setting, the maze measures and Test 6's maze part. Still open in Milestone 3: the (d) part of Test 3; Test 7's stub-model part for (c); the honeypot false-positive check; our column of the related-work table; Cut-line 2 (Tue Dec 1). Open from before: Figure 2 and the per-field chart (D100); the honeypot `${page.trapPath}` tidy-up; OneDrive (`git config gc.auto 0`); the prompt-hook fix.
+
+**Earlier resume note (Turn 336, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330, with the metrics write-up and the WebCloak rationale added in Turns 334–335); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
+
+**For poisoning's user cost (found Turn 347):** `measurement/user_cost.py` opens each page from its file (`file://`), so a poisoned page's script can't fetch `/values/...` and its screenshot would keep the fakes. Before measuring `poisoned`, serve the pages through `site/server.js` (with a log kept apart from scraper logs, as for Lighthouse) and add the seconds fake values stay visible (§4 item 4; Test 5 already measures it). Check that the other conditions' numbers don't change.
+
+**For the tarpit (Turn 347, D107):** once Joseph's `tarpit.js` exists, add: the runner's `--robots ignore` setting for (a), (b) and (d) (the scrapers already take `--robots obey|ignore`); maze pages loaded, seconds trapped and server time per maze request in `scoring/results.py`; Test 6's maze part (a scraper that obeys robots.txt never requests `/maze/`); `tarpit` in the graphs.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -15734,3 +15767,37 @@ All numbers are from the cross-checked results (D102).
 **Questions Claude asked:** none (whether to build poisoning is for the professor and Joseph).
 
 **Direction and fit:** no new decision.
+
+### Turn 347 — 2026-11-23 17:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets start working on the posioned defense right now and try and get this and the tarpit going because i would like to have 4 defenses
+
+**What Claude did:** Merged nothing (`origin/main` had nothing new). Read the midterm's poisoning design (§2, §3, Figure 2, §4 metrics, §5 Test 5, §6) and its tarpit text (§1 item 5, §2 Tarpit row, §5 Test 6, §7 gate). Built the site and scoring side for both, without writing either defense (D105, D107):
+- **`site/generate.js`:** the hooks `fakeValue`, `script`, `footer` and `disallow`. It writes each item page's real-values JSON (`conditions/poisoned/values/`) and the fakes file (`conditions/poisoned.fakes.json`). It refuses empty fakes, real-value fakes and `<script>` tags. Baseline, shuffled and honeypot are byte-identical to before.
+- **`site/server.js`:** loads the condition's defense file, answers `/maze/<hash>` with its `maze` export, and adds `res.locals.log` fields to the log line.
+- **Scoring:** the runner copies the fakes file and its quick score counts fakes. `scoring/results.py` scores fakes and adds a poisoned table. `measurement/cross_check.py` recounts fakes. The Nov 20 results rebuild identically, and the cross-check still agrees 541/541.
+- **`measurement/test5.py`:** Test 5, checked against two throwaway stand-ins in the scratchpad (deleted, never committed): fakes only fails at 3 s; real values written into the page fails the HTML check.
+- **Tests:** 7 Node tests and 6 Python tests added. Node 30/30, scoring 35, measurement 67 pass.
+- **Docs:** `site/defenses/README.md` documents the new hooks, the JSON format and how to check with Test 5. `README.md` has the Test 5 command and the Milestone 3 status.
+- Logged D105–D107. Committed, pushed, and updated the pull request into `main`.
+
+**Claude's answer (summary):**
+- **Poisoning is ready for Joseph's part.** He writes `site/defenses/poisoned.js` with two exports:
+  - `fakeValue(row, rng)`: one same-format fake per field;
+  - `script(page)`: the swap. Wait 2 s, fetch `page.valuesPath`, and put each real value in place of its fake with `textContent`.
+- **What Claude gave him:**
+  - the format rules for each field;
+  - a standalone toy example of `setTimeout` + `fetch` + `textContent` (a temperature page, not project code);
+  - the order of work: generate → look at `p1.html` and the fakes file → Test 5 → 12 runs → results.
+- **The tarpit is started, but it skips the midterm's gate** (D106, Deviates, Joseph's call; to be reported). Its slot is ready for `tarpit.js`. Poisoning goes first.
+- **What Claude still has to do:** the user-cost runner opens pages from files, so a poisoned page couldn't fetch its JSON. It has to be served, with a "seconds fakes visible" column, before poisoning's user cost is measured. The tarpit's runner setting, measures and Test 6 part come after Joseph's route.
+- ⚠️ Merge needed (the pull request link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:**
+- D105: Follows / Interprets.
+- D106: **Deviates** (Joseph's decision).
+- D107: Interprets.

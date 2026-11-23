@@ -173,6 +173,82 @@ test("a defense's mainEnd adds HTML at the end of every page's main and gets the
   assert.throws(() => checkDefense({ mainEnd: 3 }, "x"), /"mainEnd" must be a function/);
 });
 
+test("poisoning: fakes in the HTML, real values in values/, every fake in the fakes file", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "poison-"));
+  // A stand-in defense that only exercises the slot: not the project's fakes or swap script.
+  const defense = {
+    fakeValue: (row, rng) => `Fake ${Math.floor(rng() * 1000)} ${row.value}`,
+    script: (page) => (page.valuesPath ? `console.log(${JSON.stringify(page.valuesPath)});` : ""),
+  };
+  const first = writeCondition("test-poison", dir, 11, defense);
+  const read = (file) => fs.readFileSync(path.join(dir, file), "utf8");
+  const fakes = JSON.parse(read("test-poison.fakes.json"));
+  assert.equal(fakes.length, 70, "one fake per scored field");
+  assert.ok(!fs.existsSync(path.join(first.siteDir, "test-poison.fakes.json")), "fakes file is not served");
+
+  for (const page of first.pages.filter((p) => p.item_id)) {
+    const { record, fields } = itemFor(page);
+    const html = read(path.join("test-poison", page.file));
+    const shown = rows(html);
+    const mine = fakes.filter((f) => f.item_id === page.item_id);
+    assert.deepEqual(shown.map((r) => r.label), fields.map((f) => f.label), "labels unchanged");
+    assert.deepEqual(shown.map((r) => r.value), mine.map((f) => f.fake_value), "rows show the fakes");
+    assert.deepEqual(mine.map((f) => f.field), fields.map((f) => f.key), "fakes file in field order");
+    for (const f of fields) assert.ok(!shown.some((r) => r.value === record[f.key]), `${page.item_id} ${f.key} hidden`);
+
+    assert.equal(page.valuesPath, `/values${page.path}.json`);
+    const values = JSON.parse(read(path.join("test-poison", page.valuesPath)));
+    assert.equal(values.item_id, page.item_id);
+    assert.deepEqual(values.fields, fields.map((f) => ({ key: f.key, label: f.label, value: record[f.key] })), "real values");
+    assert.ok(html.endsWith(`  <script>\nconsole.log("${page.valuesPath}");\n  </script>\n</body>\n</html>\n`), page.path);
+  }
+  for (const page of first.pages.filter((p) => !p.item_id)) {
+    assert.ok(!read(path.join("test-poison", page.file)).includes("<script>"), `no script on ${page.path}`);
+  }
+  const manifest = JSON.parse(read("test-poison.manifest.json"));
+  assert.equal(manifest.fakes_file, "test-poison.fakes.json");
+  assert.equal(manifest.pages.find((p) => p.path === "/products/p1").values, "/values/products/p1.json");
+
+  writeCondition("test-poison", dir, 11, defense);
+  assert.deepEqual(JSON.parse(read("test-poison.fakes.json")), fakes, "same seed, same fakes");
+  writeCondition("test-poison", dir, 12, defense);
+  assert.notDeepEqual(JSON.parse(read("test-poison.fakes.json")), fakes, "another seed, other fakes");
+});
+
+test("poisoning refuses a fake that equals the real value, an empty fake, and script tags", () => {
+  const build = (defense) => buildPages(data, { condition: "test", defense, seed: 1 });
+  assert.throws(() => build({ fakeValue: (row) => ` ${row.value.toUpperCase()} ` }), /fakeValue for p1 name returned the real value/);
+  assert.throws(() => build({ fakeValue: () => "  " }), /must return the fake as non-empty text/);
+  assert.throws(() => build({ fakeValue: () => undefined }), /returned nothing/);
+  assert.throws(() => build({ script: () => "<script>x()</script>" }), /without <script> tags/);
+  assert.throws(() => build({ script: () => 3 }), /script must return JavaScript/);
+  assert.throws(() => checkDefense({ fakeValue: "x" }, "x"), /"fakeValue" must be a function \(row, rng\)/);
+  const plain = build({ style: "" });
+  assert.ok(plain.every((p) => !p.fakes && !p.valuesPath), "no poisoning without fakeValue");
+});
+
+test("tarpit hooks: footer adds HTML to every page's footer, disallow goes into robots.txt", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tarpit-"));
+  const seen = [];
+  const defense = {
+    footer(page, rng) {
+      seen.push({ path: page.path, draw: rng() });
+      return `<a class="test-entrance" href="/maze/test">more</a>`;
+    },
+    disallow: ["/maze/"],
+  };
+  const { pages, siteDir } = writeCondition("test-tarpit", dir, 5, defense);
+  assert.deepEqual(seen.map((s) => s.path), pages.map((p) => p.path), "called once per page, all 10");
+  for (const page of pages) {
+    assert.match(page.html, /All content is made up\. <a class="test-entrance" href="\/maze\/test">more<\/a><\/footer>/, page.path);
+  }
+  assert.equal(fs.readFileSync(path.join(siteDir, "robots.txt"), "utf8"), "User-agent: *\nDisallow: /maze/\n");
+  assert.ok(!fs.existsSync(path.join(dir, "test-tarpit.fakes.json")), "no fakes file without poisoning");
+  assert.throws(() => checkDefense({ disallow: "/maze/" }, "x"), /"disallow" must be a list of paths/);
+  assert.throws(() => checkDefense({ disallow: ["maze"] }, "x"), /"disallow" must be a list of paths/);
+  assert.throws(() => checkDefense({ maze: {} }, "x"), /"maze" must be a function \(req, res\)/);
+});
+
 test("defense files are found by name, and unknown conditions are refused", () => {
   assert.equal(availableConditions()[0], "baseline");
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "unknown-"));
@@ -247,6 +323,55 @@ test("server serves pages and logs every request", async (t) => {
     assert.ok(!Number.isNaN(Date.parse(e.timestamp)));
   }
   assert.equal(lines[5].user_agent, null);
+});
+
+test("server answers /maze/<hash> with the defense's route, adds its log fields, and serves real values", async (t) => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "maze-"));
+  const { siteDir } = writeCondition("test-poison", outDir, 3, { fakeValue: (row) => `Fake ${row.value}` });
+  const logFile = path.join(outDir, "logs", "requests.jsonl");
+  // A stand-in route that only exercises the slot: not the project's tarpit.
+  const defense = {
+    maze(req, res) {
+      res.locals.log = { maze_hash: req.params.hash, run_id: "not-allowed", path: "/nope" };
+      res.type("html").send(`<p>${req.params.hash}</p>`);
+    },
+  };
+  const servers = [
+    createApp({ siteDir, logFile, trapPath: "/trap", defense }).listen(0, "127.0.0.1"),
+    createApp({ siteDir, logFile: path.join(outDir, "logs", "plain.jsonl"), trapPath: "/trap" }).listen(0, "127.0.0.1"),
+  ];
+  await Promise.all(servers.map((s) => new Promise((resolve) => s.once("listening", resolve))));
+  t.after(() => servers.forEach((s) => s.close()));
+  const get = (server, urlPath) =>
+    new Promise((resolve, reject) => {
+      const headers = { "User-Agent": "bench-scraper (run=a-tarpit-1)" };
+      http
+        .get({ host: "127.0.0.1", port: server.address().port, path: urlPath, headers }, (res) => {
+          let body = "";
+          res.on("data", (chunk) => (body += chunk));
+          res.on("end", () => resolve({ status: res.statusCode, body, type: res.headers["content-type"] }));
+        })
+        .on("error", reject);
+    });
+
+  const maze = await get(servers[0], "/maze/abc123");
+  assert.equal(maze.status, 200);
+  assert.equal(maze.body, "<p>abc123</p>");
+  assert.equal((await get(servers[1], "/maze/abc123")).status, 404, "no maze route without the export");
+  const values = await get(servers[0], "/values/products/p1.json");
+  assert.equal(values.status, 200);
+  assert.match(values.type, /application\/json/);
+  assert.equal(JSON.parse(values.body).fields[0].value, "Larkfield Studio Headphones");
+
+  let lines = [];
+  for (let i = 0; i < 50 && lines.length < 2; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    lines = fs.existsSync(logFile) ? fs.readFileSync(logFile, "utf8").trim().split("\n").map(JSON.parse) : [];
+  }
+  assert.equal(lines.length, 2);
+  assert.deepEqual([lines[0].run_id, lines[0].path, lines[0].maze_hash], ["a-tarpit-1", "/maze/abc123", "abc123"], "extra field added, standard ones kept");
+  assert.equal(lines[0].user_agent, "bench-scraper (run=a-tarpit-1)");
+  assert.equal(lines[1].maze_hash, undefined);
 });
 
 test("server listens on the IPv4 loopback, and on IPv6 where available", async (t) => {

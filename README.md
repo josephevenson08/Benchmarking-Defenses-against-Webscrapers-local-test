@@ -202,6 +202,12 @@ python measurement/test7.py --scrapers a b c     # (c) too (the test pages make 
 python measurement/test6.py
 ```
 
+**Test 5** (poisoning hides real values) in one command, once `site/defenses/poisoned.js` exists. It rebuilds `poisoned`, serves it on port 3100 with a fresh log, searches every page's HTML for the 70 real values, and reads each item page in Chromium right after load and 3 s later. Every field should show its fake first and its real value 3 s later. It also checks the fakes file and records when each page swapped; writes `results/<date>-test5/`:
+
+```bash
+python measurement/test5.py
+```
+
 **Test 3** (the extraction rule): each case in `measurement/fixtures/test3/` is a saved page plus the output worked out by hand (`expected.json`). The script serves each page on its own, runs (a) and (b) on it with `--page-cap 1`, and compares; writes `results/<date>-test3/`:
 
 ```bash
@@ -373,7 +379,9 @@ Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptiv
 - [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22); runs on all three conditions done Nov 18 (planned Nov 28): shuffled 48–49/70, honeypot 70/70 with the trap visited
 - [ ] Scraper (d): written Nov 20 (Claude, at Joseph's request, D99). Baseline check and the runs on all three conditions done Nov 20 (9/9 runs, 70/70 everywhere, the trap never hit); Test 7 passes. Still to do: the (d) part of Test 3 (Nov 25)
 - [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
-- [ ] Only if (c) and (d) finish early: poisoning (Test 5) and setup for (e)
+- [ ] Poisoning (Test 5), started Nov 23 because (c) and (d) finished early. The site and scoring side is ready (D105): the generator's `fakeValue` and `script` hooks, the real-values JSON, the fakes file, fakes in the results and Test 5. Still to do: Joseph's `site/defenses/poisoned.js`, Test 5, and (a)–(d) on `poisoned`, 3 runs each
+- [ ] Tarpit (If time permits), started Nov 23 at Joseph's choice, before the midterm's gate (D106). Hooks are ready (`footer`, `disallow`, `maze`). Still to do: Joseph's `site/defenses/tarpit.js`, then the runner's robots.txt setting, the maze measures and Test 6's maze part
+- [ ] Setup for (e)
 
 ### Milestone 4: Dec 2 – Dec 10
 - [ ] Remaining Ambitious runs (only if ready)

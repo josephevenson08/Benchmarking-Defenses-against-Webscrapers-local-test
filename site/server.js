@@ -5,6 +5,12 @@
 //
 // Scrapers put their run ID in the User-Agent as "run=<id>", e.g.
 // "bench-scraper (run=a-baseline-1)". Requests without one log as "unknown".
+//
+// The pages, robots.txt and a poisoned site's real-values JSON (values/) are
+// static files from conditions/<condition>/. If the condition's defense file
+// exports a maze function (the tarpit, written by Joseph), the server answers
+// GET /maze/<hash> with it; anything the route puts in res.locals.log is added
+// to that request's log line (site/defenses/README.md).
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
@@ -12,6 +18,7 @@ const { parseArgs } = require("util");
 const express = require("express");
 
 const ROOT = path.join(__dirname, "..");
+const { checkDefense } = require("./generate");
 const RUN_ID = /\brun=([^\s;()]+)/;
 
 function runIdFrom(userAgent) {
@@ -35,15 +42,20 @@ function requestLogger(logFile, trapPath) {
         status: res.statusCode,
         response_ms: Math.round(Number(process.hrtime.bigint() - start) / 1e3) / 1e3,
         honeypot_hit: req.path === trapPath,
-        user_agent: userAgent,
       };
+      // Extra fields a route asked for (the tarpit's); they never replace the ones above.
+      for (const [key, value] of Object.entries(res.locals.log || {})) {
+        if (!(key in entry) && key !== "user_agent") entry[key] = value;
+      }
+      entry.user_agent = userAgent;
       fs.appendFileSync(logFile, JSON.stringify(entry) + "\n");
     });
     next();
   };
 }
 
-function createApp({ siteDir, logFile, trapPath }) {
+// defense: the condition's loaded defense file, or null. Only its maze export is used here.
+function createApp({ siteDir, logFile, trapPath, defense = null }) {
   const app = express();
   app.disable("x-powered-by");
   app.disable("etag");
@@ -53,6 +65,9 @@ function createApp({ siteDir, logFile, trapPath }) {
   app.get(trapPath, (req, res) => {
     res.type("html").send("<!doctype html>\n<title>Archive</title>\n<p>Nothing here.</p>\n");
   });
+
+  // The tarpit (if this condition has one): Joseph's route makes the page and its delay.
+  if (defense && defense.maze) app.get("/maze/:hash", defense.maze);
 
   // No caching headers, so every request gets a full 200 and a log line.
   app.use(
@@ -102,9 +117,12 @@ if (require.main === module) {
     process.exit(1);
   }
   const logFile = path.resolve(ROOT, values.log);
-  const app = createApp({ siteDir, logFile, trapPath: config.trap_path });
+  const defenseFile = path.join(__dirname, "defenses", `${condition}.js`);
+  const defense = fs.existsSync(defenseFile) ? checkDefense(require(defenseFile), `site/defenses/${condition}.js`) : null;
+  const app = createApp({ siteDir, logFile, trapPath: config.trap_path, defense });
   console.log(`Serving conditions/${condition}/ at http://127.0.0.1:${values.port}/`);
   console.log(`Logging requests to ${path.relative(ROOT, logFile)}`);
+  if (defense && defense.maze) console.log("Tarpit on: /maze/<hash> answered by site/defenses/" + condition + ".js");
   listenLocal(app, Number(values.port), (host) => console.log(`Listening on ${host}`));
 }
 
