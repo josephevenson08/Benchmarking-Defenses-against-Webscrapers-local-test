@@ -165,6 +165,13 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 - **Still to do once the route exists:** the runner's robots.txt setting for (a), (b) and (d); the maze measures (pages loaded, seconds trapped, server time per request); Test 6's maze part. | Claude writes the whole route; Joseph writes the route and the server mounts it (chosen) | §3 Architecture item 2 ("An Express server serves … the optional /maze/<hash> route"); §2 Tarpit route row (Joseph: "the generation rules and the logging"); §1 item 5 "Done when"; §5 Test 6; CLAUDE.md (Joseph writes the tarpit route). | Interprets (the server's mount point; the route itself is Joseph's) |
 
 | D108 | 352 | **Test 5's HTML check searches each item page for its own real values only** (the other 2 pages are still searched for all 70). Found while preparing Joseph's walkthrough: availability has only four values (In stock, Low stock, Out of stock, Pre-order), so any fake availability is another product's real one. Ratings (3.9–4.8) and categories collide the same way. The old rule (all 70 values on every page) would have failed a correct defense. A fake that happens to equal another item's real value reveals nothing about this page, and scoring marks fakes per page and field (Figure 2). Same-page leaks are still caught, for example the real brand inside a fake name. Unit test added; the measurement suite passes. | Keep searching all 70 values on every page; per page (chosen) | Claude (tooling) | §5 Test 5 ("I search each poisoned page's HTML for every real value"); Figure 2 FakeValue (per item and field). | Interprets (which real values count for each page; narrows D105's rule) |
+| D109 | 368 | **Joseph finishes `poisoned.js` himself; Claude gives the remaining rules faster** (Joseph's choice, C41). Joseph had asked "just give me what it should look like". Claude asked first, because midterm §2 and CLAUDE.md say Joseph writes the page defenses. Claude then gave every remaining step in one message:
+- the fix for the price case label;
+- two helpers Joseph writes once, `pick` and `between`;
+- a rule for each of the 14 remaining fields;
+- the swap script's steps, with a standalone toy on Node `${}` versus browser `+`;
+- the export.
+Claude writes no `poisoned.js` code and checks each paste. | Claude writes everything (Deviates, as with scraper (d)); Claude writes the fakes and Joseph the swap (Deviates); Joseph finishes with faster guidance (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); CLAUDE.md AI-use boundaries. | Follows |
 ---
 
 ## Questions register
@@ -538,6 +545,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J365 | 365 | (Joseph's second draft: the price lines above the `switch`, `replace(" $", "")`, `+ " $"`) | Move the five lines into `case "price": { }`; remove `"$"` without a space and put it in front; then check p1 and p2 |
 | J366 | 366 | (Joseph's third draft: the price case inside `case "price": { }`) | Works: six different prices, the same on every rebuild; remove the space before `$`; next, rating and review count with the same pattern |
 | J367 | 367 | (Joseph's fourth draft: `$` fixed, but `case "     price":` with spaces inside the quotes) | The label no longer matches `"price"`, so the price falls to the default; remove the spaces inside the quotes; then Step 4 |
+| J368 | 368 | just give me what it should look like since i have the majority of it done | Asked first (C41): Joseph chose to finish it himself with faster guidance (D109); every remaining rule in one message |
 
 ### Questions from Claude
 
@@ -583,6 +591,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | C38 | 308 | Reading-order rule (§3: Joseph specifies and reviews it). Options (Turn 317): "Label or value moved (Recommended)", "Count elements separately". | Label or value moved. | Closed (Turn 317) → D96 |
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
 | C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
+| C41 | 368 | Joseph asked Claude to write the rest of `poisoned.js`; the midterm and CLAUDE.md say Joseph writes the defenses. How to finish it? Options: "I finish it, faster (Recommended)", "Claude writes the fakes" (Joseph the swap; a deviation), "Claude writes the rest" (a deviation, as with (d)). | "I finish it, faster (Recommended)" | Closed (Turn 368; D109) |
 
 ---
 
@@ -16420,3 +16429,40 @@ The changed lines are the documented hook interface (`site/defenses/README.md`) 
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 368 — 2026-11-23 18:38 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> just give me what it should look like since i have the majority of it done
+
+**What Claude did:**
+- Asked C41 before writing any defense code, because the midterm (§2) and CLAUDE.md say Joseph writes the page defenses. Joseph chose to finish `poisoned.js` himself with faster guidance (D109, Follows).
+- Gave every remaining step in one message. Claude wrote no `poisoned.js` code.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Fix the price case label** (no spaces inside the quotes).
+- **Two helpers to write once:** `pick(list, real, rng)` (take the real value out, pick one at random) and `between(lo, hi, rng)` (a whole number in a range). Their one-line bodies were already in Turn 352's general toolbox.
+- **Rules for the 14 fields:**
+  - rating and review count;
+  - SKU: keep the letters, add 4 new digits;
+  - availability: one of the 4 phrases;
+  - both dates: stacked `case` labels, day 28 or lower;
+  - category, brand and author: from Joseph's own lists;
+  - name: 3 words from lists, with no real brand or category words;
+  - description, summary and title: made-up text;
+  - tags: 3 different tags joined with `", "`.
+- **The swap script, `script(page)`:**
+  1. read `config.json` at the top of the file;
+  2. return `""` when there's no `valuesPath`;
+  3. the delay in ms;
+  4. `setTimeout` → `fetch(valuesPath)` → `.json()`;
+  5. for each `.field` row, find the JSON field by label and set `.value`'s `textContent`.
+  A standalone `greeter` toy shows `${}` (filled in by Node) next to `+` (worked out in the browser).
+- **Export:** `module.exports = { fakeValue, script };`
+- **Checks:** generate, paste the file after `fakeValue`, then Test 5 after merging PR #62.
+
+**Questions Claude asked:** C41, how to finish `poisoned.js`. Options: "I finish it, faster (Recommended)", "Claude writes the fakes", "Claude writes the rest". Answer: "I finish it, faster (Recommended)".
+
+**Direction and fit:** D109 (Follows).
