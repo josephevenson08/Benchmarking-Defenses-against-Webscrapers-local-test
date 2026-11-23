@@ -186,6 +186,11 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **The file:** 124 lines, sha256 `cd781b46d7d1ea7e…`. It was given to Joseph in the chat to paste over his draft and commit from the laptop, and isn't committed on Claude's branch, so the merge won't hit his untracked copy.
 - **Checked in the cloud:** generator OK; Test 5 4/4 PASS, with 0 real values in the HTML and the swap at 2.01–2.06 s. A one-run preview (scratchpad, not results) gave (a) and (b) 70 fakes each and (d) 70/70 real, which fits hypothesis 2.
 - **Docs:** CLAUDE.md boundaries and the README's AI-use section updated. Joseph should tell the instructor, as with (d). | Keep guiding (D109); write it (chosen) | Joseph | §2 AI assistance ("I will write the page defenses"); §2 Page defenses row (Joseph: "the fake generation and the swap script"); §7 AI-agent plan; precedent D99. | **Deviates** (disclosed; Joseph to tell the instructor) |
+| D111 | 371 | **The first poisoned runs don't count; rerun after Test 5 passes.** Joseph's runs on Nov 23 (`results/2026-11-23-poisoned`, commit `d78603b`, 12 runs) gave 0/70 and 70 fakes for every run, (d) included. The `poisoned.js` in that commit is Joseph's 33-line draft from Turn 367, not the file from Turn 370 (sha256 `aec13160…`, not `cd781b46…`):
+- it has no `script` export, so nothing swaps;
+- most fields get the same fixed fake on every page;
+- unwritten fields get `"Fake "` + the real value.
+(d)'s 3.04 s per page is its plain 3 s quiet wait (baseline 3.03 s) with no change seen. In the cloud preview, with the swap, (d) took 4.63 s per page and got 70/70. Test 5, the poisoning's completion check, would have failed checks 2 and 4. Steps: paste the full file and save it, Test 5 4/4, commit, rerun 12 runs into a new folder, and leave the first folder out of the results. | Keep the runs as a "no swap" variant; rerun (chosen) | Claude (recommendation); Joseph to confirm by rerunning | §7 Stretch plan ("with Test 5 … as their completion check"); §5 Test 5; §2 Poisoning design (the swap after 2 s). | Follows |
 ---
 
 ## Questions register
@@ -562,6 +567,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J368 | 368 | just give me what it should look like since i have the majority of it done | Asked first (C41): Joseph chose to finish it himself with faster guidance (D109); every remaining rule in one message |
 | J369 | 369 | what should the file look like? | An outline of `poisoned.js` (structure and comments only, with Joseph's price case kept); Joseph fills in each case and the script |
 | J370 | 370 | give me the file entirely | Claude wrote `poisoned.js` around Joseph's price case (D110, Deviates, disclosed); cloud Test 5 4/4; preview (a), (b) 70 fakes, (d) 70/70; steps to paste, test, commit and run |
+| J371 | 371 | (runner output: 12 poisoned runs, all 0/70 and 70 fakes, (d) included, commit `d78603b`) | The committed `poisoned.js` is the draft without the swap; these runs don't count (D111); paste and save the full file, Test 5, rerun into a new folder |
 
 ### Questions from Claude
 
@@ -16543,3 +16549,70 @@ Two behaviour notes:
 **Questions Claude asked:** none. C41 had been asked and answered in Turn 368, and Joseph then asked for the whole file in plain words.
 
 **Direction and fit:** D110, **Deviates** (Joseph's decision; disclosed, as with D99).
+
+### Turn 371 — 2026-11-23 18:59 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers a b c d --conditions poisoned --out results/2026-11-23-poisoned
+> 12 runs: 1 conditions × 4 scrapers × 3 runs
+>   a-poisoned-1 ... 0/70, 70 fakes
+>   a-poisoned-2 ... 0/70, 70 fakes
+>   a-poisoned-3 ... 0/70, 70 fakes
+>   b-poisoned-1 ... 0/70, 70 fakes
+>   b-poisoned-2 ... 0/70, 70 fakes
+>   b-poisoned-3 ... 0/70, 70 fakes
+>   c-poisoned-1 ... 0/70, 70 fakes
+>   c-poisoned-2 ... 0/70, 70 fakes
+>   c-poisoned-3 ... 0/70, 70 fakes
+>   d-poisoned-1 ... 0/70, 70 fakes
+>   d-poisoned-2 ... 0/70, 70 fakes
+>   d-poisoned-3 ... 0/70, 70 fakes
+>
+> # Experiment runs
+>
+> Run 2026-11-23T12:53:33 → 2026-11-23T12:58:14 · commit d78603b · scrapers a, b, c, d · conditions poisoned · 3 runs per cell
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `a-poisoned-1` | 0 | 0.793 | 0/70 = 0.000 | 10 | 0.019 s |
+> | `a-poisoned-2` | 0 | 0.58 | 0/70 = 0.000 | 10 | 0.019 s |
+> | `a-poisoned-3` | 0 | 0.496 | 0/70 = 0.000 | 10 | 0.014 s |
+> | `b-poisoned-1` | 0 | 1.469 | 0/70 = 0.000 | 10 | 0.030 s |
+> | `b-poisoned-2` | 0 | 1.389 | 0/70 = 0.000 | 10 | 0.027 s |
+> | `b-poisoned-3` | 0 | 1.379 | 0/70 = 0.000 | 10 | 0.028 s |
+> | `c-poisoned-1` | 0 | 73.751 | 0/70 = 0.000 | 10 | 7.260 s |
+> | `c-poisoned-2` | 0 | 51.525 | 0/70 = 0.000 | 10 | 5.011 s |
+> | `c-poisoned-3` | 0 | 51.13 | 0/70 = 0.000 | 10 | 4.999 s |
+> | `d-poisoned-1` | 0 | 31.515 | 0/70 = 0.000 | 10 | 3.044 s |
+> | `d-poisoned-2` | 0 | 31.476 | 0/70 = 0.000 | 10 | 3.042 s |
+> | `d-poisoned-3` | 0 | 31.579 | 0/70 = 0.000 | 10 | 3.043 s |
+>
+> **12 of 12 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's runner output: 12/12 runs finished, every run 0/70 with 70 fakes, (d) at 3.04 s per page.
+- Compared it with the cloud preview: (d) 70/70 at 4.63 s per page.
+- Fetched `main`. The `site/defenses/poisoned.js` committed in `d78603b` ("Poisoned defense (written with Claude, D110)") is Joseph's 33-line draft from Turn 367, with no `script` and fixed fakes. It isn't the 124-line file from Turn 370.
+- Merged `origin/main` into the branch and logged D111.
+
+**Claude's answer (summary):**
+- **Why:** the pipeline works, but these runs used the draft. With no swap, every scraper, (d) included, reads the fakes; (d) waited 3 s, saw no change, and read them.
+- **What to do with the runs:** they aren't the poisoning defense, so leave them out.
+- **Fix:**
+  1. paste the full file and save it (Ctrl+S);
+  2. check it: about 124 lines, and `function script` is there;
+  3. `npm run generate -- poisoned`;
+  4. Test 5 must pass 4/4 before any runs;
+  5. commit and push;
+  6. rerun into a new folder, `results/2026-11-23-poisoned-2`;
+  7. delete the first folder, which was never committed and is recorded in this log.
+- **Expected:** (a), (b) and (c) take the fakes, and (d) gets the real values at about 5 s per page.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D111 (Follows).
