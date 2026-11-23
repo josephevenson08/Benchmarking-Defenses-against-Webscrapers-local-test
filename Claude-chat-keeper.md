@@ -533,6 +533,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J360 | 360 | (random characters, likely sent by accident) | No action; next step unchanged |
 | J361 | 361 | (random characters, likely sent by accident) | No action; next step unchanged |
 | J362 | 362 | ok im back sorry my code still looks like i sent before | Walked through the four fixes line by line (interface lines and placeholder only), then the random price in five steps for Joseph to write |
+| J363 | 363 | (`npm run generate -- poisoned` output: 10 pages, 70 fakes) | Step 1 passes; check `p1.html` and the values JSON, make the price random, paste the file |
 
 ### Questions from Claude
 
@@ -16198,5 +16199,31 @@ All numbers are from the cross-checked results (D102).
 The changed lines are the documented hook interface (`site/defenses/README.md`) and the placeholder, not the defense's logic. Then a check with `npm run generate -- poisoned`. Then the random price in five steps, which Joseph writes. PR #62 is still open; merge it before Test 5.
 
 **Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 363 — 2026-11-23 18:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> npm run generate -- poisoned
+>
+> > benchmarking-defenses-against-webscrapers@0.1.0 generate
+> > node site/generate.js poisoned
+>
+> Wrote 10 pages and robots.txt to conditions\poisoned/ (70 scored fields)
+> Poisoned: 70 fakes in conditions\poisoned.fakes.json, real values in conditions\poisoned/values/
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read Joseph's generator output: 10 pages and 70 fakes written, so the four fixes from Turn 362 work and the generator accepts `poisoned.js`. No files changed apart from this log.
+
+**Claude's answer (summary):** Step 1 passes. Joseph should:
+- **look at two files:**
+  - `conditions/poisoned/products/p1.html`: fakes in the rows, `Fake …` where a field has no case yet;
+  - `conditions/poisoned/values/products/p1.json`: the real values;
+- **do Step 3, the random price,** if it isn't done yet, then generate again and compare p1 and p2;
+- **paste the file** for review before Step 4, rating and review count.
+
+**Questions Claude asked:** whether the price is already random (in the reply).
 
 **Direction and fit:** no new decision.
