@@ -16090,10 +16090,27 @@ All numbers are from the cross-checked results (D102).
 > \--\ut65=-098709876567890-++
 > ++\=-09890-\+-9-6*5=[76t567890-\/
 
-**What Claude did:** Nothing. The message looks like accidental key presses: no words, no code and no command output.
+**What Claude did:** Nothing. The message looks like accidental key presses: no words, no code and no command output. Two more messages like it arrived during the turn (`='-;oiu65490-=\+54` and `';lkjhgtfdsaQWER56 …`).
 
 **Claude's answer (summary):** asked whether it was sent by accident, and repeated the next step: the four fixes to `poisoned.js` from Turn 355, then the random price, then paste the file.
 
 **Questions Claude asked:** whether the message was sent by accident (in the reply, not as a multiple-choice question).
 
 **Direction and fit:** no new decision.
+
+### Turn 357 — 2026-11-23 18:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ='-;oiu65490-=\+54
+
+<!-- chat-keeper:pending -->
+
+### Turn 358 — 2026-11-23 18:17 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ';lkjhgtfdsaQWER56
+> +L9OK8IJU6YH5T4R76543WQqacwva4r56rt678=
+
+<!-- chat-keeper:pending -->
