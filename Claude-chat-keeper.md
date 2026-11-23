@@ -525,6 +525,7 @@ Value labels never read "-0". Uses the same colours as `figures.py`. 2 tests; th
 | J352 | 352 | ok all 30 passed walk me through the poisoned then lets continue | Walkthrough of `poisoned.js` (concepts, standalone snippets, field rules, order of work); Test 5's HTML check fixed to search each page for its own values (D108) |
 | J353 | 353 | where am i putting this file? | `site/defenses/poisoned.js`, next to `shuffled.js` and `honeypot.js`; the file name sets the condition name |
 | J354 | 354 | ok i got the file made in the scetion, can you walk me through how to make this | Step-by-step plan for `poisoned.js`: Steps 1–3 in detail (shape, switch on the field, price) with toy examples; Steps 4–10 as a roadmap; Joseph writes the code |
+| J355 | 355 | (Joseph's first draft of `poisoned.js`: the example's `sound(animal)` switch with a fixed fake for each field) | Reviewed: rename to `fakeValue(row, rng)` on `row.key`, add the export, placeholder default, drop the typo case; then random fakes per page with `rng()` |
 
 ### Questions from Claude
 
@@ -16022,6 +16023,59 @@ All numbers are from the cross-checked results (D102).
   - 9: `script`;
   - 10: Test 5.
 - **Next:** Joseph pastes his file after Step 3, Claude reviews it, and then they continue.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 355 — 2026-11-23 18:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //poisoned fills in fake values for scrapers to see 
+>
+> function sound(animal) {
+>   switch (animal) {
+>     case "price":
+>       return "$90.00";
+>     case "sku":
+>       return "GH-OP-9045";
+>     case "rating":
+>         return "2.3";
+>     case "review_count":
+>         return "1301";
+>     case "release_date":
+>         return "2024-08-15";
+>     case "category":
+>         return "Table";
+>     case "brand":
+>         return "Scenario Fields";
+>     case "name":
+>         return "Fields Furniture";
+>     case "tage":
+>         return "this is a table";
+>     case "tags":
+>         return "table";
+>     default:
+>       return "...";   // anything not listed above
+>   }
+> }
+
+**What Claude did:** Reviewed Joseph's first draft of `poisoned.js`, which he pasted into the chat (it isn't in the repository yet), against the generator's rules and `data/items.json`. No files changed apart from this log. Claude didn't rewrite the draft.
+
+**Claude's answer (summary):**
+- **Right:** one `case` per field, and most fakes already have the right format.
+- **Must change, or the generator rejects the file:**
+  1. the function is still the example's `sound(animal)`. It must be `fakeValue(row, rng)` with `switch (row.key)`;
+  2. there's no `module.exports = { fakeValue };`;
+  3. the `default` returns `"..."`. It should be the placeholder `"Fake " + row.value`;
+  4. `case "tage"` isn't a field and should go.
+- **Next:**
+  - every product gets the same fake ("$90.00" six times). The midterm's design is one fixed set of fakes *per page* from the seed (§6), so use `rng()` (Step 3);
+  - `review_count` needs a comma, like `1,301`;
+  - tags should be a few tags joined with `", "`;
+  - still missing: availability, description and the article fields (title, author, publish_date, summary).
+- **Check:** `npm run generate -- poisoned` and `p1.html` after fixing 1–4, then make the price random.
 
 **Questions Claude asked:** none.
 
