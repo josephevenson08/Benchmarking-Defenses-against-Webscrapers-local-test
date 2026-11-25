@@ -647,6 +647,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J387 | 387 | (Joseph's first `tarpit.js` draft: the toy `app.get` copied in, the exports inside `footer`, a leftover `mainEnd` export) | Four fixes shown before and after (link tag, export placement, `app.get` → `function maze`, one export line); then the checks |
 | J388 | 388 | (Joseph's second `tarpit.js` draft: link, `disallow` and export fixed; the toy `app.get` still there) | Fix 3 shown as a whole before and after (the Step 2 placeholder `maze`); then the checks |
 | J389 | 389 | (output: tarpit site generated; server prints "Tarpit on") | Steps 1–2 work; Steps 3–4 (seeded filler and 5 links, then the log fields and delay constant) with checks |
+| J390 | 390 | (Joseph's third `tarpit.js` draft: `res.locals.log` at the top level, the toy loop pasted as it is, `html` not sent) | Five fixes explained by line (move the log line, a 5-link loop with `rng` ids, filler sentences, send `html`, `DELAY_MS`) |
 
 ### Questions from Claude
 
@@ -17600,6 +17601,57 @@ Then the Step 1 and Step 2 checks, and paste the file.
 - **Step 4:** a `DELAY_MS` constant and `res.locals.log = { tarpit: true, maze_hash: … }`.
 - **Checks:** the same page on refresh, a new page from each link, `"tarpit": true` and about 2000 ms in the log.
 - **Then:** paste the file.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 390 — 2026-11-25 16:27 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //tarpit file, tarpit is practically just wasting the scrapers time sending it down a maze of follow links
+> res.locals.log = { tarpit: true, maze_hash: req.params.hash };
+>
+> const { pageSeed, makeRng } = require("../generate");
+> const config = require("../../config.json");
+>
+> function footer(page, rng) { //calls once for each of the 10 pages
+>     return `<a href="/maze/start">Archive</a>`;
+> }
+>
+> const disallow = ["/maze/"];
+>     
+>
+> function maze(req, res) {
+>     const rng = makeRng(pageSeed(config.seed, "tarpit", req.path));
+>     const items = [];
+> for (let i = 0; i < 3; i++) {
+>   items.push(`<li>item ${i}</li>`);
+> }
+> const html = "<ul>" + items.join("") + "</ul>";
+>   setTimeout(() => {
+>     res.locals.log = { tarpit: true, maze_hash: req.params.hash };
+>     res.type("html").send("<p>Maze page " + req.params.hash + "</p>");
+>   }, 2000);                                   // answers after 2 seconds
+> }
+>
+> module.exports = { footer, disallow, maze };
+
+**What Claude did:**
+- Reviewed Joseph's third `tarpit.js` draft. Loaded a temporary copy, then removed it: it stops with `ReferenceError: res is not defined`, from the `res.locals.log` line at the top of the file.
+- No project files changed apart from this log. Claude didn't rewrite the draft.
+
+**Claude's answer (summary):**
+- **Done right:** the two `require` lines, the seeded `rng` line, and the log line inside `maze`.
+- **To fix:**
+  1. delete the `res.locals.log` line at the top: `res` exists only inside `maze`;
+  2. the toy loop was pasted as it is: it makes 3 "item" lines, not 5 maze links. Change 3 to 5, and in the loop make an `id` with `rng()` and push a link to `/maze/` + id;
+  3. add the filler sentences list and pick 2 with `rng`;
+  4. send `html` instead of the placeholder text;
+  5. optionally, the `DELAY_MS` constant.
+  Each was explained by line, with a sentence-by-sentence explanation of the loop.
+- **Then:** the checks, and paste.
 
 **Questions Claude asked:** none.
 
