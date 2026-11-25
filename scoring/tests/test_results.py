@@ -162,6 +162,33 @@ class FoldersTest(unittest.TestCase):
         self.assertAlmostEqual(row["fake_value_rate"], 6 / 70)
         self.assertIn("| (a) | 6 | 8.6% | 0 | 64 |", summary)
 
+    def test_tarpit_runs_get_maze_pages_seconds_trapped_and_entry_rate(self):
+        def maze(run_id, start_s, ms=2000.0):
+            return {"run_id": run_id, "path": f"/maze/{start_s}", "response_ms": ms, "honeypot_hit": False,
+                    "timestamp": f"2026-11-25T12:00:{start_s:02d}.000Z", "tarpit": True}
+        page = {"run_id": "a-tarpit-1", "path": "/products/p9", "response_ms": 2.0, "honeypot_hit": False,
+                "timestamp": "2026-11-25T12:00:03.000Z"}
+        # maze at 0 s, a real page at 3 s, maze at 5 s and 7 s: 3 + 2 + 2 s on maze pages; the real page doesn't count
+        logs = {"tarpit": log_lines("a-tarpit-1") + [maze("a-tarpit-1", 0), page, maze("a-tarpit-1", 5), maze("a-tarpit-1", 7)]
+                + log_lines("a-tarpit-2")}
+        runs = {"a-tarpit-1": (output("a-tarpit-1", pages=14), 0), "a-tarpit-2": (output("a-tarpit-2"), 0)}
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = make_folder(tmp, "exp", runs, logs)
+            manifest = json.loads((folder / "manifest.json").read_text())
+            manifest["runs"][0]["robots"] = "ignore"
+            (folder / "manifest.json").write_text(json.dumps(manifest))
+            rows = rs.run_rows([folder], DATA, "/trap")
+            summary_file = Path(tmp, "summary.md")
+            rs.write_summary(summary_file, [folder], rows, rs.cell_rows(rows))
+            summary = summary_file.read_text(encoding="utf-8")
+        one, two = rows
+        self.assertEqual((one["robots"], one["maze_pages"], one["maze_seconds"], one["maze_ms_mean"]), ("ignore", 3, 7.0, 2000.0))
+        self.assertEqual((two["robots"], two["maze_pages"], two["maze_seconds"], two["maze_ms_mean"]), ("obey", 0, 0.0, None))
+        self.assertEqual(one["log_page_requests"], 14, "maze pages are pages")
+        [cell] = rs.cell_rows(rows)
+        self.assertEqual((cell["maze_pages_mean"], cell["maze_seconds_mean"], cell["maze_entry_rate"]), (1.5, 3.5, 0.5))
+        self.assertIn("| (a) | tarpit | ignore obey | 3 0 | 7.0 0.0 | 2000 | 1 of 2 runs |", summary)
+
     def test_main_writes_the_three_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             folder = self.build(tmp)

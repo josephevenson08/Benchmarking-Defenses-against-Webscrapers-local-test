@@ -16,8 +16,15 @@ Part B, the honeypot pages (Wed Nov 11, "finish the honeypot condition"): every
 page has exactly one link to the trap path, a browser does not show it, and the
 pages differ from the baseline by at most --limit percent of pixels.
 
-Writes report.md, report.json and the request log (requests.jsonl) to the results
-folder. Exits with 1 if a check fails.
+Part C, the tarpit part of Test 6 (once site/defenses/tarpit.js exists; --no-tarpit
+skips it): "a scraper that obeys robots.txt should never request /maze/, while one that
+ignores it should. I count log lines by run ID and path." Serves the tarpit condition
+with a fresh log, checks robots.txt disallows /maze/, runs each of --tarpit-scrapers
+(default a b d, the midterm's tarpit scrapers) once with --robots obey, then (a) once with
+--robots ignore, and counts each run's /maze/ requests in the log.
+
+Writes report.md, report.json and the request logs (requests.jsonl; tarpit.jsonl and
+the scrapers' outputs in tarpit/) to the results folder. Exits with 1 if a check fails.
 """
 
 import argparse
@@ -148,6 +155,51 @@ def check_trap_links(trap_path, executable_path=None):
     return {"pages": pages, "passed": all(p["trap_links"] == 1 and p["hidden"] for p in pages)}
 
 
+def run_tarpit_part(port, out_dir, scrapers):
+    """Part C: obeying scrapers never request /maze/; one that ignores robots.txt does."""
+    from measurement.run_experiment import find_scrapers, run_scraper
+    available = find_scrapers()
+    missing = [s for s in scrapers if s not in available]
+    if missing:
+        raise SystemExit(f"No scraper file for: {', '.join(missing)}")
+    folder = out_dir / "tarpit"
+    folder.mkdir(parents=True, exist_ok=True)
+    log_file = out_dir / "tarpit.jsonl"
+    log_file.unlink(missing_ok=True)
+    generate("tarpit")
+    plan = [(s, "obey") for s in scrapers] + [("a", "ignore")]
+    runs = []
+    proc = start_server("tarpit", port, log_file)
+    try:
+        robots = get_text(port, "/robots.txt")
+        for scraper, setting in plan:
+            rid = f"test6-{setting}-{scraper}"
+            print(f"   {rid} ...", flush=True)
+            code, wall = run_scraper(available[scraper], rid, port, folder / f"{rid}.json", folder / f"{rid}.log", 600, setting)
+            runs.append({"run_id": rid, "scraper": scraper, "robots": setting, "exit_code": code, "wall_s": wall})
+        time.sleep(0.3)  # the server writes each log line when its response finishes
+    finally:
+        proc.terminate()
+        proc.wait(timeout=10)
+    entries = read_log(log_file)
+    for r in runs:
+        mine = [e for e in entries if e.get("run_id") == r["run_id"]]
+        r["requests"] = len(mine)
+        r["maze_requests"] = sum(1 for e in mine if e.get("path", "").startswith("/maze/"))
+        r["passed"] = r["exit_code"] == 0 and (r["maze_requests"] == 0 if r["robots"] == "obey" else r["maze_requests"] > 0)
+    disallows = "Disallow: /maze/" in robots
+    return {"robots_txt": robots, "disallows_maze": disallows, "runs": runs,
+            "passed": disallows and all(r["passed"] for r in runs)}
+
+
+def get_text(port, path):
+    conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+    conn.request("GET", path, headers={"User-Agent": "bench-test (run=test6-robots)"})
+    body = conn.getresponse().read().decode("utf-8", errors="replace")
+    conn.close()
+    return body
+
+
 def write_report(out_dir, report):
     (out_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     t6, links, pixels = report["test6"], report["trap_links"], report["pixels"]
@@ -174,7 +226,8 @@ def write_report(out_dir, report):
         f"| Server stays up (a request afterwards gets 200) | {'yes' if t6['server_stayed_up'] else 'NO'} "
         f"| {mark(t6['server_stayed_up'] and all(s == 200 for s in t6['statuses'].values()))} |",
         f"| No other run is logged as a hit | {c['hits_for_other_runs']} | {mark(c['hits_for_other_runs'] == 0)} |",
-        "| Tarpit part (robots.txt and `/maze/`) | tarpit not built | n/a |",
+        "| Tarpit part (robots.txt and `/maze/`) | see Part C | "
+        + ("n/a |" if report.get("tarpit") is None else f"{mark(report['tarpit']['passed'])} |"),
         "",
         f"**Test 6: {mark(t6['passed'])}**  (full request log: `requests.jsonl`)",
         "",
@@ -193,6 +246,18 @@ def write_report(out_dir, report):
         f"**Honeypot pages: {mark(links['passed'] and pixels['passed'])}**",
         "",
     ]
+    tp = report.get("tarpit")
+    if tp is None:
+        lines += ["## Part C: tarpit", "", "Not run (no `site/defenses/tarpit.js`, or `--no-tarpit`).", ""]
+    else:
+        lines += ["## Part C: tarpit (a scraper that obeys robots.txt never requests /maze/; one that ignores it does)", "",
+                  f"robots.txt disallows `/maze/`: {'yes' if tp['disallows_maze'] else 'NO'} | {mark(tp['disallows_maze'])}", "",
+                  "| Run | robots.txt | Exit | Requests | /maze/ requests | Expected | |", "|---|---|---|---|---|---|---|"]
+        for r in tp["runs"]:
+            expected = "none" if r["robots"] == "obey" else "at least one"
+            lines.append(f"| `{r['run_id']}` | {r['robots']} | {r['exit_code']} | {r['requests']} | {r['maze_requests']} | "
+                         f"{expected} | {mark(r['passed'])} |")
+        lines += ["", f"**Tarpit part: {mark(tp['passed'])}**  (request log: `tarpit.jsonl`)", ""]
     (out_dir / "report.md").write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -203,6 +268,8 @@ def main():
     parser.add_argument("--limit", type=float, default=1.0, help="pixel difference limit in percent (default 1)")
     parser.add_argument("--wait", type=float, default=3.0, help="seconds to wait before each screenshot (default 3)")
     parser.add_argument("--executable-path", help="a Chromium binary to use instead of Playwright's own")
+    parser.add_argument("--no-tarpit", action="store_true", help="skip Part C (the tarpit)")
+    parser.add_argument("--tarpit-scrapers", nargs="+", default=["a", "b", "d"], help="scrapers for Part C (default a b d)")
     args = parser.parse_args()
 
     out_dir = Path(args.out) if args.out else ROOT / "results" / f"{datetime.date.today().isoformat()}-test6"
@@ -219,6 +286,10 @@ def main():
     links = check_trap_links(trap_path, args.executable_path)
     print("   Taking screenshots and comparing pixels with the baseline (about a minute) ...")
     pixels = check_pixels("honeypot", out_dir, args.limit, args.wait, args.executable_path)
+    tarpit = None
+    if not args.no_tarpit and (ROOT / "site" / "defenses" / "tarpit.js").exists():
+        print(f"C. Tarpit: {', '.join(args.tarpit_scrapers)} obeying robots.txt, then (a) ignoring it (about a minute) ...")
+        tarpit = run_tarpit_part(args.port, out_dir, args.tarpit_scrapers)
 
     report = {
         "test": "Test 6: honeypot and logging",
@@ -227,7 +298,8 @@ def main():
         "test6": t6,
         "trap_links": links,
         "pixels": pixels,
-        "passed": t6["passed"] and links["passed"] and pixels["passed"],
+        "tarpit": tarpit,
+        "passed": t6["passed"] and links["passed"] and pixels["passed"] and (tarpit is None or tarpit["passed"]),
     }
     write_report(out_dir, report)
     print()

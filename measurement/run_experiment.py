@@ -1,7 +1,10 @@
 """Experiment runner (midterm §5 and §7; schedule Wed Nov 18).
 
     python measurement/run_experiment.py [--scrapers a b] [--conditions baseline shuffled honeypot] [--runs 3]
-                                         [--port 3100] [--out results/<date>-experiment]
+                                         [--port 3100] [--robots obey|ignore] [--out results/<date>-experiment]
+
+--robots sets every scraper's robots.txt setting for the whole experiment (default: obey, as in config.json). The
+tarpit runs use --robots ignore: the midterm runs (a), (b) and (d) "ignoring robots.txt" on the tarpit (§1 item 5).
 
 For each condition, in order:
   1. rebuilds the condition from the data list (same config seed, so the same pages every time),
@@ -59,9 +62,10 @@ def plan(scrapers, conditions, runs):
             for c in conditions for s in scrapers for n in range(1, runs + 1)]
 
 
-def run_scraper(script, rid, port, out_file, log_file, timeout):
+def run_scraper(script, rid, port, out_file, log_file, timeout, robots="obey"):
     """Runs one scraper; saves what it printed. Returns exit code (None on timeout) and wall seconds."""
-    cmd = [sys.executable, str(script), "--start-url", f"http://127.0.0.1:{port}/", "--run-id", rid, "--out", str(out_file)]
+    cmd = [sys.executable, str(script), "--start-url", f"http://127.0.0.1:{port}/", "--run-id", rid, "--out", str(out_file),
+           "--robots", robots]
     start = time.perf_counter()
     try:
         done = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
@@ -118,7 +122,8 @@ def write_summary(out_dir, manifest):
         "# Experiment runs",
         "",
         f"Run {manifest['started_at']} → {manifest['finished_at']} · commit {manifest['commit']} · "
-        f"scrapers {', '.join(manifest['scrapers'])} · conditions {', '.join(manifest['conditions'])} · {manifest['runs_per_cell']} runs per cell",
+        f"scrapers {', '.join(manifest['scrapers'])} · conditions {', '.join(manifest['conditions'])} · {manifest['runs_per_cell']} runs per cell"
+        f" · robots.txt: {manifest.get('robots', 'obey')}",
         "",
         "| Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |",
         "|---|---|---|---|---|---|",
@@ -146,6 +151,8 @@ def main():
     parser.add_argument("--port", type=int, default=3100, help="port for the experiment server (default 3100)")
     parser.add_argument("--timeout", type=float, default=1800, help="seconds before one scraper run is stopped (default 1800)")
     parser.add_argument("--out", help="results folder (default results/<today>-experiment)")
+    parser.add_argument("--robots", choices=["obey", "ignore"], default="obey",
+                        help="every scraper's robots.txt setting (default obey; the tarpit runs use ignore)")
     parser.add_argument("--no-score", action="store_true", help="skip the quick accuracy check")
     args = parser.parse_args()
 
@@ -172,6 +179,7 @@ def main():
         "scrapers": {s: available[s].name for s in args.scrapers},
         "conditions": args.conditions,
         "runs_per_cell": args.runs,
+        "robots": args.robots,
         "port": args.port,
         "config": config,
         "versions": tool_versions(),
@@ -194,8 +202,8 @@ def main():
                 out_file = out_dir / "runs" / f"{r['run_id']}.json"
                 print(f"  {r['run_id']} ...", end=" ", flush=True)
                 code, wall = run_scraper(available[r["scraper"]], r["run_id"], args.port, out_file,
-                                         out_dir / "runs" / f"{r['run_id']}.log", args.timeout)
-                entry = {**r, "exit_code": code, "wall_s": wall,
+                                         out_dir / "runs" / f"{r['run_id']}.log", args.timeout, args.robots)
+                entry = {**r, "robots": args.robots, "exit_code": code, "wall_s": wall,
                          "output": f"runs/{r['run_id']}.json" if out_file.exists() else None,
                          "printed": f"runs/{r['run_id']}.log", "request_log": f"logs/{condition}.jsonl"}
                 if not args.no_score and code == 0 and out_file.exists():

@@ -5,7 +5,9 @@
 
 The three measures (the midterm's own: accuracy, honeypot hits, user cost, §4):
   1. Accuracy (recall)  share of the 70 fields each scraper got right on each site, mean of its runs
-  2. Detection rate     share of a scraper's runs that the trap defense caught (honeypot; the tarpit when built)
+  2. Detection rate     share of a scraper's runs that the trap defense caught: the honeypot's trap link, or the
+                        tarpit's maze (a run that requested at least one maze page). The tarpit's time wasted is
+                        listed with it.
   3. Cost to visitors   one row per defense: load-time change (Lighthouse LCP), fields out of reading order,
                         and seconds of fake values on screen
 
@@ -27,6 +29,7 @@ NAMES = {"a": "(a) raw HTML", "b": "(b) browser", "c": "(c) LLM", "d": "(d) adap
 SITES = ["baseline", "shuffled", "honeypot", "poisoned", "tarpit"]  # a site without results is left out
 DEFENSE_NAMES = {"shuffled": "Shuffling", "honeypot": "Honeypot", "poisoned": "Poisoning", "tarpit": "Tarpit"}
 TRAPS = ["honeypot", "tarpit"]  # defenses that catch scrapers instead of lowering their accuracy
+CAUGHT = {"honeypot": "detection_rate", "tarpit": "maze_entry_rate"}  # the cells.csv column that says a run was caught
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e1e0d9"
 GREEN = "#1baf7a"  # the honeypot's colour in the other graphs
 # The reference palette's blue ramp, light (near 0) to dark (near 100%): one hue for one magnitude
@@ -98,11 +101,11 @@ def detection_chart(cells, out):
     width = 0.6 / len(traps)
     for k, trap in enumerate(traps):
         xs = [n + (k - (len(traps) - 1) / 2) * width for n in range(len(SCRAPERS))]
-        rates = [100 * cells[(s, trap)]["detection_rate"] if (s, trap) in cells else 0 for s in SCRAPERS]
+        rates = [100 * (cells[(s, trap)][CAUGHT[trap]] or 0) if (s, trap) in cells else 0 for s in SCRAPERS]
         ax.bar(xs, rates, width * 0.9, color=colours[trap], label=trap)
         for x, s, r in zip(xs, SCRAPERS, rates):
             c = cells.get((s, trap))
-            caught = round(c["detection_rate"] * c["runs"]) if c else 0
+            caught = round((c[CAUGHT[trap]] or 0) * c["runs"]) if c else 0
             ax.text(x, r + 2, f"{r:.0f}%\n{caught:.0f} of {c['runs']:.0f} runs" if c else "", ha="center", va="bottom",
                     fontsize=8.5, color=INK)
     ax.set_xticks(range(len(SCRAPERS)), [NAMES[s] for s in SCRAPERS])
@@ -160,15 +163,25 @@ def tables(cells, cost):
         row = []
         for t in traps:
             c = cells.get((s, t))
-            row.append("—" if not c else f"{100 * c['detection_rate']:.0f}% ({round(c['detection_rate'] * c['runs']):.0f} of {c['runs']:.0f} runs)")
+            rate = (c.get(CAUGHT[t]) or 0) if c else 0
+            row.append("—" if not c else f"{100 * rate:.0f}% ({round(rate * c['runs']):.0f} of {c['runs']:.0f} runs)")
         lines.append(f"| {NAMES[s]} | " + " | ".join(row) + " |")
     lines += [""]
     for t in traps:
-        caught = [s for s in SCRAPERS if (s, t) in cells and cells[(s, t)]["detection_rate"] == 1]
-        missed = [s for s in SCRAPERS if (s, t) in cells and cells[(s, t)]["detection_rate"] == 0]
+        caught = [s for s in SCRAPERS if (s, t) in cells and (cells[(s, t)].get(CAUGHT[t]) or 0) == 1]
+        missed = [s for s in SCRAPERS if (s, t) in cells and (cells[(s, t)].get(CAUGHT[t]) or 0) == 0]
         parts = ([f"catches {scrapers_list(caught)} in every run"] if caught else []) + \
                 ([f"never catches {scrapers_list(missed)}"] if missed else [])
         lines.append(f"- **{DEFENSE_NAMES[t]}** " + "; ".join(parts) + ". Its accuracy is unchanged, so this is how it shows.")
+    if "tarpit" in traps:
+        lines += ["", "Time the tarpit wasted (scrapers set to ignore robots.txt):", "",
+                  "| Scraper | Maze pages per run | Seconds trapped per run | Server time per maze page |", "|---|---|---|---|"]
+        for s in SCRAPERS:
+            c = cells.get((s, "tarpit"))
+            if c:
+                ms = c.get("maze_ms_mean")
+                lines.append(f"| {NAMES[s]} | {c['maze_pages_mean']:.1f} | {c['maze_seconds_mean']:.1f} s | "
+                             f"{'—' if ms is None else f'{ms / 1000:.1f} s'} |")
     lines += ["", "## 3. Cost to visitors", "",
               "| Defense | Load-time change (LCP) | Fields out of reading order | Fake values on screen |", "|---|---|---|---|"]
     for site in sites:
