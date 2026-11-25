@@ -67,7 +67,9 @@ def accuracy_grid(cells, out):
     for i, s in enumerate(SCRAPERS):
         for j, site in enumerate(sites):
             v = values[i][j]
-            if v is None:
+            if v is None:  # this scraper was not run on this site (the midterm's tarpit runs are (a), (b), (d))
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor="#f1f0ec", edgecolor="white", linewidth=3))
+                ax.text(j + 0.5, i + 0.5, "not run", ha="center", va="center", fontsize=9, color=INK2)
                 continue
             ax.add_patch(plt.Rectangle((j, i), 1, 1, facecolor=BLUES(v), edgecolor="white", linewidth=3))
             verdict = cells[(s, site)]["verdict"]
@@ -97,7 +99,7 @@ def detection_chart(cells, out):
     """One bar per scraper (per trap defense when there are two): share of its runs that were caught."""
     traps = [t for t in TRAPS if any((s, t) in cells for s in SCRAPERS)]
     colours = {"honeypot": GREEN, "tarpit": "#6250d6"}  # palette slots 3 and 7
-    fig, ax = plt.subplots(figsize=(7.5, 3.6))
+    fig, ax = plt.subplots(figsize=(8.5 if len(traps) > 1 else 7.5, 3.8))
     width = 0.6 / len(traps)
     for k, trap in enumerate(traps):
         xs = [n + (k - (len(traps) - 1) / 2) * width for n in range(len(SCRAPERS))]
@@ -106,13 +108,15 @@ def detection_chart(cells, out):
         for x, s, r in zip(xs, SCRAPERS, rates):
             c = cells.get((s, trap))
             caught = round((c[CAUGHT[trap]] or 0) * c["runs"]) if c else 0
-            ax.text(x, r + 2, f"{r:.0f}%\n{caught:.0f} of {c['runs']:.0f} runs" if c else "", ha="center", va="bottom",
-                    fontsize=8.5, color=INK)
+            label = (f"{caught:.0f}/{c['runs']:.0f}" if len(traps) > 1 else f"{r:.0f}%\n{caught:.0f} of {c['runs']:.0f} runs") \
+                if c else "not\nrun"
+            ax.text(x, r + 2, label, ha="center", va="bottom", fontsize=9, color=INK if c else INK2)
     ax.set_xticks(range(len(SCRAPERS)), [NAMES[s] for s in SCRAPERS])
     ax.set_ylim(0, 125)
     ax.set_yticks([0, 25, 50, 75, 100])
     ax.set_ylabel("Runs caught (%)")
-    ax.set_title("Detection rate: share of each scraper's runs the trap caught", loc="left", fontsize=12, fontweight="bold")
+    ax.set_title("Detection rate: share of each scraper's runs the trap caught" + (" (label: runs caught)" if len(traps) > 1 else ""),
+                 loc="left", fontsize=12, fontweight="bold")
     ax.spines[["top", "right"]].set_visible(False)
     ax.grid(axis="y", color=GRID)
     ax.set_axisbelow(True)
@@ -172,7 +176,9 @@ def tables(cells, cost):
         missed = [s for s in SCRAPERS if (s, t) in cells and (cells[(s, t)].get(CAUGHT[t]) or 0) == 0]
         parts = ([f"catches {scrapers_list(caught)} in every run"] if caught else []) + \
                 ([f"never catches {scrapers_list(missed)}"] if missed else [])
-        lines.append(f"- **{DEFENSE_NAMES[t]}** " + "; ".join(parts) + ". Its accuracy is unchanged, so this is how it shows.")
+        note = (" Only scrapers set to ignore robots.txt walk in; ones that obey it never enter (Test 6)."
+                if t == "tarpit" else "")
+        lines.append(f"- **{DEFENSE_NAMES[t]}** " + "; ".join(parts) + ". Its accuracy is unchanged, so this is how it shows." + note)
     if "tarpit" in traps:
         lines += ["", "Time the tarpit wasted (scrapers set to ignore robots.txt):", "",
                   "| Scraper | Maze pages per run | Seconds trapped per run | Server time per maze page |", "|---|---|---|---|"]
@@ -191,7 +197,7 @@ def tables(cells, cost):
         lcp = c.get("lh_lcp_ms_change_mean")
         fakes = c.get("fakes_visible_max_s")
         lines.append(f"| {DEFENSE_NAMES[site]} | {'—' if lcp is None else f'{round(lcp) + 0:+d} ms'} | "
-                     f"{c['fields_out_of_order']:.0f} of {c['fields']:.0f} | {'none' if fakes is None else f'{fakes:.1f} s'} |")
+                     f"{c['fields_out_of_order']:.0f} of {c['fields']:.0f} | {'none' if fakes is None else f'{fakes:.2f} s'} |")
     lines += ["", "Load-time changes this small are within the baseline's own run-to-run noise. Also checked, with no change "
               "for any defense: how the page looks after loading (SSIM 1.000) and accessibility violations (axe-core: 0).", ""]
     return "\n".join(lines)

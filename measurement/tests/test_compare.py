@@ -34,7 +34,7 @@ class CompareTest(unittest.TestCase):
         self.assertIn("| (d) adaptive | 0% (0 of 3 runs) |", text)
         self.assertIn("- **Honeypot** catches (a) in every run; never catches (d).", text)
         self.assertIn("| Shuffling | +0 ms | 70 of 70 | none |", text)
-        self.assertIn("| Poisoning | +2 ms | 0 of 70 | 2.0 s |", text)
+        self.assertIn("| Poisoning | +2 ms | 0 of 70 | 2.03 s |", text)
 
     def test_both_charts_are_written(self):
         from measurement import compare as cp

@@ -269,6 +269,18 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **Cloud preview** (scratchpad, 1 run each, `--robots ignore`): (a), (b) and (d) 70/70, 5 maze pages each, trapped 10.0, 10.1 and 22.1 s, about 2.0 s of server time per maze page. User cost without Lighthouse: 0.016% pixels (the visible footer link), SSIM 0.999, 0/70 out of order, HTML +1.6%, 0 axe.
 - **Python 3.11:** every file was compiled with 3.11, the laptop's version. One f-string reused its quote marks (3.12+ only) and was fixed. The scoring tests pass on 3.11 and 3.13.
 - **Tests:** a test for the maze measures and one for the robots setting; the scoring and measurement suites pass. | First-to-last maze time; time on maze pages (chosen) | Claude (tooling) | §1 item 5 "Done when" ("pages loaded, seconds trapped and server time per request are logged, and a scraper that obeys robots.txt never enters the maze"); §5 Test 6's tarpit sentence; §5 grid (tarpit runs for (a), (b) and (d)); §4 item 5 (a tarpit works when it wastes the scraper's time). | Follows; Interprets (how seconds trapped is counted) |
+| D122 | 396 | **⭐ Tarpit done (Wed Nov 25): the midterm's "If Time Permits" item 5 "Done when" is met.**
+- **The runs:** Joseph's laptop, commit `fb007e2`, `results/2026-11-25-tarpit`, 9 of 9 runs with `--robots ignore`.
+  - **Accuracy:** (a), (b) and (d) got 70/70 in every run, since the 15-page cap still reaches all 10 real pages.
+  - **Logged per run:** **5 maze pages loaded**; **seconds trapped** 10.1, 10.2 and 22.2 s for (a), (b) and (d), where (d) waits 3 s for each page to settle; **server time per request** 2.0 s. The maze entry rate is 3/3 for each.
+- **Test 6** (laptop, `results/2026-11-25-test6`): PASS on all parts. Obeying (a), (b) and (d) made 0 maze requests; ignoring (a) made 5. That's the "a scraper that obeys robots.txt never enters the maze" half.
+- **User cost** (`results/2026-11-25-user-cost-full`, all four defenses): the tarpit costs 0.015% pixels (the visible footer link), SSIM 0.999, 0/70 out of reading order, HTML +1.6%, 0 axe. Lighthouse shows no change beyond the baseline's own spread for any defense (Turn 395).
+- **All results:** 57 runs over five folders, `results/2026-11-25-results-all`; independent cross-check **942/942 agree** (`results/2026-11-25-cross-check`); comparison redrawn (`results/2026-11-25-comparison`).
+- **Chart fixes in `compare.py`:** "not run" cells for (c) on the tarpit; short "3/3" labels so neighbouring bars don't collide; the tarpit note says only scrapers that ignore robots.txt walk in; fakes on screen to 2 decimals.
+- **Hypotheses (§4):**
+  - 1–5 all hold: shuffling lowers (a) and (b), reduces (c) ("uncertain" in the plan) and leaves (d) alone; poisoning lowers (a)–(c) and not (d); the honeypot catches (a)–(c) and not (d) with accuracy unchanged; the costs are as predicted; and no single defense stops every scraper.
+  - The tarpit has no hypothesis of its own. It fits capability matching: the ability it targets is obeying robots.txt, so it catches every scraper set to ignore it, (d) included, and never a polite one. It wastes time but doesn't lower accuracy.
+- **(e) isn't built,** so its parts of hypotheses 1–2 aren't tested. | — | Joseph (runs); Claude (reading) | §1 item 5 "Done when"; §5 Test 6; §5 grid (tarpit runs for (a), (b) and (d)); §4 hypotheses 1–5 and Analysis. | Follows (the start was a deviation, D106) |
 ---
 
 ## Questions register
@@ -670,6 +682,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J393 | 393 | (commit `2a10e77` "Tarpit defense"; push rejected: fetch first) | PR #67 isn't on the laptop yet; fetch, merge with `--no-edit`, push |
 | J394 | 394 | pushed | The tarpit's measurement side built and checked (D121): runner `--robots`, maze measures, Test 6 Part C, tarpit in the comparison; cloud preview; laptop steps |
 | J395 | 395 | (laptop output: Test 6 PASS with the tarpit part; user cost with all four defenses, Lighthouse TTI +145 to +194 ms everywhere) | Test 6 passes; user cost fine, Lighthouse within the baseline's own spread (noise, likely laptop drift and an overlapping run); the tarpit runs and the push still to do |
+| J396 | 396 | (runner output: 9 tarpit runs, all 70/70, 15 pages each) and i pushed all three folders | ⭐ Tarpit done (D122): 57-run results, cross-check 942/942, comparison with all four defenses; every hypothesis holds |
 
 ### Questions from Claude
 
@@ -728,7 +741,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **For poisoning's user cost (found Turn 347):** done. The runner was changed in Turn 377 (D114), the laptop run in Turn 379 (D116), and the tables and graphs in Turn 380 (D117).
 
-**For the tarpit (Turn 347, D107; measurement side done Turn 394, D121):** left on the laptop: Test 6 with its tarpit part; the 9 runs (`--scrapers a b d --conditions tarpit --robots ignore`); the full user cost with all four defenses. Then Claude rebuilds the results over five folders, the cross-check, the comparison and the graphs.
+**For the tarpit (Turn 347, D107; measurement side Turn 394, D121):** done in Turn 396 (D122). Left for later: the tarpit in `metric_graphs.py` and `figures.py`, when the comparison with outside research is redone.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -18004,3 +18017,65 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision. The Lighthouse reading applies §5's rule ("a difference smaller than the baseline min–max range is not counted as an effect").
+
+### Turn 396 — 2026-11-25 17:31 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/run_experiment.py --scrapers a b d --conditions tarpit --robots ignore --out results/2026-11-25-tarpit
+> 9 runs: 1 conditions × 3 scrapers × 3 runs
+>   a-tarpit-1 ... 70/70
+>   a-tarpit-2 ... 70/70
+>   a-tarpit-3 ... 70/70
+>   b-tarpit-1 ... 70/70
+>   b-tarpit-2 ... 70/70
+>   b-tarpit-3 ... 70/70
+>   d-tarpit-1 ... 70/70
+>   d-tarpit-2 ... 70/70
+>   d-tarpit-3 ... 70/70
+>
+> # Experiment runs
+>
+> Run 2026-11-25T11:26:09 → 2026-11-25T11:30:35 · commit fb007e2 · scrapers a, b,d · conditions tarpit · 3 runs per cell · robots.txt: ignore
+>
+> | Run ID | Exit | Wall (s) | Accuracy | Pages | Time per page |
+> |---|---|---|---|---|---|
+> | `a-tarpit-1` | 0 | 13.731 | 70/70 = 1.000 | 15 | 0.688 s |
+> | `a-tarpit-2` | 0 | 11.583 | 70/70 = 1.000 | 15 | 0.684 s |
+> | `a-tarpit-3` | 0 | 11.322 | 70/70 = 1.000 | 15 | 0.687 s |
+> | `b-tarpit-1` | 0 | 19.082 | 70/70 = 1.000 | 15 | 0.736 s |
+> | `b-tarpit-2` | 0 | 14.02 | 70/70 = 1.000 | 15 | 0.723 s |
+> | `b-tarpit-3` | 0 | 13.561 | 70/70 = 1.000 | 15 | 0.709 s |
+> | `d-tarpit-1` | 0 | 58.884 | 70/70 = 1.000 | 15 | 3.728 s |
+> | `d-tarpit-2` | 0 | 58.981 | 70/70 = 1.000 | 15 | 3.729 s |
+> | `d-tarpit-3` | 0 | 58.68 | 70/70 = 1.000 | 15 | 3.728 s |
+>
+> **9 of 9 runs finished.**
+>
+> Accuracy here is a quick check from `scoring/score.py`. The results CSV (with honeypot hits and time per page from the request log, and the standard metrics) is built from this folder in a separate step.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> 
+>
+> and i pushed all three folders
+
+**What Claude did:**
+- Fetched and merged `main`, which brought in Joseph's `results/2026-11-25-tarpit`, `-test6` and `-user-cost-full`.
+- Built `results/2026-11-25-results-all` over five runner folders (57 runs), and the cross-check `results/2026-11-25-cross-check`: 942/942 agree, including maze pages and seconds trapped for each tarpit run.
+- Rebuilt the comparison with all four defenses; fixed the label collisions and the blank "not run" cell; looked at both charts.
+- Checked the outcome against hypotheses 1–5.
+- Tests pass, and `compare.py` compiles on Python 3.11. Updated the README, logged D122, committed and pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **⭐ The tarpit is done,** and all four defenses are now measured.
+- **The comparison tables:**
+  - **accuracy:** the tarpit has no effect;
+  - **detection:** the tarpit catches (a), (b) and (d) every run when they ignore robots.txt; the honeypot catches (a)–(c);
+  - **time wasted:** 10.1, 10.2 and 22.2 s;
+  - **cost:** the tarpit is 0.015% pixels and +1.6% HTML.
+- **The overall finding:** capability matching holds for all four defenses, and every hypothesis holds; (d) gets past every defense except the tarpit, and only when it ignores robots.txt.
+- **What's left:** the cut-line items and Milestone 4.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D122 (Follows; the tarpit's start was D106, Deviates).
