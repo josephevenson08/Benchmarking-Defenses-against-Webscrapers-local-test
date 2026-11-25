@@ -656,6 +656,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J389 | 389 | (output: tarpit site generated; server prints "Tarpit on") | Steps 1–2 work; Steps 3–4 (seeded filler and 5 links, then the log fields and delay constant) with checks |
 | J390 | 390 | (Joseph's third `tarpit.js` draft: `res.locals.log` at the top level, the toy loop pasted as it is, `html` not sent) | Five fixes explained by line (move the log line, a 5-link loop with `rng` ids, filler sentences, send `html`, `DELAY_MS`) |
 | J391 | 391 | (Joseph's fourth `tarpit.js` draft: it loads; the loop is still the toy, `html` isn't sent) | The missing lines shown before and after (D119, partly Deviates, disclosed); a generator export-order fix (D120); merge, check, commit |
+| J392 | 392 | (Joseph's fifth `tarpit.js` draft: the 3 new lines placed at the top of the file, `SENTENCES` deleted) | Move the 3 lines into `maze` in place of the old `html` line; put `SENTENCES` back; the file's order shown |
 
 ### Questions from Claude
 
@@ -17725,3 +17726,52 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D119 (**Deviates**, partly; disclosed), D120 (Follows).
+
+### Turn 392 — 2026-11-25 16:33 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //tarpit file, tarpit is practically just wasting the scrapers time sending it down a maze of follow links
+>
+> const { pageSeed, makeRng } = require("../generate");
+> const config = require("../../config.json");
+> const first = SENTENCES[Math.floor(rng() * SENTENCES.length)];
+> const second = SENTENCES[Math.floor(rng() * SENTENCES.length)];
+> const html = "<p>" + first + ". " + second + ".</p><ul>" + items.join("") + "</ul>";
+>
+> function footer(page, rng) { //calls once for each of the 10 pages
+>     return `<a href="/maze/start">Archive</a>`;
+> }
+>
+> const disallow = ["/maze/"];
+>     
+>
+> function maze(req, res) {
+>     const rng = makeRng(pageSeed(config.seed, "tarpit", req.path));
+>     const items = [];
+> for (let i = 0; i < 5; i++) {
+>   const id = Math.floor(rng() * 4294967296).toString(16);
+>   items.push(`<li><a href="/maze/${id}">next</a></li>`);
+> }
+> const html = "<ul>" + items.join("") + "</ul>";
+>   setTimeout(() => {
+>     res.locals.log = { tarpit: true, maze_hash: req.params.hash };
+> res.type("html").send(html);
+>   }, 2000);                                   // answers after 2 seconds
+> }
+>
+> module.exports = { footer, disallow, maze };
+
+**What Claude did:** Reviewed Joseph's fifth `tarpit.js` draft. The first statement that fails was checked in a temporary copy (removed): `ReferenceError: SENTENCES is not defined`. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Right:** the loop and `send(html)`.
+- **Two moves:**
+  1. the 3 new lines (`first`, `second`, `html`) went to the top of the file, outside `maze`, where `SENTENCES`, `rng` and `items` don't exist. Move them into `maze`, in place of the old `const html = "<ul>…"` line, which goes;
+  2. the `SENTENCES` list was deleted. Put it back at the top.
+- **Shown:** where each line goes, as a picture of the file's order.
+- **Then:** the checks and the commit.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
