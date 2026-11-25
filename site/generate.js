@@ -406,6 +406,10 @@ function writeCondition(condition, outDir = path.join(ROOT, "conditions"), seed 
   return { siteDir, pages, manifest };
 }
 
+// Exported before the command-line part below runs, so a defense file that requires this module (the tarpit
+// uses pageSeed and makeRng) gets the finished exports even when this file is the one being run.
+module.exports = { availableConditions, loadData, loadDefense, buildPages, writeCondition, escapeHtml, pageSeed, makeRng, checkDefense, robotsTxt };
+
 if (require.main === module) {
   const { parseArgs } = require("util");
   let parsed;
@@ -436,4 +440,3 @@ if (require.main === module) {
   }
 }
 
-module.exports = { availableConditions, loadData, loadDefense, buildPages, writeCondition, escapeHtml, pageSeed, makeRng, checkDefense, robotsTxt };

@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110, D119 partly.)* |
 
 ---
 
@@ -252,6 +252,13 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **Leaving the report's main comparison:** precision, F1, success rate, drop in recall, evasion rate, SSIM, HTML size and axe. They're still computed in `cells.csv` and `cost.csv` for the later comparison with published work. SSIM and axe get one line ("no change for any defense").
 - **New:** `measurement/compare.py` writes `1-accuracy.png` (a 4×4 grid of scrapers by sites, one-hue blue ramp from the reference palette, every cell labeled with its percentage and verdict), `2-detection.png` (one bar per scraper, "3 of 3 runs") and `comparison.md`. In `comparison.md`, each table is followed by what it shows, worked out from the verdicts. Percentages keep one decimal only when needed (5.7%, 69.5%). Output: `results/2026-11-25-comparison`.
 - **Docs and tests:** 3 tests; the measurement suite passes. README and `docs/metrics-plan.md` note the change. | Keep the 8–10 metrics; 2–3 measures (chosen); which three (C42) | Joseph (instructor's feedback); C42 | §4 Metrics (accuracy, honeypot hits, user cost) and §4 item 5 (honeypots and tarpits judged by detection, not accuracy); the research question (protection and cost to visitors). | Follows: it returns to the midterm's own measures. The D68–D71 metrics (Adds) move to the later comparison |
+| D119 | 391 | **Claude supplied the remaining lines of `tarpit.js`'s `maze` function, shown as before and after on Joseph's draft.**
+- **Claude's lines:** inside the loop, the `id` line and the `items.push` line with a `/maze/${id}` link; the two sentence picks; the `html` line; and `send(html)`.
+- **Where they come from:** each was assembled from toy pieces already shown (Turns 385, 389, 390). After three rounds of line-by-line guidance the loop was still the pasted toy, so Claude showed them directly.
+- **Joseph's:** the file's structure, the footer link, `disallow`, the sentences, the `rng` line, the 5-link loop count, the log fields and the delay.
+- **Check:** the draft plus these lines was tested in a temporary copy (removed): 2.0 s delay, the same page on reload, 5 links to new pages, and `"tarpit": true` in the log.
+- **Disclosed:** like D98, the lines are logged and go in the report's AI-use section. | Keep explaining in words; show the lines (chosen) | Claude, at Joseph's pace (he asked to be walked through it) | §2 Tarpit route row (Joseph: "the generation rules and the logging"); CLAUDE.md (Joseph writes the tarpit route); precedent D98. | **Deviates** (partly: some route lines supplied by Claude; disclosed) |
+| D120 | 391 | **`site/generate.js` exports its functions before its command-line part runs.** `tarpit.js` requires `../generate` for `pageSeed` and `makeRng`. When the generator was the file being run, it loaded the defense before its exports existed, so Node printed "Accessing non-existent property 'pageSeed' … inside circular dependency". Harmless (`footer` doesn't use them), but it would have shown in every tarpit build. Fixed by moving `module.exports` above the `require.main` block. Checked with a temporary stand-in defense (removed): no warning, and the functions are available. All four existing sites are byte-identical before and after, and Node tests pass 30/30. | Tell Joseph to require the generator's functions inside `maze`; fix the order (chosen) | Claude (test site) | §2 test site (generator, Claude's); D107 (the tarpit slot says `pageSeed` and `makeRng` can be imported). | Follows |
 ---
 
 ## Questions register
@@ -648,6 +655,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J388 | 388 | (Joseph's second `tarpit.js` draft: link, `disallow` and export fixed; the toy `app.get` still there) | Fix 3 shown as a whole before and after (the Step 2 placeholder `maze`); then the checks |
 | J389 | 389 | (output: tarpit site generated; server prints "Tarpit on") | Steps 1–2 work; Steps 3–4 (seeded filler and 5 links, then the log fields and delay constant) with checks |
 | J390 | 390 | (Joseph's third `tarpit.js` draft: `res.locals.log` at the top level, the toy loop pasted as it is, `html` not sent) | Five fixes explained by line (move the log line, a 5-link loop with `rng` ids, filler sentences, send `html`, `DELAY_MS`) |
+| J391 | 391 | (Joseph's fourth `tarpit.js` draft: it loads; the loop is still the toy, `html` isn't sent) | The missing lines shown before and after (D119, partly Deviates, disclosed); a generator export-order fix (D120); merge, check, commit |
 
 ### Questions from Claude
 
@@ -718,7 +726,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
-**For the report's AI-use disclosure (Turn 320; Turns 364, 370):** `site/defenses/poisoned.js` was written by Claude at Joseph's request (D110, Deviates); only its price case is Joseph's, modeled on Claude's temperature example (Turns 354, 364). Joseph to tell the instructor, as with (d). `site/defenses/tarpit.js`'s layout (export names and comments) follows Claude's outline (Turn 385). Its `maze` shell (the `setTimeout` and `send` placeholder) comes from Claude's toy example and Turn 388's before and after; the rest of the code is Joseph's. Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
+**For the report's AI-use disclosure (Turn 320; Turns 364, 370):** `site/defenses/poisoned.js` was written by Claude at Joseph's request (D110, Deviates); only its price case is Joseph's, modeled on Claude's temperature example (Turns 354, 364). Joseph to tell the instructor, as with (d). `site/defenses/tarpit.js`'s layout (export names and comments) follows Claude's outline (Turn 385). Its `maze` shell (the `setTimeout` and `send` placeholder, Turn 388) and the loop body, sentence picks, `html` line and `send(html)` (Turn 391, D119, **Deviates**, partly) are Claude's lines; the rest is Joseph's. Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -17656,3 +17664,64 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 391 — 2026-11-25 16:30 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //tarpit file, tarpit is practically just wasting the scrapers time sending it down a maze of follow links
+>
+> const { pageSeed, makeRng } = require("../generate");
+> const config = require("../../config.json");
+> const SENTENCES = [
+>   "this is a maze",
+>   "this is a path",
+>   "this is a another",
+>   "this is a this is it",
+> ];
+>
+> function footer(page, rng) { //calls once for each of the 10 pages
+>     return `<a href="/maze/start">Archive</a>`;
+> }
+>
+> const disallow = ["/maze/"];
+>     
+>
+> function maze(req, res) {
+>     const rng = makeRng(pageSeed(config.seed, "tarpit", req.path));
+>     const items = [];
+> for (let i = 0; i < 5; i++) {
+>   items.push(`<li>item ${i}</li>`);
+> }
+> const html = "<ul>" + items.join("") + "</ul>";
+>   setTimeout(() => {
+>     res.locals.log = { tarpit: true, maze_hash: req.params.hash };
+> res.type("html").send("<p>Maze page " + req.params.hash + "</p>");
+>   }, 2000);                                   // answers after 2 seconds
+> }
+>
+> module.exports = { footer, disallow, maze };
+
+**What Claude did:**
+- Reviewed Joseph's fourth `tarpit.js` draft. It loads now, but the loop still makes "item" lines, the sentences aren't picked, and the placeholder is still sent.
+- Tested his draft plus the missing lines in a temporary copy (removed): 2.0 s delay, the same page on reload, 5 links to new pages, the log line with `"tarpit": true`.
+- That test showed the generator's export-order problem; fixed it (D120).
+- Logged D119 (**Deviates**, partly) for the supplied lines.
+- Committed and pushed `site/generate.js`, and opened a pull request.
+
+**Claude's answer (summary):**
+- **The file's progress:** good; it loads now.
+- **Three changes, shown before and after:**
+  1. the loop body: an `id`, and a link pushed to `/maze/${id}`;
+  2. pick 2 sentences and build `html`;
+  3. `send(html)`.
+- **Said plainly:** these lines are Claude's and go in the AI-use note.
+- **Steps:**
+  1. merge the PR for the generator fix;
+  2. the checks;
+  3. paste or commit `tarpit.js`.
+- **Then Claude's side:** the robots setting in the runner, the maze measures, Test 6's maze part.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D119 (**Deviates**, partly; disclosed), D120 (Follows).
