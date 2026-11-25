@@ -645,6 +645,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J385 | 385 | ok i merged lets do the tarpit | Walkthrough of `tarpit.js`: three exports, toy examples, outline, checks; Claude's measurement side follows once the file exists |
 | J386 | 386 | walk me through this | `tarpit.js` step by step: Steps 1–2 in detail (entrance link and robots rule, then a first delayed maze page), Steps 3–4 previewed; paste after Step 2 |
 | J387 | 387 | (Joseph's first `tarpit.js` draft: the toy `app.get` copied in, the exports inside `footer`, a leftover `mainEnd` export) | Four fixes shown before and after (link tag, export placement, `app.get` → `function maze`, one export line); then the checks |
+| J388 | 388 | (Joseph's second `tarpit.js` draft: link, `disallow` and export fixed; the toy `app.get` still there) | Fix 3 shown as a whole before and after (the Step 2 placeholder `maze`); then the checks |
 
 ### Questions from Claude
 
@@ -715,7 +716,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **Proposed, awaiting Joseph (Turn 303; previewed Turn 304 at https://claude.ai/artifact/NJCLwB7bFPMRS7wB1jguMh):** one extra visual for the scrum feedback: a bar chart of the relative reduction in recall, ours (each defense × scraper) next to WebCloak's published before → after, with the differences in setting stated under it. It would be an "Adds" decision (the midterm plans 3 tables and 1 figure, §4). Also possible as a table in the report: (c)'s per-field results on shuffled, which explain its partial drop.
 
-**For the report's AI-use disclosure (Turn 320; Turns 364, 370):** `site/defenses/poisoned.js` was written by Claude at Joseph's request (D110, Deviates); only its price case is Joseph's, modeled on Claude's temperature example (Turns 354, 364). Joseph to tell the instructor, as with (d). `site/defenses/tarpit.js`'s layout (export names and comments) follows Claude's outline (Turn 385); the code is Joseph's. Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
+**For the report's AI-use disclosure (Turn 320; Turns 364, 370):** `site/defenses/poisoned.js` was written by Claude at Joseph's request (D110, Deviates); only its price case is Joseph's, modeled on Claude's temperature example (Turns 354, 364). Joseph to tell the instructor, as with (d). `site/defenses/tarpit.js`'s layout (export names and comments) follows Claude's outline (Turn 385). Its `maze` shell (the `setTimeout` and `send` placeholder) comes from Claude's toy example and Turn 388's before and after; the rest of the code is Joseph's. Also list the Claude-supplied lines in Joseph's scrapers: (c)'s corrected Step 2 and Step 3 blocks (Turns 283–288) and (d) part 1's quiet-wait function, config lines and wait call (D98, marked Deviates). Earlier ones: the value line in the shuffle (J146), the two lines in (c) part 1 (J261).
 
 **Prompt hook (found Turn 237):** subagent hand-back messages arrive like prompts, so `.claude/hooks/chat-keeper-prompt.js` logs them as new turns (Turns 238–239). They are marked as automated events. A small fix would make the hook skip prompts that start with `<agent-message`; not done yet.
 
@@ -17535,3 +17536,36 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 388 — 2026-11-25 16:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> //tarpit file, tarpit is practically just wasting the scrapers time sending it down a maze of follow links
+>
+> function footer(page, rng) { //calls once for each of the 10 pages
+>     return `<a href="/maze/start">Archive</a>`;
+> }
+>
+> const disallow = ["/maze/"];
+>     
+>
+> app.get("/hello/:name", (req, res) => {
+>   setTimeout(() => {
+>     res.type("html").send("<p>Hi " + req.params.name + "</p>");
+>   }, 1000);                                   // answers after 1 second
+> });
+>
+> module.exports = { footer, disallow, maze };
+
+**What Claude did:** Reviewed Joseph's second `tarpit.js` draft. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Done:** fixes 1, 2 and 4 (the link, `disallow` outside the function, one export line).
+- **Not done yet:** fix 3. The toy `app.get("/hello/:name", …)` block is still there, so the file still stops with "app is not defined". With `maze` in the export but not defined, it would also stop with "maze is not defined".
+- **Shown before and after:** the whole block, rewritten as `function maze(req, res) { setTimeout(() => { res.type("html").send("<p>Maze page " + req.params.hash + "</p>"); }, 2000); }`. It's the Step 2 placeholder, the toy example with its names changed. The maze's real content (the seeded rng, filler, links, logging) is still Joseph's to write in Steps 3–4.
+- **Then:** the checks, and paste.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. Added to the AI-use disclosure open item: the `maze` function's shell (the `setTimeout` and `send` placeholder) comes from Claude's toy example and Turn 388's before and after.
