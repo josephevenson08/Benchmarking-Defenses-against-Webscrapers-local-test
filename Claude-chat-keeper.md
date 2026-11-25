@@ -632,6 +632,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J380 | 380 | its pushed | Cross-check 734/734 with the laptop's user cost; graphs 6–8, Table 3 and fig3 with poisoned (D117); what's left |
 | J381 | 381 | ok i merged, can you give me here, my scrum meeting report i have later today (with his current report pasted) | The full report updated with poisoning, as text in the chat: daily list, metrics, 48-run results, published comparison, cost, next steps, AI-use line |
 | J382 | 382 | how does the llm model work exactly simply | Plain explanation: next-word prediction, Ollama on the laptop, (c)'s seven steps, and why it gets 70% on shuffled (field-by-field counts), is caught by the honeypot and is fooled by poisoning |
+| J383 | 383 | what all is left | The remaining work by deadline (Dec 1 cut-line, Milestone 4), small loose ends, optional items; suggested order |
 
 ### Questions from Claude
 
@@ -17366,6 +17367,47 @@ Two behaviour notes:
   - **Honeypot:** it follows the hidden link, like (a) and (b).
   - **Poisoned:** it reads right after load and copies the fakes faithfully.
 - **Simplest way to say it:** it reads like a person skimming, but it doesn't check anything, and it never waits.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 383 — 2026-11-25 16:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what all is left
+
+**What Claude did:**
+- Fetched `main`: no change since PR #65, and no `tarpit.js` yet.
+- Checked the remaining work against SCHEDULE.md (Nov 25 – Dec 10), the midterm (§1 items 4–5, §5 Tests 3 and 7, §4 Analysis, §6's future test, §7 Milestone 4) and Open items.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** what's left, by deadline:
+- **By Cut-line 2 (Tue Dec 1):**
+  1. the tarpit: Joseph's `tarpit.js`, then Claude's runner robots.txt setting, maze measures and Test 6 maze part, then 9 runs;
+  2. the (d) and poisoned-page parts of Test 3;
+  3. Test 7's stub-model part for (c);
+  4. the honeypot false-positive check;
+  5. our column of the related-work table;
+  6. the Nov 30 completeness check;
+  7. the Dec 1 cut-line decision: (e) dropped, and the tarpit only if it's running.
+- **Milestone 4 (Dec 2–10):**
+  - the final tables and the cell-by-cell check against the predicted pattern;
+  - the README and reproducibility manifest;
+  - report writing, with the scope change, AI use and limitations;
+  - a clean rerun from a fresh clone;
+  - the PDF and the tag by Dec 8;
+  - the deadline on Dec 10.
+- **Small loose ends:**
+  - the honeypot's hard-coded `/trap`;
+  - telling the instructor about (d) and poisoning;
+  - the prompt-hook fix.
+- **Optional:**
+  - (b) with a 3 s wait on poisoned (§5);
+  - the load-twice test of fixed fakes (§6);
+  - (e), which is dropped.
+- **Suggestion for today:** the tarpit first, since it's the biggest and must run by Dec 1; Thanksgiving is Nov 26–27. Claude can build the tarpit's measurement side, the false-positive check and the Test 3 harness meanwhile.
 
 **Questions Claude asked:** none.
 
