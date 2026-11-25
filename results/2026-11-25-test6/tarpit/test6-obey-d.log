@@ -1,0 +1,23 @@
+http://127.0.0.1:3100/ 15 run=test6-obey-d ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+page quiet after 3015 ms http://127.0.0.1:3100/
+200 http://127.0.0.1:3100/products/
+page quiet after 3009 ms http://127.0.0.1:3100/products/
+200 http://127.0.0.1:3100/articles/a1
+page quiet after 3003 ms http://127.0.0.1:3100/articles/a1
+200 http://127.0.0.1:3100/articles/a2
+page quiet after 3003 ms http://127.0.0.1:3100/articles/a2
+skipped (robots.txt): http://127.0.0.1:3100/maze/start
+200 http://127.0.0.1:3100/products/p1
+page quiet after 3010 ms http://127.0.0.1:3100/products/p1
+200 http://127.0.0.1:3100/products/p2
+page quiet after 3001 ms http://127.0.0.1:3100/products/p2
+200 http://127.0.0.1:3100/products/p3
+page quiet after 3004 ms http://127.0.0.1:3100/products/p3
+200 http://127.0.0.1:3100/products/p4
+page quiet after 3004 ms http://127.0.0.1:3100/products/p4
+200 http://127.0.0.1:3100/products/p5
+page quiet after 3014 ms http://127.0.0.1:3100/products/p5
+200 http://127.0.0.1:3100/products/p6
+page quiet after 3003 ms http://127.0.0.1:3100/products/p6
+70 records written to C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-25-test6\tarpit\test6-obey-d.json

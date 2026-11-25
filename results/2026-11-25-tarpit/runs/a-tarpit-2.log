@@ -1,0 +1,17 @@
+200 http://127.0.0.1:3100/
+200 http://127.0.0.1:3100/products/
+200 http://127.0.0.1:3100/articles/a1
+200 http://127.0.0.1:3100/articles/a2
+200 http://127.0.0.1:3100/maze/start
+200 http://127.0.0.1:3100/products/p1
+200 http://127.0.0.1:3100/products/p2
+200 http://127.0.0.1:3100/products/p3
+200 http://127.0.0.1:3100/products/p4
+200 http://127.0.0.1:3100/products/p5
+200 http://127.0.0.1:3100/products/p6
+200 http://127.0.0.1:3100/maze/2622fc0
+200 http://127.0.0.1:3100/maze/97fab824
+200 http://127.0.0.1:3100/maze/41fdada6
+200 http://127.0.0.1:3100/maze/ff85cdf0
+15 pages visited
+70 records written to results\2026-11-25-tarpit\runs\a-tarpit-2.json

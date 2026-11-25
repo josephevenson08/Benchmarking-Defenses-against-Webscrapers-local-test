@@ -1,0 +1,6 @@
+condition,pages,pixel_diff_mean_percent,pixel_diff_max_percent,ssim_mean,ssim_min,fields,fields_out_of_order,reading_order_mismatch_rate,html_bytes,html_change_percent,html_change_max_page_percent,pages_with_fakes,fakes_visible_mean_s,fakes_visible_max_s,axe_violations,axe_new_vs_baseline,axe_critical,axe_serious,axe_moderate,axe_minor,axe_level_A,axe_level_AA,axe_level_AAA,axe_level_best-practice,lh_score_mean,lh_score_change_mean,lh_fcp_ms_mean,lh_fcp_ms_change_mean,lh_lcp_ms_mean,lh_lcp_ms_change_mean,lh_tti_ms_mean,lh_tti_ms_change_mean
+baseline,10,,,,,70,0,0,21380,0,0,0,,,0,0,0,0,0,0,0,0,0,0,99.4,0,611.31,0,611.31,0,759.55,0
+shuffled,10,0,0,1,1,70,70,1,25920,21.2348,21.7687,0,,,0,0,0,0,0,0,0,0,0,0,98.9,-0.5,619.466,8.1562,619.466,8.1562,920.793,161.243
+honeypot,10,0,0,1,1,70,0,0,21970,2.75959,3.77238,0,,,0,0,0,0,0,0,0,0,0,0,98.6,-0.8,620.035,8.72457,620.035,8.72457,905.048,145.499
+poisoned,10,0,0,1,1,70,0,0,25130,17.5398,24.9608,8,2.04206,2.0631,0,0,0,0,0,0,0,0,0,0,99.1,-0.3,621.594,10.2837,621.594,10.2837,915.95,156.4
+tarpit,10,0.0146484,0.0146484,0.999134,0.999134,70,0,0,21720,1.59027,2.17391,0,,,0,0,0,0,0,0,0,0,0,0,98.7,-0.7,620.033,8.72295,620.033,8.72295,953.123,193.573

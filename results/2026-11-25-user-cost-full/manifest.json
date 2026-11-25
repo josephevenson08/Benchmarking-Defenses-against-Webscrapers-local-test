@@ -1,0 +1,46 @@
+{
+  "measurement": "user cost",
+  "started_at": "2026-11-25T10:48:09",
+  "commit": "fb007e2",
+  "viewport": "1280x800",
+  "wait_seconds": 3.0,
+  "conditions": [
+    "baseline",
+    "shuffled",
+    "honeypot",
+    "poisoned",
+    "tarpit"
+  ],
+  "versions": {
+    "python": "3.11.9",
+    "os": "Windows-10-10.0.26300-SP0",
+    "node": "v24.13.1",
+    "playwright": "1.63.0",
+    "requests": "2.34.2",
+    "beautifulsoup4": "4.15.0",
+    "axe-core": "4.14.0",
+    "lighthouse": "13.6.0"
+  },
+  "config": {
+    "port": 3000,
+    "page_cap": 15,
+    "runs_per_cell": 3,
+    "obey_robots_txt": true,
+    "request_timeout_seconds": 5,
+    "poison_swap_delay_seconds": 2,
+    "adaptive_quiet_seconds": 3,
+    "adaptive_timeout_seconds": 10,
+    "llm_temperature": 0,
+    "seed": 20261021,
+    "trap_path": "/trap"
+  },
+  "lighthouse": {
+    "version": "13.6.0",
+    "settings": {
+      "formFactor": "mobile",
+      "throttlingMethod": "simulate"
+    },
+    "runs_per_page": 5
+  },
+  "finished_at": "2026-11-25T11:23:06"
+}

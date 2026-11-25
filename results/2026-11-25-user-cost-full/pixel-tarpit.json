@@ -1,0 +1,162 @@
+{
+  "baseline": "results\\2026-11-25-user-cost-full\\screenshots\\baseline",
+  "other": "results\\2026-11-25-user-cost-full\\screenshots\\tarpit",
+  "threshold": 0.1,
+  "pages": [
+    {
+      "page": "articles-a1.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758614
+    },
+    {
+      "page": "articles-a2.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758614
+    },
+    {
+      "page": "index.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products-p1.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products-p2.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products-p3.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products-p4.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products-p5.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products-p6.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758621
+    },
+    {
+      "page": "products.png",
+      "width": [
+        1280,
+        1280
+      ],
+      "height": [
+        800,
+        800
+      ],
+      "mismatched": 150,
+      "total": 1024000,
+      "percent": 0.0146484375,
+      "ssim": 0.9991336910758639
+    }
+  ],
+  "missing": [],
+  "max_percent": 0.0146484375,
+  "mean_percent": 0.0146484375,
+  "min_ssim": 0.9991336910758614,
+  "mean_ssim": 0.9991336910758621
+}
