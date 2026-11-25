@@ -32,6 +32,13 @@ Definitions (docs/metrics-plan.md):
   time per page     = crawl seconds / pages fetched, both from the scraper's output (§4 item 4)
   log page requests = page requests in the request log for the run: robots.txt and files with an extension
                       other than .html (favicon, scripts, styles) are not pages (chat-keeper, Turns 121 and 124)
+  tarpit (§1 item 5) = from the request log, requests to /maze/... carrying the run's ID:
+                      maze pages      = how many the run requested
+                      seconds trapped = time the run spent on maze pages: for each maze request, the time until
+                                        the run's next page request (for the last one, the server's response
+                                        time), added up, so real pages visited in between don't count
+                      maze ms         = the server's mean time per maze request (the tarpit's delay included)
+                      maze entry rate = runs that requested at least one maze page / runs
 
 A run whose output file is missing (the scraper crashed) is scored as a run that found nothing, as score.py scores
 an empty output, and is marked with its exit code so it is never mistaken for a real 0.
@@ -43,6 +50,7 @@ import csv
 import json
 import sys
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from statistics import mean
 
@@ -60,6 +68,7 @@ RUN_COLUMNS = [
     "accuracy", "recall", "precision", "f1", "complete_run", "fake_value_rate",
     "pages_fetched", "page_errors", "seconds", "time_per_page",
     "log_page_requests", "honeypot_hits", "mean_response_ms",
+    "robots", "maze_pages", "maze_seconds", "maze_ms_mean",
 ]
 CELL_COLUMNS = [
     "scraper", "condition", "runs", "failed_runs", "correct_per_run",
@@ -67,7 +76,10 @@ CELL_COLUMNS = [
     "esr", "reduction_recall", "reduction_f1", "verdict", "baseline_check",
     "fake_value_rate_mean", "time_per_page_mean", "time_per_page_min", "time_per_page_max",
     "honeypot_hits", "detection_rate", "evasion_rate",
+    "maze_pages_mean", "maze_seconds_mean", "maze_ms_mean", "maze_entry_rate",
 ]
+
+MAZE = "/maze/"
 
 
 def is_page_request(path: str) -> bool:
@@ -78,9 +90,14 @@ def is_page_request(path: str) -> bool:
     return "." not in last or last.endswith(".html")
 
 
+def when(timestamp: str) -> datetime:
+    return datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+
+
 def read_log(path: Path, trap_path: str) -> dict:
-    """{run_id: {"pages": n, "hits": n, "ms": [response_ms, ...]}} from one request log."""
-    per_run = defaultdict(lambda: {"pages": 0, "hits": 0, "ms": []})
+    """{run_id: {"pages": n, "hits": n, "ms": [response_ms, ...], "maze": [(seconds on the page, ms), ...]}}
+    from one request log."""
+    per_run = defaultdict(lambda: {"pages": 0, "hits": 0, "ms": [], "maze": [], "seq": []})
     if not path.exists():
         return per_run
     for line in path.read_text(encoding="utf-8").splitlines():
@@ -94,7 +111,22 @@ def read_log(path: Path, trap_path: str) -> dict:
             entry["pages"] += 1
             if isinstance(r.get("response_ms"), (int, float)):
                 entry["ms"].append(r["response_ms"])
+        if is_page_request(r.get("path", "")) and r.get("timestamp") and isinstance(r.get("response_ms"), (int, float)):
+            entry["seq"].append((when(r["timestamp"]), r["path"], r["response_ms"]))
+    for entry in per_run.values():
+        seq = sorted(entry.pop("seq"), key=lambda x: x[0])
+        for i, (start, path_, ms) in enumerate(seq):
+            if path_.startswith(MAZE):
+                on_page = (seq[i + 1][0] - start).total_seconds() if i + 1 < len(seq) else ms / 1000
+                entry["maze"].append((on_page, ms))
     return per_run
+
+
+def maze_measures(maze: list) -> dict:
+    """Maze pages, seconds trapped and mean server ms for one run's maze requests."""
+    if not maze:
+        return {"maze_pages": 0, "maze_seconds": 0.0, "maze_ms_mean": None}
+    return {"maze_pages": len(maze), "maze_seconds": sum(sec for sec, _ in maze), "maze_ms_mean": mean(ms for _, ms in maze)}
 
 
 def condition_fakes(folder: Path, condition: str, data: DataList) -> dict:
@@ -141,7 +173,7 @@ def run_rows(folders, data: DataList, trap_path: str) -> list[dict]:
             s = score_run(output, data, fakes[condition])
             answered = s.correct + s.wrong
             precision = precision_of(s.correct, answered)
-            log = logs[condition].get(rid, {"pages": 0, "hits": 0, "ms": []})
+            log = logs[condition].get(rid, {"pages": 0, "hits": 0, "ms": [], "maze": []})
             pages = output.get("pages") or []
             rows.append({
                 "run_id": rid, "scraper": scraper, "condition": condition, "run_number": number,
@@ -155,6 +187,7 @@ def run_rows(folders, data: DataList, trap_path: str) -> list[dict]:
                 "page_errors": sum(1 for p in pages if p.get("error")), "seconds": s.seconds,
                 "time_per_page": s.time_per_page, "log_page_requests": log["pages"], "honeypot_hits": log["hits"],
                 "mean_response_ms": mean(log["ms"]) if log["ms"] else None,
+                "robots": run.get("robots", "obey"), **maze_measures(log["maze"]),
             })
     order = {c: i for i, c in enumerate(CONDITION_ORDER)}
     rows.sort(key=lambda r: (r["scraper"], order.get(r["condition"], 99), r["condition"], r["run_number"]))
@@ -205,6 +238,10 @@ def cell_rows(rows: list[dict]) -> list[dict]:
             "time_per_page_mean": mean(tpps) if tpps else None,
             "time_per_page_min": min(tpps) if tpps else None, "time_per_page_max": max(tpps) if tpps else None,
             "honeypot_hits": sum(hits), "detection_rate": detection, "evasion_rate": 1 - detection,
+            "maze_pages_mean": mean(r["maze_pages"] for r in runs),
+            "maze_seconds_mean": mean(r["maze_seconds"] for r in runs),
+            "maze_ms_mean": mean(ms) if (ms := [r["maze_ms_mean"] for r in runs if r["maze_ms_mean"] is not None]) else None,
+            "maze_entry_rate": sum(r["maze_pages"] > 0 for r in runs) / len(runs),
         })
     order = {c: i for i, c in enumerate(CONDITION_ORDER)}
     out.sort(key=lambda c: (c["scraper"], order.get(c["condition"], 99), c["condition"]))
@@ -255,6 +292,17 @@ def write_summary(path: Path, folders, rows: list, cells: list) -> None:
             runs = [r for r in rows if r["scraper"] == c["scraper"] and r["condition"] == "poisoned"]
             lines.append(f"| ({c['scraper']}) | {' '.join(str(r['fakes']) for r in runs)} | {pct(c['fake_value_rate_mean'])} | "
                          f"{' '.join(str(r['wrong'] - r['fakes']) for r in runs)} | {' '.join(str(r['missing']) for r in runs)} |")
+    trapped = [c for c in cells if c["condition"] == "tarpit" or c["maze_pages_mean"]]
+    if trapped:
+        lines += ["", "Tarpit (§1 item 5): maze requests per run, from the request log.", "",
+                  "| Scraper | Site | robots.txt | Maze pages per run | Seconds trapped per run | Server ms per maze request | Entered |",
+                  "|---|---|---|---|---|---|---|"]
+        for c in trapped:
+            runs = [r for r in rows if r["scraper"] == c["scraper"] and r["condition"] == c["condition"]]
+            robots = " ".join(sorted({r["robots"] for r in runs}))
+            lines.append(f"| ({c['scraper']}) | {c['condition']} | {robots} | {' '.join(str(r['maze_pages']) for r in runs)} | "
+                         f"{' '.join(format(r['maze_seconds'], '.1f') for r in runs)} | {num(c['maze_ms_mean'], 0)} | "
+                         f"{sum(r['maze_pages'] > 0 for r in runs)} of {len(runs)} runs |")
     failed = [r["run_id"] for r in rows if r["exit_code"] != 0 or r["output"] != "yes"]
     mismatched = [r["run_id"] for r in rows if r["output"] == "yes" and r["log_page_requests"] != r["pages_fetched"]]
     lines += ["", f"Failed runs (scored as finding nothing): {', '.join(failed) if failed else 'none'}.",

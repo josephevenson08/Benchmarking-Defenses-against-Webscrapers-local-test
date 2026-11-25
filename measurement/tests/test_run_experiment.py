@@ -12,9 +12,9 @@ from scoring.score import parse_run_id
 
 WRITES_OUTPUT = """import argparse, json
 p = argparse.ArgumentParser()
-p.add_argument("--start-url"); p.add_argument("--run-id"); p.add_argument("--out")
+p.add_argument("--start-url"); p.add_argument("--run-id"); p.add_argument("--out"); p.add_argument("--robots")
 a = p.parse_args()
-print("crawling", a.start_url, a.run_id)
+print("crawling", a.start_url, a.run_id, "robots", a.robots)
 json.dump({"run": {"run_id": a.run_id}, "pages": [], "records": []}, open(a.out, "w"))
 """
 SLEEPS = "import time\nprint('started', flush=True)\ntime.sleep(30)\n"
@@ -50,8 +50,17 @@ class RunScraperTest(unittest.TestCase):
             code, wall = rx.run_scraper(script, "a-baseline-1", 3100, out, log, timeout=30)
             self.assertEqual(code, 0)
             self.assertTrue(out.exists())
-            self.assertIn("crawling http://127.0.0.1:3100/ a-baseline-1", log.read_text(encoding="utf-8"))
+            self.assertIn("crawling http://127.0.0.1:3100/ a-baseline-1 robots obey", log.read_text(encoding="utf-8"))
             self.assertGreaterEqual(wall, 0)
+
+    def test_passes_the_robots_setting(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            script = Path(tmp, "a_fake.py")
+            script.write_text(WRITES_OUTPUT, encoding="utf-8")
+            log = Path(tmp, "a-tarpit-1.log")
+            code, _ = rx.run_scraper(script, "a-tarpit-1", 3100, Path(tmp, "a-tarpit-1.json"), log, timeout=30, robots="ignore")
+            self.assertEqual(code, 0)
+            self.assertIn("robots ignore", log.read_text(encoding="utf-8"))
 
     def test_a_run_that_takes_too_long_is_stopped_and_recorded(self):
         with tempfile.TemporaryDirectory() as tmp:

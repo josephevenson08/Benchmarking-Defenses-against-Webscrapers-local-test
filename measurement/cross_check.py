@@ -199,6 +199,17 @@ def check_runs(folders, results_dir, checks, trap):
             checks.close(f"{rid}: precision", precision, number(rep["precision"]))
             checks.close(f"{rid}: F1", f1, number(rep["f1"]))
             checks.add(f"{rid}: honeypot hits", hits == int(rep["honeypot_hits"]), f"recounted {hits}, reported {rep['honeypot_hits']}")
+            if rep.get("maze_pages") not in (None, ""):
+                maze = [x for x in mine if x.get("path", "").startswith("/maze/")]
+                checks.add(f"{rid}: maze pages", len(maze) == int(float(rep["maze_pages"])),
+                           f"recounted {len(maze)}, reported {rep['maze_pages']}")
+                if maze:
+                    # Independent recount: each maze page lasts until the run's next page request (the last one: its response).
+                    t = lambda x: datetime.datetime.fromisoformat(x["timestamp"].replace("Z", "+00:00"))
+                    seq = sorted((x for x in mine if is_page(x.get("path", "")) and x.get("timestamp")), key=t)
+                    trapped = sum((t(seq[i + 1]) - t(x)).total_seconds() if i + 1 < len(seq) else x["response_ms"] / 1000
+                                  for i, x in enumerate(seq) if x["path"].startswith("/maze/"))
+                    checks.close(f"{rid}: seconds trapped in the maze", trapped, number(rep["maze_seconds"]))
             if fakes:
                 checks.add(f"{rid}: fakes", t["fakes"] == int(rep["fakes"]), f"recounted {t['fakes']}, reported {rep['fakes']}")
             checks.add(f"{rid}: pages in output = page requests in log", pages == log_pages == int(rep["log_page_requests"]),

@@ -259,6 +259,16 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **Check:** the draft plus these lines was tested in a temporary copy (removed): 2.0 s delay, the same page on reload, 5 links to new pages, and `"tarpit": true` in the log.
 - **Disclosed:** like D98, the lines are logged and go in the report's AI-use section. | Keep explaining in words; show the lines (chosen) | Claude, at Joseph's pace (he asked to be walked through it) | §2 Tarpit route row (Joseph: "the generation rules and the logging"); CLAUDE.md (Joseph writes the tarpit route); precedent D98. | **Deviates** (partly: some route lines supplied by Claude; disclosed) |
 | D120 | 391 | **`site/generate.js` exports its functions before its command-line part runs.** `tarpit.js` requires `../generate` for `pageSeed` and `makeRng`. When the generator was the file being run, it loaded the defense before its exports existed, so Node printed "Accessing non-existent property 'pageSeed' … inside circular dependency". Harmless (`footer` doesn't use them), but it would have shown in every tarpit build. Fixed by moving `module.exports` above the `require.main` block. Checked with a temporary stand-in defense (removed): no warning, and the functions are available. All four existing sites are byte-identical before and after, and Node tests pass 30/30. | Tell Joseph to require the generator's functions inside `maze`; fix the order (chosen) | Claude (test site) | §2 test site (generator, Claude's); D107 (the tarpit slot says `pageSeed` and `makeRng` can be imported). | Follows |
+| D121 | 394 | **The tarpit's measurement side (Claude).**
+- **Runner:** `measurement/run_experiment.py --robots obey|ignore` sets every scraper's robots.txt setting, and saves it in the manifest per run.
+- **`scoring/results.py`:** from the request log, for each run, maze pages, **seconds trapped**, server ms per maze request and the robots setting. For each cell, the means and a **maze entry rate** (runs that requested at least one maze page). The summary gets a tarpit table.
+- **Seconds trapped:** for each maze request, the time until the run's next page request (for the last one, its response time), added up. So the real pages (d) visits between maze pages don't count. The first version, first-to-last maze request, gave (d) 40.3 s against 22.1 s with this rule.
+- **`measurement/cross_check.py`:** recounts maze pages and seconds trapped on its own.
+- **`measurement/compare.py`:** the tarpit joins the detection chart through the maze entry rate, and gets a "time wasted" table.
+- **`measurement/test6.py`, Part C:** serves the tarpit, checks robots.txt disallows `/maze/`, runs (a), (b) and (d) with `--robots obey` (must request no `/maze/`) and (a) with `--robots ignore` (must request at least one). The cloud run passes, all parts: 0, 0 and 0 maze requests when obeying, 5 when ignoring.
+- **Cloud preview** (scratchpad, 1 run each, `--robots ignore`): (a), (b) and (d) 70/70, 5 maze pages each, trapped 10.0, 10.1 and 22.1 s, about 2.0 s of server time per maze page. User cost without Lighthouse: 0.016% pixels (the visible footer link), SSIM 0.999, 0/70 out of order, HTML +1.6%, 0 axe.
+- **Python 3.11:** every file was compiled with 3.11, the laptop's version. One f-string reused its quote marks (3.12+ only) and was fixed. The scoring tests pass on 3.11 and 3.13.
+- **Tests:** a test for the maze measures and one for the robots setting; the scoring and measurement suites pass. | First-to-last maze time; time on maze pages (chosen) | Claude (tooling) | §1 item 5 "Done when" ("pages loaded, seconds trapped and server time per request are logged, and a scraper that obeys robots.txt never enters the maze"); §5 Test 6's tarpit sentence; §5 grid (tarpit runs for (a), (b) and (d)); §4 item 5 (a tarpit works when it wastes the scraper's time). | Follows; Interprets (how seconds trapped is counted) |
 ---
 
 ## Questions register
@@ -658,6 +668,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J391 | 391 | (Joseph's fourth `tarpit.js` draft: it loads; the loop is still the toy, `html` isn't sent) | The missing lines shown before and after (D119, partly Deviates, disclosed); a generator export-order fix (D120); merge, check, commit |
 | J392 | 392 | (Joseph's fifth `tarpit.js` draft: the 3 new lines placed at the top of the file, `SENTENCES` deleted) | Move the 3 lines into `maze` in place of the old `html` line; put `SENTENCES` back; the file's order shown |
 | J393 | 393 | (commit `2a10e77` "Tarpit defense"; push rejected: fetch first) | PR #67 isn't on the laptop yet; fetch, merge with `--no-edit`, push |
+| J394 | 394 | pushed | The tarpit's measurement side built and checked (D121): runner `--robots`, maze measures, Test 6 Part C, tarpit in the comparison; cloud preview; laptop steps |
 
 ### Questions from Claude
 
@@ -716,7 +727,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 **For poisoning's user cost (found Turn 347):** done. The runner was changed in Turn 377 (D114), the laptop run in Turn 379 (D116), and the tables and graphs in Turn 380 (D117).
 
-**For the tarpit (Turn 347, D107):** once Joseph's `tarpit.js` exists, add: the runner's `--robots ignore` setting for (a), (b) and (d) (the scrapers already take `--robots obey|ignore`); maze pages loaded, seconds trapped and server time per maze request in `scoring/results.py`; Test 6's maze part (a scraper that obeys robots.txt never requests `/maze/`); `tarpit` in the graphs.
+**For the tarpit (Turn 347, D107; measurement side done Turn 394, D121):** left on the laptop: Test 6 with its tarpit part; the 9 runs (`--scrapers a b d --conditions tarpit --robots ignore`); the full user cost with all four defenses. Then Claude rebuilds the results over five folders, the cross-check, the comparison and the graphs.
 
 **For the results CSV and timing analysis (found Turn 293):** in `c-all`, the first run of each condition took 10–17 s longer than the other two (for example `c-baseline-1` 69.9 s against 52–53 s). Likely causes: Ollama unloading the model after 5 idle minutes (the run started 6 minutes after the last one), and warm-up. The midterm reports the mean and min–max, which includes this; the report should say so. (c) doesn't record Ollama's `load_duration`, so this can't be separated from the outputs.
 
@@ -17811,3 +17822,39 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 394 — 2026-11-25 16:35 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> pushed
+
+**What Claude did:**
+- Fetched and merged `main`, which brought in Joseph's `site/defenses/tarpit.js` (`2a10e77`). Built the tarpit site: the footer link and `Disallow: /maze/` are in, with no warning.
+- Built the measurement side (D121): the runner's `--robots`; the maze measures in `results.py`; the cross-check recount; the tarpit in `compare.py`; Test 6's Part C.
+- Found and fixed a 3.12-only f-string in my own code by compiling everything with Python 3.11.
+- Ran it all in the cloud:
+  - Test 6, all parts PASS;
+  - a one-run tarpit preview: (a), (b) and (d) 70/70, 5 maze pages each, trapped 10.0, 10.1 and 22.1 s (after fixing how seconds trapped is counted);
+  - user cost without Lighthouse.
+- Updated the README. Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **The tarpit works:**
+  - every scraper that ignores robots.txt walks in and loses about 10 s, or about 22 s for (d), whose settle wait makes each maze page cost more;
+  - (d) is caught too, because the maze link is visible;
+  - polite scrapers never enter;
+  - accuracy isn't affected, since the 15-page cap still reaches all 10 real pages;
+  - the cost to visitors is tiny.
+- **Laptop steps:**
+  1. merge;
+  2. Test 6;
+  3. the 9 tarpit runs;
+  4. the full user cost with all four defenses;
+  5. push.
+  Then Claude rebuilds everything.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D121 (Follows / Interprets).
