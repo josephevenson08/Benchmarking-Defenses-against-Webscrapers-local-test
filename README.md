@@ -97,6 +97,14 @@ All storage is plain files (JSON, CSV, and logs). There is no database.
 
 A defense **stops** a scraper when accuracy falls below 10%. Raw accuracy is always reported as well.
 
+**The three measures the report uses** (after the Nov 23 scrum meeting, D118): the report compares the scrapers and defenses against each other with just three measures, and leaves the comparison with published research for later.
+
+1. **Accuracy (recall):** share of the 70 fields each scraper got right on each site. It shows what shuffling and poisoning do.
+2. **Detection rate:** share of a scraper's runs that the honeypot (and the tarpit, when built) caught. It shows the trap defenses, which don't lower accuracy.
+3. **Cost to visitors:** one row per defense, with the load-time change (Lighthouse LCP), the fields out of reading order, and the seconds of fake values on screen.
+
+`measurement/compare.py` makes the accuracy grid, the detection chart and the three tables (`results/2026-11-25-comparison`). The other metrics below are still computed in `cells.csv` and `cost.csv`.
+
 **Standard, comparable metrics** (added after the Nov 16 scrum meeting, so the results can be read against published work). Each is used by a published study; see [`docs/metrics-plan.md`](docs/metrics-plan.md) for the definitions, sources and a related-work table.
 
 | Metric | Definition | Used by |

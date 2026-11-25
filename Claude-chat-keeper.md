@@ -244,6 +244,14 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **Tables:** `tables.md` Table 3 gains a "Fakes on screen (max)" column (poisoned 2.03 s).
 - **fig3:** its note now covers all three defenses and poisoning's 2.0 s. Points that share a spot (honeypot on all four scrapers, poisoning on (d), both at 0% and 0%) now sit side by side with stacked labels; before, the labels overlapped.
 - **README:** updated. The measurement tests pass. | — | Claude (tooling) | §4 metrics and item 4; §5 User cost and Analysis; D113, D114, D116. | Follows |
+| D118 | 384 | **The report uses three measures, and compares scrapers and defenses against each other first** (Joseph, after the Nov 23 scrum meeting: "lessen the amount of metrics, maybe down to 2-3 … compare the scrapers and defenses against each other first and then … later on mention their comparison to another outside research"; C42).
+- **The three:**
+  1. **accuracy (recall)**, per scraper and site, with the verdict;
+  2. **detection rate**, for the honeypot, and the tarpit when built;
+  3. **cost to visitors**, one table: LCP change, fields out of reading order, seconds of fake values on screen.
+- **Leaving the report's main comparison:** precision, F1, success rate, drop in recall, evasion rate, SSIM, HTML size and axe. They're still computed in `cells.csv` and `cost.csv` for the later comparison with published work. SSIM and axe get one line ("no change for any defense").
+- **New:** `measurement/compare.py` writes `1-accuracy.png` (a 4×4 grid of scrapers by sites, one-hue blue ramp from the reference palette, every cell labeled with its percentage and verdict), `2-detection.png` (one bar per scraper, "3 of 3 runs") and `comparison.md`. In `comparison.md`, each table is followed by what it shows, worked out from the verdicts. Percentages keep one decimal only when needed (5.7%, 69.5%). Output: `results/2026-11-25-comparison`.
+- **Docs and tests:** 3 tests; the measurement suite passes. README and `docs/metrics-plan.md` note the change. | Keep the 8–10 metrics; 2–3 measures (chosen); which three (C42) | Joseph (instructor's feedback); C42 | §4 Metrics (accuracy, honeypot hits, user cost) and §4 item 5 (honeypots and tarpits judged by detection, not accuracy); the research question (protection and cost to visitors). | Follows: it returns to the midterm's own measures. The D68–D71 metrics (Adds) move to the later comparison |
 ---
 
 ## Questions register
@@ -630,6 +638,10 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J378 | 378 | (laptop user-cost output: commit `32e3f77`, poisoned 0.329% pixel difference, SSIM 0.985, 70/70 out of order) | The old runner ran (PR #64 not merged); poisoned's visual numbers come from unswapped fakes (D115); merge, check, rerun into a new folder |
 | J379 | 379 | (laptop user-cost output, commit `f2414b1`: poisoned 0% pixel difference, SSIM 1.000, 0/70 out of order, fakes 2.02 s) | Correct; poisoning's user cost recorded (D116); push the folder for the graphs and cross-check |
 | J380 | 380 | its pushed | Cross-check 734/734 with the laptop's user cost; graphs 6–8, Table 3 and fig3 with poisoned (D117); what's left |
+| J381 | 381 | ok i merged, can you give me here, my scrum meeting report i have later today (with his current report pasted) | The full report updated with poisoning, as text in the chat: daily list, metrics, 48-run results, published comparison, cost, next steps, AI-use line |
+| J382 | 382 | how does the llm model work exactly simply | Plain explanation: next-word prediction, Ollama on the laptop, (c)'s seven steps, and why it gets 70% on shuffled (field-by-field counts), is caught by the honeypot and is fooled by poisoning |
+| J383 | 383 | what all is left | The remaining work by deadline (Dec 1 cut-line, Milestone 4), small loose ends, optional items; suggested order |
+| J384 | 384 | after my scrum meeting, we can lessen the amount of metrics, maybe down to 2-3 instead of the 8-10. lets compare the scrapers and defenses against each other first and then we can later on mention their compairson to another outside research etc | Three measures chosen (C42): accuracy, detection rate, cost to visitors (D118); `measurement/compare.py` and `results/2026-11-25-comparison` |
 
 ### Questions from Claude
 
@@ -676,6 +688,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
 | C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
 | C41 | 368 | Joseph asked Claude to write the rest of `poisoned.js`; the midterm and CLAUDE.md say Joseph writes the defenses. How to finish it? Options: "I finish it, faster (Recommended)", "Claude writes the fakes" (Joseph the swap; a deviation), "Claude writes the rest" (a deviation, as with (d)). | "I finish it, faster (Recommended)" | Closed (Turn 368; D109). Reversed in Turn 370: Joseph asked for the whole file (D110) |
+| C42 | 384 | Which 2–3 metrics should the report keep for comparing the scrapers and defenses against each other? (multiple choice) Options: "Recall/accuracy (Recommended)", "Detection rate (Recommended)", "Cost to visitors (Recommended)" (one table: load-time change, reading order, seconds of fakes), "Fake-value rate". | Recall/accuracy, Detection rate, Cost to visitors | Closed (Turn 384; D118) |
 
 ---
 
@@ -17216,3 +17229,222 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** D117 (Follows).
+
+### Turn 381 — 2026-11-23 20:16 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok i merged, can you give me here, my scrum meeting report i have later today
+>
+> this is what i tlooks like now:
+>
+> Joseph Evenson · Benchmarking Defenses Against Web Scrapers · Mon Nov 23, 2026
+> What I’ve done since the last meeting
+> Mon Nov 16
+> •	Plan updated from the scrum feedback: (c) first, then (d)
+> •	Metrics matched to 6 published papers (Claude)
+> Tue Nov 17
+> •	Ollama installed and 3 models downloaded
+> •	Model chosen for (c): llama3.2:3b (timing script by Claude)
+> Wed Nov 18
+> •	Experiment runner (Claude)
+> •	Required runs done: (a) and (b), 18 of 18
+> •	Scraper (c) built, passed its baseline check (70/70 × 3), and ran on all 3 sites (9 of 9)
+> Thu Nov 19
+> •	New metrics checked against the papers (WebCloak, Beyond BeautifulSoup)
+> Fri Nov 20
+> •	Results table with the new metrics, user-cost measurements and Test 7 (Claude), each run on my laptop
+> •	Test 7 passed: Milestone 3’s required work complete
+> •	Scraper (d) finished (Claude, at my request) and ran on all 3 sites (9 of 9, 70/70)
+> •	Figures and tables, and a full recount of the results: 541/541 agree (Claude)
+>
+>
+> New metrics
+> New metric	What it tells you	Where it comes from	My results
+> Recall	Share of the 70 fields a scraper got right; my accuracy under the standard name	WebCloak (IEEE S&P 2026)	Shuffled: 
+> (a), (b) 0.06 
+> (c) 0.70
+> (d) 1.00. 
+> All others: 1.00
+> Precision	Of the fields a scraper filled in, how many were right: fooled (wrong values) vs blocked (empty)	WebCloak	Shuffled: 
+> (a), (b) 0.06 
+> (c) 0.81 
+> (d) 1.00
+> F1	Recall and precision combined into one score	FreeDOM (KDD 2020)	Shuffled: 
+> (a), (b) 0.06
+> (c) 0.75 
+> (d) 1.00
+> Success rate	Share of runs that got all 70 fields	Beyond BeautifulSoup (AAAI 2026)	Baseline 1.00 for all; shuffled 0 except (d) 1.00
+> Drop in recall	How much a defense lowers recall vs the normal site (0% = no effect, 100% = fully stopped)	WebCloak (before → after)	Shuffling: 
+> (a), (b) 94.3% 
+> (c) 30.5%
+> (d) 0%
+> Detection / evasion rate	Share of a scraper’s runs the honeypot caught, or missed	Shy Guys (2026), FP-Inconsistent (2025)	Caught: 
+> (a), (b), (c) 100% 
+> (d) 0% (evades every time)
+> SSIM	How similar the defended page looks to the normal one (1 = identical)	Wang et al. (2004)	1.000 for both defenses
+> Lighthouse change	Change in page-speed score and load times	WebCloak	No change for either defense
+> HTML size change	How much heavier the page gets	WebCloak	Shuffled +21%, honeypot +3%
+>
+> Key takeaway: every result can now be read on the same scale as a published study.
+>
+> Results (36 runs: 4 scrapers × 3 sites × 3 runs)
+> Scraper	Baseline	Shuffled	Honeypot
+> (a) raw HTML	100%	5.7% (stops)	100%, caught
+> (b) browser	100%	5.7% (stops)	100%, caught
+> (c) LLM on page text	100%	69.5% (reduces)	100%, caught
+> (d) adaptive	100%	100% (no effect)	100%, not caught
+>
+> Key takeaway: each defense fails against the scraper built to beat it. Shuffling stops scrapers that read the HTML in order, but not (d), which reads the page as shown. The honeypot catches every scraper that follows hidden links, but not (d)
+> Something to note:
+> The page complexity is something that has to be taken into account, obviously with the comparison of scores from the studies that these metrics are from, the compared environment is not the same and shouldn’t be taken at raw value of score.
+>
+>  
+>
+> Panel	My result	Published	What it shows
+> (a) Drop in recall	Shuffling: 94.3% vs (a) and (b), 30.5% vs (c), 0% vs (d)	WebCloak: 100%	Against simple scrapers, my cheap defense comes close to a top published one; against smarter scrapers it falls off
+> (b) Success rate	1.00 for all 4 scrapers	0.82–1.00 (Beyond BeautifulSoup)	My scrapers work as well as the best published tools on simple pages, so my baseline is sound
+> (c) Bot detection rate	Honeypot: 100% for (a), (b), (c); 0% for (d)	47–68% (Shy Guys, DataDome, BotD)	It catches link-following scrapers better than these detectors catch real bots, but an adaptive scraper avoids it. Settings differ, so this shows the pattern, not a head-to-head score
+> (d) Load-time cost	+0 ms for both defenses	+880 ms (WebCloak)	My defenses cost visitors no speed; WebCloak’s does
+>
+> Key takeaway: my defenses reach published strength only against simple scrapers, at no speed cost. Smarter scrapers need a stronger defense.
+>
+> Cost to visitors:
+> Neither defense changes how pages look (SSIM 1.000) or how fast they load (no Lighthouse change), and neither adds accessibility violations (axe-core: 0). Shuffling adds 21% to the HTML and puts all 70 fields out of reading order, so a screen reader reads them scrambled. The honeypot adds 3% to the HTML and nothing else.
+> Key takeaway: shuffling’s only cost is reading order, which the standard accessibility checker misses. None of the published studies I compared with measured this.
+>
+>
+> Next step: 
+> Changed outline: 4 scrapers 3 defenses
+> 1.	Raw html
+> 2.	Page load
+> 3.	Llm
+> 4.	Adaptive
+>
+> 1.	Honeypot
+> 2.	Dom shuffling
+> 3.	Live dom poisoning ()
+> 4.	Tarpit (still to do)
+>
+> Dropped: vision (e), reading a screenshot with a image model, scraper
+> Final report and github clean up
+
+**What Claude did:**
+- Fetched and merged `main` (PR #65 merged).
+- Rewrote Joseph's scrum report for Mon Nov 23 from the numbers in `results/2026-11-23-figures/tables.md` and `results/2026-11-23-results-all`. It's in the chat, as text to paste, as Joseph asked in Turn 343; it isn't a file or a page.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** the full report, in Joseph's layout and first person:
+- **The daily list:** adds Sat Nov 21 (the published-comparison figure) and Mon Nov 23 (one graph per metric; poisoning built by Claude at Joseph's request around his price rule; Test 5 4/4; 12 poisoned runs; user cost; 734/734; the tarpit started).
+- **The metrics table:** poisoned results in every row, plus a fake-value rate row (the midterm's own metric).
+- **The results table:** 48 runs, with a Poisoned column.
+- **The published comparison:** poisoning beside WebCloak, and poisoned's +2 ms. Joseph should paste the new `fig6-published.png`.
+- **Cost to visitors:** poisoning's 2.0 s of fakes and +18% HTML.
+- **Takeaways:** after every table.
+- **Next steps:** corrected to "4 scrapers, 4 defenses", with the tarpit marked as started early by Joseph's choice (D106), and one line on AI use: (d) and poisoning written by Claude at his request (D99, D110).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision. The report draws on D99, D106, D110 and D112–D117.
+
+### Turn 382 — 2026-11-23 20:47 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> how does the llm model work exactly simply
+
+**What Claude did:**
+- Read `scrapers/c_llm_text.py` (the prompt, the Ollama request, the parsing and the failure rules), to describe it as Joseph wrote it.
+- Counted (c)'s correct values per field on the shuffled site (`results/2026-11-18-c-all`, 3 runs):
+  - always right: brand, category, price, rating and SKU (18/18 each);
+  - release date 15/18; name and availability 12/18; description 8/18; reviews 2/18;
+  - articles: author and title 3/6, published 1/6, summary and tags 0/6.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** a plain explanation, in three parts:
+- **What a language model is:** trained on huge amounts of text to predict the next piece of text. llama3.2:3b has 3 billion learned numbers and is small enough for a laptop CPU. Ollama runs it locally at `localhost:11434`, so nothing leaves the laptop.
+- **What (c) does on each item page:**
+  1. open the page in Chromium;
+  2. take the visible text of `<main>`;
+  3. build a prompt that lists the field names;
+  4. send it with `format: json` and temperature 0, so every run gives the same answer;
+  5. check the reply: valid JSON, with every key present;
+  6. turn price and rating into numbers;
+  7. save the values.
+  It takes about 5 s per page because the model writes its answer one piece at a time.
+- **Why it scores as it does:**
+  - **Shuffled:** the text arrives with labels and values jumbled, and the model matches them by meaning. Values with a clear shape (price, SKU, rating) are always right; look-alike numbers and long text often go wrong; hence 70%.
+  - **Honeypot:** it follows the hidden link, like (a) and (b).
+  - **Poisoned:** it reads right after load and copies the fakes faithfully.
+- **Simplest way to say it:** it reads like a person skimming, but it doesn't check anything, and it never waits.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 383 — 2026-11-25 16:08 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> what all is left
+
+**What Claude did:**
+- Fetched `main`: no change since PR #65, and no `tarpit.js` yet.
+- Checked the remaining work against SCHEDULE.md (Nov 25 – Dec 10), the midterm (§1 items 4–5, §5 Tests 3 and 7, §4 Analysis, §6's future test, §7 Milestone 4) and Open items.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** what's left, by deadline:
+- **By Cut-line 2 (Tue Dec 1):**
+  1. the tarpit: Joseph's `tarpit.js`, then Claude's runner robots.txt setting, maze measures and Test 6 maze part, then 9 runs;
+  2. the (d) and poisoned-page parts of Test 3;
+  3. Test 7's stub-model part for (c);
+  4. the honeypot false-positive check;
+  5. our column of the related-work table;
+  6. the Nov 30 completeness check;
+  7. the Dec 1 cut-line decision: (e) dropped, and the tarpit only if it's running.
+- **Milestone 4 (Dec 2–10):**
+  - the final tables and the cell-by-cell check against the predicted pattern;
+  - the README and reproducibility manifest;
+  - report writing, with the scope change, AI use and limitations;
+  - a clean rerun from a fresh clone;
+  - the PDF and the tag by Dec 8;
+  - the deadline on Dec 10.
+- **Small loose ends:**
+  - the honeypot's hard-coded `/trap`;
+  - telling the instructor about (d) and poisoning;
+  - the prompt-hook fix.
+- **Optional:**
+  - (b) with a 3 s wait on poisoned (§5);
+  - the load-twice test of fixed fakes (§6);
+  - (e), which is dropped.
+- **Suggestion for today:** the tarpit first, since it's the biggest and must run by Dec 1; Thanksgiving is Nov 26–27. Claude can build the tarpit's measurement side, the false-positive check and the Test 3 harness meanwhile.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 384 — 2026-11-25 16:09 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> after my scrum meeting, we can lessen the amount of metrics, maybe down to 2-3 instead of the 8-10. lets compare the scrapers and defenses against each other first and then we can later on mention their compairson to another outside research etc
+
+**What Claude did:**
+- Asked C42: which 2–3 measures to keep. Joseph chose accuracy, detection rate and cost to visitors (D118).
+- Wrote `measurement/compare.py` and its 3 tests, ran it on the Nov 23 results and the laptop's user cost, and looked at both charts. Wrote `results/2026-11-25-comparison`.
+- Added notes to the README and `docs/metrics-plan.md`.
+- Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **The three measures**, and that the others stay computed for the later outside comparison.
+- **The comparison:**
+  - **Accuracy:** shuffling stops (a) and (b) and reduces (c); poisoning stops (a)–(c); the honeypot has no effect on accuracy; nothing affects (d).
+  - **Detection:** the honeypot catches (a)–(c) every run and never catches (d).
+  - **Cost:** shuffling has 70/70 fields out of reading order; poisoning shows 2.0 s of fakes; none changes load time.
+- **What it shows:** each defense beats the scrapers without the matching ability, and (d) has every ability. Each defense also has a different cost.
+- **Next:** the tarpit adds a column to the detection chart.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** C42 (which measures). Options: "Recall/accuracy (Recommended)", "Detection rate (Recommended)", "Cost to visitors (Recommended)", "Fake-value rate". Answer: the first three.
+
+**Direction and fit:** D118 (Follows).
