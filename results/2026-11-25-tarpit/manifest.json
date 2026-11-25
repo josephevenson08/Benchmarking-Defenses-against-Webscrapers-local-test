@@ -1,0 +1,221 @@
+{
+  "experiment": "scraper runs",
+  "started_at": "2026-11-25T11:26:09",
+  "commit": "fb007e2",
+  "scrapers": {
+    "a": "a_raw_html.py",
+    "b": "b_browser_text.py",
+    "d": "d_adaptive.py"
+  },
+  "conditions": [
+    "tarpit"
+  ],
+  "runs_per_cell": 3,
+  "robots": "ignore",
+  "port": 3100,
+  "config": {
+    "port": 3000,
+    "page_cap": 15,
+    "runs_per_cell": 3,
+    "obey_robots_txt": true,
+    "request_timeout_seconds": 5,
+    "poison_swap_delay_seconds": 2,
+    "adaptive_quiet_seconds": 3,
+    "adaptive_timeout_seconds": 10,
+    "llm_temperature": 0,
+    "seed": 20261021,
+    "trap_path": "/trap"
+  },
+  "versions": {
+    "python": "3.11.9",
+    "os": "Windows-10-10.0.26300-SP0",
+    "node": "v24.13.1",
+    "playwright": "1.63.0",
+    "requests": "2.34.2",
+    "beautifulsoup4": "4.15.0"
+  },
+  "ollama": null,
+  "runs": [
+    {
+      "condition": "tarpit",
+      "scraper": "a",
+      "n": 1,
+      "run_id": "a-tarpit-1",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 13.731,
+      "output": "runs/a-tarpit-1.json",
+      "printed": "runs/a-tarpit-1.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 0.6884666666666667
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "a",
+      "n": 2,
+      "run_id": "a-tarpit-2",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 11.583,
+      "output": "runs/a-tarpit-2.json",
+      "printed": "runs/a-tarpit-2.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 0.6844666666666667
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "a",
+      "n": 3,
+      "run_id": "a-tarpit-3",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 11.322,
+      "output": "runs/a-tarpit-3.json",
+      "printed": "runs/a-tarpit-3.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 0.6874
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "b",
+      "n": 1,
+      "run_id": "b-tarpit-1",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 19.082,
+      "output": "runs/b-tarpit-1.json",
+      "printed": "runs/b-tarpit-1.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 0.7356666666666667
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "b",
+      "n": 2,
+      "run_id": "b-tarpit-2",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 14.02,
+      "output": "runs/b-tarpit-2.json",
+      "printed": "runs/b-tarpit-2.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 0.7228666666666667
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "b",
+      "n": 3,
+      "run_id": "b-tarpit-3",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 13.561,
+      "output": "runs/b-tarpit-3.json",
+      "printed": "runs/b-tarpit-3.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 0.7091999999999999
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "d",
+      "n": 1,
+      "run_id": "d-tarpit-1",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 58.884,
+      "output": "runs/d-tarpit-1.json",
+      "printed": "runs/d-tarpit-1.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 3.727933333333333
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "d",
+      "n": 2,
+      "run_id": "d-tarpit-2",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 58.981,
+      "output": "runs/d-tarpit-2.json",
+      "printed": "runs/d-tarpit-2.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 3.7290666666666668
+      }
+    },
+    {
+      "condition": "tarpit",
+      "scraper": "d",
+      "n": 3,
+      "run_id": "d-tarpit-3",
+      "robots": "ignore",
+      "exit_code": 0,
+      "wall_s": 58.68,
+      "output": "runs/d-tarpit-3.json",
+      "printed": "runs/d-tarpit-3.log",
+      "request_log": "logs/tarpit.jsonl",
+      "quick_score": {
+        "correct": 70,
+        "scored_fields": 70,
+        "accuracy": 1.0,
+        "fakes": 0,
+        "pages_fetched": 15,
+        "time_per_page": 3.7278666666666664
+      }
+    }
+  ],
+  "finished_at": "2026-11-25T11:30:35"
+}
