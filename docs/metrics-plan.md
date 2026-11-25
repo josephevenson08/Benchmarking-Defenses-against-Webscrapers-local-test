@@ -4,6 +4,8 @@ Decisions D68 (chat-keeper, Turn 240), D69 (Turn 246), D70 (Turn 248) and D71 (T
 
 Status: the published side of the related-work table is done (below, checked against the papers). Built: the model-timing script with token counts (Tue Nov 17, `measurement/time_models.py`) and the scoring changes (Fri Nov 20, `scoring/results.py`: precision, recall, F1, extraction success rate, relative reduction, verdict, honeypot detection and evasion rates) and the user-cost runner (Fri Nov 20, `measurement/user_cost.py`: pixel difference, SSIM, reading order, HTML size, axe-core, Lighthouse changes). Still planned: our side of the related-work table on Wed Nov 25 ((a), (b)) and Thu Dec 3 ((c), (d)); the honeypot false-positive check on Sun Nov 29 (`SCHEDULE.md`). The scraper output format and the matching rules (`docs/scraper-output.md`, D31–D35) do not change.
 
+**Update, Nov 25 (D118, after the Nov 23 scrum meeting):** the report's main comparison now uses three measures only: accuracy (recall), detection rate, and cost to visitors (load-time change, fields out of reading order, seconds of fake values). It compares the scrapers and defenses against each other first (layer 1 below). The comparison with published research (layer 3) comes later, with the other metrics, which are still computed.
+
 ## Three layers of comparison
 
 1. **Against our own baseline.** Every defended result is reported next to the same scraper on the undefended site, as a **relative reduction**. This is the most portable number: it cancels out how easy or hard our site is, so it can sit next to "before → after" results from other studies.

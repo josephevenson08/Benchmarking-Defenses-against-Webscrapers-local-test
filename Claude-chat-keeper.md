@@ -244,6 +244,14 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **Tables:** `tables.md` Table 3 gains a "Fakes on screen (max)" column (poisoned 2.03 s).
 - **fig3:** its note now covers all three defenses and poisoning's 2.0 s. Points that share a spot (honeypot on all four scrapers, poisoning on (d), both at 0% and 0%) now sit side by side with stacked labels; before, the labels overlapped.
 - **README:** updated. The measurement tests pass. | — | Claude (tooling) | §4 metrics and item 4; §5 User cost and Analysis; D113, D114, D116. | Follows |
+| D118 | 384 | **The report uses three measures, and compares scrapers and defenses against each other first** (Joseph, after the Nov 23 scrum meeting: "lessen the amount of metrics, maybe down to 2-3 … compare the scrapers and defenses against each other first and then … later on mention their comparison to another outside research"; C42).
+- **The three:**
+  1. **accuracy (recall)**, per scraper and site, with the verdict;
+  2. **detection rate**, for the honeypot, and the tarpit when built;
+  3. **cost to visitors**, one table: LCP change, fields out of reading order, seconds of fake values on screen.
+- **Leaving the report's main comparison:** precision, F1, success rate, drop in recall, evasion rate, SSIM, HTML size and axe. They're still computed in `cells.csv` and `cost.csv` for the later comparison with published work. SSIM and axe get one line ("no change for any defense").
+- **New:** `measurement/compare.py` writes `1-accuracy.png` (a 4×4 grid of scrapers by sites, one-hue blue ramp from the reference palette, every cell labeled with its percentage and verdict), `2-detection.png` (one bar per scraper, "3 of 3 runs") and `comparison.md`. In `comparison.md`, each table is followed by what it shows, worked out from the verdicts. Percentages keep one decimal only when needed (5.7%, 69.5%). Output: `results/2026-11-25-comparison`.
+- **Docs and tests:** 3 tests; the measurement suite passes. README and `docs/metrics-plan.md` note the change. | Keep the 8–10 metrics; 2–3 measures (chosen); which three (C42) | Joseph (instructor's feedback); C42 | §4 Metrics (accuracy, honeypot hits, user cost) and §4 item 5 (honeypots and tarpits judged by detection, not accuracy); the research question (protection and cost to visitors). | Follows: it returns to the midterm's own measures. The D68–D71 metrics (Adds) move to the later comparison |
 ---
 
 ## Questions register
@@ -633,6 +641,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J381 | 381 | ok i merged, can you give me here, my scrum meeting report i have later today (with his current report pasted) | The full report updated with poisoning, as text in the chat: daily list, metrics, 48-run results, published comparison, cost, next steps, AI-use line |
 | J382 | 382 | how does the llm model work exactly simply | Plain explanation: next-word prediction, Ollama on the laptop, (c)'s seven steps, and why it gets 70% on shuffled (field-by-field counts), is caught by the honeypot and is fooled by poisoning |
 | J383 | 383 | what all is left | The remaining work by deadline (Dec 1 cut-line, Milestone 4), small loose ends, optional items; suggested order |
+| J384 | 384 | after my scrum meeting, we can lessen the amount of metrics, maybe down to 2-3 instead of the 8-10. lets compare the scrapers and defenses against each other first and then we can later on mention their compairson to another outside research etc | Three measures chosen (C42): accuracy, detection rate, cost to visitors (D118); `measurement/compare.py` and `results/2026-11-25-comparison` |
 
 ### Questions from Claude
 
@@ -679,6 +688,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | C39 | 315 | The scrapers time out page requests after 5 s, but `config.json` says `request_timeout_seconds: 10` (D16), and nothing reads that setting. Options: set `config.json` to 5 so it describes what the scrapers do (recommended; no scraper change after their runs); or make the scrapers read the setting. Options (Turn 317): \"Set config.json to 5 (Recommended)\", \"Scrapers read config (10 s)\". | Set config.json to 5. | Closed (Turn 317) → D97 |
 | C40 | 326 | How to package the weekly summary for the Mon Nov 23 scrum meeting? Options: "Slides (Recommended)", "Word doc", "Both". | "make me a word doc with simple matplotlib graphs and tables, nothing crazy. then mention what we have done since monday" | Closed (Turn 326): Word doc made |
 | C41 | 368 | Joseph asked Claude to write the rest of `poisoned.js`; the midterm and CLAUDE.md say Joseph writes the defenses. How to finish it? Options: "I finish it, faster (Recommended)", "Claude writes the fakes" (Joseph the swap; a deviation), "Claude writes the rest" (a deviation, as with (d)). | "I finish it, faster (Recommended)" | Closed (Turn 368; D109). Reversed in Turn 370: Joseph asked for the whole file (D110) |
+| C42 | 384 | Which 2–3 metrics should the report keep for comparing the scrapers and defenses against each other? (multiple choice) Options: "Recall/accuracy (Recommended)", "Detection rate (Recommended)", "Cost to visitors (Recommended)" (one table: load-time change, reading order, seconds of fakes), "Fake-value rate". | Recall/accuracy, Detection rate, Cost to visitors | Closed (Turn 384; D118) |
 
 ---
 
@@ -17412,3 +17422,29 @@ Two behaviour notes:
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 384 — 2026-11-25 16:09 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> after my scrum meeting, we can lessen the amount of metrics, maybe down to 2-3 instead of the 8-10. lets compare the scrapers and defenses against each other first and then we can later on mention their compairson to another outside research etc
+
+**What Claude did:**
+- Asked C42: which 2–3 measures to keep. Joseph chose accuracy, detection rate and cost to visitors (D118).
+- Wrote `measurement/compare.py` and its 3 tests, ran it on the Nov 23 results and the laptop's user cost, and looked at both charts. Wrote `results/2026-11-25-comparison`.
+- Added notes to the README and `docs/metrics-plan.md`.
+- Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **The three measures**, and that the others stay computed for the later outside comparison.
+- **The comparison:**
+  - **Accuracy:** shuffling stops (a) and (b) and reduces (c); poisoning stops (a)–(c); the honeypot has no effect on accuracy; nothing affects (d).
+  - **Detection:** the honeypot catches (a)–(c) every run and never catches (d).
+  - **Cost:** shuffling has 70/70 fields out of reading order; poisoning shows 2.0 s of fakes; none changes load time.
+- **What it shows:** each defense beats the scrapers without the matching ability, and (d) has every ability. Each defense also has a different cost.
+- **Next:** the tarpit adds a column to the detection chart.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** C42 (which measures). Options: "Recall/accuracy (Recommended)", "Detection rate (Recommended)", "Cost to visitors (Recommended)", "Fake-value rate". Answer: the first three.
+
+**Direction and fit:** D118 (Follows).
