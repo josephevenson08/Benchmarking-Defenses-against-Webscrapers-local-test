@@ -1,0 +1,706 @@
+{
+  "check": "false positives on the trap sites",
+  "run_at": "2026-11-27T18:03:03",
+  "commit": "8e61322",
+  "sessions": 20,
+  "clicks": 6,
+  "pause": 0.5,
+  "conditions": [
+    {
+      "condition": "honeypot",
+      "sessions": 20,
+      "caught": 0,
+      "false_positive_rate": 0.0,
+      "walks": [
+        {
+          "run_id": "human-honeypot-1",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/p1",
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p2"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-2",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/p6",
+            "/products/",
+            "/products/p3",
+            "/products/",
+            "/products/p2"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-3",
+          "pages": [
+            "/",
+            "/",
+            "/articles/a1",
+            "/",
+            "/",
+            "/articles/a1",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-4",
+          "pages": [
+            "/",
+            "/",
+            "/articles/a2",
+            "/",
+            "/products/",
+            "/products/p4",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-5",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/p5",
+            "/",
+            "/articles/a1",
+            "/",
+            "/articles/a1"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-6",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/",
+            "/products/",
+            "/products/p5",
+            "/products/",
+            "/products/p2"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-7",
+          "pages": [
+            "/",
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/products/p3",
+            "/products/",
+            "/products/p3"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-8",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/products/p2",
+            "/products/",
+            "/products/p4",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-9",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/",
+            "/articles/a2",
+            "/",
+            "/articles/a1"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-10",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p5",
+            "/products/",
+            "/products/p5",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-11",
+          "pages": [
+            "/",
+            "/products/",
+            "/",
+            "/articles/a1",
+            "/",
+            "/products/",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-12",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/",
+            "/",
+            "/",
+            "/articles/a1",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-13",
+          "pages": [
+            "/",
+            "/products/",
+            "/",
+            "/",
+            "/articles/a2",
+            "/",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-14",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/products/p1",
+            "/",
+            "/products/",
+            "/products/p3"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-15",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p3",
+            "/products/",
+            "/products/p1",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-16",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p5",
+            "/",
+            "/articles/a2",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-17",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/",
+            "/articles/a2",
+            "/",
+            "/products/",
+            "/products/p6"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-18",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/",
+            "/products/",
+            "/products/p3",
+            "/",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-19",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p1",
+            "/",
+            "/products/",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-honeypot-20",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/",
+            "/",
+            "/products/",
+            "/products/p3",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        }
+      ]
+    },
+    {
+      "condition": "tarpit",
+      "sessions": 20,
+      "caught": 15,
+      "false_positive_rate": 0.75,
+      "walks": [
+        {
+          "run_id": "human-tarpit-1",
+          "pages": [
+            "/",
+            "/products/",
+            "/maze/start",
+            "/maze/ff85cdf0",
+            "/maze/20be2615",
+            "/maze/7429d827",
+            "/maze/f7bb1253"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 5,
+          "maze_seconds": 12.320427000000002,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-2",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/p5",
+            "/maze/start",
+            "/maze/2622fc0",
+            "/maze/c600a7b7",
+            "/maze/fed15c92"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 4,
+          "maze_seconds": 9.722351,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-3",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/p4",
+            "/maze/start",
+            "/maze/41fdada6",
+            "/maze/d63a0a81",
+            "/maze/7181bd06"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 4,
+          "maze_seconds": 9.70162,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-4",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/products/p5",
+            "/maze/start",
+            "/maze/2622fc0",
+            "/maze/ea2629e2"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 3,
+          "maze_seconds": 7.135963,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-5",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/maze/start",
+            "/maze/41fdada6",
+            "/maze/958044d",
+            "/maze/cd50d4c",
+            "/maze/7dd74ec3"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 5,
+          "maze_seconds": 12.266414999999999,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-6",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/maze/start",
+            "/maze/41fdada6",
+            "/maze/d63a0a81",
+            "/maze/7181bd06",
+            "/maze/e65d970"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 5,
+          "maze_seconds": 12.234684999999999,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-7",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/",
+            "/products/",
+            "/products/p2",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-tarpit-8",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/products/p2",
+            "/",
+            "/articles/a1",
+            "/maze/start"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 1,
+          "maze_seconds": 2.002853,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-9",
+          "pages": [
+            "/",
+            "/maze/start",
+            "/maze/2622fc0",
+            "/maze/b8440979",
+            "/maze/e226f887",
+            "/maze/aa040d12",
+            "/maze/7049d735"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 6,
+          "maze_seconds": 14.835683999999999,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-10",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p6",
+            "/maze/start",
+            "/maze/db9a2bbe",
+            "/maze/ee973e82"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 3,
+          "maze_seconds": 7.1371,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-11",
+          "pages": [
+            "/",
+            "/products/",
+            "/",
+            "/articles/a1",
+            "/products/",
+            "/products/p4",
+            "/maze/start"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 1,
+          "maze_seconds": 2.003048,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-12",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/maze/start",
+            "/maze/db9a2bbe",
+            "/maze/feaa1b5b",
+            "/maze/ee8a8109"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 4,
+          "maze_seconds": 9.702109,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-13",
+          "pages": [
+            "/",
+            "/maze/start",
+            "/maze/db9a2bbe",
+            "/maze/feaa1b5b",
+            "/maze/4aefb280",
+            "/maze/19ca5e7e",
+            "/maze/84dc6461"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 6,
+          "maze_seconds": 14.83576,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-14",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/",
+            "/products/p3",
+            "/",
+            "/products/",
+            "/products/p3"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-tarpit-15",
+          "pages": [
+            "/",
+            "/",
+            "/maze/start",
+            "/maze/97fab824",
+            "/maze/a5f23566",
+            "/maze/a0831256",
+            "/maze/eb6961ad"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 5,
+          "maze_seconds": 12.269862999999999,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-16",
+          "pages": [
+            "/",
+            "/",
+            "/maze/start",
+            "/maze/97fab824",
+            "/maze/89df81f8",
+            "/maze/d13e556b",
+            "/maze/95166c7c"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 5,
+          "maze_seconds": 12.268894,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-17",
+          "pages": [
+            "/",
+            "/articles/a1",
+            "/maze/start",
+            "/maze/41fdada6",
+            "/maze/d63a0a81",
+            "/maze/c74fa3a8",
+            "/maze/f139c799"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 5,
+          "maze_seconds": 12.268801,
+          "caught": true
+        },
+        {
+          "run_id": "human-tarpit-18",
+          "pages": [
+            "/",
+            "/",
+            "/products/",
+            "/products/",
+            "/products/p2",
+            "/",
+            "/articles/a2"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-tarpit-19",
+          "pages": [
+            "/",
+            "/articles/a2",
+            "/products/",
+            "/products/",
+            "/products/",
+            "/products/",
+            "/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        },
+        {
+          "run_id": "human-tarpit-20",
+          "pages": [
+            "/",
+            "/products/",
+            "/products/p3",
+            "/",
+            "/products/",
+            "/products/p6",
+            "/products/"
+          ],
+          "requests": 7,
+          "trap_hits": 0,
+          "maze_pages": 0,
+          "maze_seconds": 0.0,
+          "caught": false
+        }
+      ]
+    }
+  ]
+}

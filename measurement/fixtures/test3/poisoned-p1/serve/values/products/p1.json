@@ -1,0 +1,55 @@
+{
+  "item_id": "p1",
+  "fields": [
+    {
+      "key": "name",
+      "label": "Name",
+      "value": "Larkfield Studio Headphones"
+    },
+    {
+      "key": "brand",
+      "label": "Brand",
+      "value": "Larkfield"
+    },
+    {
+      "key": "category",
+      "label": "Category",
+      "value": "Headphones"
+    },
+    {
+      "key": "price",
+      "label": "Price",
+      "value": "$89.99"
+    },
+    {
+      "key": "sku",
+      "label": "SKU",
+      "value": "LF-HP-2041"
+    },
+    {
+      "key": "rating",
+      "label": "Rating",
+      "value": "4.5"
+    },
+    {
+      "key": "review_count",
+      "label": "Reviews",
+      "value": "1,284"
+    },
+    {
+      "key": "availability",
+      "label": "Availability",
+      "value": "In stock"
+    },
+    {
+      "key": "release_date",
+      "label": "Release date",
+      "value": "2024-09-12"
+    },
+    {
+      "key": "description",
+      "label": "Description",
+      "value": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable."
+    }
+  ]
+}

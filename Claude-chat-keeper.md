@@ -281,6 +281,29 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
   - 1–5 all hold: shuffling lowers (a) and (b), reduces (c) ("uncertain" in the plan) and leaves (d) alone; poisoning lowers (a)–(c) and not (d); the honeypot catches (a)–(c) and not (d) with accuracy unchanged; the costs are as predicted; and no single defense stops every scraper.
   - The tarpit has no hypothesis of its own. It fits capability matching: the ability it targets is obeying robots.txt, so it catches every scraper set to ignore it, (d) included, and never a polite one. It wastes time but doesn't lower accuracy.
 - **(e) isn't built,** so its parts of hypotheses 1–2 aren't tested. | — | Joseph (runs); Claude (reading) | §1 item 5 "Done when"; §5 Test 6; §5 grid (tarpit runs for (a), (b) and (d)); §4 hypotheses 1–5 and Analysis. | Follows (the start was a deviation, D106) |
+| D123 | 398 | **Honeypot false-positive check: `measurement/false_positive.py`** (planned Sun Nov 29, Claude).
+- **The visitor:** a human-like visitor (headless Chromium) on each trap site. It starts at the home page and, 6 times, waits 0.5 s and clicks a link a person can see, chosen at random: on screen, not hidden by CSS. It never reads robots.txt. Each session has its own run ID and seeded choices.
+- **Rates:** a honeypot false positive is a session that requests the trap path; a tarpit false positive is one that requests a `/maze/` page. False-positive rate = sessions caught / sessions.
+- **Cloud run** (`results/2026-11-27-false-positive-cloud`, 20 sessions per site):
+  - honeypot **0 of 20 (0%)**, PASS;
+  - tarpit **15 of 20 (75%)**: its "Archive" entrance is a visible link, so people can click it. Those 15 visitors loaded 4.1 maze pages and spent 10.0 s there on average.
+- **Caveats:**
+  - random clicking overstates how often a real person would pick "Archive". The rate shows the tarpit *can* catch people, and its size is an upper bound;
+  - it was run in the cloud, but it measures behaviour, not speed, and the seeded walks repeat on any machine.
+- **Elsewhere:** `measurement/compare.py --false-positives` adds the rates to the comparison (`results/2026-11-27-comparison`). 2 unit tests. | Run on the laptop only; cloud run with its provenance in the folder name (chosen; Joseph may rerun) | Claude (tooling) | `docs/metrics-plan.md` (D68: "false-positive rate from a human-like visitor that clicks only visible links"); SCHEDULE.md Sun Nov 29; the Shy Guys comparison (detection at 3% false positives). | Adds (D68's metric; the tarpit's rate is new) |
+| D124 | 398 | **Test 3 covers (d) and a poisoned page** (the midterm's "(d) and poisoned-page parts of Test 3", §5 Test 3, §7).
+- **Harness (`measurement/test3.py`):**
+  - adds (d) and runs (a), (b) and (d) by default;
+  - a case may hold `expected-d.json` for (d), which reads in on-screen order and after the page settles, falling back to `expected.json`;
+  - a case may serve extra files from `serve/`.
+- **New case `poisoned-p1`:** the saved page (from `poisoned.js` at `910ee22`) plus its real-values JSON, so the swap works.
+- **Answer files:** empty ones (`"records": []`) wait for Joseph's hand-worked answers: `poisoned-p1/expected.json` (the fakes in the HTML), `poisoned-p1/expected-d.json` (the real values) and `shuffled-p1/expected-d.json` (on-screen order). The fixture README explains how.
+- **Checked:** a scratch copy with answers generated from the data, only to check the harness, not committed. All 9 combinations passed: (d) gets the real values on the shuffled and poisoned pages, and (a) and (b) get the fakes. | Claude fills the expected files (rejected: the midterm says Joseph works them out by hand) | Claude (harness); Joseph (expected answers) | §5 Test 3; the Test 3 fixture README (Turn 52); §2 AI assistance. | Follows |
+| D125 | 398 | **Test 7's fake-model part for (c): `measurement/test7_model.py`** (planned Sun Nov 29).
+- **The fake:** a stand-in for Ollama on 127.0.0.1:11434. It recognizes each item page from its name or title (in the prompt) and answers: a2 not JSON, p1 a list, p2 a missing field, p3 nothing for 125 s (over (c)'s 120 s timeout), the rest good.
+- **The runs:** Run 1 crawls the baseline site with the fake. Run 2 crawls 4 pages with no model running. The test stops with a clear message if port 11434 is in use (quit Ollama first).
+- **Cloud run: PASS.** Run 1 recorded `invalid_json` ×2, `missing_key` and `model_timeout` on the planted pages, kept the good pages' values (10, 10, 10, 5), and finished all 10 pages in 121 s. Run 2 recorded `model_error` on both item pages and finished.
+- **Noted, not tested:** if Ollama answered with an error object (`{"error": …}`, for example a missing model), `data["response"]` would raise a `KeyError` that (c) doesn't catch, and the run would stop. That's outside the midterm's categories and in Joseph's code, so it's reported to him, not changed. | — | Claude (harness); Joseph runs it on the laptop | §5 Test 7 (a stub model for (c); failures recorded in their categories, the run continues); (c)'s failure rules (Joseph's, D78–D88). | Follows |
 ---
 
 ## Questions register
@@ -683,6 +706,8 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J394 | 394 | pushed | The tarpit's measurement side built and checked (D121): runner `--robots`, maze measures, Test 6 Part C, tarpit in the comparison; cloud preview; laptop steps |
 | J395 | 395 | (laptop output: Test 6 PASS with the tarpit part; user cost with all four defenses, Lighthouse TTI +145 to +194 ms everywhere) | Test 6 passes; user cost fine, Lighthouse within the baseline's own spread (noise, likely laptop drift and an overlapping run); the tarpit runs and the push still to do |
 | J396 | 396 | (runner output: 9 tarpit runs, all 70/70, 15 pages each) and i pushed all three folders | ⭐ Tarpit done (D122): 57-run results, cross-check 942/942, comparison with all four defenses; every hypothesis holds |
+| J397 | 397 | ok whats next | Next steps in order: false-positive check, Test 3 for (d) and poisoned pages, Test 7's fake-model part for (c), the Dec 1 cut-line, Milestone 4; start with the false-positive check |
+| J398 | 398 | ok lets get to work so we can finish early | Built the false-positive check (D123), Test 3 for (d) and a poisoned page (D124) and Test 7's fake-model part (D125); cloud runs pass; Joseph fills 3 answer files and runs the tests |
 
 ### Questions from Claude
 
@@ -18079,3 +18104,61 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D122 (Follows; the tarpit's start was D106, Deviates).
+
+### Turn 397 — 2026-11-27 17:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok whats next
+
+**What Claude did:**
+- Fetched and merged `main` (PR #69 merged).
+- Checked what's left against SCHEDULE.md (Nov 29 – Dec 10) and the Test 3 harness: fixtures `baseline-p2` and `shuffled-p1` exist for (a) and (b); there are no (d) or poisoned-page cases yet.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** what's next, in order:
+1. **The honeypot false-positive check** (Claude builds, Joseph runs one command). A human-like visitor clicks only visible links: it should never hit the trap. Gives the false-positive rate that goes with the detection rate (Shy Guys reports detection at a 3% false-positive rate). It's also worth running on the tarpit, whose entrance link is visible, so a person could wander into the slow maze.
+2. **Test 3 for (d) and a poisoned page:** Claude adds the harness support (an expected file per scraper, and serving the page's real-values JSON) and a saved poisoned page; Joseph works out the expected outputs by hand (midterm §5).
+3. **Test 7's fake-model part for (c):** Claude builds a fake Ollama that returns bad answers; Joseph runs it.
+4. **Cut-line 2 (Tue Dec 1):** (e) is dropped and reported.
+5. **Milestone 4:**
+   - final tables (`compare.py`, mostly done);
+   - README and reproducibility details;
+   - the outside comparison, later (D118);
+   - report writing;
+   - a clean rerun on Dec 7;
+   - the tag by Dec 8.
+
+Recommended start: item 1. Claude starts on Joseph's go.
+
+**Questions Claude asked:** none (asked in the reply whether to start item 1).
+
+**Direction and fit:** no new decision.
+
+### Turn 398 — 2026-11-27 17:56 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets get to work so we can finish early
+
+**What Claude did:**
+- **Setup:** the container had been restarted, so Claude reinstalled the pinned Python packages (`pyparsing` over the Debian copy) and `npm install`.
+- **The false-positive check (D123):** wrote it, ran it in the cloud (honeypot 0/20, tarpit 15/20), and added the rate to `compare.py` (`results/2026-11-27-comparison`).
+- **Test 3 (D124):** extended the harness for (d) and extra served files, and saved the poisoned p1 case with empty answer files for Joseph. Checked it with a scratch copy (9/9).
+- **Test 7's fake-model part (D125):** wrote it and ran it in the cloud: PASS.
+- **Checks:** all new files compile on Python 3.11, and the measurement tests pass.
+- **Docs:** updated the README and the fixture guide.
+- Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **Three checks built**, with their cloud results.
+- **Joseph's part:**
+  1. fill in 3 Test 3 answer files by hand;
+  2. run Test 3, Test 7's fake-model part (quit Ollama first) and, optionally, the false-positive check on the laptop;
+  3. push.
+- **An observation for Joseph:** (c) doesn't handle an error reply from Ollama.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D123 (Adds), D124 (Follows), D125 (Follows).
