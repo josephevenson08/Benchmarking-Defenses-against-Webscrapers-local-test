@@ -318,6 +318,11 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **Why:** a vision model on the CPU-only laptop wouldn't run in time before Dec 1. The midterm allows this: "Whatever is not running at the Dec 1 cut-line is dropped and reported as not done".
 - **What's lost:** (e)'s parts of hypotheses 1 (shuffling would not affect it) and 2 (poisoning would) stay untested. The report says so.
 - **Everything else runs:** all four defenses, scrapers (a)–(d), and Tests 1–7. | Try (e) after the cut-line (rejected: the midterm drops what isn't running by Dec 1) | Joseph | §7 Stretch plan and Cut-line 2; §1 item 4; §4 hypotheses 1–2. | Follows |
+| D129 | 408 | **README: "Reproduce the results"** (Milestone 4 step 1, planned Sat Dec 5; done Fri Nov 27).
+- **The midterm's reproducibility manifest (§5) as a table:** the laptop's hardware (from Turn 255), the OS, and the Python, Node, Playwright, Lighthouse, axe-core and Ollama versions. Also the model's full digest, read from the laptop's run manifests (`results/2026-11-25-tarpit`, `-user-cost-full`, `2026-11-18-c-all`), and `config.json`'s seed and settings.
+- **Seven steps in order:** setup (venv, pip, Playwright's Chromium, `npm ci`, `ollama pull` with the digest check); unit tests; Tests 1, 3, 4, 5, 6, 7, the fake-model part and the false-positive check; the 57 runs in two runner commands; results; user cost; comparison and cross-check.
+- **What should match:** exactly the correct fields per run, fakes, hits, maze pages, reading order, HTML size and axe. Times and Lighthouse may differ within the baseline's spread. (c) at temperature 0 already varied 48/49 between runs.
+- **Also:** the Status line is updated, and Setup now says Node 22.19+ (as `package.json` requires) and Python 3.11. | — | Claude (README) | §5 Reproducibility ("a README lists the steps"; versions, model digests, config and seeds); §7 Milestone 4 "Done when" (a clean rerun from the README). | Follows |
 ---
 
 ## Questions register
@@ -731,6 +736,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J405 | 405 | i cahnged the expected.json what should that look like, ive pasted this in both of the files now though | Table of what each of the five answer files should hold; the poisoned `expected.json` (the fakes) shown so it can be put back; `git status` check |
 | J406 | 406 | (`git status`: exactly the three answer files modified) | Correct; run Test 3, then Test 7's fake-model part, then push |
 | J407 | 407 | (laptop: Test 3 9/9 PASS; Test 7's fake-model part PASS) | ⭐ Milestone 3's checks done (D127); (e) dropped at the cut-line (D128); push; Milestone 4 plan |
+| J408 | 408 | ok lets do step 1 really quick and then we can do the rest tmr or sometime | README "Reproduce the results": machine and versions, seven steps, what should match (D129); the rest next session |
 
 ### Questions from Claude
 
@@ -783,7 +789,9 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 
 ## Open items
 
-**▶ Resume here (Turn 347, Mon Nov 23):** Poisoning and the tarpit started. Poisoning's site and scoring side is ready (D105): the generator's `fakeValue` and `script` hooks, the real-values JSON, the fakes file, fakes in the runner, results and cross-check, and Test 5 (`measurement/test5.py`). **Next, Joseph:** write `site/defenses/poisoned.js` (fakes, then the swap), `npm run generate -- poisoned`, `python measurement/test5.py` until all 4 checks pass, then (a)–(d) on `poisoned` × 3 and `scoring/results.py` over all folders. **Next, Claude:** serve pages in the user-cost runner, so poisoned pages can fetch their JSON, and add the seconds fakes stay visible; add `poisoned` to the graphs. Tarpit (D106, Deviates, Joseph's choice): the slot is ready (D107); after poisoning, Joseph writes `site/defenses/tarpit.js`, then Claude adds the runner's robots.txt setting, the maze measures and Test 6's maze part. Still open in Milestone 3: the (d) part of Test 3; Test 7's stub-model part for (c); the honeypot false-positive check; our column of the related-work table; Cut-line 2 (Tue Dec 1). Open from before: Figure 2 and the per-field chart (D100); the honeypot `${page.trapPath}` tidy-up; OneDrive (`git config gc.auto 0`); the prompt-hook fix.
+**▶ Resume here (Turn 408, Fri Nov 27):** Experiments complete. All four defenses and scrapers (a)–(d): 57 runs (D112, D122), cross-check 942/942, user cost with all four defenses, Tests 1–7 and the fake-model part pass, false-positive check (D123), (e) dropped (D128). The report uses three measures (D118, `measurement/compare.py`, `results/2026-11-27-comparison`). README "Reproduce the results" written (D129). **Next:** (1) Joseph's clean rerun on a fresh clone following the README; (2) Claude drafts the report's results section (tables, charts, hypothesis check, then the outside-research comparison, D118); (3) Joseph writes the report, with the scope-change and AI-use sections (deviations: D39, D66, D67, D98, D99, D106, D110, D119, D126); (4) tag by Dec 8. Optional: the tarpit in `metric_graphs.py` and `figures.py`; (c)'s `KeyError` on an Ollama error reply (Joseph's code, D125).
+
+**Earlier resume note (Turn 347, Mon Nov 23):** Poisoning and the tarpit started. Poisoning's site and scoring side is ready (D105): the generator's `fakeValue` and `script` hooks, the real-values JSON, the fakes file, fakes in the runner, results and cross-check, and Test 5 (`measurement/test5.py`). **Next, Joseph:** write `site/defenses/poisoned.js` (fakes, then the swap), `npm run generate -- poisoned`, `python measurement/test5.py` until all 4 checks pass, then (a)–(d) on `poisoned` × 3 and `scoring/results.py` over all folders. **Next, Claude:** serve pages in the user-cost runner, so poisoned pages can fetch their JSON, and add the seconds fakes stay visible; add `poisoned` to the graphs. Tarpit (D106, Deviates, Joseph's choice): the slot is ready (D107); after poisoning, Joseph writes `site/defenses/tarpit.js`, then Claude adds the runner's robots.txt setting, the maze measures and Test 6's maze part. Still open in Milestone 3: the (d) part of Test 3; Test 7's stub-model part for (c); the honeypot false-positive check; our column of the related-work table; Cut-line 2 (Tue Dec 1). Open from before: Figure 2 and the per-field chart (D100); the honeypot `${page.trapPath}` tidy-up; OneDrive (`git config gc.auto 0`); the prompt-hook fix.
 
 **Earlier resume note (Turn 336, end of Fri Nov 20):** Stopped for the day; `main` is up to date (PR #57 merged). Done this week, all ahead of schedule: the runner (D76); the Essential runs (D77); scraper (c) (D78–D88); the results CSV with the standard metrics (D90); user cost parts 1–2 (D91, D92); Test 7's crawl part (D93); ⭐ Milestone 3's Essential "Done when" met (D94); scraper (d) (part 1 D98, part 2 written by Claude at Joseph's request, D99, Deviates, disclosed) and its 9 runs (D101); figures and tables (D100); independent cross-check, 541/541 (D102). Decisions C37–C40 closed (D95–D97). For Mon Nov 23: the 2-page progress report (Word, scratchpad `scrum-1123/`, not in the repository; Turns 329–330, with the metrics write-up and the WebCloak rationale added in Turns 334–335); raise the WebCloak comparison, Claude writing (d), and whether to build poisoning. Still open in Milestone 3: the (d) part of Test 3 (Wed Nov 25); Test 7's stub-model part for (c) (Sun Nov 29); the honeypot false-positive check (Claude, Sun Nov 29); our column of the related-work table (Claude, Nov 25); Cut-line 2 (Tue Dec 1); poisoning may start since (c) and (d) finished early. Open: Figure 2 and the per-field chart were built (D100) without a separate yes; the honeypot `${page.trapPath}` tidy-up; the OneDrive clean-up issue (try `git config gc.auto 0`); the prompt-hook fix for subagent messages.
 
@@ -18676,3 +18684,28 @@ Each with an example row. Joseph does it by hand (midterm §5 Test 3).
 **Questions Claude asked:** none.
 
 **Direction and fit:** D127, D128 (Follows).
+
+### Turn 408 — 2026-11-27 18:32 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok lets do step 1 really quick and then we can do the rest tmr or sometime
+
+**What Claude did:**
+- Merged `main` (PR #71 and Joseph's Test 3 and Test 7 results).
+- Read the versions and the model digest from the laptop's manifests.
+- Wrote the README's "Reproduce the results" section and updated Status and Setup (D129).
+- Committed, pushed, and opened a pull request.
+
+**Claude's answer (summary):**
+- **Step 1 is done:** the section has the environment table, seven steps and what should match.
+- **For the next session:**
+  1. the clean rerun on a fresh clone, following the README (Joseph);
+  2. the report's results section draft (Claude);
+  3. report writing;
+  4. the tag by Dec 8.
+- ⚠️ Merge needed (the link is in the reply).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D129 (Follows).
