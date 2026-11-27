@@ -4,7 +4,7 @@
 
 - **Author:** Joseph Evenson
 - **Track:** Blue Track (Research)
-- **Status:** In development. Milestones 1 and 2 done (Oct 30, Nov 11). Milestone 3 (Nov 17 – Dec 1) re-planned after the Nov 16 scrum meeting: scrapers (c) then (d), and metrics comparable with published work (see Roadmap). On Nov 18, all ahead of schedule: the Essential runs finished (18/18); scraper (c) passed its baseline check (70/70 in 3 of 3 runs) and ran on all three conditions (shuffling cut it to 48–49/70, against 4/70 for (a) and (b)). On Nov 20 the results CSV, the user-cost measurements and Test 7 were done, which meets Milestone 3's Essential "Done when".
+- **Status:** Experiments complete (Nov 27). All four defenses and scrapers (a)–(d) measured: 57 scraper runs, user cost, Tests 1–7 and the false-positive check pass; scraper (e) dropped at Cut-line 2 (D128). Milestone 4 (Dec 2–10): the clean rerun, the report and the Dec 8 tag. To reproduce everything, see [Reproduce the results](#reproduce-the-results).
 
 This project builds a small local test site and five scrapers of increasing capability, adds simple versions of four page-level defenses, and measures which defenses stop which scrapers and what each defense costs real users in speed, visual fidelity, and accessibility.
 
@@ -148,10 +148,10 @@ config.json    port, page cap, delays, seeds, number of runs
 
 Requirements:
 
-- Node.js 20 or newer, and npm
-- Python 3 and pip
-- Playwright for Python with Chromium (for scrapers (b)–(e); pinned in `requirements.txt`)
-- Ollama, only for scrapers (c) and (e)
+- Node.js 22.19 or newer, and npm (`package.json` pins every package)
+- Python 3.11 and pip, in a virtual environment (`requirements.txt` pins every package)
+- Playwright for Python with Chromium (for scrapers (b)–(d); pinned in `requirements.txt`)
+- Ollama with `llama3.2:3b`, only for scraper (c)
 
 Install:
 
@@ -160,6 +160,89 @@ npm ci
 pip install -r requirements.txt
 python -m playwright install chromium   # downloads the browser Playwright uses (about 150 MB)
 ```
+
+## Reproduce the results
+
+The midterm's reproducibility manifest (§5): the machine, the versions, and every step in order. Each runner and user-cost folder also saves its own `manifest.json`, with the commit, `config.json` and the versions.
+
+### The machine and versions used
+
+| Item | Used for the results |
+|---|---|
+| Laptop | Intel Core i7-1165G7 @ 2.80 GHz, 16 GB RAM (3200 MT/s), Intel Iris Xe graphics, no GPU used |
+| OS | Windows (`Windows-10-10.0.26300`, as Python reports it); the project folder was inside OneDrive |
+| Python | 3.11.9, with `requirements.txt` (requests 2.34.2, beautifulsoup4 4.15.0, playwright 1.63.0, matplotlib 3.11.2) |
+| Node.js | v24.13.1, with `package.json` (express 5.2.1, lighthouse 13.6.0, axe-core 4.14.0, pixelmatch 7.2.0) |
+| Browser | Playwright's Chromium, installed by `python -m playwright install chromium` |
+| Ollama and model | Ollama 0.40.16; `llama3.2:3b`, digest `a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72` (temperature 0) |
+| Settings and seed | `config.json`: seed 20261021, page cap 15, 2 s poisoning swap, 3 s quiet wait for (d), 5 s request timeout; the tarpit's delay is 2 s (`site/defenses/tarpit.js`) |
+
+### Step by step (about 1.5 hours, mostly (c) and Lighthouse)
+
+Run one step at a time, with nothing else running, since timings are measured. In PowerShell, start each new terminal with `.venv\Scripts\Activate.ps1`.
+
+1. **Get the code and install** (in a new folder):
+   ```
+   git clone https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test.git
+   cd Benchmarking-Defenses-against-Webscrapers-local-test
+   python -m venv .venv
+   .venv\Scripts\Activate.ps1
+   pip install -r requirements.txt
+   python -m playwright install chromium
+   npm ci
+   ollama pull llama3.2:3b
+   ```
+   `ollama list` should show `llama3.2:3b` with ID `a80c4f17acd5`.
+2. **Unit tests:**
+   ```
+   npm test
+   python -m unittest discover -s scoring/tests -t .
+   python -m unittest discover -s measurement/tests -t .
+   ```
+3. **The checks** (each writes `results/<date>-<name>/report.md`; each should PASS):
+   ```
+   python measurement/test1.py
+   python measurement/test3.py
+   python measurement/test4.py
+   python measurement/test5.py
+   python measurement/test6.py
+   python measurement/test7.py --scrapers a b c d
+   python measurement/false_positive.py
+   ```
+   Then quit Ollama and run `python measurement/test7_model.py` (it uses Ollama's port), and start Ollama again.
+4. **The scraper runs** (57 runs; the first command takes the longest because of (c)):
+   ```
+   python measurement/run_experiment.py --scrapers a b c d --conditions baseline shuffled honeypot poisoned --out results/rerun-runs
+   python measurement/run_experiment.py --scrapers a b d --conditions tarpit --robots ignore --out results/rerun-tarpit
+   ```
+5. **The results tables:**
+   ```
+   python scoring/results.py results/rerun-runs results/rerun-tarpit --out results/rerun-results
+   ```
+6. **Cost to visitors** (about 35 minutes):
+   ```
+   python measurement/user_cost.py --conditions shuffled honeypot poisoned tarpit --out results/rerun-user-cost
+   ```
+7. **The comparison and the independent recount:**
+   ```
+   python measurement/compare.py --cells results/rerun-results/cells.csv --cost results/rerun-user-cost/cost.csv --false-positives results/<date>-false-positive/report.json --out results/rerun-comparison
+   python measurement/cross_check.py --runs results/rerun-runs results/rerun-tarpit --results results/rerun-results --cost results/rerun-user-cost --out results/rerun-cross-check
+   ```
+
+### What should match
+
+Compare `results/rerun-results/cells.csv` with `results/2026-11-25-results-all/cells.csv`, and `results/rerun-comparison/comparison.md` with `results/2026-11-27-comparison/comparison.md`.
+
+- **Must match exactly:**
+  - correct fields per run, and so every accuracy, verdict and drop;
+  - fakes per run;
+  - honeypot hits and detection rates;
+  - maze pages per run;
+  - reading order, HTML size and axe-core results.
+
+  The site, the fakes and the shuffles come from the fixed seed. (c) runs at temperature 0, and on Nov 18 it gave 48 or 49 of 70 on the shuffled site in different runs.
+- **Will differ a little:** times (time per page, seconds trapped) and Lighthouse numbers, which depend on the machine and what else is running. A change smaller than the baseline's own run-to-run spread doesn't count (§5).
+- **The cross-check** should report every check agreeing.
 
 ## Usage
 
