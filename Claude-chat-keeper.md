@@ -710,6 +710,8 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J398 | 398 | ok lets get to work so we can finish early | Built the false-positive check (D123), Test 3 for (d) and a poisoned page (D124) and Test 7's fake-model part (D125); cloud runs pass; Joseph fills 3 answer files and runs the tests |
 | J399 | 399 | (merge output, then Test 3: (b) and (d) "No module named 'playwright'", poisoned answers empty) | The virtual environment isn't active (activate `.venv`); fill in the 3 answer files; rerun |
 | J400 | 400 | ok turned on venv | Next: fill in `poisoned-p1/expected.json` first and paste it for a check |
+| J401 | 401 | fill in the asnwers for me | Claude began (from the saved pages, to be recorded as a partial deviation); interrupted before any change |
+| J402 | 402 | ok what whcih files am i checking to get the information to fill in | The source file for each answer file, with an example row |
 
 ### Questions from Claude
 
@@ -18346,3 +18348,37 @@ Recommended start: item 1. Claude starts on Joseph's go.
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 401 — 2026-11-27 18:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> fill in the asnwers for me
+
+**What Claude did:** Started to answer. Claude said it would derive the three Test 3 answer files from the saved pages, not from any scraper's output, and record that as a partial deviation like D39, because the midterm (§5 Test 3) has Joseph work the answers out by hand. Joseph interrupted before any file was changed. Nothing was written.
+
+**Claude's answer (summary):** (interrupted) Claude would fill the answers from the saved pages, record it, and Joseph would review them.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** none taken. Joseph went on to fill the files in himself (Turn 402).
+
+### Turn 402 — 2026-11-27 18:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok what whcih files am i checking to get the information to fill in
+
+**What Claude did:** Found where the values sit in each source file: the fields block starts at line 28 of `poisoned-p1/page.html` and line 37 of `shuffled-p1/page.html`, and the values JSON is a list of key, label and value entries. No project files changed apart from this log.
+
+**Claude's answer (summary):** which source file fills which answer file:
+1. `poisoned-p1/page.html` → `poisoned-p1/expected.json`: the value after each label in the HTML, which are the fakes;
+2. `poisoned-p1/serve/values/products/p1.json` → `poisoned-p1/expected-d.json`: each entry's `key` and `value`, which are the real values;
+3. `shuffled-p1/page.html` → `shuffled-p1/expected-d.json`: for each label, the element whose `order` is one higher.
+
+Each with an example row. Joseph does it by hand (midterm §5 Test 3).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (Test 3 answers by Joseph, as planned; D124).
+
