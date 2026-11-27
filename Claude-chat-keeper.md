@@ -709,6 +709,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J397 | 397 | ok whats next | Next steps in order: false-positive check, Test 3 for (d) and poisoned pages, Test 7's fake-model part for (c), the Dec 1 cut-line, Milestone 4; start with the false-positive check |
 | J398 | 398 | ok lets get to work so we can finish early | Built the false-positive check (D123), Test 3 for (d) and a poisoned page (D124) and Test 7's fake-model part (D125); cloud runs pass; Joseph fills 3 answer files and runs the tests |
 | J399 | 399 | (merge output, then Test 3: (b) and (d) "No module named 'playwright'", poisoned answers empty) | The virtual environment isn't active (activate `.venv`); fill in the 3 answer files; rerun |
+| J400 | 400 | ok turned on venv | Next: fill in `poisoned-p1/expected.json` first and paste it for a check |
 
 ### Questions from Claude
 
@@ -18325,6 +18326,22 @@ Recommended start: item 1. Claude starts on Joseph's go.
   2. fill in the 3 files by hand. The skeleton, the label-to-key list, and how to read each value: the fakes from `page.html`; the real values from `serve/values/products/p1.json`; the shuffled page's on-screen pairs by `order` number;
   3. rerun Test 3: 9/9 should pass.
 - **Then:** Test 7's fake-model part, and push.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 400 — 2026-11-27 18:13 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok turned on venv
+
+**What Claude did:** No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Next:** fill in the first answer file, `poisoned-p1/expected.json` (the fakes from `page.html`), and paste it to be checked before doing the other two.
+- **Option:** run Test 3 now, to see (b) and (d) pass on the normal page with the venv on.
 
 **Questions Claude asked:** none.
 
