@@ -683,6 +683,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J394 | 394 | pushed | The tarpit's measurement side built and checked (D121): runner `--robots`, maze measures, Test 6 Part C, tarpit in the comparison; cloud preview; laptop steps |
 | J395 | 395 | (laptop output: Test 6 PASS with the tarpit part; user cost with all four defenses, Lighthouse TTI +145 to +194 ms everywhere) | Test 6 passes; user cost fine, Lighthouse within the baseline's own spread (noise, likely laptop drift and an overlapping run); the tarpit runs and the push still to do |
 | J396 | 396 | (runner output: 9 tarpit runs, all 70/70, 15 pages each) and i pushed all three folders | ⭐ Tarpit done (D122): 57-run results, cross-check 942/942, comparison with all four defenses; every hypothesis holds |
+| J397 | 397 | ok whats next | Next steps in order: false-positive check, Test 3 for (d) and poisoned pages, Test 7's fake-model part for (c), the Dec 1 cut-line, Milestone 4; start with the false-positive check |
 
 ### Questions from Claude
 
@@ -18079,3 +18080,33 @@ Then the Step 1 and Step 2 checks, and paste the file.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D122 (Follows; the tarpit's start was D106, Deviates).
+
+### Turn 397 — 2026-11-27 17:22 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok whats next
+
+**What Claude did:**
+- Fetched and merged `main` (PR #69 merged).
+- Checked what's left against SCHEDULE.md (Nov 29 – Dec 10) and the Test 3 harness: fixtures `baseline-p2` and `shuffled-p1` exist for (a) and (b); there are no (d) or poisoned-page cases yet.
+- No project files changed apart from this log.
+
+**Claude's answer (summary):** what's next, in order:
+1. **The honeypot false-positive check** (Claude builds, Joseph runs one command). A human-like visitor clicks only visible links: it should never hit the trap. Gives the false-positive rate that goes with the detection rate (Shy Guys reports detection at a 3% false-positive rate). It's also worth running on the tarpit, whose entrance link is visible, so a person could wander into the slow maze.
+2. **Test 3 for (d) and a poisoned page:** Claude adds the harness support (an expected file per scraper, and serving the page's real-values JSON) and a saved poisoned page; Joseph works out the expected outputs by hand (midterm §5).
+3. **Test 7's fake-model part for (c):** Claude builds a fake Ollama that returns bad answers; Joseph runs it.
+4. **Cut-line 2 (Tue Dec 1):** (e) is dropped and reported.
+5. **Milestone 4:**
+   - final tables (`compare.py`, mostly done);
+   - README and reproducibility details;
+   - the outside comparison, later (D118);
+   - report writing;
+   - a clean rerun on Dec 7;
+   - the tag by Dec 8.
+
+Recommended start: item 1. Claude starts on Joseph's go.
+
+**Questions Claude asked:** none (asked in the reply whether to start item 1).
+
+**Direction and fit:** no new decision.
