@@ -1,7 +1,8 @@
 """Scrapers against defenses, with the three measures kept for the report (D118, after the Nov 23 scrum meeting).
 
     python measurement/compare.py --cells results/2026-11-23-results-all/cells.csv \
-                                  --cost results/2026-11-23-user-cost-full-2/cost.csv --out results/<date>-comparison
+                                  --cost results/2026-11-23-user-cost-full-2/cost.csv --out results/<date>-comparison \
+                                  [--false-positives results/<date>-false-positive/report.json]
 
 The three measures (the midterm's own: accuracy, honeypot hits, user cost, §4):
   1. Accuracy (recall)  share of the 70 fields each scraper got right on each site, mean of its runs
@@ -17,6 +18,7 @@ with published research, which comes later.
 """
 import argparse
 import csv
+import json
 from pathlib import Path
 
 import matplotlib
@@ -132,7 +134,7 @@ def scrapers_list(ss):
     return ", ".join(f"({s})" for s in ss)
 
 
-def tables(cells, cost):
+def tables(cells, cost, false_positives=None):
     """comparison.md: the three tables, each followed by what it shows (worked out from the verdicts)."""
     sites = sites_in(cells)
     lines = ["# Scrapers against defenses", "",
@@ -179,6 +181,14 @@ def tables(cells, cost):
         note = (" Only scrapers set to ignore robots.txt walk in; ones that obey it never enter (Test 6)."
                 if t == "tarpit" else "")
         lines.append(f"- **{DEFENSE_NAMES[t]}** " + "; ".join(parts) + ". Its accuracy is unchanged, so this is how it shows." + note)
+    if false_positives:
+        lines += ["", "False positives: a human-like visitor that clicks only visible links, at random "
+                  "(`measurement/false_positive.py`):", "",
+                  "| Trap | Visitors caught | False-positive rate |", "|---|---|---|"]
+        for f in false_positives["conditions"]:
+            lines.append(f"| {f['condition']} | {f['caught']} of {f['sessions']} | {100 * f['false_positive_rate']:.0f}% |")
+        lines += ["", "Random clicking overstates how often a person would pick a link like the tarpit's \"Archive\"; "
+                  "it shows whether the trap can catch people at all."]
     if "tarpit" in traps:
         lines += ["", "Time the tarpit wasted (scrapers set to ignore robots.txt):", "",
                   "| Scraper | Maze pages per run | Seconds trapped per run | Server time per maze page |", "|---|---|---|---|"]
@@ -208,6 +218,7 @@ def main():
     parser.add_argument("--cells", required=True, help="cells.csv from scoring/results.py")
     parser.add_argument("--cost", required=True, help="cost.csv from measurement/user_cost.py")
     parser.add_argument("--out", required=True, help="folder for the PNG files and comparison.md")
+    parser.add_argument("--false-positives", help="report.json from measurement/false_positive.py (optional)")
     args = parser.parse_args()
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -215,7 +226,8 @@ def main():
     cost = read_rows(args.cost, key=lambda r: r["condition"])
     accuracy_grid(cells, out / "1-accuracy.png")
     detection_chart(cells, out / "2-detection.png")
-    (out / "comparison.md").write_text(tables(cells, cost), encoding="utf-8")
+    fp = json.loads(Path(args.false_positives).read_text(encoding="utf-8")) if args.false_positives else None
+    (out / "comparison.md").write_text(tables(cells, cost, fp), encoding="utf-8")
     print("wrote", out / "comparison.md")
 
 

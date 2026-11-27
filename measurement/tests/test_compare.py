@@ -36,6 +36,15 @@ class CompareTest(unittest.TestCase):
         self.assertIn("| Shuffling | +0 ms | 70 of 70 | none |", text)
         self.assertIn("| Poisoning | +2 ms | 0 of 70 | 2.03 s |", text)
 
+    def test_false_positives_are_listed_when_given(self):
+        from measurement import compare as cp
+        fp = {"conditions": [{"condition": "honeypot", "caught": 0, "sessions": 20, "false_positive_rate": 0.0},
+                             {"condition": "tarpit", "caught": 15, "sessions": 20, "false_positive_rate": 0.75}]}
+        text = cp.tables(CELLS, COST, fp)
+        self.assertIn("| honeypot | 0 of 20 | 0% |", text)
+        self.assertIn("| tarpit | 15 of 20 | 75% |", text)
+        self.assertNotIn("False positives", cp.tables(CELLS, COST))
+
     def test_both_charts_are_written(self):
         from measurement import compare as cp
         with tempfile.TemporaryDirectory() as tmp:

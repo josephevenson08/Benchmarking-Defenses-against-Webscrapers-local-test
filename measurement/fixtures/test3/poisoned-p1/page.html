@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product 1 · Demo Shop</title>
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.5; color: #1f2328; background: #fff; }
+    header, main, footer { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #d0d7de; }
+    .brand { font-weight: 700; color: inherit; text-decoration: none; }
+    nav a { margin-left: 1rem; }
+    a { color: #0969da; }
+    .fields { display: flex; flex-direction: column; }
+    .field { display: flex; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #eaeef2; }
+    .label { flex: 0 0 9rem; font-weight: 600; }
+    .value { flex: 1; }
+    footer { color: #57606a; font-size: 0.875rem; border-top: 1px solid #d0d7de; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/">Demo Shop</a>
+    <nav><a href="/">Home</a><a href="/products/">Products</a></nav>
+  </header>
+  <main>
+    <h1>Product details</h1>
+    <div class="fields">
+      <div class="field"><span class="label">Name</span><span class="value">Wexley Slim Clock</span></div>
+      <div class="field"><span class="label">Brand</span><span class="value">Ostrava</span></div>
+      <div class="field"><span class="label">Category</span><span class="value">Bath</span></div>
+      <div class="field"><span class="label">Price</span><span class="value">$22.48</span></div>
+      <div class="field"><span class="label">SKU</span><span class="value">LF-HP-9958</span></div>
+      <div class="field"><span class="label">Rating</span><span class="value">1.8</span></div>
+      <div class="field"><span class="label">Reviews</span><span class="value">5,824</span></div>
+      <div class="field"><span class="label">Availability</span><span class="value">Low stock</span></div>
+      <div class="field"><span class="label">Release date</span><span class="value">2023-06-02</span></div>
+      <div class="field"><span class="label">Description</span><span class="value">A sturdy everyday pick with a simple design and a two-year warranty.</span></div>
+    </div>
+  </main>
+  <footer>Synthetic test site for a local scraping study. All content is made up.</footer>
+  <script>
+
+    setTimeout(async function () {
+      const response = await fetch("/values/products/p1.json");
+      const data = await response.json();
+      document.querySelectorAll(".field").forEach(function (row) {
+        const label = row.querySelector(".label").textContent;
+        const real = data.fields.find(function (field) { return field.label === label; });
+        if (real) row.querySelector(".value").textContent = real.value;
+      });
+    }, 2000);
+  </script>
+</body>
+</html>

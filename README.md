@@ -204,6 +204,18 @@ python measurement/test7.py                      # (a) and (b)
 python measurement/test7.py --scrapers a b c     # (c) too (the test pages make no model calls)
 ```
 
+**Test 7, the fake-model part for (c):** a fake Ollama answers each product or article page differently: not JSON, a list, a missing field, no answer for 125 s, or a good answer. (c) must record `invalid_json`, `missing_key` and `model_timeout` and keep going. A second short run with no model at all must record `model_error`. **Quit Ollama first**, since the fake uses its port (11434); start it again afterwards. About 2 minutes; writes `results/<date>-test7-model/`:
+
+```bash
+python measurement/test7_model.py
+```
+
+**False-positive check** for the trap defenses: a human-like visitor clicks only links a person can see, at random, 20 sessions of 6 clicks on each trap site. The honeypot should never catch it (false-positive rate 0%). The tarpit's entrance is a visible link, so its rate is reported. About 4 minutes; writes `results/<date>-false-positive/`:
+
+```bash
+python measurement/false_positive.py
+```
+
 **Test 6** in one command (starts its own server on port 3100 with a fresh log, sends a trap request and a normal request with run ID `test6` plus one without a User-Agent, and checks the honeypot pages: one hidden trap link each, pixel difference ≤ 1%. Once `site/defenses/tarpit.js` exists it also runs the tarpit part: (a), (b) and (d) obeying robots.txt must never request `/maze/`, and (a) ignoring it must. Writes `results/<date>-test6/`):
 
 ```bash
@@ -216,7 +228,7 @@ python measurement/test6.py
 python measurement/test5.py
 ```
 
-**Test 3** (the extraction rule): each case in `measurement/fixtures/test3/` is a saved page plus the output worked out by hand (`expected.json`). The script serves each page on its own, runs (a) and (b) on it with `--page-cap 1`, and compares; writes `results/<date>-test3/`:
+**Test 3** (the extraction rule): each case in `measurement/fixtures/test3/` is a saved page plus the output worked out by hand (`expected.json`, and `expected-d.json` where (d) should get something different). The cases are a normal page, a shuffled page and a poisoned page; the poisoned case also serves its real values, so its swap works. The script serves each page on its own, runs (a), (b) and (d) on it with `--page-cap 1`, and compares; writes `results/<date>-test3/`:
 
 ```bash
 python measurement/test3.py
@@ -383,9 +395,10 @@ Re-planned Nov 16 after the scrum meeting: the LLM scraper (c), then the adaptiv
 - [x] User-cost runner (pixel diff and SSIM, Lighthouse, axe-core, reading order). Done Nov 20 (`measurement/user_cost.py`): part 1 pixel diff, SSIM, reading order, HTML size; part 2 axe-core and Lighthouse
 - [ ] Standard metrics next to accuracy and fake-value rate (plan: `docs/metrics-plan.md`). Done Nov 20 in `scoring/results.py`: field-level precision, recall and F1, extraction success rate, relative reduction against baseline, honeypot detection and evasion rates. Still to come: the false-positive rate (Nov 29) and HTML size (user-cost runner)
 - [x] Essential runs: (a) and (b) on baseline, shuffled, and honeypot, 3 runs each (done Nov 18; planned Nov 23)
-- [x] Test 7 for (a) and (b) (crawl part passed Nov 20; planned Nov 24)
+- [x] Test 7 for (a) and (b) (crawl part passed Nov 20; planned Nov 24). Fake-model part for (c): `measurement/test7_model.py` (Nov 27, D125); passes in the cloud (each bad answer in its own category, the runs finish)
+- [x] Honeypot false-positive check: `measurement/false_positive.py` (Nov 27, D123). Cloud run: honeypot 0 of 20 human-like visitors caught (0%); tarpit 15 of 20 (75%), because its entrance link is visible
 - [x] Scraper (c) (Ollama, CPU, `llama3.2:3b`): baseline check passed Nov 18 (70/70 in all 3 runs; deadline Nov 22); runs on all three conditions done Nov 18 (planned Nov 28): shuffled 48–49/70, honeypot 70/70 with the trap visited
-- [ ] Scraper (d): written Nov 20 (Claude, at Joseph's request, D99). Baseline check and the runs on all three conditions done Nov 20 (9/9 runs, 70/70 everywhere, the trap never hit); Test 7 passes. Still to do: the (d) part of Test 3 (Nov 25)
+- [ ] Scraper (d): written Nov 20 (Claude, at Joseph's request, D99). Baseline check and the runs on all three conditions done Nov 20 (9/9 runs, 70/70 everywhere, the trap never hit); Test 7 passes. Test 3's harness now runs (d) too, with a shuffled and a poisoned case (Nov 27, D124); still to do: Joseph's hand-worked `expected-d.json` files
 - [x] Related-work table, published side, drafted from the papers (`docs/metrics-plan.md`); our side filled Nov 25 and Dec 3
 - [x] Poisoning (Test 5), started Nov 23 because (c) and (d) finished early. The site and scoring side is ready (D105): the generator's `fakeValue` and `script` hooks, the real-values JSON, the fakes file, fakes in the results and Test 5. `site/defenses/poisoned.js` written Nov 23 (Claude, at Joseph's request, around his price case; D110). In the cloud it passes Test 5 (4/4), and a one-run preview gave (a) and (b) 70 fakes each and (d) 70/70 real values. Runs done Nov 23 on the laptop (commit `910ee22`, `results/2026-11-23-poisoned-2`; an earlier commit held the draft without the swap, and its runs don't count, D111): (a), (b) and (c) 0/70 with 70 fakes in every run, (d) 70/70 (D112). Test 5 passes on the laptop at the same commit (4/4; the swap at 2.0 s). Results over all 48 runs (`results/2026-11-23-results-all`; cross-check 707/707 agree): poisoning stops (a), (b) and (c) (recall 0%, a 100% drop, fake-value rate 100%) and has no effect on (d) (70/70, 4.65 s per page against 3.03 s). The user-cost runner now serves the pages, so poisoned pages swap, and reports how long the fakes stay on screen (2.02 s in the cloud check, D114). User cost on the laptop (`results/2026-11-23-user-cost-full-2`, D116): 0% pixel difference, SSIM 1.000, 0/70 fields out of order, 0 axe violations, no Lighthouse change beyond noise, HTML +17.5%, fakes on screen 2.0 s. Cross-check with it: 734/734 agree (D117)
 - [x] Tarpit (If time permits), started Nov 23 at Joseph's choice, before the midterm's gate (D106). `site/defenses/tarpit.js` (Joseph, with some lines from Claude, D119); measurement side (D121). Done Nov 25 on the laptop (D122): Test 6 passes with its tarpit part (obeying (a), (b), (d): 0 maze requests; ignoring (a): 5); 9 runs ignoring robots.txt (`results/2026-11-25-tarpit`): (a), (b), (d) 70/70 in every run, 5 maze pages each, trapped 10.1, 10.2 and 22.2 s; user cost with all four defenses (`results/2026-11-25-user-cost-full`): tarpit 0.015% pixels (its visible link), HTML +1.6%, 0 axe. Results over 57 runs: `results/2026-11-25-results-all`; cross-check 942/942; comparison `results/2026-11-25-comparison`
