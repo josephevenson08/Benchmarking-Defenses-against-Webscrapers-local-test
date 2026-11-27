@@ -712,6 +712,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J400 | 400 | ok turned on venv | Next: fill in `poisoned-p1/expected.json` first and paste it for a check |
 | J401 | 401 | fill in the asnwers for me | Claude began (from the saved pages, to be recorded as a partial deviation); interrupted before any change |
 | J402 | 402 | ok what whcih files am i checking to get the information to fill in | The source file for each answer file, with an example row |
+| J403 | 403 | (three pasted blocks: the poisoned expected.json; the values JSON and the shuffled page's fields, both with the fakes) | File 1 correct; the two source files look edited with the fakes, so restore them with git; both expected-d.json files get p1's real values |
 
 ### Questions from Claude
 
@@ -18382,3 +18383,116 @@ Each with an example row. Joseph does it by hand (midterm §5 Test 3).
 
 **Direction and fit:** no new decision (Test 3 answers by Joseph, as planned; D124).
 
+
+### Turn 403 — 2026-11-27 18:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "path": "/products/p1",
+>   "records": [{"field":"name", "value":"Wexley Slim Clock"},
+>               {"field":"brand", "value":"Ostrava"},
+>               {"field":"category", "value":"Bath"},
+>               {"field":"price", "value":"$22.48"},
+>               {"field":"sku", "value":"LF-HP-9958"},
+>               {"field":"rating", "value":"1.8"},
+>               {"field":"review_count", "value":"5,824"},
+>               {"field":"availability", "value":"Low stock"},
+>               {"field":"release_date", "value":"2023-06-02"},
+>               {"field":"description", "value":"A sturdy everyday pick with a simple design and a two-year warranty."}]
+> }
+>
+> {
+>   "item_id": "p1",
+>   "fields": [
+>     {
+>       "key": "name",
+>       "label": "Name",
+>       "value": "Wexley Slim Clock"
+>     },
+>     {
+>       "key": "brand",
+>       "label": "Brand",
+>       "value": "Ostrava"
+>     },
+>     {
+>       "key": "category",
+>       "label": "Category",
+>       "value": "Bath"
+>     },
+>     {
+>       "key": "price",
+>       "label": "Price",
+>       "value": "$22.48"
+>     },
+>     {
+>       "key": "sku",
+>       "label": "SKU",
+>       "value": "LF-HP-9958"
+>     },
+>     {
+>       "key": "rating",
+>       "label": "Rating",
+>       "value": "1.8"
+>     },
+>     {
+>       "key": "review_count",
+>       "label": "Reviews",
+>       "value": "5,824"
+>     },
+>     {
+>       "key": "availability",
+>       "label": "Availability",
+>       "value": "Low stock"
+>     },
+>     {
+>       "key": "release_date",
+>       "label": "Release date",
+>       "value": "2023-06-02"
+>     },
+>     {
+>       "key": "description",
+>       "label": "Description",
+>       "value": "A sturdy everyday pick with a simple design and a two-year warranty."
+>     }
+>   ]
+> }
+>
+>
+>       <span class="value" style="order: 1">Wexley Slim Clock</span>
+>       <span class="value" style="order: 13">5,824</span>
+>       <span class="label" style="order: 4">Category</span>
+>       <span class="value" style="order: 15">Low stock</span>
+>       <span class="label" style="order: 14">Availability</span>
+>       <span class="value" style="order: 11">1.8</span>
+>       <span class="label" style="order: 0">Name</span>
+>       <span class="value" style="order: 7">$22.48</span>
+>       <span class="label" style="order: 6">Price</span>
+>       <span class="value" style="order: 17">2023-06-02</span>
+>       <span class="label" style="order: 16">Release date</span>
+>       <span class="value" style="order: 9">LF-HP-9958</span>
+>       <span class="label" style="order: 8">SKU</span>
+>       <span class="label" style="order: 12">Reviews</span>
+>       <span class="label" style="order: 18">Description</span>
+>       <span class="value" style="order: 3">Ostrava</span>
+>       <span class="value" style="order: 19">A sturdy everyday pick with a simple design and a two-year warranty.</span>
+>       <span class="value" style="order: 5">Bath</span>
+>       <span class="label" style="order: 10">Rating</span>
+>       <span class="label" style="order: 2">Brand</span>
+
+**What Claude did:**
+- Checked Joseph's three pasted blocks against the committed fixture files:
+  1. the first, `poisoned-p1/expected.json`, is correct: the 10 fakes, matching the page and the fakes from Turn 370;
+  2. the second has the format of `serve/values/products/p1.json`, but with the fakes in place of the real values;
+  3. the third is `shuffled-p1/page.html`'s fields block in the same element order as the saved page (order 1, 13, 4, …), but with the fakes in place of the real values (saved: "Larkfield Studio Headphones", "1,284", …).
+- So the two **source** files look edited, when the answer files should have been. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **File 1 is right.**
+- **Files 2 and 3:** the source files must keep the real values. Check with `git status --short measurement/fixtures/test3`, and restore with `git checkout -- <the two files>`.
+- **Both `expected-d.json` files** use the records format with p1's **real** values. (d) sees the real values on both pages: after the swap, and because shuffling doesn't change values. The format was shown.
+- **Then:** rerun Test 3.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
