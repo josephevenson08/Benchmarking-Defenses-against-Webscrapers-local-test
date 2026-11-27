@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110, D119 partly.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110, D119 partly, D126 partly.)* |
 
 ---
 
@@ -304,6 +304,11 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **The runs:** Run 1 crawls the baseline site with the fake. Run 2 crawls 4 pages with no model running. The test stops with a clear message if port 11434 is in use (quit Ollama first).
 - **Cloud run: PASS.** Run 1 recorded `invalid_json` ×2, `missing_key` and `model_timeout` on the planted pages, kept the good pages' values (10, 10, 10, 5), and finished all 10 pages in 121 s. Run 2 recorded `model_error` on both item pages and finished.
 - **Noted, not tested:** if Ollama answered with an error object (`{"error": …}`, for example a missing model), `data["response"]` would raise a `KeyError` that (c) doesn't catch, and the run would stop. That's outside the midterm's categories and in Joseph's code, so it's reported to him, not changed. | — | Claude (harness); Joseph runs it on the laptop | §5 Test 7 (a stub model for (c); failures recorded in their categories, the run continues); (c)'s failure rules (Joseph's, D78–D88). | Follows |
+| D126 | 404 | **Claude showed the finished contents of the two Test 3 `expected-d.json` files** (Joseph: "give me what the expected json looks like because ive done the work just whats wrong with my file?").
+- **Joseph's own work:** `poisoned-p1/expected.json`, written by hand and correct. He also worked out the shuffled page's pairing by order number, which was correct.
+- **What went wrong:** his `expected-d` attempts used the values-file format and the fakes, apparently from source files he had edited.
+- **What Claude showed:** both `expected-d.json` files, which are identical. They hold p1's 10 real values, read from the committed `serve/values/products/p1.json` and the saved shuffled page, never from a scraper's output, so the test stays independent.
+- **Disclosed:** like the Test 2 fixture (D39). | Keep guiding; show the two files (chosen) | Joseph (asked) | §5 Test 3 ("hand-worked expected output"); the Test 3 fixture README (worked out by hand: Joseph); precedent D39. | **Deviates** (partly: two answer files' contents from Claude; disclosed) |
 ---
 
 ## Questions register
@@ -713,6 +718,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J401 | 401 | fill in the asnwers for me | Claude began (from the saved pages, to be recorded as a partial deviation); interrupted before any change |
 | J402 | 402 | ok what whcih files am i checking to get the information to fill in | The source file for each answer file, with an example row |
 | J403 | 403 | (three pasted blocks: the poisoned expected.json; the values JSON and the shuffled page's fields, both with the fakes) | File 1 correct; the two source files look edited with the fakes, so restore them with git; both expected-d.json files get p1's real values |
+| J404 | 404 | give me what the expectewd json looks like because ive done the work just whats wrong with my file? | What was wrong (format and fake values); the two finished `expected-d.json` files shown (D126, partly Deviates) |
 
 ### Questions from Claude
 
@@ -18496,3 +18502,26 @@ Each with an example row. Joseph does it by hand (midterm §5 Test 3).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 404 — 2026-11-27 18:24 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> give me what the expectewd json looks like because ive done the work just whats wrong with my file?
+
+**What Claude did:** Read p1's real values from the committed `serve/values/products/p1.json`. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **What was wrong:**
+  1. the format: `item_id`, `fields`, `key` and `label` are the values file's format, but an answer file needs `path` and `records`, with `field` and `value`;
+  2. the values: the fakes, when (d) sees the real values on both pages.
+- **The two complete `expected-d.json` files**, identical (D126, Deviates partly, disclosed).
+- **Then:**
+  1. restore the source files if they were changed (`git status`, `git checkout --`);
+  2. run Test 3;
+  3. run Test 7's fake-model part;
+  4. push.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D126 (**Deviates**, partly).
