@@ -1,0 +1,240 @@
+{
+  "run": {
+    "run_id": "test7-model-fake",
+    "scraper": "c",
+    "start_url": "http://127.0.0.1:3100/",
+    "page_cap": 15,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-27T18:28:27.645142+00:00",
+    "seconds": 120.553
+  },
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a1",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a2",
+      "status": 200,
+      "error": "invalid_json"
+    },
+    {
+      "path": "/products/p1",
+      "status": 200,
+      "error": "invalid_json"
+    },
+    {
+      "path": "/products/p2",
+      "status": 200,
+      "error": "missing_key"
+    },
+    {
+      "path": "/products/p3",
+      "status": 200,
+      "error": "model_timeout"
+    },
+    {
+      "path": "/products/p4",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p5",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/p6",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/articles/a1",
+      "field": "title",
+      "value": "stub"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "author",
+      "value": "stub"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "publish_date",
+      "value": "stub"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "tags",
+      "value": "stub"
+    },
+    {
+      "page": "/articles/a1",
+      "field": "summary",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "name",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "brand",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "category",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "price",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "sku",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "rating",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "review_count",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "availability",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "release_date",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p4",
+      "field": "description",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "name",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "brand",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "category",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "price",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "sku",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "rating",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "review_count",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "availability",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "release_date",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p5",
+      "field": "description",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "name",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "brand",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "category",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "price",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "sku",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "rating",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "review_count",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "availability",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "release_date",
+      "value": "stub"
+    },
+    {
+      "page": "/products/p6",
+      "field": "description",
+      "value": "stub"
+    }
+  ]
+}

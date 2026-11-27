@@ -1,0 +1,34 @@
+{
+  "run": {
+    "run_id": "test7-model-none",
+    "scraper": "c",
+    "start_url": "http://127.0.0.1:3100/",
+    "page_cap": 4,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-27T18:30:29.661096+00:00",
+    "seconds": 4.244
+  },
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/products/",
+      "status": 200,
+      "error": null
+    },
+    {
+      "path": "/articles/a1",
+      "status": 200,
+      "error": "model_error"
+    },
+    {
+      "path": "/articles/a2",
+      "status": 200,
+      "error": "model_error"
+    }
+  ],
+  "records": []
+}

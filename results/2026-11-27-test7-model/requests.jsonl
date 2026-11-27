@@ -1,0 +1,16 @@
+{"timestamp":"2026-11-27T18:28:27.182Z","run_id":"test7-model-fake","path":"/robots.txt","status":200,"response_ms":9.151,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.659Z","run_id":"test7-model-fake","path":"/","status":200,"response_ms":2.117,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.710Z","run_id":"test7-model-fake","path":"/products/","status":200,"response_ms":1.523,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.729Z","run_id":"test7-model-fake","path":"/articles/a1","status":200,"response_ms":2.004,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.800Z","run_id":"test7-model-fake","path":"/articles/a2","status":200,"response_ms":1.661,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.853Z","run_id":"test7-model-fake","path":"/products/p1","status":200,"response_ms":1.764,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.905Z","run_id":"test7-model-fake","path":"/products/p2","status":200,"response_ms":1.601,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:28:27.973Z","run_id":"test7-model-fake","path":"/products/p3","status":200,"response_ms":2.631,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:30:28.045Z","run_id":"test7-model-fake","path":"/products/p4","status":200,"response_ms":2.798,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:30:28.098Z","run_id":"test7-model-fake","path":"/products/p5","status":200,"response_ms":2.354,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:30:28.149Z","run_id":"test7-model-fake","path":"/products/p6","status":200,"response_ms":1.857,"honeypot_hit":false,"user_agent":"run=test7-model-fake"}
+{"timestamp":"2026-11-27T18:30:29.206Z","run_id":"test7-model-none","path":"/robots.txt","status":200,"response_ms":1.358,"honeypot_hit":false,"user_agent":"run=test7-model-none"}
+{"timestamp":"2026-11-27T18:30:29.674Z","run_id":"test7-model-none","path":"/","status":200,"response_ms":4.638,"honeypot_hit":false,"user_agent":"run=test7-model-none"}
+{"timestamp":"2026-11-27T18:30:29.708Z","run_id":"test7-model-none","path":"/products/","status":200,"response_ms":2.399,"honeypot_hit":false,"user_agent":"run=test7-model-none"}
+{"timestamp":"2026-11-27T18:30:29.728Z","run_id":"test7-model-none","path":"/articles/a1","status":200,"response_ms":1.775,"honeypot_hit":false,"user_agent":"run=test7-model-none"}
+{"timestamp":"2026-11-27T18:30:31.807Z","run_id":"test7-model-none","path":"/articles/a2","status":200,"response_ms":1.782,"honeypot_hit":false,"user_agent":"run=test7-model-none"}

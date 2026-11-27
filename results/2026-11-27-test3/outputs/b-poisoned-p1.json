@@ -1,0 +1,70 @@
+{
+  "run": {
+    "run_id": "test3-b-poisoned-p1",
+    "scraper": "b",
+    "start_url": "http://127.0.0.1:52578/products/p1",
+    "page_cap": 1,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-27T18:27:49.902144+00:00",
+    "seconds": 0.06
+  },
+  "pages": [
+    {
+      "path": "/products/p1",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/products/p1",
+      "field": "name",
+      "value": "Wexley Slim Clock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "brand",
+      "value": "Ostrava"
+    },
+    {
+      "page": "/products/p1",
+      "field": "category",
+      "value": "Bath"
+    },
+    {
+      "page": "/products/p1",
+      "field": "price",
+      "value": "$22.48"
+    },
+    {
+      "page": "/products/p1",
+      "field": "sku",
+      "value": "LF-HP-9958"
+    },
+    {
+      "page": "/products/p1",
+      "field": "rating",
+      "value": "1.8"
+    },
+    {
+      "page": "/products/p1",
+      "field": "review_count",
+      "value": "5,824"
+    },
+    {
+      "page": "/products/p1",
+      "field": "availability",
+      "value": "Low stock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "release_date",
+      "value": "2023-06-02"
+    },
+    {
+      "page": "/products/p1",
+      "field": "description",
+      "value": "A sturdy everyday pick with a simple design and a two-year warranty."
+    }
+  ]
+}

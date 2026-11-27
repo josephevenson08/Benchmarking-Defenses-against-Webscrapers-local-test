@@ -1,0 +1,70 @@
+{
+  "run": {
+    "run_id": "test3-d-shuffled-p1",
+    "scraper": "d",
+    "start_url": "http://127.0.0.1:63085/products/p1",
+    "page_cap": 1,
+    "obey_robots_txt": true,
+    "started_at": "2026-11-27T18:27:59.825747+00:00",
+    "seconds": 3.066
+  },
+  "pages": [
+    {
+      "path": "/products/p1",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "records": [
+    {
+      "page": "/products/p1",
+      "field": "name",
+      "value": "Larkfield Studio Headphones"
+    },
+    {
+      "page": "/products/p1",
+      "field": "brand",
+      "value": "Larkfield"
+    },
+    {
+      "page": "/products/p1",
+      "field": "category",
+      "value": "Headphones"
+    },
+    {
+      "page": "/products/p1",
+      "field": "price",
+      "value": "$89.99"
+    },
+    {
+      "page": "/products/p1",
+      "field": "sku",
+      "value": "LF-HP-2041"
+    },
+    {
+      "page": "/products/p1",
+      "field": "rating",
+      "value": "4.5"
+    },
+    {
+      "page": "/products/p1",
+      "field": "review_count",
+      "value": "1,284"
+    },
+    {
+      "page": "/products/p1",
+      "field": "availability",
+      "value": "In stock"
+    },
+    {
+      "page": "/products/p1",
+      "field": "release_date",
+      "value": "2024-09-12"
+    },
+    {
+      "page": "/products/p1",
+      "field": "description",
+      "value": "Closed-back over-ear headphones with 40 mm drivers and a detachable cable."
+    }
+  ]
+}

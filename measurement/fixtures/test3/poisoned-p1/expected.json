@@ -1,4 +1,13 @@
 {
   "path": "/products/p1",
-  "records": []
+  "records": [{"field":"name", "value":"Wexley Slim Clock"},
+              {"field":"brand", "value":"Ostrava"},
+              {"field":"category", "value":"Bath"},
+              {"field":"price", "value":"$22.48"},
+              {"field":"sku", "value":"LF-HP-9958"},
+              {"field":"rating", "value":"1.8"},
+              {"field":"review_count", "value":"5,824"},
+              {"field":"availability", "value":"Low stock"},
+              {"field":"release_date", "value":"2023-06-02"},
+              {"field":"description", "value":"A sturdy everyday pick with a simple design and a two-year warranty."}]
 }

@@ -1,0 +1,33 @@
+http://127.0.0.1:3100/ 15 run=test7-model-fake ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+/ 0
+200 http://127.0.0.1:3100/products/
+/products/ 0
+200 http://127.0.0.1:3100/articles/a1
+/articles/a1 5
+{"Title": "stub", "Author": "stub", "Published": "stub", "Tags": "stub", "Summary": "stub"}
+200 http://127.0.0.1:3100/articles/a2
+/articles/a2 5
+this is not JSON
+invalid json http://127.0.0.1:3100/articles/a2
+200 http://127.0.0.1:3100/products/p1
+/products/p1 10
+[1, 2, 3]
+invalid json (not an object) http://127.0.0.1:3100/products/p1
+200 http://127.0.0.1:3100/products/p2
+/products/p2 10
+{"Brand": "stub", "Category": "stub", "Price": "stub", "SKU": "stub", "Rating": "stub", "Reviews": "stub", "Availability": "stub", "Release date": "stub", "Description": "stub"}
+missing key(s) ['Name'] http://127.0.0.1:3100/products/p2
+200 http://127.0.0.1:3100/products/p3
+/products/p3 10
+model timeout http://127.0.0.1:3100/products/p3
+200 http://127.0.0.1:3100/products/p4
+/products/p4 10
+{"Name": "stub", "Brand": "stub", "Category": "stub", "Price": "stub", "SKU": "stub", "Rating": "stub", "Reviews": "stub", "Availability": "stub", "Release date": "stub", "Description": "stub"}
+200 http://127.0.0.1:3100/products/p5
+/products/p5 10
+{"Name": "stub", "Brand": "stub", "Category": "stub", "Price": "stub", "SKU": "stub", "Rating": "stub", "Reviews": "stub", "Availability": "stub", "Release date": "stub", "Description": "stub"}
+200 http://127.0.0.1:3100/products/p6
+/products/p6 10
+{"Name": "stub", "Brand": "stub", "Category": "stub", "Price": "stub", "SKU": "stub", "Rating": "stub", "Reviews": "stub", "Availability": "stub", "Release date": "stub", "Description": "stub"}
+35 records written to C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-27-test7-model\test7-model-fake.json

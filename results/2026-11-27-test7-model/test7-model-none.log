@@ -1,0 +1,12 @@
+http://127.0.0.1:3100/ 4 run=test7-model-none ['http://127.0.0.1:3100/']
+200 http://127.0.0.1:3100/
+/ 0
+200 http://127.0.0.1:3100/products/
+/products/ 0
+200 http://127.0.0.1:3100/articles/a1
+/articles/a1 5
+model error http://127.0.0.1:3100/articles/a1
+200 http://127.0.0.1:3100/articles/a2
+/articles/a2 5
+model error http://127.0.0.1:3100/articles/a2
+0 records written to C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\results\2026-11-27-test7-model\test7-model-none.json

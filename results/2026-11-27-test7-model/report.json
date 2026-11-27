@@ -1,0 +1,129 @@
+{
+  "test": "Test 7, fake-model part",
+  "run_at": "2026-11-27T12:30:34",
+  "commit": "710fa59",
+  "slow_seconds": 125,
+  "runs": [
+    {
+      "name": "Run 1: fake model, whole site",
+      "page_cap": 15,
+      "exit_code": 0,
+      "seconds": 121.6,
+      "pages_visited": 10,
+      "rows": [
+        {
+          "item": "p1",
+          "path": "/products/p1",
+          "expected_error": "invalid_json",
+          "error": "invalid_json",
+          "visited": true,
+          "records": 0,
+          "passed": true,
+          "answer": "a list"
+        },
+        {
+          "item": "p2",
+          "path": "/products/p2",
+          "expected_error": "missing_key",
+          "error": "missing_key",
+          "visited": true,
+          "records": 0,
+          "passed": true,
+          "answer": "a field missing"
+        },
+        {
+          "item": "p3",
+          "path": "/products/p3",
+          "expected_error": "model_timeout",
+          "error": "model_timeout",
+          "visited": true,
+          "records": 0,
+          "passed": true,
+          "answer": "after 125 s"
+        },
+        {
+          "item": "p4",
+          "path": "/products/p4",
+          "expected_error": null,
+          "error": null,
+          "visited": true,
+          "records": 10,
+          "passed": true,
+          "answer": "good"
+        },
+        {
+          "item": "p5",
+          "path": "/products/p5",
+          "expected_error": null,
+          "error": null,
+          "visited": true,
+          "records": 10,
+          "passed": true,
+          "answer": "good"
+        },
+        {
+          "item": "p6",
+          "path": "/products/p6",
+          "expected_error": null,
+          "error": null,
+          "visited": true,
+          "records": 10,
+          "passed": true,
+          "answer": "good"
+        },
+        {
+          "item": "a1",
+          "path": "/articles/a1",
+          "expected_error": null,
+          "error": null,
+          "visited": true,
+          "records": 5,
+          "passed": true,
+          "answer": "good"
+        },
+        {
+          "item": "a2",
+          "path": "/articles/a2",
+          "expected_error": "invalid_json",
+          "error": "invalid_json",
+          "visited": true,
+          "records": 0,
+          "passed": true,
+          "answer": "not JSON"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "Run 2: no model running, first 4 pages",
+      "page_cap": 4,
+      "exit_code": 0,
+      "seconds": 5.3,
+      "pages_visited": 4,
+      "rows": [
+        {
+          "item": "a1",
+          "path": "/articles/a1",
+          "expected_error": "model_error",
+          "error": "model_error",
+          "visited": true,
+          "records": 0,
+          "passed": true,
+          "answer": "no model running"
+        },
+        {
+          "item": "a2",
+          "path": "/articles/a2",
+          "expected_error": "model_error",
+          "error": "model_error",
+          "visited": true,
+          "records": 0,
+          "passed": true,
+          "answer": "no model running"
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "passed": true
+}
