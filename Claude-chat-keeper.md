@@ -309,6 +309,15 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **What went wrong:** his `expected-d` attempts used the values-file format and the fakes, apparently from source files he had edited.
 - **What Claude showed:** both `expected-d.json` files, which are identical. They hold p1's 10 real values, read from the committed `serve/values/products/p1.json` and the saved shuffled page, never from a scraper's output, so the test stays independent.
 - **Disclosed:** like the Test 2 fixture (D39). | Keep guiding; show the two files (chosen) | Joseph (asked) | §5 Test 3 ("hand-worked expected output"); the Test 3 fixture README (worked out by hand: Joseph); precedent D39. | **Deviates** (partly: two answer files' contents from Claude; disclosed) |
+| D127 | 407 | **⭐ Milestone 3's remaining checks pass on the laptop (Fri Nov 27; planned Nov 25 and Nov 29).**
+- **Test 3** (commit `710fa59`): **9/9 PASS**. (a), (b) and (d) on the baseline, poisoned and shuffled pages. (d) gets the real values on the shuffled and poisoned pages; (a) and (b) get the scrambled pairs and the fakes.
+- **Answer files:** `poisoned-p1/expected.json` is Joseph's hand work. The two `expected-d.json` files are from Claude (D126).
+- **Test 7's fake-model part: PASS.** Run 1 recorded `invalid_json` ×2, `missing_key` and `model_timeout`, kept the good pages' values, and finished all 10 pages (121.6 s). Run 2, with no model, recorded `model_error` ×2 and finished.
+- **Together with D123** (false-positive check), D122 (tarpit) and D112 (poisoning), every Milestone 3 item is done. The exceptions are our column of the related-work table, moved later (D118), and scraper (e) (D128). | — | Joseph (runs); Claude (reading) | §5 Tests 3 and 7; §7 Milestone 3 and its stretch plan (Test 5 and the (d) and poisoned-page parts of Test 3 as completion checks). | Follows |
+| D128 | 407 | **Cut-line 2: scraper (e) is dropped and reported as not done** (Joseph: "Dropped: vision (e), reading a screenshot with a image model, scraper" in his Nov 23 report).
+- **Why:** a vision model on the CPU-only laptop wouldn't run in time before Dec 1. The midterm allows this: "Whatever is not running at the Dec 1 cut-line is dropped and reported as not done".
+- **What's lost:** (e)'s parts of hypotheses 1 (shuffling would not affect it) and 2 (poisoning would) stay untested. The report says so.
+- **Everything else runs:** all four defenses, scrapers (a)–(d), and Tests 1–7. | Try (e) after the cut-line (rejected: the midterm drops what isn't running by Dec 1) | Joseph | §7 Stretch plan and Cut-line 2; §1 item 4; §4 hypotheses 1–2. | Follows |
 ---
 
 ## Questions register
@@ -721,6 +730,7 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J404 | 404 | give me what the expectewd json looks like because ive done the work just whats wrong with my file? | What was wrong (format and fake values); the two finished `expected-d.json` files shown (D126, partly Deviates) |
 | J405 | 405 | i cahnged the expected.json what should that look like, ive pasted this in both of the files now though | Table of what each of the five answer files should hold; the poisoned `expected.json` (the fakes) shown so it can be put back; `git status` check |
 | J406 | 406 | (`git status`: exactly the three answer files modified) | Correct; run Test 3, then Test 7's fake-model part, then push |
+| J407 | 407 | (laptop: Test 3 9/9 PASS; Test 7's fake-model part PASS) | ⭐ Milestone 3's checks done (D127); (e) dropped at the cut-line (D128); push; Milestone 4 plan |
 
 ### Questions from Claude
 
@@ -18570,3 +18580,99 @@ Each with an example row. Joseph does it by hand (midterm §5 Test 3).
 **Questions Claude asked:** none.
 
 **Direction and fit:** no new decision.
+
+### Turn 407 — 2026-11-27 18:31 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/test3.py
+> (a) on baseline-p2 ...
+> (b) on baseline-p2 ...
+> (d) on baseline-p2 ...
+> (a) on poisoned-p1 ...
+> (b) on poisoned-p1 ...
+> (d) on poisoned-p1 ...
+> (a) on shuffled-p1 ...
+> (b) on shuffled-p1 ...
+> (d) on shuffled-p1 ...
+>
+> # Test 3: the extraction rule
+>
+> Run 2026-11-27T12:28:03 · commit 710fa59
+>
+> | Case | Scraper | Expected file | Expected records | Got | Missing | Extra | Wrong value | |
+> |---|---|---|---|---|---|---|---|---|
+> | `baseline-p2` | (a) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `baseline-p2` | (b) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `baseline-p2` | (d) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `poisoned-p1` | (a) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `poisoned-p1` | (b) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `poisoned-p1` | (d) | `expected-d.json` | 10 | 10 | — | — | — | PASS |
+> | `shuffled-p1` | (a) | `expected.json` | 9 | 9 | — | — | — | PASS |
+> | `shuffled-p1` | (b) | `expected.json` | 9 | 9 | — | — | — | PASS |
+> | `shuffled-p1` | (d) | `expected-d.json` | 10 | 10 | — | — | — | PASS |
+>
+> **Test 3 ((a), (b), (d)): PASS**
+>
+> Each case's page is served on its own and each scraper runs with `--page-cap 1`. Scraper outputs are in `outputs/`.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> 
+>
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/test7_model.py
+> Run 1: (c) on the whole site with the fake model (one answer takes 125 s) ...
+> Run 2: (c) with no model running ...
+>
+> # Test 7, fake-model part: scraper (c)'s failure rules
+>
+> Run 2026-11-27T12:30:34 · commit 710fa59 · fake Ollama on 127.0.0.1:11434 · slow answer after 125 s
+>
+> **PASS**
+>
+> ## Run 1: fake model, whole site
+>
+> Exit 0 · 121.6 s · pages visited 10 of 15 (cap) · finished
+>
+> | Page | Fake model's answer | Expected | (c) recorded | Values saved | |
+> |---|---|---|---|---|---|
+> | /products/p1 | a list | invalid_json | invalid_json | 0 | PASS |
+> | /products/p2 | a field missing | missing_key | missing_key | 0 | PASS |
+> | /products/p3 | after 125 s | model_timeout | model_timeout | 0 | PASS |
+> | /products/p4 | good | no error | no error | 10 | PASS |
+> | /products/p5 | good | no error | no error | 10 | PASS |
+> | /products/p6 | good | no error | no error | 10 | PASS |
+> | /articles/a1 | good | no error | no error | 5 | PASS |
+> | /articles/a2 | not JSON | invalid_json | invalid_json | 0 | PASS |
+>
+> ## Run 2: no model running, first 4 pages
+>
+> Exit 0 · 5.3 s · pages visited 4 of 4 (cap) · finished
+>
+> | Page | Fake model's answer | Expected | (c) recorded | Values saved | |
+> |---|---|---|---|---|---|
+> | /articles/a1 | no model running | model_error | model_error | 0 | PASS |
+> | /articles/a2 | no model running | model_error | model_error | 0 | PASS |
+>
+> Each run's output and printed log are in this folder (`test7-model-*.json`, `.log`).
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop reports: Test 3 9/9 PASS; Test 7's fake-model part PASS.
+- Merged `main`. Logged D127 (Milestone 3's checks pass) and D128 (scraper (e) dropped at Cut-line 2, from Joseph's Nov 23 report).
+- Updated the README's Milestone 3 list.
+- Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **⭐ Milestone 3 is done:** every check passes.
+- **Next, Joseph:** push the two results folders and the answer files, and merge the PR.
+- **The Milestone 4 plan, to finish early:**
+  1. Claude writes the final README and reproducibility details (versions, hardware, model, seeds, and every step in order);
+  2. Joseph reruns everything from a fresh copy, following the README;
+  3. Claude drafts the report's tables and figures section from the results;
+  4. Joseph writes the report;
+  5. the tag.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D127, D128 (Follows).
