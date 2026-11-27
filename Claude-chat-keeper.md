@@ -21,7 +21,7 @@ A traceable record of how AI assistance (Claude, through Claude Code) is used in
 | **Follows** | Does what the midterm says. |
 | **Interprets** | The midterm leaves this open or ambiguous. The choice made is stated. |
 | **Adds** | Not in the midterm. Added for a stated reason; does not change the plan. |
-| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110, D119 partly.)* |
+| **Deviates** | Differs from the midterm. Must be justified and reported. *(So far: D39 partly, D66, D67, D98, D99, D106, D110, D119 partly, D126 partly.)* |
 
 ---
 
@@ -304,6 +304,20 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 - **The runs:** Run 1 crawls the baseline site with the fake. Run 2 crawls 4 pages with no model running. The test stops with a clear message if port 11434 is in use (quit Ollama first).
 - **Cloud run: PASS.** Run 1 recorded `invalid_json` ×2, `missing_key` and `model_timeout` on the planted pages, kept the good pages' values (10, 10, 10, 5), and finished all 10 pages in 121 s. Run 2 recorded `model_error` on both item pages and finished.
 - **Noted, not tested:** if Ollama answered with an error object (`{"error": …}`, for example a missing model), `data["response"]` would raise a `KeyError` that (c) doesn't catch, and the run would stop. That's outside the midterm's categories and in Joseph's code, so it's reported to him, not changed. | — | Claude (harness); Joseph runs it on the laptop | §5 Test 7 (a stub model for (c); failures recorded in their categories, the run continues); (c)'s failure rules (Joseph's, D78–D88). | Follows |
+| D126 | 404 | **Claude showed the finished contents of the two Test 3 `expected-d.json` files** (Joseph: "give me what the expected json looks like because ive done the work just whats wrong with my file?").
+- **Joseph's own work:** `poisoned-p1/expected.json`, written by hand and correct. He also worked out the shuffled page's pairing by order number, which was correct.
+- **What went wrong:** his `expected-d` attempts used the values-file format and the fakes, apparently from source files he had edited.
+- **What Claude showed:** both `expected-d.json` files, which are identical. They hold p1's 10 real values, read from the committed `serve/values/products/p1.json` and the saved shuffled page, never from a scraper's output, so the test stays independent.
+- **Disclosed:** like the Test 2 fixture (D39). | Keep guiding; show the two files (chosen) | Joseph (asked) | §5 Test 3 ("hand-worked expected output"); the Test 3 fixture README (worked out by hand: Joseph); precedent D39. | **Deviates** (partly: two answer files' contents from Claude; disclosed) |
+| D127 | 407 | **⭐ Milestone 3's remaining checks pass on the laptop (Fri Nov 27; planned Nov 25 and Nov 29).**
+- **Test 3** (commit `710fa59`): **9/9 PASS**. (a), (b) and (d) on the baseline, poisoned and shuffled pages. (d) gets the real values on the shuffled and poisoned pages; (a) and (b) get the scrambled pairs and the fakes.
+- **Answer files:** `poisoned-p1/expected.json` is Joseph's hand work. The two `expected-d.json` files are from Claude (D126).
+- **Test 7's fake-model part: PASS.** Run 1 recorded `invalid_json` ×2, `missing_key` and `model_timeout`, kept the good pages' values, and finished all 10 pages (121.6 s). Run 2, with no model, recorded `model_error` ×2 and finished.
+- **Together with D123** (false-positive check), D122 (tarpit) and D112 (poisoning), every Milestone 3 item is done. The exceptions are our column of the related-work table, moved later (D118), and scraper (e) (D128). | — | Joseph (runs); Claude (reading) | §5 Tests 3 and 7; §7 Milestone 3 and its stretch plan (Test 5 and the (d) and poisoned-page parts of Test 3 as completion checks). | Follows |
+| D128 | 407 | **Cut-line 2: scraper (e) is dropped and reported as not done** (Joseph: "Dropped: vision (e), reading a screenshot with a image model, scraper" in his Nov 23 report).
+- **Why:** a vision model on the CPU-only laptop wouldn't run in time before Dec 1. The midterm allows this: "Whatever is not running at the Dec 1 cut-line is dropped and reported as not done".
+- **What's lost:** (e)'s parts of hypotheses 1 (shuffling would not affect it) and 2 (poisoning would) stay untested. The report says so.
+- **Everything else runs:** all four defenses, scrapers (a)–(d), and Tests 1–7. | Try (e) after the cut-line (rejected: the midterm drops what isn't running by Dec 1) | Joseph | §7 Stretch plan and Cut-line 2; §1 item 4; §4 hypotheses 1–2. | Follows |
 ---
 
 ## Questions register
@@ -708,6 +722,15 @@ Claude writes no `poisoned.js` code and checks each paste. | Claude writes every
 | J396 | 396 | (runner output: 9 tarpit runs, all 70/70, 15 pages each) and i pushed all three folders | ⭐ Tarpit done (D122): 57-run results, cross-check 942/942, comparison with all four defenses; every hypothesis holds |
 | J397 | 397 | ok whats next | Next steps in order: false-positive check, Test 3 for (d) and poisoned pages, Test 7's fake-model part for (c), the Dec 1 cut-line, Milestone 4; start with the false-positive check |
 | J398 | 398 | ok lets get to work so we can finish early | Built the false-positive check (D123), Test 3 for (d) and a poisoned page (D124) and Test 7's fake-model part (D125); cloud runs pass; Joseph fills 3 answer files and runs the tests |
+| J399 | 399 | (merge output, then Test 3: (b) and (d) "No module named 'playwright'", poisoned answers empty) | The virtual environment isn't active (activate `.venv`); fill in the 3 answer files; rerun |
+| J400 | 400 | ok turned on venv | Next: fill in `poisoned-p1/expected.json` first and paste it for a check |
+| J401 | 401 | fill in the asnwers for me | Claude began (from the saved pages, to be recorded as a partial deviation); interrupted before any change |
+| J402 | 402 | ok what whcih files am i checking to get the information to fill in | The source file for each answer file, with an example row |
+| J403 | 403 | (three pasted blocks: the poisoned expected.json; the values JSON and the shuffled page's fields, both with the fakes) | File 1 correct; the two source files look edited with the fakes, so restore them with git; both expected-d.json files get p1's real values |
+| J404 | 404 | give me what the expectewd json looks like because ive done the work just whats wrong with my file? | What was wrong (format and fake values); the two finished `expected-d.json` files shown (D126, partly Deviates) |
+| J405 | 405 | i cahnged the expected.json what should that look like, ive pasted this in both of the files now though | Table of what each of the five answer files should hold; the poisoned `expected.json` (the fakes) shown so it can be put back; `git status` check |
+| J406 | 406 | (`git status`: exactly the three answer files modified) | Correct; run Test 3, then Test 7's fake-model part, then push |
+| J407 | 407 | (laptop: Test 3 9/9 PASS; Test 7's fake-model part PASS) | ⭐ Milestone 3's checks done (D127); (e) dropped at the cut-line (D128); push; Milestone 4 plan |
 
 ### Questions from Claude
 
@@ -18162,3 +18185,494 @@ Recommended start: item 1. Claude starts on Joseph's go.
 **Questions Claude asked:** none.
 
 **Direction and fit:** D123 (Adds), D124 (Follows), D125 (Follows).
+
+### Turn 399 — 2026-11-27 18:12 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> >> git merge origin/main --no-edit
+> remote: Enumerating objects: 96, done.
+> remote: Counting objects: 100% (81/81), done.
+> remote: Compressing objects: 100% (41/41), done.
+> remote: Total 62 (delta 28), reused 47 (delta 15), pack-reused 0 (from 0)
+> Unpacking objects: 100% (62/62), 489.59 KiB | 622.00 KiB/s, done.
+> From https://github.com/josephevenson08/Benchmarking-Defenses-against-Webscrapers-local-test
+>    898effb..710fa59  main       -> origin/main
+>    b1af3e6..08add5d  claude/quirky-curie-8j4nye -> origin/claude/quirky-curie-8j4nye
+> Updating 898effb..710fa59
+> Fast-forward
+>  Claude-chat-keeper.md                              | 306 ++++++-
+>  README.md                                          |  21 +-
+>  measurement/compare.py                             |  38 +-
+>  measurement/false_positive.py                      | 168 ++++
+>  measurement/fixtures/test3/README.md               |  18 +-
+>  .../fixtures/test3/poisoned-p1/expected-d.json     |   4 +
+>  .../fixtures/test3/poisoned-p1/expected.json       |   4 +
+>  measurement/fixtures/test3/poisoned-p1/page.html   |  55 ++
+>  .../poisoned-p1/serve/values/products/p1.json      |  55 ++
+>  .../fixtures/test3/shuffled-p1/expected-d.json     |   4 +
+>  measurement/test3.py                               |  64 +-
+>  measurement/test7_model.py                         | 203 +++++
+>  measurement/tests/test_compare.py                  |  11 +-
+>  measurement/tests/test_false_positive.py           |  30 +
+>  results/2026-11-25-comparison/1-accuracy.png       | Bin 158409 -> 177606 bytes
+>  results/2026-11-25-comparison/2-detection.png      | Bin 67617 -> 74472 bytes
+>  results/2026-11-25-comparison/comparison.md        |  40 +-
+>  results/2026-11-25-cross-check/report.md           | 976 +++++++++++++++++++++
+>  results/2026-11-25-results-all/cells.csv           |  20 +
+>  results/2026-11-25-results-all/results.csv         |  58 ++
+>  results/2026-11-25-results-all/summary.md          |  46 +
+>  results/2026-11-27-comparison/1-accuracy.png       | Bin 0 -> 177569 bytes
+>  results/2026-11-27-comparison/2-detection.png      | Bin 0 -> 74548 bytes
+>  results/2026-11-27-comparison/comparison.md        |  55 ++
+>  .../2026-11-27-false-positive-cloud/honeypot.jsonl | 140 +++
+>  .../2026-11-27-false-positive-cloud/report.json    | 706 +++++++++++++++
+>  results/2026-11-27-false-positive-cloud/report.md  |  57 ++
+>  .../2026-11-27-false-positive-cloud/tarpit.jsonl   | 140 +++
+>  28 files changed, 3162 insertions(+), 57 deletions(-)
+>  create mode 100644 measurement/false_positive.py
+>  create mode 100644 measurement/fixtures/test3/poisoned-p1/expected-d.json
+>  create mode 100644 measurement/fixtures/test3/poisoned-p1/expected.json
+>  create mode 100644 measurement/fixtures/test3/poisoned-p1/page.html
+>  create mode 100644 measurement/fixtures/test3/poisoned-p1/serve/values/products/p1.json
+>  create mode 100644 measurement/fixtures/test3/shuffled-p1/expected-d.json
+>  create mode 100644 measurement/test7_model.py
+>  create mode 100644 measurement/tests/test_false_positive.py
+>  create mode 100644 results/2026-11-25-cross-check/report.md
+>  create mode 100644 results/2026-11-25-results-all/cells.csv
+>  create mode 100644 results/2026-11-25-results-all/results.csv
+>  create mode 100644 results/2026-11-25-results-all/summary.md
+>  create mode 100644 results/2026-11-27-comparison/1-accuracy.png
+>  create mode 100644 results/2026-11-27-comparison/2-detection.png
+>  create mode 100644 results/2026-11-27-comparison/comparison.md
+>  create mode 100644 results/2026-11-27-false-positive-cloud/honeypot.jsonl
+>  create mode 100644 results/2026-11-27-false-positive-cloud/report.json
+>  create mode 100644 results/2026-11-27-false-positive-cloud/report.md
+>  create mode 100644 results/2026-11-27-false-positive-cloud/tarpit.jsonl
+> PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/test3.py
+> (a) on baseline-p2 ...
+> (b) on baseline-p2 ...
+> (d) on baseline-p2 ...
+> (a) on poisoned-p1 ...
+> (b) on poisoned-p1 ...
+> (d) on poisoned-p1 ...
+> (a) on shuffled-p1 ...
+> (b) on shuffled-p1 ...
+> (d) on shuffled-p1 ...
+>
+> # Test 3: the extraction rule
+>
+> Run 2026-11-27T12:12:06 · commit 710fa59
+>
+> | Case | Scraper | Expected file | Expected records | Got | Missing | Extra | Wrong value | |
+> |---|---|---|---|---|---|---|---|---|
+> | `baseline-p2` | (a) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `baseline-p2` | (b) | | | | | | scraper failed | FAIL |
+> | `baseline-p2` | (d) | | | | | | scraper failed | FAIL |
+> | `poisoned-p1` | (a) | `expected.json` | 0 (no records yet) | 10 | — | availability, brand, category, description, name, price, rating, release_date, review_count, sku | — | FAIL |
+> | `poisoned-p1` | (b) | | | | | | scraper failed | FAIL |
+> | `poisoned-p1` | (d) | | | | | | scraper failed | FAIL |
+> | `shuffled-p1` | (a) | `expected.json` | 9 | 9 | — | — | — | PASS |
+> | `shuffled-p1` | (b) | | | | | | scraper failed | FAIL |
+> | `shuffled-p1` | (d) | | | | | | scraper failed | FAIL |
+>
+> **Test 3 ((a), (b), (d)): FAIL**
+>
+> Each case's page is served on its own and each scraper runs with `--page-cap 1`. Scraper outputs are in `outputs/`.
+>
+> Error from (b) on `baseline-p2`:
+>
+> ```
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\b_browser_text.py", line 3, in <module>
+>     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> ModuleNotFoundError: No module named 'playwright'
+> ```
+>
+> Error from (d) on `baseline-p2`:
+>
+> ```
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\d_adaptive.py", line 9, in <module>
+>     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> ModuleNotFoundError: No module named 'playwright'
+> ```
+>
+> Error from (b) on `poisoned-p1`:
+>
+> ```
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\b_browser_text.py", line 3, in <module>
+>     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> ModuleNotFoundError: No module named 'playwright'
+> ```
+>
+> Error from (d) on `poisoned-p1`:
+>
+> ```
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\d_adaptive.py", line 9, in <module>
+>     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> ModuleNotFoundError: No module named 'playwright'
+> ```
+>
+> Error from (b) on `shuffled-p1`:
+>
+> ```
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\b_browser_text.py", line 3, in <module>
+>     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> ModuleNotFoundError: No module named 'playwright'
+> ```
+>
+> Error from (d) on `shuffled-p1`:
+>
+> ```
+> Traceback (most recent call last):
+>   File "C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test\scrapers\d_adaptive.py", line 9, in <module>
+>     from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout, Error as PlaywrightError
+> ModuleNotFoundError: No module named 'playwright'
+> ```
+>
+> PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read Joseph's output: the merge worked (`710fa59`); Test 3 ran with 2 PASS and 7 FAIL. Merged `main` into the branch. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Two causes, neither a problem with the test:**
+  1. the terminal's prompt has no `(.venv)`: the virtual environment isn't active, so `python` has no Playwright, and (b) and (d) can't start;
+  2. the 3 answer files are still empty ("no records yet").
+- **Fix:**
+  1. `.venv\Scripts\Activate.ps1`, then check the prompt shows `(.venv)`;
+  2. fill in the 3 files by hand. The skeleton, the label-to-key list, and how to read each value: the fakes from `page.html`; the real values from `serve/values/products/p1.json`; the shuffled page's on-screen pairs by `order` number;
+  3. rerun Test 3: 9/9 should pass.
+- **Then:** Test 7's fake-model part, and push.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 400 — 2026-11-27 18:13 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok turned on venv
+
+**What Claude did:** No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Next:** fill in the first answer file, `poisoned-p1/expected.json` (the fakes from `page.html`), and paste it to be checked before doing the other two.
+- **Option:** run Test 3 now, to see (b) and (d) pass on the normal page with the venv on.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 401 — 2026-11-27 18:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> fill in the asnwers for me
+
+**What Claude did:** Started to answer. Claude said it would derive the three Test 3 answer files from the saved pages, not from any scraper's output, and record that as a partial deviation like D39, because the midterm (§5 Test 3) has Joseph work the answers out by hand. Joseph interrupted before any file was changed. Nothing was written.
+
+**Claude's answer (summary):** (interrupted) Claude would fill the answers from the saved pages, record it, and Joseph would review them.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** none taken. Joseph went on to fill the files in himself (Turn 402).
+
+### Turn 402 — 2026-11-27 18:14 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> ok what whcih files am i checking to get the information to fill in
+
+**What Claude did:** Found where the values sit in each source file: the fields block starts at line 28 of `poisoned-p1/page.html` and line 37 of `shuffled-p1/page.html`, and the values JSON is a list of key, label and value entries. No project files changed apart from this log.
+
+**Claude's answer (summary):** which source file fills which answer file:
+1. `poisoned-p1/page.html` → `poisoned-p1/expected.json`: the value after each label in the HTML, which are the fakes;
+2. `poisoned-p1/serve/values/products/p1.json` → `poisoned-p1/expected-d.json`: each entry's `key` and `value`, which are the real values;
+3. `shuffled-p1/page.html` → `shuffled-p1/expected-d.json`: for each label, the element whose `order` is one higher.
+
+Each with an example row. Joseph does it by hand (midterm §5 Test 3).
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision (Test 3 answers by Joseph, as planned; D124).
+
+
+### Turn 403 — 2026-11-27 18:23 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> {
+>   "path": "/products/p1",
+>   "records": [{"field":"name", "value":"Wexley Slim Clock"},
+>               {"field":"brand", "value":"Ostrava"},
+>               {"field":"category", "value":"Bath"},
+>               {"field":"price", "value":"$22.48"},
+>               {"field":"sku", "value":"LF-HP-9958"},
+>               {"field":"rating", "value":"1.8"},
+>               {"field":"review_count", "value":"5,824"},
+>               {"field":"availability", "value":"Low stock"},
+>               {"field":"release_date", "value":"2023-06-02"},
+>               {"field":"description", "value":"A sturdy everyday pick with a simple design and a two-year warranty."}]
+> }
+>
+> {
+>   "item_id": "p1",
+>   "fields": [
+>     {
+>       "key": "name",
+>       "label": "Name",
+>       "value": "Wexley Slim Clock"
+>     },
+>     {
+>       "key": "brand",
+>       "label": "Brand",
+>       "value": "Ostrava"
+>     },
+>     {
+>       "key": "category",
+>       "label": "Category",
+>       "value": "Bath"
+>     },
+>     {
+>       "key": "price",
+>       "label": "Price",
+>       "value": "$22.48"
+>     },
+>     {
+>       "key": "sku",
+>       "label": "SKU",
+>       "value": "LF-HP-9958"
+>     },
+>     {
+>       "key": "rating",
+>       "label": "Rating",
+>       "value": "1.8"
+>     },
+>     {
+>       "key": "review_count",
+>       "label": "Reviews",
+>       "value": "5,824"
+>     },
+>     {
+>       "key": "availability",
+>       "label": "Availability",
+>       "value": "Low stock"
+>     },
+>     {
+>       "key": "release_date",
+>       "label": "Release date",
+>       "value": "2023-06-02"
+>     },
+>     {
+>       "key": "description",
+>       "label": "Description",
+>       "value": "A sturdy everyday pick with a simple design and a two-year warranty."
+>     }
+>   ]
+> }
+>
+>
+>       <span class="value" style="order: 1">Wexley Slim Clock</span>
+>       <span class="value" style="order: 13">5,824</span>
+>       <span class="label" style="order: 4">Category</span>
+>       <span class="value" style="order: 15">Low stock</span>
+>       <span class="label" style="order: 14">Availability</span>
+>       <span class="value" style="order: 11">1.8</span>
+>       <span class="label" style="order: 0">Name</span>
+>       <span class="value" style="order: 7">$22.48</span>
+>       <span class="label" style="order: 6">Price</span>
+>       <span class="value" style="order: 17">2023-06-02</span>
+>       <span class="label" style="order: 16">Release date</span>
+>       <span class="value" style="order: 9">LF-HP-9958</span>
+>       <span class="label" style="order: 8">SKU</span>
+>       <span class="label" style="order: 12">Reviews</span>
+>       <span class="label" style="order: 18">Description</span>
+>       <span class="value" style="order: 3">Ostrava</span>
+>       <span class="value" style="order: 19">A sturdy everyday pick with a simple design and a two-year warranty.</span>
+>       <span class="value" style="order: 5">Bath</span>
+>       <span class="label" style="order: 10">Rating</span>
+>       <span class="label" style="order: 2">Brand</span>
+
+**What Claude did:**
+- Checked Joseph's three pasted blocks against the committed fixture files:
+  1. the first, `poisoned-p1/expected.json`, is correct: the 10 fakes, matching the page and the fakes from Turn 370;
+  2. the second has the format of `serve/values/products/p1.json`, but with the fakes in place of the real values;
+  3. the third is `shuffled-p1/page.html`'s fields block in the same element order as the saved page (order 1, 13, 4, …), but with the fakes in place of the real values (saved: "Larkfield Studio Headphones", "1,284", …).
+- So the two **source** files look edited, when the answer files should have been. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **File 1 is right.**
+- **Files 2 and 3:** the source files must keep the real values. Check with `git status --short measurement/fixtures/test3`, and restore with `git checkout -- <the two files>`.
+- **Both `expected-d.json` files** use the records format with p1's **real** values. (d) sees the real values on both pages: after the swap, and because shuffling doesn't change values. The format was shown.
+- **Then:** rerun Test 3.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 404 — 2026-11-27 18:24 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> give me what the expectewd json looks like because ive done the work just whats wrong with my file?
+
+**What Claude did:** Read p1's real values from the committed `serve/values/products/p1.json`. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **What was wrong:**
+  1. the format: `item_id`, `fields`, `key` and `label` are the values file's format, but an answer file needs `path` and `records`, with `field` and `value`;
+  2. the values: the fakes, when (d) sees the real values on both pages.
+- **The two complete `expected-d.json` files**, identical (D126, Deviates partly, disclosed).
+- **Then:**
+  1. restore the source files if they were changed (`git status`, `git checkout --`);
+  2. run Test 3;
+  3. run Test 7's fake-model part;
+  4. push.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D126 (**Deviates**, partly).
+
+### Turn 405 — 2026-11-27 18:25 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> i cahnged the expected.json what should that look like, ive pasted this in both of the files now though
+
+**What Claude did:** Checked the committed `shuffled-p1/expected.json`: Joseph's hand-worked answer for (a) and (b) from November (9 records), which must stay. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **A table of the five answer files and what each should hold:**
+  - `poisoned-p1/expected.json`: the fakes, Joseph's first file, shown in full so it can be put back;
+  - the two `expected-d.json` files: the real values;
+  - `shuffled-p1/expected.json` and `baseline-p2/expected.json`: leave alone.
+- **Check:** `git status --short measurement/fixtures/test3`. Only the three answer files should show `M`; restore anything else with `git checkout --`.
+- **Then:** run Test 3.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 406 — 2026-11-27 18:27 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> git status --short measurement/fixtures/test3
+>  M measurement/fixtures/test3/poisoned-p1/expected-d.json
+>  M measurement/fixtures/test3/poisoned-p1/expected.json
+>  M measurement/fixtures/test3/shuffled-p1/expected-d.json
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:** Read Joseph's `git status`: exactly the three answer files are modified. The source pages, the values JSON and the other answer files are untouched. No project files changed apart from this log.
+
+**Claude's answer (summary):**
+- **Status:** correct. Only the three answer files changed.
+- **Next, in order:**
+  1. `python measurement/test3.py`: 9/9 should pass;
+  2. quit Ollama, run `python measurement/test7_model.py`, then start Ollama again;
+  3. `git add`, commit and push the fixtures and both results folders.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** no new decision.
+
+### Turn 407 — 2026-11-27 18:31 UTC
+
+**Joseph's prompt (verbatim, captured by hook):**
+
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/test3.py
+> (a) on baseline-p2 ...
+> (b) on baseline-p2 ...
+> (d) on baseline-p2 ...
+> (a) on poisoned-p1 ...
+> (b) on poisoned-p1 ...
+> (d) on poisoned-p1 ...
+> (a) on shuffled-p1 ...
+> (b) on shuffled-p1 ...
+> (d) on shuffled-p1 ...
+>
+> # Test 3: the extraction rule
+>
+> Run 2026-11-27T12:28:03 · commit 710fa59
+>
+> | Case | Scraper | Expected file | Expected records | Got | Missing | Extra | Wrong value | |
+> |---|---|---|---|---|---|---|---|---|
+> | `baseline-p2` | (a) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `baseline-p2` | (b) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `baseline-p2` | (d) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `poisoned-p1` | (a) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `poisoned-p1` | (b) | `expected.json` | 10 | 10 | — | — | — | PASS |
+> | `poisoned-p1` | (d) | `expected-d.json` | 10 | 10 | — | — | — | PASS |
+> | `shuffled-p1` | (a) | `expected.json` | 9 | 9 | — | — | — | PASS |
+> | `shuffled-p1` | (b) | `expected.json` | 9 | 9 | — | — | — | PASS |
+> | `shuffled-p1` | (d) | `expected-d.json` | 10 | 10 | — | — | — | PASS |
+>
+> **Test 3 ((a), (b), (d)): PASS**
+>
+> Each case's page is served on its own and each scraper runs with `--page-cap 1`. Scraper outputs are in `outputs/`.
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> 
+>
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test> python measurement/test7_model.py
+> Run 1: (c) on the whole site with the fake model (one answer takes 125 s) ...
+> Run 2: (c) with no model running ...
+>
+> # Test 7, fake-model part: scraper (c)'s failure rules
+>
+> Run 2026-11-27T12:30:34 · commit 710fa59 · fake Ollama on 127.0.0.1:11434 · slow answer after 125 s
+>
+> **PASS**
+>
+> ## Run 1: fake model, whole site
+>
+> Exit 0 · 121.6 s · pages visited 10 of 15 (cap) · finished
+>
+> | Page | Fake model's answer | Expected | (c) recorded | Values saved | |
+> |---|---|---|---|---|---|
+> | /products/p1 | a list | invalid_json | invalid_json | 0 | PASS |
+> | /products/p2 | a field missing | missing_key | missing_key | 0 | PASS |
+> | /products/p3 | after 125 s | model_timeout | model_timeout | 0 | PASS |
+> | /products/p4 | good | no error | no error | 10 | PASS |
+> | /products/p5 | good | no error | no error | 10 | PASS |
+> | /products/p6 | good | no error | no error | 10 | PASS |
+> | /articles/a1 | good | no error | no error | 5 | PASS |
+> | /articles/a2 | not JSON | invalid_json | invalid_json | 0 | PASS |
+>
+> ## Run 2: no model running, first 4 pages
+>
+> Exit 0 · 5.3 s · pages visited 4 of 4 (cap) · finished
+>
+> | Page | Fake model's answer | Expected | (c) recorded | Values saved | |
+> |---|---|---|---|---|---|
+> | /articles/a1 | no model running | model_error | model_error | 0 | PASS |
+> | /articles/a2 | no model running | model_error | model_error | 0 | PASS |
+>
+> Each run's output and printed log are in this folder (`test7-model-*.json`, `.log`).
+>
+> (.venv) PS C:\Users\josep\OneDrive - Saint Louis University\FALL 26\Web tech\project\Benchmarking-Defenses-against-Webscrapers-local-test>
+
+**What Claude did:**
+- Read Joseph's laptop reports: Test 3 9/9 PASS; Test 7's fake-model part PASS.
+- Merged `main`. Logged D127 (Milestone 3's checks pass) and D128 (scraper (e) dropped at Cut-line 2, from Joseph's Nov 23 report).
+- Updated the README's Milestone 3 list.
+- Committed, pushed, and opened a pull request into `main`.
+
+**Claude's answer (summary):**
+- **⭐ Milestone 3 is done:** every check passes.
+- **Next, Joseph:** push the two results folders and the answer files, and merge the PR.
+- **The Milestone 4 plan, to finish early:**
+  1. Claude writes the final README and reproducibility details (versions, hardware, model, seeds, and every step in order);
+  2. Joseph reruns everything from a fresh copy, following the README;
+  3. Claude drafts the report's tables and figures section from the results;
+  4. Joseph writes the report;
+  5. the tag.
+
+**Questions Claude asked:** none.
+
+**Direction and fit:** D127, D128 (Follows).
